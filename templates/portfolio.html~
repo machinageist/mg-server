@@ -6,7 +6,7 @@
   <p class="section-intro">
     tools built, concepts explored, migrations documented
   </p>
-  <br>
+
   <ul class="project-list">
     {% for project in projects %}
       <li class="project-card">
@@ -33,7 +33,6 @@
           {% endfor %}
         </div>
       </li>
-      <br>
     {% endfor %}
   </ul>
 </section>
