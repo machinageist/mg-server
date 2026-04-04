@@ -1,7 +1,6 @@
 mod router;
 
 use std::net::SocketAddr;
-use axum::Router;
 
 #[tokio::main]
 async fn main() {
