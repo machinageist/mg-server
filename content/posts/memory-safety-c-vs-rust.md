@@ -4,7 +4,6 @@ date: 2026-04-02
 summary: "Why most C CVEs are memory saftey bugs, and how rust eliminates that class"
 tags: [rust, c, security, memory-saftey]
 ---
-
 ## The Problem with C
 
 C gives you direct control over memory. That power is also the sourcce of mostt security vulnerabliities in C codebases. Buffer overflows, use-after-free, and null pointer derefrences are not bugs introduced by careless programmers - they are the natural consequence  of manual memory management at scale.

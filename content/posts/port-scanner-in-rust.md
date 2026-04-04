@@ -4,7 +4,6 @@ date: 2026-04-03
 summary: "Rewriting a Pyhton port scanner in Rust - ownership, async I/O, and why it 10x faster."
 tags: [rust, networking, tools, security]
 ---
-
 ## Why Rewrite It?
 
 The Python version works. It's readable and easy to modify.

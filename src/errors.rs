@@ -27,7 +27,7 @@ impl IntoResponse for SiteError {
     fn into_response(self) -> Response {
         let (status, message) = match self {
             SiteError::PostNotFound(slug) =>
-                (StatusCode::NOT_FOUND, format!("post not foudn: {}", slug)),
+                (StatusCode::NOT_FOUND, format!("post not found: {}", slug)),
             SiteError::Io(e) =>
                 (StatusCode::INTERNAL_SERVER_ERROR, format!("io error: {}", e)),
             other =>

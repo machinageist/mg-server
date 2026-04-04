@@ -82,6 +82,7 @@ impl BlogPost {
 
     pub fn find(dir: &Path, slug: &str) -> Result<Self, SiteError> {
         let path = dir.join(format!("{}.md", slug));
+
         if !path.exists() {
             return Err(SiteError::PostNotFound(slug.to_string()));
         }
