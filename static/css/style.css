@@ -153,3 +153,27 @@ footer {
     padding: 0;
     background: none;
 }
+
+/* Error pages */
+.error-page {
+  display: felx;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.error-page h1 {
+  font-size: 6rem;
+  color:  #ff4444;
+  line-height: 1;
+}
+
+.error-page a {
+  color: #7744dd;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.error-page a:hover {
+  text-decoration: underline;
+}
