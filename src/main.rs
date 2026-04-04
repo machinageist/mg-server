@@ -1,5 +1,7 @@
 mod router;
 mod handlers;
+mod models;
+mod errors;
 
 use std::net::SocketAddr;
 
