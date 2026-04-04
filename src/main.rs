@@ -1,4 +1,5 @@
 mod router;
+mod handlers;
 
 use std::net::SocketAddr;
 

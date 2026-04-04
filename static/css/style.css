@@ -11,8 +11,49 @@ body {
   padding: 2rem;
 }
 
+header {
+  padding 1.5rem 2rem;
+  border-bottom: 1px solid #232323
+}
+
+nav {
+  display: flex;
+  dap: 2rem;
+}
+
+nav a{
+  color: #888888;
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+}
+
+nav a:hover{
+  color: #cd2332;
+}
+
+main {
+  flex: 1;
+  padding: 4rem 2rem;
+  max-width: 860px;
+  margin:: 0 auto;
+  width: 100%
+}
+
 h1 {
-  color: #00ff88;
+  color: #6622dd;
+  font-size: 2.5rem;
   margin-bottom: 1rem;
 }
 
+p {
+  color: #888888;
+  line-height: 1.6;
+}
+
+footer {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #232323;
+  color: #424242
+  font-size: 0.8rem;
+}

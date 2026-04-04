@@ -1,0 +1,10 @@
+<!-- extends tells Askana this template inheirits from base.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+  <!-- {{ name }} renders the  'name' field from Rust struct -->
+  <h1>{{ name }}</h1>
+  <p>security researcher. systems programmer. building in rust.</p>
+</section>
+{% endblock %}

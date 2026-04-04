@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mg-server</title>
+  <link  rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <header> 
+    <nav>
+      <a href="/">home</a>
+       | 
+      <a href="/about">about</a>
+       | 
+      <a href="/portfolio">portfolio</a>
+       | 
+      <a href="/blog">blog</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- block content is slot child templates fill -->
+    <!-- everything betweent these tags is default (empty) -->
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>built in rust</p>
+  </footer>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
