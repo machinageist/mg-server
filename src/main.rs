@@ -2,8 +2,11 @@ mod router;
 mod handlers;
 mod models;
 mod errors;
+mod middleware;
 
 use std::net::SocketAddr;
+// use axum::middleware;
+use crate::middleware::rate_limit::build_limiter;
 
 #[tokio::main]
 async fn main() {
@@ -14,11 +17,11 @@ async fn main() {
         )
         .init();
 
+    let limiter = build_limiter();
     let app = router::build();
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
-
-    tracing::info!("Server starting on http::{}", addr);
+    tracing::info!("Server starting on http://{}", addr);
 
     let listener = tokio::net::TcpListener::bind(addr)
         .await
