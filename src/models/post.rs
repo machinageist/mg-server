@@ -7,6 +7,9 @@ use std::fs;
 use std::path::Path;
 use crate::errors::SiteError;
 
+// Deserialize is a serde trait — it lets gray_matter fill this struct from YAML.
+// The field names must match the YAML keys in frontmatter exactly.
+// If a key is missing from the file, deserialization returns an error.
 #[derive(Debug, Deserialize)]
 struct Frontmatter {
     title: String,
@@ -26,14 +29,23 @@ pub struct BlogPost {
 }
 impl BlogPost {
     pub fn from_file(path: &Path) -> Result<Self, SiteError> {
+        // file_stem() strips the extension: "port-scanner-in-rust.md" → "port-scanner-in-rust"
+        // to_str() converts OsStr (OS-native string) to &str (Rust string slice)
+        // ok_or() converts Option to Result — returns Err if either step produces None
         let slug = path
             .file_stem()
             .and_then(|s| s.to_str())
             .ok_or(SiteError::InvalidPath)?
             .to_string();
         
+        // fs::read_to_string returns Result<String, io::Error>
+        // ? converts io::Error to SiteError::Io via the #[from] impl in errors.rs
+        // This is the ? operator's full power: read file, propagate any error, continue
         let raw = fs::read_to_string(path)?;
 
+        // gray_matter splits the --- YAML block from the Markdown body.
+        // parsed.data contains the YAML fields.
+        // parsed.content contains everything after the closing ---.
         let matter = Matter::<YAML>::new();
         let parsed = matter.parse(&raw);
 
@@ -43,9 +55,15 @@ impl BlogPost {
             .deserialize()
             .map_err(|e| SiteError::FrontmatterParse(e.to_string()))?;
         
+        // Parsing the date string into a typed NaiveDate means bad dates are caught
+        // when the server starts (or when the post is first loaded), not when a user
+        // requests the page. Fail early, fail loudly, fail at the boundary.    
         let date = NaiveDate::parse_from_str(&fm.date, "%Y-%m-%d")
             .map_err(|e| SiteError::DateParse(e.to_string()))?;
 
+        // pulldown-cmark parses CommonMark Markdown and produces an event stream.
+        // Options::all() enables extensions: tables, footnotes, strikethrough, task lists.
+        // html::push_html writes the HTML output into our String buffer.
         let parser = Parser::new_ext(&parsed.content, Options::all());
         let mut content_html = String::new();
         html::push_html(&mut content_html, parser);
@@ -89,25 +107,3 @@ impl BlogPost {
         BlogPost::from_file(&path)
     }
 }
-
-/*
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use std::path::Path;
-    
-    #[test]
-    fn test_load_all_posts() {
-        let posts = BlogPost::load_all(Path::new("content/posts"))
-            .expect("should load posts wihtout error");
-
-        assert_eq!(posts.len(), 2);
-
-        assert_eq!(posts[0].slug, "port-scanner-in-rust");
-        assert_eq!(posts[1].slug, "memory-safety-c-vs-rust");
-
-        assert!(posts[0].content_html.contains("<h2>"));
-    }
-}
-*/
-

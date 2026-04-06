@@ -14,6 +14,17 @@
   </header>
 
   <div class="post-content">
+    <!-- |safe filter tells Askama: render this string as raw HTML, do not escape it. -->
+    <!-- Without |safe, < becomes &lt; and your HTML tags render as visible text. -->
+    <!--                                                                             -->
+    <!-- SECURITY NOTE — when to use |safe and when NOT to:                          -->
+    <!--   SAFE to use: content YOU generated (pulldown-cmark output from your .md)  -->
+    <!--   NEVER use:   any content from user input, URL parameters, form fields,    -->
+    <!--               database values, or any data you do not fully control.        -->
+    <!--                                                                             -->
+    <!-- Using |safe on user-supplied content is stored XSS.                         -->
+    <!-- The attacker puts <script>steal_cookies()</script> in the input,            -->
+    <!-- you render it with |safe, every visitor who loads the page runs it.         -->
     {{ post.content_html|safe }}
   </div>
 </article>
