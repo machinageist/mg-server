@@ -1,39 +1,55 @@
 [package]
-name = "mg-server"
+name    = "mg-server"
 version = "0.1.0"
 edition = "2021"
 
+# -----------------------------------------------------------------------
+# Web framework and async runtime
+# -----------------------------------------------------------------------
 [dependencies]
-# tokio features = ["full"] enables all Tokio components:
-# rt-multi-thread (thread pool), net (TCP/UDP), fs (async file I/O), etc.
-# In production you'd list only what you use — "full" is fine for learning.
-axum = "0.7"
-tokio = { version = "1", features = ["full"] }
-
-# tower-http features: "fs" for ServeDir static file serving, "trace" for TraceLayer logging.
-# Other available features: compression, cors, auth — add as needed.
+axum     = "0.7"
+# features = ["full"] enables all Tokio components: thread pool, net, fs, timers
+tokio    = { version = "1", features = ["full"] }
+# "fs" = ServeDir static file serving  "trace" = TraceLayer request logging
 tower-http = { version = "0.5", features = ["fs", "trace"] }
-tracing = "0.1"
+tower      = "0.4"
 
-# tracing-subscriber features:
-# "env-filter" — enables RUST_LOG environment variable control (required for EnvFilter)
-# "fmt"        — enables the formatted console output subscriber
-# Without these feature flags, EnvFilter and fmt::init() do not compile.
-tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
-askama = "0.12"
+# -----------------------------------------------------------------------
+# Templating — compiled at build time, no runtime engine to inject into
+# -----------------------------------------------------------------------
+askama      = "0.12"
 askama_axum = "0.4"
 
+# -----------------------------------------------------------------------
+# Content — markdown parsing and frontmatter extraction
+# -----------------------------------------------------------------------
 pulldown-cmark = "0.10"
-gray_matter ="0.2"
+gray_matter    = "0.2"
 
-# chrono features: "serde" enables Serialize/Deserialize for date types.
-# Needed if you ever serialize BlogPost to JSON (Phase 3 API).
+# -----------------------------------------------------------------------
+# Data and serialization
+# -----------------------------------------------------------------------
+# features = ["serde"] enables Serialize/Deserialize on date types (Phase 3 JSON API)
 chrono = { version = "0.4", features = ["serde"] }
+# features = ["derive"] enables #[derive(Serialize, Deserialize)] on structs
+serde  = { version = "1", features = ["derive"] }
+
+# -----------------------------------------------------------------------
+# Error handling and logging
+# -----------------------------------------------------------------------
 thiserror = "1"
+tracing   = "0.1"
+# "env-filter" = RUST_LOG variable support  "fmt" = formatted console output
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
 
-# serde features: "derive" enables #[derive(Serialize, Deserialize)] on your structs.
-# Without "derive", you must implement the traits manually — never do this.
-serde = { version = "1", features = ["derive"] }
-
-governor = "0.6"
+# -----------------------------------------------------------------------
+# Rate limiting
+# -----------------------------------------------------------------------
+governor      = "0.6"
 axum-client-ip = "0.5"
+
+# -----------------------------------------------------------------------
+# Phase 3 — uncomment when decomposing into raw Hyper + JSON API
+# -----------------------------------------------------------------------
+# hyper        = { version = "1", features = ["full"] }
+# serde_json   = "1"

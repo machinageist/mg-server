@@ -1,182 +1,280 @@
+/* -----------------------------------------------------------------------
+   Reset — normalize browser defaults before applying custom styles
+   ----------------------------------------------------------------------- */
+
 *, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin:     0;
+    padding:    0;
 }
+
+/* -----------------------------------------------------------------------
+   Base — dark theme, monospace type, full-height flex column
+   ----------------------------------------------------------------------- */
 
 body {
-  font-family: monospace;
-  background: #0a0a0a;
-  color: #e0e0e0;
-  padding: 2rem;
+    font-family: monospace;
+    background:  #0a0a0a;
+    color:       #e0e0e0;
+    min-height:  100vh;
+    display:     flex;
+    flex-direction: column;
 }
 
+/* -----------------------------------------------------------------------
+   Header and navigation
+   ----------------------------------------------------------------------- */
+
 header {
-  padding 1.5rem 2rem;
-  border-bottom: 1px solid #232323
+    padding:       1.5rem 2rem;
+    border-bottom: 1px solid #222;
 }
 
 nav {
-  display: flex;
-  dap: 2rem;
+    display: flex;
+    gap:     2rem;
 }
 
-nav a{
-  color: #888888;
-  text-decoration: none;
-  font-size: 0.9rem;
-  letter-spacing: 0.05em;
+nav a {
+    color:           #888;
+    text-decoration: none;
+    font-size:       0.9rem;
+    letter-spacing:  0.05em;
 }
 
-nav a:hover{
-  color: #cd2332;
-}
+nav a:hover { color: #00ff88; }
+
+/* -----------------------------------------------------------------------
+   Main content area — centered, constrained width, grows to fill viewport
+   ----------------------------------------------------------------------- */
 
 main {
-  flex: 1;
-  padding: 4rem 2rem;
-  max-width: 860px;
-  margin:: 0 auto;
-  width: 100%
+    flex:       1;
+    padding:    4rem 2rem;
+    max-width:  860px;
+    margin:     0 auto;
+    width:      100%;
 }
 
+/* -----------------------------------------------------------------------
+   Typography
+   ----------------------------------------------------------------------- */
+
 h1 {
-  color: #6622dd;
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+    color:         #8800ff;
+    font-size:     2.5rem;
+    margin-bottom: 1rem;
 }
 
 p {
-  color: #888888;
-  line-height: 1.6;
+    color:       #888;
+    line-height: 1.6;
 }
+
+/* -----------------------------------------------------------------------
+   Footer
+   ----------------------------------------------------------------------- */
 
 footer {
-  padding: 1.5rem 2rem;
-  border-top: 1px solid #232323;
-  color: #424242
-  font-size: 0.8rem;
+    padding:      1.5rem 2rem;
+    border-top:   1px solid #222;
+    color:        #444;
+    font-size:    0.8rem;
 }
 
-/* Blog List */
+/* -----------------------------------------------------------------------
+   Blog list — post index page
+   ----------------------------------------------------------------------- */
 
 .post-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-  margin-top: 2rem;
+    list-style:     none;
+    display:        flex;
+    flex-direction: column;
+    gap:            2.5rem;
+    margin-top:     2rem;
 }
 
 .post-item a {
-  color: #e0e0e0
-  text-decoration: none;
-  font-size: 1.1rem;
+    color:           #e0e0e0;
+    text-decoration: none;
+    font-size:       1.1rem;
 }
 
-.post-item a:hover {
-  color: #6622dd;
-}
+.post-item a:hover { color: #8800ff; }
 
 .post-date {
-  display: block;
-  color: #424242;
-  font-size: 0.8rem;
-  margin-bottom: 0.3rem;
+    display:       block;
+    color:         #444;
+    font-size:     0.8rem;
+    margin-bottom: 0.3rem;
 }
 
-.post_summary {
-  margin-top 0.4rem;
-  color: #6363636;
-  font-size: 0.9rem;
+.post-summary {
+    margin-top: 0.4rem;
+    color:      #666;
+    font-size:  0.9rem;
 }
 
-/* Blog Post */
+/* -----------------------------------------------------------------------
+   Blog post — single post view
+   ----------------------------------------------------------------------- */
 
 .post-header {
-  margin-bottom: 3rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #232323;
+    margin-bottom:  3rem;
+    padding-bottom: 1.5rem;
+    border-bottom:  1px solid #222;
 }
+
 .post-meta {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  margin-top: 0.75rem;
+    display:     flex;
+    gap:         1rem;
+    align-items: center;
+    margin-top:  0.75rem;
 }
 
 .post-tags {
-  display: flex;
-  gap: 0.5rem;
+    display: flex;
+    gap:     0.5rem;
 }
 
+/* Shared tag pill — used in post meta and project cards */
 .tag {
-  background: #131313;
-  border: 1pxs solid #333333;
-  color: #888888;
-  padding: 0.1rem 0.5rem;
-  font-size: 0.75rem;
+    background: #111;
+    border:     1px solid #333;
+    color:      #888;
+    padding:    0.1rem 0.5rem;
+    font-size:  0.75rem;
 }
 
-/* Post Content Typography */
+/* -----------------------------------------------------------------------
+   Post content — rendered Markdown typography
+   ----------------------------------------------------------------------- */
 
 .post-content h2 {
-  color #6622dd;
-  margin: 2rem 0 1rem;
-  font-size: 1.3rem;
+    color:     #8800ff;
+    margin:    2rem 0 1rem;
+    font-size: 1.3rem;
 }
 
 .post-content p {
     margin-bottom: 1.2rem;
-    line-height: 1.7;
-    color: #cdcdcd;
+    line-height:   1.7;
+    color:         #ccc;
 }
 
 .post-content code {
-    background: #131313;
-    border: 1px solid #232323;
-    padding: 0.1em 0.4em;
-    font-size: 0.9em;
-    color: #00ff88;
+    background: #111;
+    border:     1px solid #222;
+    padding:    0.1em 0.4em;
+    font-size:  0.9em;
+    color:      #00ff88;
 }
 
 .post-content pre {
     background: #0d0d0d;
-    border: 1px solid #232323;
-    padding: 1.2rem;
+    border:     1px solid #222;
+    padding:    1.2rem;
     overflow-x: auto;
-    margin: 1.5rem 0;
+    margin:     1.5rem 0;
 }
 
+/* Reset inline code styles inside a pre block */
 .post-content pre code {
-    border: none;
-    padding: 0;
+    border:     none;
+    padding:    0;
     background: none;
 }
 
-/* Error pages */
-.error-page {
-  display: felx;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
+/* -----------------------------------------------------------------------
+   Portfolio — project card list
+   ----------------------------------------------------------------------- */
+
+.section-intro {
+    color:         #666;
+    margin-bottom: 2.5rem;
+    font-size:     0.95rem;
 }
 
+.project-list {
+    list-style:     none;
+    display:        flex;
+    flex-direction: column;
+    gap:            1.5rem;
+}
+
+.project-card {
+    border:     1px solid #1a1a1a;
+    padding:    1.5rem;
+    background: #0d0d0d;
+}
+
+.project-card:hover { border-color: #333; }
+
+.project-header {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+    margin-bottom:   0.75rem;
+}
+
+.project-name { color: #e0e0e0; }
+
+.project-name a {
+    color:           #e0e0e0;
+    text-decoration: none;
+}
+
+.project-name a:hover { color: #00ff88; }
+
+.project-description {
+    color:         #666;
+    font-size:     0.875rem;
+    line-height:   1.6;
+    margin-bottom: 1rem;
+}
+
+.project-tags {
+    display:   flex;
+    gap:       0.5rem;
+    flex-wrap: wrap;
+}
+
+/* -----------------------------------------------------------------------
+   Project status badges — color coded by ProjectStatus Display value
+   ----------------------------------------------------------------------- */
+
+.project-status {
+    font-size: 0.75rem;
+    padding:   0.15rem 0.5rem;
+    border:    1px solid;
+}
+
+.status-active      { color: #8800ff; border-color: #8800ff44; }
+.status-in\ progress { color: #ff00aa; border-color: #ff00aa44; }
+.status-complete    { color: #888;    border-color: #333; }
+
+/* -----------------------------------------------------------------------
+   Error pages — 404 and 500
+   ----------------------------------------------------------------------- */
+
+.error-page {
+    display:        flex;
+    flex-direction: column;
+    align-items:    flex-start;
+    gap:            1rem;
+}
+
+/* Large red error code — visually distinct from normal h1 green */
 .error-page h1 {
-  font-size: 6rem;
-  color:  #ff4444;
-  line-height: 1;
+    font-size:   6rem;
+    color:       #ff4444;
+    line-height: 1;
 }
 
 .error-page a {
-  color: #7744dd;
-  text-decoration: none;
-  font-size: 0.9rem;
+    color:           #8800ff;
+    text-decoration: none;
+    font-size:       0.9rem;
 }
 
-.error-page a:hover {
-  text-decoration: underline;
-}
-
-/* Portfolio */
-
+.error-page a:hover { text-decoration: underline; }

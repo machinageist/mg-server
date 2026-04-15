@@ -1,56 +1,72 @@
-use std::sync::Arc;
-use std::num::NonZeroU32;
-use governor::{Quota, RateLimiter};
-use governor::clock::DefaultClock;
-use governor::state::{InMemoryState, NotKeyed};
-use governor::middleware::NoOpMiddleware;
-use axum::{
-    body::Body,
-    http::{Request, StatusCode},
-    middleware::Next,
-    response::Response,
-    extract::ConnectInfo,
-};
-
-// Arc = Atomically Reference Counted — a smart pointer for shared ownership.
-// Multiple async tasks can hold a clone of Arc<T> safely.
-// The reference count is updated atomically — no mutex needed for the pointer itself.
-// When the last Arc clone is dropped, the value is freed.
+// Author:      machinageist
+// Date:        2026-04
+// Description: Rate limiting middleware using a token bucket algorithm.
+//              build_limiter() constructs a governor RateLimiter allowing
+//              60 requests per minute. rate_limit() consumes one token per
+//              request and returns 429 Too Many Requests when the bucket empties.
+//              SharedRateLimiter wraps the limiter in Arc for safe sharing
+//              across concurrent async tasks without a mutex on the pointer.
 //
-// The rate limiter's internal state (token bucket) is synchronized by governor itself —
-// Arc just allows sharing the limiter across tasks without copying it.
+// Notes:       Token bucket — bucket holds 60 tokens, replenishes 1/sec.
+//              Allows short bursts up to 60 before throttling begins.
+//              This implementation is per-server-instance, not per-IP.
+//              Per-IP limiting requires extracting the client IP and keying
+//              the limiter on it — governor supports this via DashMap-backed
+//              state; see governor docs for the keyed limiter pattern.
+//
+//              Red team context: 429 is what a brute-force scanner sees when
+//              rate limiting fires. Tools like hydra and ffuf handle 429 by
+//              slowing down — the rate limiter forces the attack to take longer
+//              than a password list would otherwise require.
+
+use axum::body::Body;
+use axum::http::{Request, StatusCode};
+use axum::middleware::Next;
+use axum::response::Response;
+use governor::clock::DefaultClock;
+use governor::middleware::NoOpMiddleware;
+use governor::state::{InMemoryState, NotKeyed};
+use governor::{Quota, RateLimiter};
+use std::num::NonZeroU32;
+use std::sync::Arc;
+
+// -----------------------------------------------------------------------
+// Shared type alias — Arc allows cheap clone into each async task
+// -----------------------------------------------------------------------
+
+// Full type spelled out — NotKeyed = single bucket, InMemoryState = RAM storage
 pub type SharedRateLimiter = Arc<RateLimiter<NotKeyed, InMemoryState, DefaultClock, NoOpMiddleware>>;
 
+// -----------------------------------------------------------------------
+// Limiter construction — called once at startup in router::build()
+// -----------------------------------------------------------------------
+
+// Build token bucket allowing 60 requests per minute
 pub fn build_limiter() -> SharedRateLimiter {
-    // Token bucket algorithm:
-    // - Bucket starts full (60 tokens)
-    // - Each request consumes one token
-    // - Tokens replenish at the quota rate (1 per second for 60/min)
-    // - When the bucket is empty, requests are rejected with 429
-    // This allows short bursts (up to 60 requests) while enforcing the average rate.
+    // 60 requests per minute = replenish 1 token per second
     let quota = Quota::per_minute(NonZeroU32::new(60).unwrap());
     Arc::new(RateLimiter::direct(quota))
 }
 
+// -----------------------------------------------------------------------
+// Middleware function — check bucket before passing request to handler
+// -----------------------------------------------------------------------
+
+// Consume one token or return 429 if bucket is empty
 pub async fn rate_limit(
     limiter: SharedRateLimiter,
     request: Request<Body>,
     next: Next,
 ) -> Response<Body> {
     match limiter.check() {
-        Ok(_) => {
-            next.run(request).await
-        }
-        Err(__) => {
-            // 429 Too Many Requests — the standard HTTP status for rate limiting.
-            // Returning 429 instead of silently dropping tells legitimate clients
-            // to back off and retry later (many HTTP clients handle this automatically).
-            // Red team context: this is exactly what a scanner sees when rate limiting fires.
-            // A scanner that doesn't handle 429 will stall here.
+        // Token available — pass request through to next middleware or handler
+        Ok(_)  => next.run(request).await,
+        // Bucket empty — return 429 without reaching any handler
+        Err(_) => {
             tracing::warn!("rate limit exceeded");
             Response::builder()
                 .status(StatusCode::TOO_MANY_REQUESTS)
-                .body(Body::from("too  many requests"))
+                .body(Body::from("too many requests"))
                 .unwrap()
         }
     }

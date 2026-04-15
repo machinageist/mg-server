@@ -1,99 +1,98 @@
-use axum::{
-    body::Body,
-    http::{Request, Response},
-    middleware::Next,
-};
+// Author:      machinageist
+// Date:        2026-04
+// Description: Middleware that stamps defensive HTTP headers onto every outgoing
+//              response. Runs after the handler produces a response, before the
+//              bytes leave the server. One function covers all routes because it
+//              is applied at the router level, not per-handler.
+//              Removes the Server header to avoid advertising software version.
+//
+// Notes:       Middleware flow — request passes inward through layers to handler,
+//              response passes back outward. This function sits on the outbound
+//              path so it sees every response regardless of which handler produced it.
+//
+//              Header purposes (blue team / red team):
+//                CSP            — restricts script/style sources; defeats XSS injection
+//                                 even if an attacker finds an injection vector
+//                HSTS           — forces HTTPS in the browser; defeats SSL stripping
+//                nosniff        — prevents MIME sniffing; closes file-upload-as-script vector
+//                X-Frame-Options — prevents iframe embedding; defeats clickjacking
+//                Referrer-Policy — limits URL leakage to external sites on link click
+//                Permissions-Policy — denies camera/mic/geo to injected scripts
+//                Server removal — forces active fingerprinting instead of passive reading
 
-// Middleware function signature for Axum:
-//   request: the incoming HTTP request
-//   next: the rest of the middleware chain + the handler
-// Pattern: receive request → pass inward → get response back → modify → return
-// The request flows inward through middleware layers.
-// The response flows back outward through the same layers in reverse.
-pub async fn add_security_headers(
-    request: Request<Body>,
-    next: Next,
-) -> Response<Body> {
+use axum::body::Body;
+use axum::http::Request;
+use axum::middleware::Next;
+use axum::response::Response;
+
+// Add all security headers to the response, remove Server disclosure header
+pub async fn add_security_headers(request: Request<Body>, next: Next) -> Response<Body> {
+    // Pass request inward — waits for handler to produce a response
     let mut response = next.run(request).await;
+    let headers      = response.headers_mut();
 
-    let headers = response.headers_mut();
-
-    // Content-Security-Policy — the primary defense against XSS.
-    // 'self' means: only load resources from the same origin as the page.
-    // No CDN links, no external scripts, no inline event handlers.
-    // frame-ancestors 'none' is the CSP equivalent of X-Frame-Options: DENY.
-    // Red team context: a strict CSP makes XSS exploitation significantly harder —
-    // the attacker can inject a script tag but the browser refuses to execute it.    
+    // -----------------------------------------------------------------------
+    // Content-Security-Policy — restrict all resource loading to same origin
+    // -----------------------------------------------------------------------
+    // 'self' = only load from this domain — no CDNs, no inline scripts
+    // frame-ancestors 'none' = CSP equivalent of X-Frame-Options: DENY
     headers.insert(
         "content-security-policy",
-        "default-src 'self';        \
-        script-src 'self';          \
-        style-src 'self';           \
-        img-src 'self' data:;       \
-        font-src 'self';            \
-        connect-src 'self;          \
-        frame-ancestors 'none'"
-        .parse().unwrap(),
+        "default-src 'self'; \
+         script-src 'self'; \
+         style-src 'self'; \
+         img-src 'self' data:; \
+         font-src 'self'; \
+         connect-src 'self'; \
+         frame-ancestors 'none'"
+            .parse()
+            .unwrap(),
     );
 
-    // Strict-Transport-Security — tells the browser to always use HTTPS.
-    // max-age=31536000 = one year, in seconds.
-    // After the first visit, the browser enforces HTTPS itself without asking the server.
-    // This defeats SSL stripping attacks where an attacker intercepts HTTP traffic
-    // before it can be upgraded to HTTPS.
-    // Harmless without TLS — becomes active the moment a certificate is deployed.
+    // -----------------------------------------------------------------------
+    // Strict-Transport-Security — enforce HTTPS for one year
+    // -----------------------------------------------------------------------
+    // Browser caches this — subsequent visits upgrade to HTTPS before any request is sent
+    // includeSubDomains — applies to all subdomains as well
     headers.insert(
         "strict-transport-security",
-        "max-age=31536000; includeSubDomains"
-        .parse().unwrap(),
-    );
-    
-    // X-Content-Type-Options: nosniff — prevents MIME type sniffing.
-    // Browsers normally try to guess content type if the server's declaration
-    // seems wrong. An attacker can abuse this: upload a text file, the browser
-    // sniffs it as JavaScript and executes it.
-    // nosniff: trust the Content-Type header, never guess.
-    headers.insert(
-        "x-content-type-options",
-        "nosniff".parse().unwrap(),
+        "max-age=31536000; includeSubDomains".parse().unwrap(),
     );
 
-    // X-Frame-Options: DENY — prevents this page from loading in an iframe.
-    // Clickjacking attack: embed your site invisibly in an iframe on the attacker's page,
-    // trick users into clicking buttons they can't see (OAuth confirmations, payments).
-    // DENY means no framing at all — not even by the same origin.
-    headers.insert(
-        "x-frame-options",
-        "DENY".parse().unwrap(),
-    );
+    // -----------------------------------------------------------------------
+    // X-Content-Type-Options — disable MIME sniffing
+    // -----------------------------------------------------------------------
+    // Browser trusts declared Content-Type — never re-interprets a .txt as .js
+    headers.insert("x-content-type-options", "nosniff".parse().unwrap());
 
-    // Referrer-Policy — controls what URL is sent in the Referer header.
-    // strict-origin-when-cross-origin: sends full URL for same-origin requests,
-    // only the origin (no path) for cross-origin requests.
-    // Prevents leaking your URL structure (and any sensitive path parameters) to
-    // third-party sites when users click external links.
+    // -----------------------------------------------------------------------
+    // X-Frame-Options — prevent iframe embedding
+    // -----------------------------------------------------------------------
+    // DENY = no framing allowed from any origin including same origin
+    headers.insert("x-frame-options", "DENY".parse().unwrap());
+
+    // -----------------------------------------------------------------------
+    // Referrer-Policy — limit URL leakage on outbound links
+    // -----------------------------------------------------------------------
+    // Cross-origin: send only origin (no path). Same-origin: send full URL.
     headers.insert(
         "referrer-policy",
         "strict-origin-when-cross-origin".parse().unwrap(),
     );
 
-    // Permissions-Policy — explicitly disable browser features you don't use.
-    // Empty () means: deny this feature entirely, even to injected scripts.
-    // If an attacker injects code that tries to access the camera, the browser
-    // refuses because the policy was set by the server before any injection occurred.
+    // -----------------------------------------------------------------------
+    // Permissions-Policy — deny browser features this site does not use
+    // -----------------------------------------------------------------------
+    // Empty () = deny entirely — injected scripts cannot request these features
     headers.insert(
         "permissions-policy",
-        "cameras=(), microphone=(), geolocation=(), paymenrr=()"
-        .parse().unwrap(),
+        "camera=(), microphone=(), geolocation=(), payment=()"
+            .parse()
+            .unwrap(),
     );
 
-    // Remove the Server header — don't advertise what software you're running.
-    // Default behavior doesn't add one, but be explicit.
-    // Removing it forces attackers to do active fingerprinting rather than
-    // reading the version off your response headers.
+    // Remove Server header — do not advertise software name or version
     headers.remove("server");
 
     response
 }
-
-

@@ -1,1 +1,1 @@
-console.log("mg-server: JS laoded");
+console.log("mg-server: JS loaded");
