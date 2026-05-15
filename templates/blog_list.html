@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+  <h1>writing</h1>
+
+  <ul class="post-list">
+    {% for post in posts %}
+    <li class="post-item">
+      <span class="post-date">{{ post.date }}</span>
+      <a href="/blog/{{ post.slug }}">{{ post.title }}</a>
+      <p class="post-summary">{{ post.summary }}</p>
+    </li>
+  {% endfor %}
+  </ul>
+</section>
+{% endblock %}
+

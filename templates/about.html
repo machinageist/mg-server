@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+  <h1>about</h1>
+  <p class="bio">{{ bio }}</p>
+
+  <h2>currently building</h2>
+  <ul class="about-list">
+    <li><strong>GeistScope</strong> — 11-binary bug bounty toolchain in async Rust. Recon, crawling, fuzzing, AI-ranked attack surface, Ratatui TUI.</li>
+    <li><strong>mg-server</strong> — this site. Axum + Askama + Cloudflare Tunnel. Security hardened and self-tested with real attack tools.</li>
+  </ul>
+
+  <h2>skills</h2>
+  <ul class="about-list">
+    <li><strong>Languages:</strong> Rust, Python, C (reading and auditing)</li>
+    <li><strong>Offensive:</strong> subdomain enumeration, port scanning, web crawling, fuzzing, finding verification, passive security posture analysis</li>
+    <li><strong>Defensive:</strong> security headers, CORS policy, rate limiting, dependency auditing with cargo-audit, unsafe surface analysis with cargo-geiger</li>
+    <li><strong>Infrastructure:</strong> Proxmox, Ubuntu VMs, Caddy, Cloudflare Tunnel, systemd</li>
+    <li><strong>Tools:</strong> nmap, gobuster, Burp Suite, curl, Wireshark, cargo-audit</li>
+  </ul>
+
+  <h2>goals</h2>
+  <p>Self-employed in security consulting — offensive tooling, AI-assisted vulnerability research, and systems-level Rust engineering. Getting there through building: every tool in GeistScope is a demonstration of the skills, not just a description of them.</p>
+</section>
+{% endblock %}

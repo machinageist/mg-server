@@ -1,0 +1,24 @@
+# Rust build output
+/target/
+
+# Editor / OS
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Environment and secrets
+.env
+.env.*
+*.secret
+*.secrets
+secrets/
+secrets.toml
+config.local.toml
+
+# Claude Code local settings (project-specific permissions, not shared)
+.claude/settings.local.json

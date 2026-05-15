@@ -1,0 +1,11 @@
+<!-- extends tells Askana this template inheirits from base.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+  <!-- {{ name }} renders the  'name' field from Rust struct -->
+  <h1>{{ name }}</h1>
+  <p>security researcher. systems programmer. building in rust.</p>
+  <p class="hero-sub">building GeistScope — an automated bug bounty toolchain in Rust. writing about offensive tooling, systems security, and what the compiler teaches you.</p>
+</section>
+{% endblock %}

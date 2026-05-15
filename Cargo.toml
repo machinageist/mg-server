@@ -1,0 +1,55 @@
+[package]
+name    = "mg-server"
+version = "0.1.0"
+edition = "2024"
+
+# -----------------------------------------------------------------------
+# Web framework and async runtime
+# -----------------------------------------------------------------------
+[dependencies]
+axum     = "0.7"
+# features = ["full"] enables all Tokio components: thread pool, net, fs, timers
+tokio    = { version = "1", features = ["full"] }
+# "fs" = ServeDir static file serving  "trace" = TraceLayer request logging
+tower-http = { version = "0.5", features = ["fs", "trace"] }
+tower      = "0.4"
+
+# -----------------------------------------------------------------------
+# Templating — compiled at build time, no runtime engine to inject into
+# -----------------------------------------------------------------------
+askama      = "0.12"
+askama_axum = "0.4"
+
+# -----------------------------------------------------------------------
+# Content — markdown parsing and frontmatter extraction
+# -----------------------------------------------------------------------
+pulldown-cmark = "0.10"
+gray_matter    = "0.2"
+
+# -----------------------------------------------------------------------
+# Data and serialization
+# -----------------------------------------------------------------------
+# features = ["serde"] enables Serialize/Deserialize on date types (Phase 3 JSON API)
+chrono = { version = "0.4", features = ["serde"] }
+# features = ["derive"] enables #[derive(Serialize, Deserialize)] on structs
+serde  = { version = "1", features = ["derive"] }
+
+# -----------------------------------------------------------------------
+# Error handling and logging
+# -----------------------------------------------------------------------
+thiserror = "1"
+tracing   = "0.1"
+# "env-filter" = RUST_LOG variable support  "fmt" = formatted console output
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+
+# -----------------------------------------------------------------------
+# Rate limiting
+# -----------------------------------------------------------------------
+governor      = "0.6"
+axum-client-ip = "0.5"
+
+# -----------------------------------------------------------------------
+# Phase 3 — uncomment when decomposing into raw Hyper + JSON API
+# -----------------------------------------------------------------------
+# hyper        = { version = "1", features = ["full"] }
+# serde_json   = "1"
