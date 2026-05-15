@@ -25,7 +25,7 @@ falls back to local Ollama.
 
 ```bash
 ai-prioritize acme-bounty
-ai-prioritize acme-bounty --model claude-sonnet-4-6 --ollama-model llama3.2
+ai-prioritize acme-bounty --model sonnet-4-6 --ollama-model llama3.2
 ```
 
 ## Notes

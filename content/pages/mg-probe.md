@@ -39,7 +39,7 @@ mg-probe acme-bounty --active --rate-ms 200 --max-requests 200
 
 - Session-aware: reads env-var-backed headers from `session.json` when
   configured.
-- Two-session IDOR diff, subdomain takeover, and OOB-driven SSRF remain
-  open in `HANDOFF.md` §4.
+- Two-session IDOR diff, subdomain takeover, and OOB-driven SSRF are not yet
+  implemented.
 - Picks nonstandard ports from `recon/summary.json` so internal-test targets
   (e.g. localhost:8080) are still probeable.

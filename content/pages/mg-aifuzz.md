@@ -2,15 +2,13 @@
 title: "mg-aifuzz"
 date: 2026-05-15
 summary: "Adversarial prompt-injection fuzzer for LLM-backed HTTP endpoints. Curated 5-category payload corpus, scope-checked dispatch, regex success-signal rubric, JSONL output."
-tags: [geistscope, cli, ai, prompt-injection, fuzz, phase-2]
+tags: [geistscope, cli, ai, prompt-injection, fuzz]
 ---
 
 ## Purpose
 
-`mg-aifuzz` is `HANDOFF.md` §14 S3 — Cyberpunk wishlist item #11, the
-"adversarial ML prompt-injection lab". It fuzzes an LLM-backed HTTP
-endpoint with a curated prompt-injection corpus and grades responses
-against a regex rubric.
+`mg-aifuzz` fuzzes LLM-backed HTTP endpoints with a curated prompt-injection
+corpus and grades responses against a regex rubric.
 
 ## Categories
 

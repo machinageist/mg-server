@@ -161,7 +161,7 @@ accessibility status. An AI reading that file has everything it needs to suggest
 what to look at first.
 
 `priorities.md` is what `ai-prioritize` produces after sending that summary to
-Claude or a local Ollama model alongside 18 bug-hunting skill files. It comes
+an AI model or a local Ollama model alongside 18 bug-hunting skill files. It comes
 back with a ranked table of attack surface, highest payout × exploitability first.
 No API call from the AI operator to the toolchain — it reads a file.
 

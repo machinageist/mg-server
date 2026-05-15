@@ -2,16 +2,14 @@
 title: "mg-recopilot"
 date: 2026-05-15
 summary: "Reverse-engineering copilot: reads decompiled pseudocode and writes a structured analysis (Function Purpose, Variable Map, Control Flow Notes, Suspicious Logic, Exploit Primitives, Next Steps)."
-tags: [geistscope, cli, reverse-engineering, ai, phase-2]
+tags: [geistscope, cli, reverse-engineering, ai]
 ---
 
 ## Purpose
 
-`mg-recopilot` is the first Phase-2 (Cyberpunk wishlist) crate from
-`HANDOFF.md` §14 S2 — item #08, the "binary RE copilot". The operator
-drops decompiled pseudocode from Ghidra, Binary Ninja, IDA, or radare2
-into the engagement workspace and the tool produces a structured Markdown
-+ JSON analysis pair.
+`mg-recopilot` is a binary reverse-engineering copilot. Drop decompiled pseudocode
+from Ghidra, Binary Ninja, IDA, or radare2 into the engagement workspace and the
+tool produces a structured Markdown + JSON analysis pair.
 
 ## Inputs
 

@@ -206,7 +206,7 @@ Every tool writes structured output that a human or an AI can read directly.
 The audit log, findings, priorities — all of it is plain text and JSON.
 Nothing requires a custom API or special client to consume.
 
-When I run a full engagement and want Claude to help me dig into specific findings,
+When I run a full engagement and want an AI to help me dig into specific findings,
 I don't need to build a bridge between the toolchain and the AI.
 I just read the files.
 

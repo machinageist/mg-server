@@ -118,17 +118,12 @@ mg-report disclose acme-bounty 20260514-probe-001 \
     --vendor "Acme Corp" --contact security@acme.example
 ```
 
-## Phase 2 — Cyberpunk wishlist
+## Additional tools
 
-The first slice of the `CYBERPUNK_WISHLIST.md` Tier-S items has landed:
-
-- [mg-recopilot](/wiki/mg-recopilot) — decompiled-pseudocode RE copilot.
-- [mg-aifuzz](/wiki/mg-aifuzz) — adversarial prompt-injection fuzzer.
+- [mg-recopilot](/wiki/mg-recopilot) — reverse-engineering copilot for decompiled pseudocode.
+- [mg-aifuzz](/wiki/mg-aifuzz) — adversarial prompt-injection fuzzer for LLM-backed endpoints.
 - [mg-exploitgen](/wiki/mg-exploitgen) — CVE-driven exploit project scaffold.
-- [mg-report disclose](/wiki/mg-report) — CVE writeup and responsible-disclosure
-  email pair.
-
-The remaining Tier-A and Tier-B items are tracked in `HANDOFF.md` §14.
+- [mg-report disclose](/wiki/mg-report) — CVE writeup and responsible-disclosure email pair.
 
 ## Build and install
 
@@ -153,4 +148,3 @@ The source repo carries the docs that govern implementation:
 - `docs/BUG_HUNTING_METHODOLOGY.md`
 - `docs/AI_TOOL_ENDPOINTS.md`
 - `docs/FEATURE_ROADMAP.md`
-- `HANDOFF.md` (§14 Phase 2 roadmap)
