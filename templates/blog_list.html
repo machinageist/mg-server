@@ -2,7 +2,11 @@
 
 {% block content %}
 <section>
-  <h1>writing</h1>
+  <h1>Writing</h1>
+  <p class="section-intro">
+    Implementation notes on Rust, systems programming, security tooling,
+    and the infrastructure behind the work.
+  </p>
 
   <ul class="post-list">
     {% for post in posts %}
@@ -11,8 +15,7 @@
       <a href="/blog/{{ post.slug }}">{{ post.title }}</a>
       <p class="post-summary">{{ post.summary }}</p>
     </li>
-  {% endfor %}
+    {% endfor %}
   </ul>
 </section>
 {% endblock %}
-

@@ -66,7 +66,15 @@ struct Error404Template;
 
 impl Error404Template {
     // Return page title for base.html <title> tag
-    pub fn title(&self) -> &str { "404" }
+    pub fn title(&self) -> &str {
+        "404"
+    }
+    pub fn description(&self) -> &str {
+        "The requested page could not be found."
+    }
+    pub fn section(&self) -> &str {
+        "error"
+    }
 }
 
 #[derive(Template)]
@@ -75,7 +83,15 @@ struct Error500Template;
 
 impl Error500Template {
     // Return page title for base.html <title> tag
-    pub fn title(&self) -> &str { "500" }
+    pub fn title(&self) -> &str {
+        "500"
+    }
+    pub fn description(&self) -> &str {
+        "The server could not complete the request."
+    }
+    pub fn section(&self) -> &str {
+        "error"
+    }
 }
 
 // -----------------------------------------------------------------------
@@ -91,7 +107,7 @@ impl IntoResponse for SiteError {
                 // Render template or fall back to plain text if template itself fails
                 match Error404Template.render() {
                     Ok(html) => (StatusCode::NOT_FOUND, Html(html)).into_response(),
-                    Err(_)   => (StatusCode::NOT_FOUND, "404 not found").into_response(),
+                    Err(_) => (StatusCode::NOT_FOUND, "404 not found").into_response(),
                 }
             }
             // Log full internal error, return generic 500 — no internals exposed to user
@@ -99,7 +115,11 @@ impl IntoResponse for SiteError {
                 error!(error = %other, "500 internal server error");
                 match Error500Template.render() {
                     Ok(html) => (StatusCode::INTERNAL_SERVER_ERROR, Html(html)).into_response(),
-                    Err(_)   => (StatusCode::INTERNAL_SERVER_ERROR, "500 internal server error").into_response(),
+                    Err(_) => (
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        "500 internal server error",
+                    )
+                        .into_response(),
                 }
             }
         }

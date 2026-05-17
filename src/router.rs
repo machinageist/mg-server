@@ -18,7 +18,7 @@ use axum::{Router, routing::get};
 use axum::middleware as mw;
 use tower_http::services::ServeDir;
 use tower_http::trace::TraceLayer;
-use crate::handlers::{pages, blog, wiki};
+use crate::handlers::{pages, blog, wiki, well_known, releases};
 use crate::middleware::security_headers::add_security_headers;
 use crate::middleware::rate_limit::{rate_limit, build_limiter};
 
@@ -42,6 +42,9 @@ pub fn build() -> Router {
 
         // Capture :slug as a single path segment, passed to handler as Path<String>
         .route("/blog/:slug",  get(blog::post))
+        .route("/releases",    get(releases::list))
+        // RFC 9116 security disclosure contact
+        .route("/.well-known/security.txt", get(well_known::security_txt))
         // Map /static/* URL prefix to ./static/ directory on disk
         .nest_service("/static", ServeDir::new("static"))
 

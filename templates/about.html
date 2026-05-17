@@ -2,25 +2,37 @@
 
 {% block content %}
 <section>
-  <h1>about</h1>
+  <h1>About</h1>
   <p class="bio">{{ bio }}</p>
 
-  <h2>currently building</h2>
+  <h2>Currently building</h2>
   <ul class="about-list">
-    <li><strong>GeistScope</strong> — 11-binary bug bounty toolchain in async Rust. Recon, crawling, fuzzing, AI-ranked attack surface, Ratatui TUI.</li>
-    <li><strong>mg-server</strong> — this site. Axum + Askama + Cloudflare Tunnel. Security hardened and self-tested with real attack tools.</li>
+    <li>
+      <strong>GeistScope</strong> &mdash;
+      Automated offensive security toolchain in async Rust. Recon, crawling, fuzzing,
+      AI-ranked attack surface analysis, and a Ratatui terminal dashboard.
+      Eleven binaries covering the full recon-to-verification pipeline.
+    </li>
+    <li>
+      <strong>mg-server</strong> &mdash;
+      This site. Axum routing, Askama compile-time templates, flat-file Markdown
+      blog, security headers middleware. Deployed behind Caddy and Cloudflare
+      with no open inbound ports.
+    </li>
   </ul>
 
-  <h2>skills</h2>
+  <h2>Technical range</h2>
   <ul class="about-list">
-    <li><strong>Languages:</strong> Rust, Python, C (reading and auditing)</li>
-    <li><strong>Offensive:</strong> subdomain enumeration, port scanning, web crawling, fuzzing, finding verification, passive security posture analysis</li>
-    <li><strong>Defensive:</strong> security headers, CORS policy, rate limiting, dependency auditing with cargo-audit, unsafe surface analysis with cargo-geiger</li>
-    <li><strong>Infrastructure:</strong> Proxmox, Ubuntu VMs, Caddy, Cloudflare Tunnel, systemd</li>
-    <li><strong>Tools:</strong> nmap, gobuster, Burp Suite, curl, Wireshark, cargo-audit</li>
+    <li><strong>Languages:</strong> Rust, C (reading and auditing), Python</li>
+    <li><strong>Security:</strong> Subdomain enumeration, port scanning, web crawling, payload fuzzing, finding verification, passive posture analysis, security headers, CORS policy, rate limiting</li>
+    <li><strong>Infrastructure:</strong> Proxmox, Ubuntu VMs, Caddy, Cloudflare Tunnel, systemd, cargo-audit, cargo-geiger</li>
   </ul>
 
-  <h2>goals</h2>
-  <p>Self-employed in security consulting — offensive tooling, AI-assisted vulnerability research, and systems-level Rust engineering. Getting there through building: every tool in GeistScope is a demonstration of the skills, not just a description of them.</p>
+  <h2>Approach</h2>
+  <p>
+    Building the tools first, then using them. Every binary in GeistScope does real
+    work &mdash; the gaps show up in the implementation, not in a list of planned
+    features. Writing about what I learn on <a href="/blog">the blog</a>.
+  </p>
 </section>
 {% endblock %}

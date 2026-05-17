@@ -13,9 +13,9 @@
 //              title() is called by {{ self.title() }} in base.html to set
 //              the per-page <title> tag without repeating the base layout.
 
+use crate::models::project::{self, Project};
 use askama::Template;
 use askama_axum::IntoResponse;
-use crate::models::project::{self, Project};
 
 // -----------------------------------------------------------------------
 // Home page — index.html
@@ -29,7 +29,15 @@ pub struct IndexTemplate {
 
 impl IndexTemplate {
     // Supply page title to base.html <title> slot
-    pub fn title(&self) -> &str { "home" }
+    pub fn title(&self) -> &str {
+        "machinageist"
+    }
+    pub fn description(&self) -> &str {
+        "Systems programmer and security engineer building Rust security tooling, technical writing, and the machinageist.dev server."
+    }
+    pub fn section(&self) -> &str {
+        "home"
+    }
 }
 
 // Render home page with owner name injected into hero section
@@ -51,23 +59,25 @@ pub struct AboutTemplate {
 
 impl AboutTemplate {
     // Supply page title to base.html <title> slot
-    pub fn title(&self) -> &str { "about" }
+    pub fn title(&self) -> &str {
+        "About — machinageist"
+    }
+    pub fn description(&self) -> &str {
+        "About Jeff Cincoski, a systems programmer and security engineer focused on Rust, offensive security tooling, and infrastructure."
+    }
+    pub fn section(&self) -> &str {
+        "about"
+    }
 }
 
 // Render about page with bio text
 pub async fn about() -> impl IntoResponse {
     AboutTemplate {
-        bio: "Transitioning into security engineering with a focus on offensive tooling \
-              and systems programming. Currently building GeistScope — an 11-binary bug bounty \
-              toolchain written in async Rust: subdomain enumeration, port scanning, HTTP \
-              fingerprinting, BFS crawling, security posture checking, payload fuzzing, and \
-              finding verification. The toolchain is designed for AI co-operation: every tool \
-              writes to a shared file layout that an AI operator can read directly with no \
-              custom IPC. Previously: built mg-server, the Rust web server you're looking at, \
-              from scratch — Axum routing, Askama compile-time templates, flat-file Markdown \
-              blog, security headers middleware, and a rate limiter verified with real attack \
-              tools. Long-term goal: self-employed security consultancy combining offensive \
-              tooling, AI-assisted vulnerability research, and systems-level Rust engineering.".to_string(),
+        bio: "Systems programmer and security engineer. I build tools in Rust — an offensive \
+              security toolchain, the server you're reading this on, and production software \
+              for real clients. I came to web security from C and x86 assembly, which shapes \
+              how I think about trust boundaries and failure modes. Based in Portland, OR."
+            .to_string(),
     }
 }
 
@@ -84,7 +94,15 @@ pub struct PortfolioTemplate {
 
 impl PortfolioTemplate {
     // Supply page title to base.html <title> slot
-    pub fn title(&self) -> &str { "portfolio" }
+    pub fn title(&self) -> &str {
+        "Portfolio — machinageist"
+    }
+    pub fn description(&self) -> &str {
+        "Selected Rust security tooling, systems programming projects, and infrastructure work by machinageist."
+    }
+    pub fn section(&self) -> &str {
+        "portfolio"
+    }
 }
 
 // Load project list from models and render portfolio page

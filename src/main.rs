@@ -21,7 +21,7 @@ mod models;
 mod errors;
 mod middleware;
 
-use std::net::SocketAddr;
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
 // Wrap main() in the Tokio async runtime — required for async/await to work
 // Tokio provides the thread pool and task scheduler Rust does not ship built-in
@@ -39,8 +39,14 @@ async fn main() {
     // Build the complete application — routes, static files, middleware all wired inside
     let app = router::build();
 
-    // Bind to all interfaces on port 3000
-    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
+    // Resolve bind address — default is 127.0.0.1 so only Caddy (same host) can reach us.
+    // MG_BIND_ADDR overrides for local dev when binding 0.0.0.0 is needed.
+    // Defaulting to loopback closes the LAN-side bypass of Caddy and the Cloudflare Tunnel.
+    let host: IpAddr = std::env::var("MG_BIND_ADDR")
+        .ok()
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(IpAddr::V4(Ipv4Addr::LOCALHOST));
+    let addr = SocketAddr::from((host, 3000));
     tracing::info!("server starting on http://{}", addr);
 
     // Open the TCP socket — equivalent to socket() + bind() + listen() in C

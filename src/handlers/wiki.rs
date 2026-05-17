@@ -72,7 +72,7 @@ const SIDEBAR: &[SidebarSection] = &[
         ],
     },
     SidebarSection {
-        heading: "Phase 2 — Cyberpunk",
+        heading: "Analysis & Exploit Dev",
         entries: &[
             SidebarEntry { slug: "mg-recopilot", label: "mg-recopilot" },
             SidebarEntry { slug: "mg-aifuzz", label: "mg-aifuzz" },
@@ -98,6 +98,14 @@ pub struct WikiPageTemplate {
 impl WikiPageTemplate {
     pub fn title(&self) -> &str {
         &self.page.title
+    }
+
+    pub fn description(&self) -> &str {
+        &self.page.summary
+    }
+
+    pub fn section(&self) -> &str {
+        "wiki"
     }
 }
 

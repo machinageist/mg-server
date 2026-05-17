@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+  <h1>Releases</h1>
+  <p class="section-intro">
+    GeistScope source tarballs and compiled binaries.
+    Verify checksums before running anything.
+  </p>
+
+  {% if artifacts.is_empty() %}
+    <p class="releases-empty">No releases posted yet.</p>
+  {% else %}
+    <ul class="releases-list">
+      {% for artifact in artifacts %}
+      <li class="release-item">
+        <div class="release-header">
+          <span class="release-filename">{{ artifact.filename }}</span>
+          <a class="release-download" href="{{ artifact.url }}" download="{{ artifact.filename }}">download</a>
+        </div>
+        <div class="release-meta">
+          <span>{{ artifact.size_human }}</span>
+          <span class="release-sha">sha256:&#x20;{{ artifact.sha256 }}</span>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</section>
+{% endblock %}

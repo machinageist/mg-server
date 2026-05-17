@@ -2,38 +2,32 @@
 
 {% block content %}
 <section>
-  <h1>portfolio</h1>
+  <h1>Portfolio</h1>
   <p class="section-intro">
-    offensive security tooling, systems programming, and the infrastructure that runs this site
+    Security tooling, systems programming, and the infrastructure that runs this site.
+    The emphasis is on tools that produce useful artifacts, not screenshots of planned features.
   </p>
-  <br>
+
   <ul class="project-list">
     {% for project in projects %}
       <li class="project-card">
         <div class="project-header">
           <span class="project-name">
             {% if let Some(url) = project.url %}
-              <a href="{{ url }}" target="_blank" rel="noopener noreferrer">
-                {{ project.name }}
-              </a>
+              <a href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ project.name }}</a>
             {% else %}
               {{ project.name }}
             {% endif %}
-            </span>
-            <span class="project-statis status-{{ project.status }}">
-              {{ project.status }}
-            </span>
+          </span>
+          <span class="project-status status-{{ project.status_class() }}">{{ project.status }}</span>
         </div>
-
-        <p class="project-description">{{ project.description }} </p>
-
+        <p class="project-description">{{ project.description }}</p>
         <div class="project-tags">
           {% for tag in project.tags %}
             <span class="tag">{{ tag }}</span>
           {% endfor %}
         </div>
       </li>
-      <br>
     {% endfor %}
   </ul>
 </section>

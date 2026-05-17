@@ -1,11 +1,30 @@
-<!-- extends tells Askana this template inheirits from base.html -->
 {% extends "base.html" %}
 
 {% block content %}
 <section class="hero">
-  <!-- {{ name }} renders the  'name' field from Rust struct -->
   <h1>{{ name }}</h1>
-  <p>security researcher. systems programmer. building in rust.</p>
-  <p class="hero-sub">building GeistScope — an automated bug bounty toolchain in Rust. writing about offensive tooling, systems security, and what the compiler teaches you.</p>
+  <p class="hero-lede">
+    Systems programmer and security engineer. Building in Rust — security tooling,
+    production servers, and research that ends up in the code or the writing.
+  </p>
+  <nav class="hero-actions" aria-label="Quick navigation">
+    <a href="/portfolio">Portfolio</a>
+    <a href="/blog">Writing</a>
+    <a href="/wiki">Tool wiki</a>
+  </nav>
+</section>
+
+<hr>
+
+<section aria-label="Current work">
+  <h2>Currently building</h2>
+  <p>
+    <strong style="color: #c8c8c8;">GeistScope</strong> &mdash;
+    An automated offensive security toolchain in async Rust. Subdomain enumeration,
+    port scanning, HTTP fingerprinting, BFS crawling, payload fuzzing, finding
+    verification, and an LLM-ranked attack surface view. Eleven binaries sharing
+    a common file layout so an AI operator can read the state of an engagement
+    with no custom IPC.
+  </p>
 </section>
 {% endblock %}

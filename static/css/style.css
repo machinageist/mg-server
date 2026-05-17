@@ -1,5 +1,5 @@
 /* -----------------------------------------------------------------------
-   Reset — normalize browser defaults before applying custom styles
+   Reset
    ----------------------------------------------------------------------- */
 
 *, *::before, *::after {
@@ -9,49 +9,85 @@
 }
 
 /* -----------------------------------------------------------------------
-   Base — dark theme, monospace type, full-height flex column
+   Base — Dracula palette, monospace throughout
    ----------------------------------------------------------------------- */
 
 body {
-    font-family: monospace;
-    background:  #0a0a0a;
-    color:       #e0e0e0;
-    min-height:  100vh;
-    display:     flex;
+    font-family:  ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background:   #282a36;
+    color:        #f8f8f2;
+    min-height:   100vh;
+    display:      flex;
     flex-direction: column;
+    font-size:    15px;
+    line-height:  1.7;
 }
+
+a {
+    color:               #bd93f9;
+    text-underline-offset: 0.2em;
+}
+
+a:hover { color: #cba5ff; }
+
+.skip-link {
+    position: absolute;
+    left:     -9999px;
+    top:      0;
+}
+.skip-link:focus { left: 1rem; }
 
 /* -----------------------------------------------------------------------
    Header and navigation
    ----------------------------------------------------------------------- */
 
-header {
-    padding:       1.5rem 2rem;
-    border-bottom: 1px solid #222;
+.site-header {
+    padding:       1.25rem 2rem;
+    border-bottom: 1px solid #44475a;
 }
 
-nav {
+.site-nav {
+    display:         flex;
+    align-items:     baseline;
+    justify-content: space-between;
+    gap:             2rem;
+    max-width:       900px;
+    margin:          0 auto;
+}
+
+.brand {
+    color:           #bd93f9;
+    font-weight:     700;
+    font-size:       1rem;
+    text-decoration: none;
+    letter-spacing:  0.02em;
+    flex-shrink:     0;
+}
+
+.brand:hover { color: #cba5ff; }
+
+.nav-links {
     display: flex;
     gap:     2rem;
 }
 
-nav a {
-    color:           #888;
+.nav-link {
+    color:           #6272a4;
+    font-size:       0.875rem;
     text-decoration: none;
-    font-size:       0.9rem;
-    letter-spacing:  0.05em;
 }
 
-nav a:hover { color: #00ff88; }
+.nav-link:hover     { color: #f8f8f2; }
+.nav-link.is-active { color: #bd93f9; }
 
 /* -----------------------------------------------------------------------
-   Main content area — centered, constrained width, grows to fill viewport
+   Main content
    ----------------------------------------------------------------------- */
 
 main {
     flex:       1;
-    padding:    4rem 2rem;
-    max-width:  860px;
+    padding:    3.5rem 2rem 5rem;
+    max-width:  900px;
     margin:     0 auto;
     width:      100%;
 }
@@ -65,242 +101,423 @@ main:has(.wiki-layout) {
    ----------------------------------------------------------------------- */
 
 h1 {
-    color:         #8800ff;
-    font-size:     2.5rem;
-    margin-bottom: 1rem;
+    color:         #f8f8f2;
+    font-size:     1.6rem;
+    font-weight:   700;
+    line-height:   1.25;
+    margin-bottom: 0.75rem;
 }
 
-p {
-    color:       #888;
-    line-height: 1.6;
+h2 {
+    color:          #bd93f9;
+    font-size:      0.85rem;
+    font-weight:    700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin:         2.5rem 0 1rem;
+}
+
+h3 {
+    color:         #f8f8f2;
+    font-size:     0.95rem;
+    font-weight:   700;
+    margin-bottom: 0.35rem;
+}
+
+p { color: #6272a4; }
+
+hr {
+    border:     none;
+    border-top: 1px solid #44475a;
+    margin:     2rem 0;
 }
 
 /* -----------------------------------------------------------------------
    Footer
    ----------------------------------------------------------------------- */
 
-footer {
-    padding:      1.5rem 2rem;
-    border-top:   1px solid #222;
-    color:        #444;
-    font-size:    0.8rem;
+.site-footer {
+    padding:    1.5rem 2rem;
+    border-top: 1px solid #44475a;
+    color:      #44475a;
+    font-size:  0.8rem;
+}
+
+.footer-inner {
+    max-width: 900px;
+    margin:    0 auto;
+    display:   flex;
+    gap:       2rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer-inner a {
+    color:           #44475a;
+    text-decoration: none;
+}
+.footer-inner a:hover { color: #6272a4; }
+
+/* -----------------------------------------------------------------------
+   Hero — index page
+   ----------------------------------------------------------------------- */
+
+.hero {
+    margin-bottom: 4rem;
+}
+
+.hero h1 {
+    color:     #bd93f9;
+    font-size: 1.75rem;
+}
+
+.hero-lede {
+    color:      #6272a4;
+    margin-top: 0.75rem;
+    max-width:  55ch;
+    font-size:  0.9rem;
+}
+
+.hero-actions {
+    display:    flex;
+    gap:        1.5rem;
+    margin-top: 1.75rem;
+    font-size:  0.875rem;
+}
+
+.hero-actions a {
+    color:           #bd93f9;
+    text-decoration: none;
+}
+.hero-actions a:hover  { color: #cba5ff; }
+.hero-actions a::before { content: "→ "; }
+
+/* -----------------------------------------------------------------------
+   About page
+   ----------------------------------------------------------------------- */
+
+.bio {
+    color:         #6272a4;
+    max-width:     65ch;
+    margin-bottom: 0.5rem;
+}
+
+.about-list {
+    list-style: none;
+}
+
+.about-list li {
+    color:         #6272a4;
+    font-size:     0.875rem;
+    padding:       0.5rem 0;
+    border-bottom: 1px solid #383a47;
+}
+
+.about-list li:last-child { border-bottom: none; }
+
+.about-list strong {
+    color: #f8f8f2;
 }
 
 /* -----------------------------------------------------------------------
-   Blog list — post index page
+   Blog list
    ----------------------------------------------------------------------- */
 
 .post-list {
     list-style:     none;
     display:        flex;
     flex-direction: column;
-    gap:            2.5rem;
-    margin-top:     2rem;
+    gap:            0;
+    margin-top:     1.5rem;
 }
+
+.post-item {
+    padding:       1.25rem 0;
+    border-bottom: 1px solid #383a47;
+}
+
+.post-item:first-child { border-top: 1px solid #383a47; }
 
 .post-item a {
-    color:           #e0e0e0;
+    color:           #f8f8f2;
     text-decoration: none;
-    font-size:       1.1rem;
+    font-size:       0.95rem;
 }
 
-.post-item a:hover { color: #8800ff; }
+.post-item a:hover { color: #bd93f9; }
 
 .post-date {
     display:       block;
-    color:         #444;
-    font-size:     0.8rem;
-    margin-bottom: 0.3rem;
+    color:         #44475a;
+    font-size:     0.78rem;
+    margin-bottom: 0.25rem;
 }
 
 .post-summary {
-    margin-top: 0.4rem;
-    color:      #666;
-    font-size:  0.9rem;
+    margin-top: 0.35rem;
+    color:      #44475a;
+    font-size:  0.85rem;
 }
 
 /* -----------------------------------------------------------------------
-   Blog post — single post view
+   Blog post / article
    ----------------------------------------------------------------------- */
 
+.back-link {
+    display:         block;
+    color:           #6272a4;
+    text-decoration: none;
+    font-size:       0.8rem;
+    margin-bottom:   2rem;
+}
+
+.back-link:hover  { color: #f8f8f2; }
+.back-link::before { content: "← "; }
+
 .post-header {
-    margin-bottom:  3rem;
+    margin-bottom:  2.5rem;
     padding-bottom: 1.5rem;
-    border-bottom:  1px solid #222;
+    border-bottom:  1px solid #44475a;
+}
+
+.post-header h1 {
+    color: #f8f8f2;
 }
 
 .post-meta {
-    display:     flex;
-    gap:         1rem;
-    align-items: center;
-    margin-top:  0.75rem;
+    display:    flex;
+    gap:        1rem;
+    margin-top: 0.6rem;
+    color:      #44475a;
+    font-size:  0.8rem;
 }
 
 .post-tags {
     display: flex;
-    gap:     0.5rem;
+    gap:     0.4rem;
 }
 
-/* Shared tag pill — used in post meta and project cards */
 .tag {
-    background: #111;
-    border:     1px solid #333;
-    color:      #888;
-    padding:    0.1rem 0.5rem;
-    font-size:  0.75rem;
+    background: #21222c;
+    border:     1px solid #44475a;
+    color:      #6272a4;
+    padding:    0.05rem 0.4rem;
+    font-size:  0.72rem;
 }
-
-/* -----------------------------------------------------------------------
-   Post content — rendered Markdown typography
-   ----------------------------------------------------------------------- */
 
 .post-content h2 {
-    color:     #8800ff;
-    margin:    2rem 0 1rem;
-    font-size: 1.3rem;
+    color:          #bd93f9;
+    font-size:      1rem;
+    text-transform: none;
+    letter-spacing: 0;
+    margin:         2rem 0 0.75rem;
 }
 
 .post-content p {
-    margin-bottom: 1.2rem;
-    line-height:   1.7;
-    color:         #ccc;
+    margin-bottom: 1.1rem;
+    color:         #6272a4;
+    line-height:   1.75;
 }
 
+.post-content a { color: #bd93f9; }
+
 .post-content code {
-    background: #111;
-    border:     1px solid #222;
+    background: #21222c;
+    border:     1px solid #44475a;
     padding:    0.1em 0.4em;
     font-size:  0.9em;
-    color:      #00ff88;
+    color:      #50fa7b;
 }
 
 .post-content pre {
-    background: #0d0d0d;
-    border:     1px solid #222;
-    padding:    1.2rem;
+    background: #21222c;
+    border:     1px solid #44475a;
+    padding:    1.25rem;
     overflow-x: auto;
     margin:     1.5rem 0;
 }
 
-/* Reset inline code styles inside a pre block */
 .post-content pre code {
     border:     none;
     padding:    0;
     background: none;
 }
 
+.post-content ul,
+.post-content ol {
+    color:         #6272a4;
+    padding-left:  1.5rem;
+    margin-bottom: 1.1rem;
+}
+
+.post-content li { margin-bottom: 0.35rem; }
+
+.post-content blockquote {
+    border-left:  2px solid #44475a;
+    padding-left: 1rem;
+    color:        #44475a;
+    margin:       1.5rem 0;
+}
+
 /* -----------------------------------------------------------------------
-   Portfolio — project card list
+   Portfolio
    ----------------------------------------------------------------------- */
 
 .section-intro {
-    color:         #666;
-    margin-bottom: 2.5rem;
-    font-size:     0.95rem;
+    color:         #6272a4;
+    font-size:     0.875rem;
+    margin-bottom: 2rem;
+    max-width:     65ch;
 }
 
 .project-list {
-    list-style:     none;
-    display:        flex;
-    flex-direction: column;
-    gap:            1.5rem;
+    list-style: none;
 }
 
 .project-card {
-    border:     1px solid #1a1a1a;
-    padding:    1.5rem;
-    background: #0d0d0d;
+    padding:       2rem 0;
+    border-bottom: 1px solid #383a47;
 }
 
-.project-card:hover { border-color: #333; }
+.project-card:first-child { border-top: 1px solid #383a47; }
 
 .project-header {
     display:         flex;
     justify-content: space-between;
     align-items:     baseline;
-    margin-bottom:   0.75rem;
+    margin-bottom:   0.6rem;
+    gap:             1rem;
 }
 
-.project-name { color: #e0e0e0; }
+.project-name {
+    color:       #f8f8f2;
+    font-weight: 700;
+    font-size:   0.95rem;
+}
 
 .project-name a {
-    color:           #e0e0e0;
+    color:           #f8f8f2;
     text-decoration: none;
 }
 
-.project-name a:hover { color: #00ff88; }
+.project-name a:hover { color: #bd93f9; }
 
 .project-description {
-    color:         #666;
-    font-size:     0.875rem;
-    line-height:   1.6;
-    margin-bottom: 1rem;
+    color:         #6272a4;
+    font-size:     0.85rem;
+    line-height:   1.7;
+    margin-bottom: 0.85rem;
+    max-width:     72ch;
 }
 
 .project-tags {
     display:   flex;
-    gap:       0.5rem;
+    gap:       0.4rem;
     flex-wrap: wrap;
 }
 
-/* -----------------------------------------------------------------------
-   Project status badges — color coded by ProjectStatus Display value
-   ----------------------------------------------------------------------- */
-
 .project-status {
-    font-size: 0.75rem;
-    padding:   0.15rem 0.5rem;
-    border:    1px solid;
+    font-size:   0.72rem;
+    padding:     0.1rem 0.4rem;
+    border:      1px solid;
+    flex-shrink: 0;
 }
 
-.status-active      { color: #8800ff; border-color: #8800ff44; }
-.status-in\ progress { color: #ff00aa; border-color: #ff00aa44; }
-.status-complete    { color: #888;    border-color: #333; }
+.status-active      { color: #bd93f9; border-color: #bd93f944; }
+.status-in-progress { color: #f8f8f2; border-color: #44475a; }
+.status-complete    { color: #44475a; border-color: #383a47; }
 
 /* -----------------------------------------------------------------------
-   Error pages — 404 and 500
+   Releases
+   ----------------------------------------------------------------------- */
+
+.releases-empty {
+    color:      #6272a4;
+    margin-top: 1.5rem;
+}
+
+.releases-list {
+    list-style: none;
+}
+
+.release-item {
+    padding:       1.5rem 0;
+    border-bottom: 1px solid #383a47;
+}
+
+.release-item:first-child { border-top: 1px solid #383a47; }
+
+.release-header {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+    gap:             1rem;
+    margin-bottom:   0.4rem;
+}
+
+.release-filename {
+    color:       #f8f8f2;
+    font-weight: 700;
+    font-size:   0.9rem;
+}
+
+.release-download {
+    color:           #bd93f9;
+    font-size:       0.8rem;
+    text-decoration: none;
+    flex-shrink:     0;
+}
+
+.release-download:hover  { color: #cba5ff; }
+.release-download::before { content: "↓ "; }
+
+.release-meta {
+    display:    flex;
+    gap:        1.5rem;
+    flex-wrap:  wrap;
+    color:      #44475a;
+    font-size:  0.78rem;
+}
+
+.release-sha {
+    word-break: break-all;
+    color:      #44475a;
+}
+
+/* -----------------------------------------------------------------------
+   Error pages
    ----------------------------------------------------------------------- */
 
 .error-page {
     display:        flex;
     flex-direction: column;
-    align-items:    flex-start;
     gap:            1rem;
 }
 
-/* Large red error code — visually distinct from normal h1 green */
 .error-page h1 {
-    font-size:   6rem;
-    color:       #ff4444;
+    font-size:   5rem;
+    color:       #44475a;
     line-height: 1;
 }
 
-.error-page a {
-    color:           #8800ff;
-    text-decoration: none;
-    font-size:       0.9rem;
-}
-
-.error-page a:hover { text-decoration: underline; }
-
 /* -----------------------------------------------------------------------
-   Wiki layout — left sidebar + article body
+   Wiki
    ----------------------------------------------------------------------- */
 
 .wiki-layout {
-    display:  grid;
-    grid-template-columns: 14rem minmax(0, 1fr);
-    gap:      3rem;
+    display:     grid;
+    grid-template-columns: 13rem minmax(0, 1fr);
+    gap:         3rem;
     align-items: start;
 }
 
 .wiki-sidebar {
-    position:    sticky;
-    top:         2rem;
-    max-height:  calc(100vh - 4rem);
-    overflow-y:  auto;
-    padding:     0.5rem 0;
-    border-right: 1px solid #222;
+    position:   sticky;
+    top:        2rem;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+    padding:    0.5rem 0;
+    border-right: 1px solid #44475a;
 }
 
 .wiki-sidebar nav {
@@ -310,51 +527,49 @@ footer {
 }
 
 .wiki-sidebar .wiki-section h2 {
-    color:           #555;
-    font-size:       0.7rem;
-    letter-spacing:  0.1em;
-    text-transform:  uppercase;
-    margin-bottom:   0.5rem;
+    color:          #44475a;
+    font-size:      0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom:  0.5rem;
 }
 
 .wiki-sidebar ul {
     list-style:     none;
     display:        flex;
     flex-direction: column;
-    gap:            0.35rem;
+    gap:            0.25rem;
 }
 
 .wiki-sidebar li a {
-    color:           #888;
+    color:           #6272a4;
     text-decoration: none;
-    font-size:       0.9rem;
-    padding:         0.15rem 0.4rem;
+    font-size:       0.85rem;
+    padding:         0.15rem 0.5rem;
     border-left:     2px solid transparent;
     display:         block;
 }
 
-.wiki-sidebar li a:hover { color: #00ff88; }
+.wiki-sidebar li a:hover { color: #f8f8f2; }
 
 .wiki-sidebar li.active a {
-    color:        #00ff88;
-    border-left:  2px solid #00ff88;
-    background:   #101010;
+    color:             #bd93f9;
+    border-left-color: #bd93f9;
 }
 
-.wiki-article {
-    min-width: 0;
-}
+.wiki-article { min-width: 0; }
 
 @media (max-width: 800px) {
     .wiki-layout {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
+
     .wiki-sidebar {
-        position:     static;
-        max-height:   none;
-        border-right: none;
-        border-bottom: 1px solid #222;
+        position:       static;
+        max-height:     none;
+        border-right:   none;
+        border-bottom:  1px solid #44475a;
         padding-bottom: 1rem;
     }
 }

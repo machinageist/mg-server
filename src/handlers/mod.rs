@@ -3,3 +3,5 @@
 pub mod pages;
 pub mod blog;
 pub mod wiki;
+pub mod well_known;
+pub mod releases;

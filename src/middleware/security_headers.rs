@@ -50,13 +50,17 @@ pub async fn add_security_headers(request: Request<Body>, next: Next) -> Respons
     );
 
     // -----------------------------------------------------------------------
-    // Strict-Transport-Security — enforce HTTPS for one year
+    // Strict-Transport-Security — enforce HTTPS for two years, eligible for preload
     // -----------------------------------------------------------------------
     // Browser caches this — subsequent visits upgrade to HTTPS before any request is sent
     // includeSubDomains — applies to all subdomains as well
+    // preload — opts the domain into the browser-shipped preload list. The .dev TLD
+    // is already in the preload list so this is belt-and-suspenders, but the directive
+    // is required to formally submit a domain at hstspreload.org and survives a TLD
+    // policy change. max-age must be >= 63072000 (2 years) for preload eligibility.
     headers.insert(
         "strict-transport-security",
-        "max-age=31536000; includeSubDomains".parse().unwrap(),
+        "max-age=63072000; includeSubDomains; preload".parse().unwrap(),
     );
 
     // -----------------------------------------------------------------------
