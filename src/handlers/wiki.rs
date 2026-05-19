@@ -40,167 +40,418 @@ const SIDEBAR: &[SidebarSection] = &[
     SidebarSection {
         heading: "Engagement & Harness",
         entries: &[
-            SidebarEntry { slug: "mg-engagement", label: "mg-engagement" },
-            SidebarEntry { slug: "mg-harness", label: "mg-harness" },
-            SidebarEntry { slug: "mg-tui", label: "mg-tui" },
+            SidebarEntry {
+                slug: "mg-engagement",
+                label: "mg-engagement",
+            },
+            SidebarEntry {
+                slug: "mg-harness",
+                label: "mg-harness",
+            },
+            SidebarEntry {
+                slug: "mg-tui",
+                label: "mg-tui",
+            },
         ],
     },
     SidebarSection {
         heading: "Recon",
         entries: &[
-            SidebarEntry { slug: "subdomain-enum", label: "subdomain-enum" },
-            SidebarEntry { slug: "mg-scan", label: "mg-scan" },
-            SidebarEntry { slug: "mg-fingerprint", label: "mg-fingerprint" },
-            SidebarEntry { slug: "mg-recon", label: "mg-recon" },
-            SidebarEntry { slug: "corpus-builder", label: "corpus-builder" },
-            SidebarEntry { slug: "mg-whois", label: "mg-whois" },
-            SidebarEntry { slug: "mg-shodan", label: "mg-shodan" },
-            SidebarEntry { slug: "mg-dns-enum", label: "mg-dns-enum" },
-            SidebarEntry { slug: "mg-dns-history", label: "mg-dns-history" },
-            SidebarEntry { slug: "mg-cloud-enum", label: "mg-cloud-enum" },
-            SidebarEntry { slug: "mg-cname-chain", label: "mg-cname-chain" },
-            SidebarEntry { slug: "mg-udp-scan", label: "mg-udp-scan" },
-            SidebarEntry { slug: "mg-screenshot", label: "mg-screenshot" },
+            SidebarEntry {
+                slug: "subdomain-enum",
+                label: "subdomain-enum",
+            },
+            SidebarEntry {
+                slug: "mg-scan",
+                label: "mg-scan",
+            },
+            SidebarEntry {
+                slug: "mg-fingerprint",
+                label: "mg-fingerprint",
+            },
+            SidebarEntry {
+                slug: "mg-recon",
+                label: "mg-recon",
+            },
+            SidebarEntry {
+                slug: "corpus-builder",
+                label: "corpus-builder",
+            },
+            SidebarEntry {
+                slug: "mg-whois",
+                label: "mg-whois",
+            },
+            SidebarEntry {
+                slug: "mg-shodan",
+                label: "mg-shodan",
+            },
+            SidebarEntry {
+                slug: "mg-dns-enum",
+                label: "mg-dns-enum",
+            },
+            SidebarEntry {
+                slug: "mg-dns-history",
+                label: "mg-dns-history",
+            },
+            SidebarEntry {
+                slug: "mg-cloud-enum",
+                label: "mg-cloud-enum",
+            },
+            SidebarEntry {
+                slug: "mg-cname-chain",
+                label: "mg-cname-chain",
+            },
+            SidebarEntry {
+                slug: "mg-udp-scan",
+                label: "mg-udp-scan",
+            },
+            SidebarEntry {
+                slug: "mg-screenshot",
+                label: "mg-screenshot",
+            },
         ],
     },
     SidebarSection {
         heading: "OSINT",
         entries: &[
-            SidebarEntry { slug: "mg-github", label: "mg-github" },
-            SidebarEntry { slug: "mg-breach", label: "mg-breach" },
-            SidebarEntry { slug: "mg-social", label: "mg-social" },
-            SidebarEntry { slug: "mg-metadata", label: "mg-metadata" },
-            SidebarEntry { slug: "mg-google-dork", label: "mg-google-dork" },
-            SidebarEntry { slug: "mg-leak-monitor", label: "mg-leak-monitor" },
+            SidebarEntry {
+                slug: "mg-github",
+                label: "mg-github",
+            },
+            SidebarEntry {
+                slug: "mg-breach",
+                label: "mg-breach",
+            },
+            SidebarEntry {
+                slug: "mg-social",
+                label: "mg-social",
+            },
+            SidebarEntry {
+                slug: "mg-metadata",
+                label: "mg-metadata",
+            },
+            SidebarEntry {
+                slug: "mg-google-dork",
+                label: "mg-google-dork",
+            },
+            SidebarEntry {
+                slug: "mg-leak-monitor",
+                label: "mg-leak-monitor",
+            },
         ],
     },
     SidebarSection {
         heading: "Web & Active",
         entries: &[
-            SidebarEntry { slug: "mg-crawl", label: "mg-crawl" },
-            SidebarEntry { slug: "mg-probe", label: "mg-probe" },
-            SidebarEntry { slug: "mg-fuzz", label: "mg-fuzz" },
-            SidebarEntry { slug: "mg-replay", label: "mg-replay" },
-            SidebarEntry { slug: "ai-prioritize", label: "ai-prioritize" },
+            SidebarEntry {
+                slug: "mg-crawl",
+                label: "mg-crawl",
+            },
+            SidebarEntry {
+                slug: "mg-probe",
+                label: "mg-probe",
+            },
+            SidebarEntry {
+                slug: "mg-fuzz",
+                label: "mg-fuzz",
+            },
+            SidebarEntry {
+                slug: "mg-replay",
+                label: "mg-replay",
+            },
+            SidebarEntry {
+                slug: "ai-prioritize",
+                label: "ai-prioritize",
+            },
         ],
     },
     SidebarSection {
         heading: "Vulnerability Testing",
         entries: &[
-            SidebarEntry { slug: "mg-xss", label: "mg-xss" },
-            SidebarEntry { slug: "mg-sqli", label: "mg-sqli" },
-            SidebarEntry { slug: "mg-ssti", label: "mg-ssti" },
-            SidebarEntry { slug: "mg-cmdinject", label: "mg-cmdinject" },
-            SidebarEntry { slug: "mg-xxe", label: "mg-xxe" },
-            SidebarEntry { slug: "mg-traversal", label: "mg-traversal" },
-            SidebarEntry { slug: "mg-redirect", label: "mg-redirect" },
-            SidebarEntry { slug: "mg-csrf", label: "mg-csrf" },
-            SidebarEntry { slug: "mg-smuggle", label: "mg-smuggle" },
-            SidebarEntry { slug: "mg-cors-exploit", label: "mg-cors-exploit" },
-            SidebarEntry { slug: "mg-cache-poison", label: "mg-cache-poison" },
-            SidebarEntry { slug: "mg-proto-pollute", label: "mg-proto-pollute" },
-            SidebarEntry { slug: "mg-deser", label: "mg-deser" },
+            SidebarEntry {
+                slug: "mg-xss",
+                label: "mg-xss",
+            },
+            SidebarEntry {
+                slug: "mg-sqli",
+                label: "mg-sqli",
+            },
+            SidebarEntry {
+                slug: "mg-ssti",
+                label: "mg-ssti",
+            },
+            SidebarEntry {
+                slug: "mg-cmdinject",
+                label: "mg-cmdinject",
+            },
+            SidebarEntry {
+                slug: "mg-xxe",
+                label: "mg-xxe",
+            },
+            SidebarEntry {
+                slug: "mg-traversal",
+                label: "mg-traversal",
+            },
+            SidebarEntry {
+                slug: "mg-redirect",
+                label: "mg-redirect",
+            },
+            SidebarEntry {
+                slug: "mg-csrf",
+                label: "mg-csrf",
+            },
+            SidebarEntry {
+                slug: "mg-smuggle",
+                label: "mg-smuggle",
+            },
+            SidebarEntry {
+                slug: "mg-cors-exploit",
+                label: "mg-cors-exploit",
+            },
+            SidebarEntry {
+                slug: "mg-cache-poison",
+                label: "mg-cache-poison",
+            },
+            SidebarEntry {
+                slug: "mg-proto-pollute",
+                label: "mg-proto-pollute",
+            },
+            SidebarEntry {
+                slug: "mg-deser",
+                label: "mg-deser",
+            },
         ],
     },
     SidebarSection {
         heading: "Auth & Session",
         entries: &[
-            SidebarEntry { slug: "mg-jwt", label: "mg-jwt" },
-            SidebarEntry { slug: "mg-authz", label: "mg-authz" },
-            SidebarEntry { slug: "mg-oauth", label: "mg-oauth" },
-            SidebarEntry { slug: "mg-session-audit", label: "mg-session-audit" },
-            SidebarEntry { slug: "mg-apikey", label: "mg-apikey" },
-            SidebarEntry { slug: "mg-brute", label: "mg-brute" },
+            SidebarEntry {
+                slug: "mg-jwt",
+                label: "mg-jwt",
+            },
+            SidebarEntry {
+                slug: "mg-authz",
+                label: "mg-authz",
+            },
+            SidebarEntry {
+                slug: "mg-oauth",
+                label: "mg-oauth",
+            },
+            SidebarEntry {
+                slug: "mg-session-audit",
+                label: "mg-session-audit",
+            },
+            SidebarEntry {
+                slug: "mg-apikey",
+                label: "mg-apikey",
+            },
+            SidebarEntry {
+                slug: "mg-brute",
+                label: "mg-brute",
+            },
         ],
     },
     SidebarSection {
         heading: "SSRF & OOB",
         entries: &[
-            SidebarEntry { slug: "mg-ssrf", label: "mg-ssrf" },
-            SidebarEntry { slug: "mg-oob", label: "mg-oob" },
-            SidebarEntry { slug: "mg-aws", label: "mg-aws" },
-            SidebarEntry { slug: "mg-gcp", label: "mg-gcp" },
-            SidebarEntry { slug: "mg-azure", label: "mg-azure" },
-            SidebarEntry { slug: "mg-serverless", label: "mg-serverless" },
+            SidebarEntry {
+                slug: "mg-ssrf",
+                label: "mg-ssrf",
+            },
+            SidebarEntry {
+                slug: "mg-oob",
+                label: "mg-oob",
+            },
+            SidebarEntry {
+                slug: "mg-aws",
+                label: "mg-aws",
+            },
+            SidebarEntry {
+                slug: "mg-gcp",
+                label: "mg-gcp",
+            },
+            SidebarEntry {
+                slug: "mg-azure",
+                label: "mg-azure",
+            },
+            SidebarEntry {
+                slug: "mg-serverless",
+                label: "mg-serverless",
+            },
         ],
     },
     SidebarSection {
         heading: "Network Services",
         entries: &[
-            SidebarEntry { slug: "mg-tls-scan", label: "mg-tls-scan" },
-            SidebarEntry { slug: "mg-ssh-audit", label: "mg-ssh-audit" },
-            SidebarEntry { slug: "mg-smtp", label: "mg-smtp" },
-            SidebarEntry { slug: "mg-snmp", label: "mg-snmp" },
-            SidebarEntry { slug: "mg-smb", label: "mg-smb" },
-            SidebarEntry { slug: "mg-http2", label: "mg-http2" },
+            SidebarEntry {
+                slug: "mg-tls-scan",
+                label: "mg-tls-scan",
+            },
+            SidebarEntry {
+                slug: "mg-ssh-audit",
+                label: "mg-ssh-audit",
+            },
+            SidebarEntry {
+                slug: "mg-smtp",
+                label: "mg-smtp",
+            },
+            SidebarEntry {
+                slug: "mg-snmp",
+                label: "mg-snmp",
+            },
+            SidebarEntry {
+                slug: "mg-smb",
+                label: "mg-smb",
+            },
+            SidebarEntry {
+                slug: "mg-http2",
+                label: "mg-http2",
+            },
         ],
     },
     SidebarSection {
         heading: "API Surface",
         entries: &[
-            SidebarEntry { slug: "mg-graphql", label: "mg-graphql" },
-            SidebarEntry { slug: "mg-openapi", label: "mg-openapi" },
-            SidebarEntry { slug: "mg-grpc", label: "mg-grpc" },
-            SidebarEntry { slug: "mg-websocket", label: "mg-websocket" },
+            SidebarEntry {
+                slug: "mg-graphql",
+                label: "mg-graphql",
+            },
+            SidebarEntry {
+                slug: "mg-openapi",
+                label: "mg-openapi",
+            },
+            SidebarEntry {
+                slug: "mg-grpc",
+                label: "mg-grpc",
+            },
+            SidebarEntry {
+                slug: "mg-websocket",
+                label: "mg-websocket",
+            },
         ],
     },
     SidebarSection {
         heading: "Cloud & Infra",
         entries: &[
-            SidebarEntry { slug: "mg-k8s", label: "mg-k8s" },
-            SidebarEntry { slug: "mg-docker", label: "mg-docker" },
-            SidebarEntry { slug: "mg-vhost", label: "mg-vhost" },
-            SidebarEntry { slug: "mg-takeover", label: "mg-takeover" },
+            SidebarEntry {
+                slug: "mg-k8s",
+                label: "mg-k8s",
+            },
+            SidebarEntry {
+                slug: "mg-docker",
+                label: "mg-docker",
+            },
+            SidebarEntry {
+                slug: "mg-vhost",
+                label: "mg-vhost",
+            },
+            SidebarEntry {
+                slug: "mg-takeover",
+                label: "mg-takeover",
+            },
         ],
     },
     SidebarSection {
         heading: "Mobile & Static Analysis",
         entries: &[
-            SidebarEntry { slug: "mg-apk", label: "mg-apk" },
-            SidebarEntry { slug: "mg-ipa", label: "mg-ipa" },
-            SidebarEntry { slug: "mg-js-analyze", label: "mg-js-analyze" },
-            SidebarEntry { slug: "mg-sourcemap", label: "mg-sourcemap" },
-            SidebarEntry { slug: "mg-secret-validate", label: "mg-secret-validate" },
-            SidebarEntry { slug: "mg-csp", label: "mg-csp" },
+            SidebarEntry {
+                slug: "mg-apk",
+                label: "mg-apk",
+            },
+            SidebarEntry {
+                slug: "mg-ipa",
+                label: "mg-ipa",
+            },
+            SidebarEntry {
+                slug: "mg-js-analyze",
+                label: "mg-js-analyze",
+            },
+            SidebarEntry {
+                slug: "mg-sourcemap",
+                label: "mg-sourcemap",
+            },
+            SidebarEntry {
+                slug: "mg-secret-validate",
+                label: "mg-secret-validate",
+            },
+            SidebarEntry {
+                slug: "mg-csp",
+                label: "mg-csp",
+            },
         ],
     },
     SidebarSection {
         heading: "Post-Access",
         entries: &[
-            SidebarEntry { slug: "mg-privesc-linux", label: "mg-privesc-linux" },
-            SidebarEntry { slug: "mg-privesc-windows", label: "mg-privesc-windows" },
-            SidebarEntry { slug: "mg-loot", label: "mg-loot" },
+            SidebarEntry {
+                slug: "mg-privesc-linux",
+                label: "mg-privesc-linux",
+            },
+            SidebarEntry {
+                slug: "mg-privesc-windows",
+                label: "mg-privesc-windows",
+            },
+            SidebarEntry {
+                slug: "mg-loot",
+                label: "mg-loot",
+            },
         ],
     },
     SidebarSection {
         heading: "Workflow",
         entries: &[
-            SidebarEntry { slug: "mg-diff", label: "mg-diff" },
-            SidebarEntry { slug: "mg-notify", label: "mg-notify" },
-            SidebarEntry { slug: "mg-timeline", label: "mg-timeline" },
-            SidebarEntry { slug: "mg-nuclei-bridge", label: "mg-nuclei-bridge" },
-            SidebarEntry { slug: "mg-dns-rebind", label: "mg-dns-rebind" },
+            SidebarEntry {
+                slug: "mg-diff",
+                label: "mg-diff",
+            },
+            SidebarEntry {
+                slug: "mg-notify",
+                label: "mg-notify",
+            },
+            SidebarEntry {
+                slug: "mg-timeline",
+                label: "mg-timeline",
+            },
+            SidebarEntry {
+                slug: "mg-nuclei-bridge",
+                label: "mg-nuclei-bridge",
+            },
+            SidebarEntry {
+                slug: "mg-dns-rebind",
+                label: "mg-dns-rebind",
+            },
         ],
     },
     SidebarSection {
         heading: "Reporting",
-        entries: &[
-            SidebarEntry { slug: "mg-report", label: "mg-report" },
-        ],
+        entries: &[SidebarEntry {
+            slug: "mg-report",
+            label: "mg-report",
+        }],
     },
     SidebarSection {
         heading: "Analysis & Exploit Dev",
         entries: &[
-            SidebarEntry { slug: "mg-recopilot", label: "mg-recopilot" },
-            SidebarEntry { slug: "mg-aifuzz", label: "mg-aifuzz" },
-            SidebarEntry { slug: "mg-exploitgen", label: "mg-exploitgen" },
+            SidebarEntry {
+                slug: "mg-recopilot",
+                label: "mg-recopilot",
+            },
+            SidebarEntry {
+                slug: "mg-aifuzz",
+                label: "mg-aifuzz",
+            },
+            SidebarEntry {
+                slug: "mg-exploitgen",
+                label: "mg-exploitgen",
+            },
         ],
     },
     SidebarSection {
         heading: "Libraries",
-        entries: &[
-            SidebarEntry { slug: "libraries", label: "Shared libraries" },
-        ],
+        entries: &[SidebarEntry {
+            slug: "libraries",
+            label: "Shared libraries",
+        }],
     },
 ];
 
@@ -233,8 +484,8 @@ pub async fn index() -> Result<impl IntoResponse, SiteError> {
 
 // Render one tool wiki page selected by URL slug
 pub async fn page(AxumPath(slug): AxumPath<String>) -> Result<impl IntoResponse, SiteError> {
-    let allowed = lookup_sidebar_slug(&slug)
-        .ok_or_else(|| SiteError::PageNotFound(slug.clone()))?;
+    let allowed =
+        lookup_sidebar_slug(&slug).ok_or_else(|| SiteError::PageNotFound(slug.clone()))?;
     render_for_slug(allowed).await
 }
 
@@ -268,8 +519,8 @@ mod tests {
 
     #[test]
     fn rendering_overview_template_includes_sidebar_and_content() {
-        let page = Page::find(&PathBuf::from(PAGES_DIR), OVERVIEW_SLUG)
-            .expect("overview page must exist");
+        let page =
+            Page::find(&PathBuf::from(PAGES_DIR), OVERVIEW_SLUG).expect("overview page must exist");
         let html = WikiPageTemplate {
             page,
             sidebar: SIDEBAR,
@@ -279,16 +530,24 @@ mod tests {
         .expect("template renders");
         assert!(html.contains("wiki-layout"), "missing wiki layout shell");
         assert!(html.contains("wiki-sidebar"), "missing sidebar block");
-        assert!(html.contains("/wiki/mg-recopilot"), "sidebar should link to mg-recopilot page");
-        assert!(html.contains("class=\"active\""), "active class should appear on the overview entry");
-        assert!(html.contains("Tool Suite"), "overview content should render");
+        assert!(
+            html.contains("/wiki/mg-recopilot"),
+            "sidebar should link to mg-recopilot page"
+        );
+        assert!(
+            html.contains("class=\"active\""),
+            "active class should appear on the overview entry"
+        );
+        assert!(
+            html.contains("Tool Suite"),
+            "overview content should render"
+        );
     }
 
     #[test]
     fn rendering_tool_page_marks_correct_active_entry() {
         let slug = "mg-aifuzz";
-        let page = Page::find(&PathBuf::from(PAGES_DIR), slug)
-            .expect("mg-aifuzz page must exist");
+        let page = Page::find(&PathBuf::from(PAGES_DIR), slug).expect("mg-aifuzz page must exist");
         let html = WikiPageTemplate {
             page,
             sidebar: SIDEBAR,

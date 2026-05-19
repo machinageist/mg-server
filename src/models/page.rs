@@ -9,9 +9,9 @@
 
 use crate::errors::SiteError;
 use chrono::NaiveDate;
-use gray_matter::engine::YAML;
 use gray_matter::Matter;
-use pulldown_cmark::{html, Options, Parser};
+use gray_matter::engine::YAML;
+use pulldown_cmark::{Options, Parser, html};
 use serde::Deserialize;
 use std::fs;
 use std::path::Path;

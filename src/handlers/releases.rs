@@ -19,10 +19,10 @@ const RELEASES_DIR: &str = "static/releases";
 
 // ── Release artifact descriptor ────────────────────────────────────────
 pub struct ReleaseArtifact {
-    pub filename:   String,
-    pub url:        String,
+    pub filename: String,
+    pub url: String,
     pub size_human: String,
-    pub sha256:     String,
+    pub sha256: String,
 }
 
 // ── Template struct ────────────────────────────────────────────────────
@@ -33,18 +33,22 @@ pub struct ReleasesTemplate {
 }
 
 impl ReleasesTemplate {
-    pub fn title(&self)       -> &str { "Releases — machinageist" }
-    pub fn description(&self) -> &str { "GeistScope source tarballs and compiled binaries." }
-    pub fn section(&self)     -> &str { "releases" }
+    pub fn title(&self) -> &str {
+        "Releases — machinageist"
+    }
+    pub fn description(&self) -> &str {
+        "GeistScope source tarballs and compiled binaries."
+    }
+    pub fn section(&self) -> &str {
+        "releases"
+    }
 }
 
 // ── Handler — offloads blocking I/O to threadpool ─────────────────────
 pub async fn list() -> Result<impl IntoResponse, SiteError> {
     let artifacts = tokio::task::spawn_blocking(scan_releases)
         .await
-        .unwrap_or_else(|e| {
-            Err(std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))
-        })?;
+        .unwrap_or_else(|e| Err(std::io::Error::other(e.to_string())))?;
     Ok(ReleasesTemplate { artifacts })
 }
 
@@ -59,7 +63,7 @@ fn scan_releases() -> Result<Vec<ReleaseArtifact>, std::io::Error> {
 
     for entry in fs::read_dir(dir)? {
         let entry = entry?;
-        let path  = entry.path();
+        let path = entry.path();
 
         if !path.is_file() {
             continue;
@@ -67,7 +71,7 @@ fn scan_releases() -> Result<Vec<ReleaseArtifact>, std::io::Error> {
 
         let filename = match path.file_name() {
             Some(n) => n.to_string_lossy().into_owned(),
-            None    => continue,
+            None => continue,
         };
 
         // Skip dotfiles (.gitkeep, .DS_Store, etc.)
@@ -75,12 +79,17 @@ fn scan_releases() -> Result<Vec<ReleaseArtifact>, std::io::Error> {
             continue;
         }
 
-        let metadata   = fs::metadata(&path)?;
+        let metadata = fs::metadata(&path)?;
         let size_human = format_size(metadata.len());
-        let sha256     = sha256_file(&path)?;
-        let url        = format!("/static/releases/{}", filename);
+        let sha256 = sha256_file(&path)?;
+        let url = format!("/static/releases/{}", filename);
 
-        artifacts.push(ReleaseArtifact { filename, url, size_human, sha256 });
+        artifacts.push(ReleaseArtifact {
+            filename,
+            url,
+            size_human,
+            sha256,
+        });
     }
 
     // Alphabetical order — most recent version names sort last
@@ -90,9 +99,9 @@ fn scan_releases() -> Result<Vec<ReleaseArtifact>, std::io::Error> {
 
 // ── Stream file through SHA-256 in 64 KB chunks ───────────────────────
 fn sha256_file(path: &Path) -> Result<String, std::io::Error> {
-    let mut file   = File::open(path)?;
+    let mut file = File::open(path)?;
     let mut hasher = Sha256::new();
-    let mut buf    = [0u8; 65_536];
+    let mut buf = [0u8; 65_536];
 
     loop {
         let n = file.read(&mut buf)?;

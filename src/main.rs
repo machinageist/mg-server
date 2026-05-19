@@ -15,11 +15,11 @@
 //              is only reachable from localhost — Caddy handles public traffic.
 
 // Declare modules — tells Rust each file exists as part of this crate
-mod router;
-mod handlers;
-mod models;
 mod errors;
+mod handlers;
 mod middleware;
+mod models;
+mod router;
 
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
@@ -50,12 +50,8 @@ async fn main() {
     tracing::info!("server starting on http://{}", addr);
 
     // Open the TCP socket — equivalent to socket() + bind() + listen() in C
-    let listener = tokio::net::TcpListener::bind(addr)
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
 
     // Hand the socket to Axum — blocks here until the process is killed
-    axum::serve(listener, app)
-        .await
-        .unwrap();
+    axum::serve(listener, app).await.unwrap();
 }

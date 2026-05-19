@@ -35,7 +35,8 @@ use std::sync::Arc;
 // -----------------------------------------------------------------------
 
 // Full type spelled out — NotKeyed = single bucket, InMemoryState = RAM storage
-pub type SharedRateLimiter = Arc<RateLimiter<NotKeyed, InMemoryState, DefaultClock, NoOpMiddleware>>;
+pub type SharedRateLimiter =
+    Arc<RateLimiter<NotKeyed, InMemoryState, DefaultClock, NoOpMiddleware>>;
 
 // -----------------------------------------------------------------------
 // Limiter construction — called once at startup in router::build()
@@ -60,7 +61,7 @@ pub async fn rate_limit(
 ) -> Response<Body> {
     match limiter.check() {
         // Token available — pass request through to next middleware or handler
-        Ok(_)  => next.run(request).await,
+        Ok(_) => next.run(request).await,
         // Bucket empty — return 429 without reaching any handler
         Err(_) => {
             tracing::warn!("rate limit exceeded");

@@ -29,7 +29,7 @@ use axum::response::Response;
 pub async fn add_security_headers(request: Request<Body>, next: Next) -> Response<Body> {
     // Pass request inward — waits for handler to produce a response
     let mut response = next.run(request).await;
-    let headers      = response.headers_mut();
+    let headers = response.headers_mut();
 
     // -----------------------------------------------------------------------
     // Content-Security-Policy — restrict all resource loading to same origin
@@ -60,7 +60,9 @@ pub async fn add_security_headers(request: Request<Body>, next: Next) -> Respons
     // policy change. max-age must be >= 63072000 (2 years) for preload eligibility.
     headers.insert(
         "strict-transport-security",
-        "max-age=63072000; includeSubDomains; preload".parse().unwrap(),
+        "max-age=63072000; includeSubDomains; preload"
+            .parse()
+            .unwrap(),
     );
 
     // -----------------------------------------------------------------------

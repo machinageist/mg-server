@@ -19,14 +19,14 @@
 //              The slug is derived from the filename stem — the URL and the file
 //              name are intentionally kept in sync.
 
+use crate::errors::SiteError;
 use chrono::NaiveDate;
 use gray_matter::Matter;
 use gray_matter::engine::YAML;
-use pulldown_cmark::{html, Options, Parser};
+use pulldown_cmark::{Options, Parser, html};
 use serde::Deserialize;
 use std::fs;
 use std::path::Path;
-use crate::errors::SiteError;
 
 // -----------------------------------------------------------------------
 // Frontmatter schema — must match YAML keys in every .md file exactly
@@ -35,10 +35,10 @@ use crate::errors::SiteError;
 // Deserialize fills this struct from the --- YAML block via gray_matter
 #[derive(Debug, Deserialize)]
 struct Frontmatter {
-    title:   String,
-    date:    String,       // parsed into NaiveDate below — kept as String here for flexibility
+    title: String,
+    date: String, // parsed into NaiveDate below — kept as String here for flexibility
     summary: String,
-    tags:    Vec<String>,
+    tags: Vec<String>,
 }
 
 // -----------------------------------------------------------------------
@@ -47,12 +47,12 @@ struct Frontmatter {
 
 #[derive(Debug, Clone)]
 pub struct BlogPost {
-    pub slug:         String,     // URL identifier derived from filename stem
-    pub title:        String,     // from frontmatter
-    pub date:         NaiveDate,  // parsed from frontmatter date string
-    pub summary:      String,     // from frontmatter — used in list view
-    pub tags:         Vec<String>,
-    pub content_html: String,     // Markdown body converted to HTML — empty in list view
+    pub slug: String,    // URL identifier derived from filename stem
+    pub title: String,   // from frontmatter
+    pub date: NaiveDate, // parsed from frontmatter date string
+    pub summary: String, // from frontmatter — used in list view
+    pub tags: Vec<String>,
+    pub content_html: String, // Markdown body converted to HTML — empty in list view
 }
 
 impl BlogPost {
@@ -64,17 +64,17 @@ impl BlogPost {
     pub fn from_file(path: &Path) -> Result<Self, SiteError> {
         // Derive URL slug from filename — "port-scanner-in-rust.md" → "port-scanner-in-rust"
         let slug = path
-            .file_stem()                          // strip extension
-            .and_then(|s| s.to_str())             // OsStr → &str
-            .ok_or(SiteError::InvalidPath)?       // None → Err
+            .file_stem() // strip extension
+            .and_then(|s| s.to_str()) // OsStr → &str
+            .ok_or(SiteError::InvalidPath)? // None → Err
             .to_string();
 
         // Read entire file into memory — ? converts io::Error to SiteError::Io
         let raw = fs::read_to_string(path)?;
 
         // Split YAML frontmatter block from Markdown body
-        let matter   = Matter::<YAML>::new();
-        let parsed   = matter.parse(&raw);
+        let matter = Matter::<YAML>::new();
+        let parsed = matter.parse(&raw);
 
         // Deserialize frontmatter fields into typed struct
         let fm: Frontmatter = parsed
@@ -88,16 +88,16 @@ impl BlogPost {
             .map_err(|e| SiteError::DateParse(e.to_string()))?;
 
         // Convert Markdown body to HTML — Options::all() enables tables, footnotes, strikethrough
-        let md_parser        = Parser::new_ext(&parsed.content, Options::all());
+        let md_parser = Parser::new_ext(&parsed.content, Options::all());
         let mut content_html = String::new();
         html::push_html(&mut content_html, md_parser);
 
         Ok(BlogPost {
             slug,
-            title:   fm.title,
+            title: fm.title,
             date,
             summary: fm.summary,
-            tags:    fm.tags,
+            tags: fm.tags,
             content_html,
         })
     }
@@ -112,16 +112,20 @@ impl BlogPost {
         let mut posts = fs::read_dir(dir)?
             .filter_map(|entry| {
                 let entry = entry.ok()?;
-                let path  = entry.path();
+                let path = entry.path();
                 // Skip non-.md files silently
-                if path.extension()?.to_str()? == "md" { Some(path) } else { None }
+                if path.extension()?.to_str()? == "md" {
+                    Some(path)
+                } else {
+                    None
+                }
             })
             // Parse each file — collect propagates the first Err if any file fails
             .map(|path| BlogPost::from_file(&path))
             .collect::<Result<Vec<_>, _>>()?;
 
         // Sort newest-first so list view shows most recent posts at the top
-        posts.sort_by(|a, b| b.date.cmp(&a.date));
+        posts.sort_by_key(|p| std::cmp::Reverse(p.date));
         Ok(posts)
     }
 

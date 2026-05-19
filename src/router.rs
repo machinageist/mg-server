@@ -14,18 +14,16 @@
 //              axum::middleware aliased to `mw` — avoids collision with our own
 //              `middleware` module which occupies the same name in scope.
 
-use axum::{Router, routing::get};
+use crate::handlers::{blog, pages, releases, well_known, wiki};
+use crate::middleware::rate_limit::{build_limiter, rate_limit};
+use crate::middleware::security_headers::add_security_headers;
 use axum::middleware as mw;
+use axum::{Router, routing::get};
 use tower_http::services::ServeDir;
 use tower_http::trace::TraceLayer;
-use crate::handlers::{pages, blog, wiki, well_known, releases};
-use crate::middleware::security_headers::add_security_headers;
-use crate::middleware::rate_limit::{rate_limit, build_limiter};
 
 // Build and return the fully configured Axum application
 pub fn build() -> Router {
-    
-  
     // Construct rate limiter once — Arc inside allows cheap cloning across tasks
     let limiter = build_limiter();
 
@@ -33,25 +31,22 @@ pub fn build() -> Router {
     // Routes — URL pattern to handler function mappings
     // -----------------------------------------------------------------------
     Router::new()
-        .route("/",            get(pages::home))
-        .route("/about",       get(pages::about))
-        .route("/portfolio",   get(pages::portfolio))
-        .route("/blog",        get(blog::list))
-        .route("/wiki",        get(wiki::index))
-        .route("/wiki/:slug",  get(wiki::page))
-
+        .route("/", get(pages::home))
+        .route("/about", get(pages::about))
+        .route("/portfolio", get(pages::portfolio))
+        .route("/blog", get(blog::list))
+        .route("/wiki", get(wiki::index))
+        .route("/wiki/:slug", get(wiki::page))
         // Capture :slug as a single path segment, passed to handler as Path<String>
-        .route("/blog/:slug",  get(blog::post))
-        .route("/releases",    get(releases::list))
+        .route("/blog/:slug", get(blog::post))
+        .route("/releases", get(releases::list))
         // RFC 9116 security disclosure contact
         .route("/.well-known/security.txt", get(well_known::security_txt))
         // Map /static/* URL prefix to ./static/ directory on disk
         .nest_service("/static", ServeDir::new("static"))
-
         // -----------------------------------------------------------------------
         // Middleware layers — applied bottom-up on request, top-down on response
         // -----------------------------------------------------------------------
-
         // Stamp security headers onto every outgoing response
         .layer(mw::from_fn(add_security_headers))
         // Check rate limit before request reaches any handler
