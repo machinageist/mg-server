@@ -1,7 +1,7 @@
 ---
 title: "GeistScope: Auth and Session Testing"
 date: 2026-05-17
-summary: "mg-jwt, mg-authz, mg-oauth, mg-session-audit, mg-apikey, mg-brute, and mg-csrf cover the full auth surface: token attacks, IDOR, credential stuffing, and cross-site request forgery."
+summary: "mg-jwt, mg-authz, mg-oauth, mg-session-audit, mg-artifact-audit apikey, mg-brute, and mg-csrf cover the full auth surface: token attacks, IDOR, credential stuffing, and cross-site request forgery."
 tags: [rust, security, bug-bounty, geistscope, auth, jwt, session, csrf]
 ---
 
@@ -13,7 +13,7 @@ is also broader than it looks: it's not just the login page. It's every endpoint
 makes an access decision, every token that gets issued, every session that can be fixed
 or stolen.
 
-Seven tools cover this space.
+Seven capabilities cover this space; static secret extraction now lives under `mg-artifact-audit apikey`.
 
 ---
 
@@ -120,13 +120,13 @@ the session token is still valid server-side.
 
 ---
 
-## mg-apikey: Static Secret Detection
+## mg-artifact-audit apikey: Static Secret Detection
 
 ```bash
-mg-apikey target-bounty
+mg-artifact-audit apikey target-bounty
 ```
 
-`mg-apikey` operates on the crawl corpus without making any network requests. It reads
+`mg-artifact-audit apikey` operates on the crawl corpus without making any network requests. It reads
 every file in `crawl/` and runs a regex catalog against the content. The catalog is
 compiled once at startup via `OnceLock` and covers AWS keys, GitHub tokens, Stripe
 keys, Slack webhooks, Twilio tokens, generic `api_key` and `secret` patterns, and
@@ -186,10 +186,11 @@ Origin check is not a real mitigation.
 
 ## Auth Testing in Sequence
 
-These tools work best run in order: `mg-jwt` and `mg-apikey` first (static analysis,
-no traffic), then `mg-session-audit` (single authenticated session), then `mg-authz`
+These capabilities work best run in order: `mg-jwt` and `mg-artifact-audit apikey`
+first (static analysis, no traffic), then `mg-session-audit` (single authenticated
+session), then `mg-authz`
 (two-session comparison), then `mg-csrf` and `mg-oauth` (flow testing). Credentials
-found by `mg-brute` or secrets found by `mg-apikey` feed directly into subsequent
+found by `mg-brute` or secrets found by `mg-artifact-audit apikey` feed directly into subsequent
 tests. An API key found in the crawl corpus might unlock additional endpoints that
 become new targets for [injection testing](/wiki/geistscope-injection-testing) or
 IDOR testing.

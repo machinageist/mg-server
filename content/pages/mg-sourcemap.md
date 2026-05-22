@@ -5,11 +5,14 @@ summary: "Source map downloader and analyzer that extracts original source paths
 tags: [geistscope, cli, static-analysis, web]
 ---
 
+> As of 2026-05-22 this tool is a subcommand of `mg-artifact-audit`. The standalone
+> `mg-sourcemap` binary has been retired; behavior is unchanged.
+
 ## Purpose
 
 Locates `.js.map` files from three sources: findings from
-[mg-js-analyze](/wiki/mg-js-analyze), `<script>` tags in crawl HTML, and `.map`
-suffix probes on known JS URLs. Downloads each map, extracts the `sources[]` path
+`mg-artifact-audit js`, `<script>` tags in crawl HTML, and `.map` suffix probes
+on known JS URLs. Downloads each map, extracts the `sources[]` path
 list and any embedded `sourcesContent[]`, then scans for secrets and internal path
 disclosures. The `sourcesContent[]` array may be absent in production maps; this is
 handled gracefully.
@@ -24,8 +27,8 @@ handled gracefully.
 ## CLI
 
 ```bash
-mg-sourcemap acme-bounty
-mg-sourcemap acme-bounty --concurrency 5
+mg-artifact-audit sourcemap acme-bounty
+mg-artifact-audit sourcemap acme-bounty --concurrency 5
 ```
 
 ## Notes

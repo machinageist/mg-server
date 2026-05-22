@@ -25,6 +25,8 @@ mg-harness dispatch --input invocation.json --pretty
 
 # Chat REPL — interactive coding-agent loop pinned to one engagement
 mg-harness chat acme-bounty --backend ollama --model qwen2.5-coder
+mg-harness chat acme-bounty --backend ollama --model qwen2.5-coder --tool-profile advanced
+mg-harness chat acme-bounty --backend ollama --model qwen2.5-coder --tool-profile lab
 mg-harness chat acme-bounty --backend openai --base-url http://localhost:1234/v1 --model llama-3-70b
 mg-harness chat acme-bounty --backend anthropic --model claude-opus-4-7
 ```
@@ -54,6 +56,7 @@ Every endpoint declares a risk class:
 | `chain.read` | read | Bounded read of `recon/chain-analysis.{md,json}`. |
 | `report.generate` / `report.disclose` | read | Run [mg-report](/wiki/mg-report) generate / disclose. |
 | `re.analyze` / `re.read` | read | Drive [mg-recopilot](/wiki/mg-recopilot). |
+| `artifact.audit` | passive_remote | Run the merged [mg-artifact-audit](/wiki/mg-artifact-audit) analyzers. |
 | `aifuzz.consent` / `aifuzz.run` | state / high_active | Record consent then run [mg-aifuzz](/wiki/mg-aifuzz). |
 | `exploit.scaffold` | read | Scaffold an [mg-exploitgen](/wiki/mg-exploitgen) tree. |
 | `session.set` / `session.get_headers` | state / read | Manage env-var-backed session profiles; return only redacted header metadata. |
@@ -64,7 +67,28 @@ The 67 subprocess-dispatched tool endpoints (`xss.scan`, `sqli.scan`,
 each endpoint with its binary, risk class, and short description. Dispatch,
 registry, and binary lookup all read from that single row, so adding a new
 tool is a one-line change. Invoke `endpoint.registry` to enumerate the full
-list at runtime.
+list at runtime. The six retired artifact binaries are the exception to the
+one-endpoint/one-binary mental model: their legacy endpoints now share
+`mg-artifact-audit` with subcommand routing, and `artifact.audit` is the new
+pack-level entry point.
+
+`endpoint.registry` also now includes pack/profile metadata: every endpoint
+has a `pack` such as `reconx`, `vuln_scan`, `identity_audit`,
+`protocol_audit`, `cloud_audit`, `artifact_audit`, `eventing`, or
+`redteam_lab`; an `exposure` tier such as `default_profile`,
+`advanced_profile`, `lab_only`, `service_internal`, or
+`retired_pending_pack`; and, for tools being collapsed, a `repurpose` note.
+That metadata now drives the chat catalog via `--tool-profile`: `default` exposes
+only default-profile endpoints; `advanced` adds explicit OOB/high-active helper
+surfaces; `lab` includes lab-only scaffolding while still requiring
+`--unsafe-mode` for destructive endpoints. That lets the chat UI and future TUI
+expose fewer high-level packs by default while retaining specialist binaries
+behind explicit operator intent.
+Sharp tools are repurposed before pruning: for example `brute.run` moves
+toward identity-audit rate-limit/lockout analysis, `snmp.brute` toward
+protocol audit, `notify.start` toward eventing infrastructure, and
+`loot.run` toward artifact inventory/redaction helpers rather than default
+post-exploitation collection.
 
 ## Standardized findings
 
@@ -86,9 +110,10 @@ Tool calls flow through the same risk policy as the JSON path:
 - `low_active`, `high_active`, and `state_change` endpoints prompt the user
   in the REPL with the proposed args before running. Pass `--yes` to skip
   the prompt for unattended runs.
-- `destructive` endpoints (`privesc.linux`, `privesc.windows`, `loot.run`)
-  are excluded from the tool catalog by default. Pass `--unsafe-mode` to
-  include them.
+- The chat tool catalog is profile-filtered: `default` hides retired,
+  lab-only, service-internal, and destructive endpoints; `advanced` adds
+  explicit OOB/high-active helper surfaces; `lab` exposes lab-only scaffolding
+  while destructive tools still require `--unsafe-mode`.
 
 Slash commands inside the REPL:
 

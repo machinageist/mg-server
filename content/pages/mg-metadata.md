@@ -5,6 +5,9 @@ summary: "Document metadata extractor for PDFs, Office docs, and JPEGs found in 
 tags: [geistscope, cli, osint, recon]
 ---
 
+> As of 2026-05-22 this tool is a subcommand of `mg-artifact-audit`. The standalone
+> `mg-metadata` binary has been retired; behavior is unchanged.
+
 ## Purpose
 
 Download documents linked in the crawl corpus and extract metadata that may
@@ -21,8 +24,8 @@ publish reports or marketing materials.
 ## CLI
 
 ```bash
-mg-metadata acme-bounty
-mg-metadata acme-bounty --concurrency 5
+mg-artifact-audit metadata acme-bounty
+mg-artifact-audit metadata acme-bounty --concurrency 5
 ```
 
 ## Notes

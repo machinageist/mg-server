@@ -73,16 +73,15 @@ pub fn all() -> Vec<Project> {
     vec![
         Project {
             name: "GeistScope",
-            description: "Automated bug bounty toolchain for human + AI collaboration. \
-                          11 Rust binaries covering the full recon-to-submission pipeline: \
-                          subdomain enumeration (CT logs + DNS brute force), async port scanning, \
-                          HTTP tech stack fingerprinting, BFS web crawling with JS secret extraction, \
-                          passive security posture checking (headers, CORS, cookies, exposed paths), \
-                          Burp Intruder-style payload fuzzing with four attack modes, \
-                          Burp Repeater-style finding verification, LLM-ranked attack surface \
-                          via Anthropic or local Ollama, and a Ratatui terminal dashboard. \
-                          Every tool writes to a shared file layout — no custom IPC needed \
-                          for AI co-operation.",
+            description: "AI-native bug-bounty and red-team toolchain in Rust. \
+                          A shared engagement workspace ties together recon, crawling, \
+                          posture checks, request-corpus search/replay, fuzzing, reporting, \
+                          a persistent security graph, and a scoped AI harness. \
+                          The harness now exposes a profile-filtered tool catalog \
+                          (`default`, `advanced`, `lab`) so agents see the right \
+                          pack of endpoints without raw shell access or noisy one-off tools. \
+                          Findings are standardized JSON records that flow into \
+                          prioritization, graph queries, and report generation.",
             tags: &[
                 "rust",
                 "security",

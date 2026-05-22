@@ -1,7 +1,7 @@
 ---
 title: "GeistScope: OSINT Tools"
 date: 2026-05-17
-summary: "mg-github, mg-breach, mg-social, mg-metadata, mg-google-dork, and mg-leak-monitor gather passive intelligence from public sources before any active testing begins."
+summary: "mg-github, mg-breach, mg-social, mg-artifact-audit metadata, mg-google-dork, and mg-leak-monitor gather passive intelligence from public sources before any active testing begins."
 tags: [rust, security, bug-bounty, geistscope, osint, recon]
 ---
 
@@ -13,7 +13,7 @@ repositories, breach databases, document metadata, search engine indexes. None o
 touches the target's infrastructure in any meaningful way, and it frequently produces
 the highest-value findings in a program.
 
-Six tools cover this space in GeistScope.
+Six capabilities cover this space in GeistScope; document metadata extraction now lives under `mg-artifact-audit metadata`.
 
 ---
 
@@ -82,13 +82,13 @@ enumeration on large organizations will hit rate limits and produce partial resu
 
 ---
 
-## mg-metadata: Document Metadata Extraction
+## mg-artifact-audit metadata: Document Metadata Extraction
 
 ```bash
-mg-metadata target-bounty
+mg-artifact-audit metadata target-bounty
 ```
 
-`mg-metadata` reads the crawl corpus and downloads PDFs, Office documents (DOCX, XLSX,
+`mg-artifact-audit metadata` reads the crawl corpus and downloads PDFs, Office documents (DOCX, XLSX,
 PPTX), and JPEG images. From each file, it extracts metadata that developers and
 organizations routinely forget to strip before publishing.
 

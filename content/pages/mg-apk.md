@@ -5,6 +5,9 @@ summary: "Android APK static analysis for security misconfigurations, hardcoded 
 tags: [geistscope, cli, mobile, static-analysis]
 ---
 
+> As of 2026-05-22 this tool is a subcommand of `mg-artifact-audit`. The standalone
+> `mg-apk` binary has been retired; behavior is unchanged.
+
 ## Purpose
 
 Treats the APK as a ZIP container and inspects its internals without installing or
@@ -22,8 +25,8 @@ no async runtime.
 ## CLI
 
 ```bash
-mg-apk acme-bounty --apk ./com.acme.app.apk
-mg-apk acme-bounty --apk ./app.apk --output-dir ./results
+mg-artifact-audit apk acme-bounty --apk ./com.acme.app.apk
+mg-artifact-audit apk acme-bounty --apk ./app.apk
 ```
 
 ## Notes

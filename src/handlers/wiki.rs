@@ -127,10 +127,6 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "mg-social",
             },
             SidebarEntry {
-                slug: "mg-metadata",
-                label: "mg-metadata",
-            },
-            SidebarEntry {
                 slug: "mg-google-dork",
                 label: "mg-google-dork",
             },
@@ -242,10 +238,6 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "mg-session-audit",
             },
             SidebarEntry {
-                slug: "mg-apikey",
-                label: "mg-apikey",
-            },
-            SidebarEntry {
                 slug: "mg-brute",
                 label: "mg-brute",
             },
@@ -355,20 +347,8 @@ const SIDEBAR: &[SidebarSection] = &[
         heading: "Mobile & Static Analysis",
         entries: &[
             SidebarEntry {
-                slug: "mg-apk",
-                label: "mg-apk",
-            },
-            SidebarEntry {
-                slug: "mg-ipa",
-                label: "mg-ipa",
-            },
-            SidebarEntry {
-                slug: "mg-js-analyze",
-                label: "mg-js-analyze",
-            },
-            SidebarEntry {
-                slug: "mg-sourcemap",
-                label: "mg-sourcemap",
+                slug: "mg-artifact-audit",
+                label: "mg-artifact-audit",
             },
             SidebarEntry {
                 slug: "mg-secret-validate",
@@ -377,6 +357,35 @@ const SIDEBAR: &[SidebarSection] = &[
             SidebarEntry {
                 slug: "mg-csp",
                 label: "mg-csp",
+            },
+        ],
+    },
+    SidebarSection {
+        heading: "Retired artifact pages",
+        entries: &[
+            SidebarEntry {
+                slug: "mg-apikey",
+                label: "mg-apikey → mg-artifact-audit",
+            },
+            SidebarEntry {
+                slug: "mg-apk",
+                label: "mg-apk → mg-artifact-audit",
+            },
+            SidebarEntry {
+                slug: "mg-ipa",
+                label: "mg-ipa → mg-artifact-audit",
+            },
+            SidebarEntry {
+                slug: "mg-js-analyze",
+                label: "mg-js-analyze → mg-artifact-audit",
+            },
+            SidebarEntry {
+                slug: "mg-metadata",
+                label: "mg-metadata → mg-artifact-audit",
+            },
+            SidebarEntry {
+                slug: "mg-sourcemap",
+                label: "mg-sourcemap → mg-artifact-audit",
             },
         ],
     },

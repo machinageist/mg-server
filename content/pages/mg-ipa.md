@@ -5,6 +5,9 @@ summary: "iOS IPA static analysis for ATS exceptions, hardcoded secrets, and deb
 tags: [geistscope, cli, mobile, static-analysis]
 ---
 
+> As of 2026-05-22 this tool is a subcommand of `mg-artifact-audit`. The standalone
+> `mg-ipa` binary has been retired; behavior is unchanged.
+
 ## Purpose
 
 Treats the IPA as a ZIP container and inspects its `Payload/AppName.app/` directory.
@@ -21,8 +24,7 @@ async runtime.
 ## CLI
 
 ```bash
-mg-ipa acme-bounty --ipa ./AcmeApp.ipa
-mg-ipa acme-bounty --ipa ./AcmeApp.ipa --output-dir ./results
+mg-artifact-audit ipa acme-bounty --ipa ./AcmeApp.ipa
 ```
 
 ## Notes

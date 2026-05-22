@@ -1,7 +1,7 @@
 ---
 title: "GeistScope: Mobile App and Static Analysis"
 date: 2026-05-18
-summary: "mg-apk, mg-ipa, mg-js-analyze, mg-sourcemap, mg-secret-validate, and mg-csp find vulnerabilities in distributed artifacts without running them."
+summary: "mg-artifact-audit, mg-secret-validate, and mg-csp find vulnerabilities in distributed artifacts without running them."
 tags: [rust, security, bug-bounty, geistscope, mobile, static-analysis, apk, ipa]
 ---
 
@@ -13,14 +13,14 @@ information that the server's HTTP responses never reveal: hardcoded credentials
 internal API paths, developer usernames, and sometimes production secrets that made it
 into the build.
 
-Six tools analyze distributed artifacts statically, without executing them.
+`mg-artifact-audit` now carries the passive artifact analyzers as subcommands, so the site presents this area as one tool family instead of six standalone binaries.
 
 ---
 
-## mg-apk: Android Package Analysis
+## mg-artifact-audit apk: Android Package Analysis
 
 ```bash
-mg-apk target-bounty --apk /path/to/app.apk
+mg-artifact-audit apk target-bounty --apk /path/to/app.apk
 ```
 
 An APK file is a ZIP archive. The tool opens it in memory and reads specific files
@@ -43,10 +43,10 @@ base URLs.
 
 ---
 
-## mg-ipa: iOS Application Package Analysis
+## mg-artifact-audit ipa: iOS Application Package Analysis
 
 ```bash
-mg-ipa --ipa /path/to/app.ipa
+mg-artifact-audit ipa target-bounty --ipa /path/to/app.ipa
 ```
 
 An IPA file is also a ZIP. The bundle is identified by finding the entry in
@@ -65,10 +65,10 @@ and credential patterns are flagged.
 
 ---
 
-## mg-js-analyze: JavaScript Bundle Analysis
+## mg-artifact-audit js: JavaScript Bundle Analysis
 
 ```bash
-mg-js-analyze target-bounty
+mg-artifact-audit js target-bounty
 ```
 
 The tool reads the crawl corpus for JavaScript file paths, then fetches each JS file
@@ -83,21 +83,21 @@ as a dedicated post-crawl pass that also scans for:
 Findings are deduplicated by `(source_url, finding_type, value)` triple. The same
 AWS key appearing in three different bundle files produces one finding.
 
-Source map references found here feed directly into `mg-sourcemap`.
+Source map references found here feed directly into `mg-artifact-audit sourcemap`.
 
 ---
 
-## mg-sourcemap: Source Map Extraction
+## mg-artifact-audit sourcemap: Source Map Extraction
 
 ```bash
-mg-sourcemap target-bounty
+mg-artifact-audit sourcemap target-bounty
 ```
 
 Source maps reconstruct the original source code from minified JavaScript bundles.
 They're generated during the build process and, when deployed to production accidentally,
 expose the entire pre-minification codebase.
 
-The tool finds `.js.map` files from three sources: references found by `mg-js-analyze`,
+The tool finds `.js.map` files from three sources: references found by `mg-artifact-audit js`,
 `<link rel="sourcemap">` tags in crawled HTML, and by probing each `.js` file's URL
 with a `.map` suffix appended.
 
@@ -121,9 +121,9 @@ mg-secret-validate target-bounty
 ```
 
 Finding a string that looks like an AWS access key is not the same as confirming it's
-valid. `mg-secret-validate` reads secrets found by `mg-js-analyze`, `mg-sourcemap`,
-`mg-apikey`, and `mg-apk`, classifies each by regex, and attempts live validation
-against the relevant API.
+valid. `mg-secret-validate` reads secrets found by `mg-artifact-audit` subcommands
+and crawl output, classifies each by regex, and attempts live validation against the
+relevant API.
 
 AWS keys are validated using the STS `GetCallerIdentity` trick: sign a request with
 the candidate key and send it to `https://sts.amazonaws.com/`. An `AuthFailure` error
@@ -172,10 +172,10 @@ nonces.
 ## Static Analysis in the Workflow
 
 These tools run against artifacts collected during engagement setup and crawling.
-`mg-apk` and `mg-ipa` require the application binaries, which are downloaded manually
-from the app stores. `mg-js-analyze`, `mg-sourcemap`, and `mg-csp` run from the crawl
-corpus automatically. `mg-secret-validate` runs after any tool that produces secret
-findings.
+`mg-artifact-audit apk` and `mg-artifact-audit ipa` require application binaries,
+which are downloaded manually from the app stores. `mg-artifact-audit js`,
+`mg-artifact-audit sourcemap`, and `mg-csp` run from the crawl corpus.
+`mg-secret-validate` runs after any tool that produces secret findings.
 
 Static analysis often produces the fastest high-severity finds in an engagement.
 A hardcoded production API key in an Android APK requires no vulnerability to exploit

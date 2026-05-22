@@ -5,6 +5,9 @@ summary: "Static API key and secret extractor that scans HTML, JS, and response-
 tags: [geistscope, cli, auth, static-analysis]
 ---
 
+> As of 2026-05-22 this tool is a subcommand of `mg-artifact-audit`. The standalone
+> `mg-apikey` binary has been retired; behavior is unchanged.
+
 ## Purpose
 
 Scans the crawl corpus (HTML, JS, and response headers) for API keys, tokens, and secrets matching known patterns. No active HTTP requests are made; this is purely filesystem analysis of crawl output. The regex catalog is compiled once via `OnceLock`. Findings are de-duplicated by `(pattern_type, masked_value)`; secrets are masked to the first 8 characters in output.
@@ -16,7 +19,7 @@ Scans the crawl corpus (HTML, JS, and response headers) for API keys, tokens, an
 ## CLI
 
 ```bash
-mg-apikey acme-bounty
+mg-artifact-audit apikey acme-bounty
 ```
 
 ## Notes

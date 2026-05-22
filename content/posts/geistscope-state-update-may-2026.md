@@ -1,7 +1,7 @@
 ---
-title: "GeistScope State Update: Chat REPL, Docker, and a 69-Tool Expansion"
+title: "GeistScope State Update: Chat REPL, Docker, and Tool Catalog Cleanup"
 date: 2026-05-19
-summary: "Six weeks of changes consolidated: 69 new tool binaries wired through one harness, standardized findings flowing into the prioritizer and security graph, a coding-agent chat REPL with three LLM backends, a multi-stage Docker image, and a tightened CI/release pipeline."
+summary: "Six weeks of changes consolidated: a large tool expansion wired through one harness, standardized findings flowing into the prioritizer and security graph, a coding-agent chat REPL with profile-filtered tool packs, a multi-stage Docker image, and the first catalog cleanup pass."
 tags: [rust, security, bug-bounty, geistscope, ai, tooling, docker, ci]
 ---
 
@@ -9,27 +9,35 @@ The platform has moved past being a recon-and-fuzz toolchain. A pile of
 changes landed over the last several weeks; this post pulls them into one
 picture.
 
-## 69 new tool binaries, one wiring story
+## Big tool expansion, then the first cleanup pass
 
-The workspace went from ~14 to 83 binaries — coverage now spans active
+The workspace grew fast — coverage now spans active
 vulnerability detection (`mg-xss`, `mg-sqli`, `mg-ssti`, `mg-xxe`,
 `mg-cmdinject`, `mg-traversal`, `mg-smuggle`, `mg-cache-poison`,
 `mg-proto-pollute`, `mg-deser`), auth and session (`mg-jwt`, `mg-authz`,
-`mg-oauth`, `mg-brute`, `mg-session-audit`, `mg-apikey`), modern protocols
+`mg-oauth`, `mg-brute`, `mg-session-audit`), modern protocols
 (`mg-graphql`, `mg-openapi`, `mg-grpc`, `mg-websocket`, `mg-http2`), JS and
-client-side (`mg-js-analyze`, `mg-sourcemap`, `mg-csp`, `mg-cors-exploit`),
+client-side (`mg-artifact-audit`, `mg-csp`, `mg-cors-exploit`),
 infrastructure (`mg-tls-scan`, `mg-ssh-audit`, `mg-udp-scan`, `mg-smtp`,
 `mg-snmp`, `mg-smb`), cloud and container (`mg-aws`, `mg-gcp`, `mg-azure`,
 `mg-k8s`, `mg-docker`, `mg-serverless`), OSINT (`mg-github`, `mg-shodan`,
 `mg-dns-enum`, `mg-dns-history`, `mg-cloud-enum`, `mg-breach`, `mg-social`,
-`mg-google-dork`, `mg-metadata`, `mg-leak-monitor`), DNS abuse
-(`mg-takeover`, `mg-cname-chain`, `mg-dns-rebind`), mobile (`mg-apk`,
-`mg-ipa`), post-access (`mg-privesc-linux`, `mg-privesc-windows`,
-`mg-loot`), and engagement workflow (`mg-diff`, `mg-notify`, `mg-timeline`,
-`mg-nuclei-bridge`, `mg-secret-validate`).
+`mg-google-dork`, `mg-leak-monitor`), DNS abuse
+(`mg-takeover`, `mg-cname-chain`, `mg-dns-rebind`), mobile artifact checks
+(via `mg-artifact-audit apk` and `mg-artifact-audit ipa`), post-access
+(`mg-privesc-linux`, `mg-privesc-windows`, `mg-loot`), and engagement workflow
+(`mg-diff`, `mg-notify`, `mg-timeline`, `mg-nuclei-bridge`,
+`mg-secret-validate`).
 
-Each is a standalone CLI that reads from and writes to the engagement
-workspace. Every one is also reachable through `mg-harness` as a typed
+The follow-up cleanup collapsed six passive artifact analyzers into
+`mg-artifact-audit`: `mg-js-analyze`, `mg-sourcemap`, `mg-apikey`,
+`mg-metadata`, `mg-apk`, and `mg-ipa` are no longer standalone workspace
+binaries. Their behavior remains available as subcommands and through the
+legacy harness endpoints, while `artifact.audit` provides one high-level pass
+for mixed artifact work.
+
+The remaining binaries read from and write to the engagement workspace.
+Every public capability is also reachable through `mg-harness` as a typed
 endpoint with a risk class — see the [wiki](/wiki/mg-harness) for the
 contract.
 
@@ -53,13 +61,18 @@ time."
 ## A chat REPL with three backends
 
 `mg-harness chat <engagement>` opens an interactive coding-agent loop bound
-to one engagement. The model gets tool-use access to every implemented
-harness endpoint and runs in a guarded REPL:
+to one engagement. The model gets profile-filtered tool-use access instead
+of the entire harness catalog at once: `default` keeps common engagement,
+request-corpus, graph, recon, and reporting endpoints visible; `advanced`
+adds OOB/high-active helpers; `lab` exposes lab-only scaffolding, with
+`--unsafe-mode` still required for destructive endpoints. The REPL remains
+guarded:
 
 - `read_only` and `passive_remote` endpoints fire immediately.
 - `low_active`, `high_active`, and `state_change` endpoints prompt the
   operator with the proposed args before running.
-- `destructive` endpoints are hidden from the catalog unless
+- Noisy/rare endpoints are hidden by `--tool-profile` unless the operator
+  selects `advanced` or `lab`; `destructive` endpoints are still hidden unless
   `--unsafe-mode` is passed.
 
 Three backends ship in-tree, all behind a `ChatBackend` trait so the
@@ -84,6 +97,17 @@ any one routed silently to the wrong handler. They're now a single
 `SUBPROCESS_TOOLS` const slice with `(endpoint, binary, risk, description)`
 per row; dispatch, registry, and binary lookup all read from it. The lib
 file dropped about 400 lines. Adding a new tool is one row.
+
+The next cleanup layer is now active: `endpoint.registry` reports each
+endpoint's `ToolPack`, `ToolExposure`, and an optional repurpose note for
+sharp tools, and `mg-harness chat` applies that metadata through
+`--tool-profile default|advanced|lab`. The goal is not to delete useful code
+just because the catalog got crowded. GeistScope hides noisy or hazardous
+standalone endpoints from the default agent profile first, repurposes their
+safe pieces into domain packs (`mg-reconx`, `mg-vuln-scan`,
+`mg-identity-audit`, `mg-protocol-audit`, `mg-cloud-audit`,
+`mg-artifact-audit`, eventing, and redteam-lab), then prunes standalone
+affordances only after the replacement path exists.
 
 The same pass added a 5-minute subprocess timeout with `kill_on_drop(true)`
 and a 64 KiB cap on captured stdout/stderr — a runaway tool can no longer
