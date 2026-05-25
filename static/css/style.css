@@ -525,6 +525,12 @@ hr {
     display: none;
 }
 
+/* force the <details> content open on wide screens regardless of toggle
+   state — the narrow media query below re-collapses it when closed */
+.wiki-nav > nav {
+    display: block;
+}
+
 .wiki-sidebar nav {
     display:        flex;
     flex-direction: column;

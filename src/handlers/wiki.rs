@@ -105,10 +105,6 @@ const SIDEBAR: &[SidebarSection] = &[
                 slug: "mg-udp-scan",
                 label: "mg-udp-scan",
             },
-            SidebarEntry {
-                slug: "mg-screenshot",
-                label: "mg-screenshot",
-            },
         ],
     },
     SidebarSection {
@@ -121,10 +117,6 @@ const SIDEBAR: &[SidebarSection] = &[
             SidebarEntry {
                 slug: "mg-breach",
                 label: "mg-breach",
-            },
-            SidebarEntry {
-                slug: "mg-social",
-                label: "mg-social",
             },
             SidebarEntry {
                 slug: "mg-google-dork",
@@ -162,61 +154,11 @@ const SIDEBAR: &[SidebarSection] = &[
         ],
     },
     SidebarSection {
-        heading: "Vulnerability Testing",
-        entries: &[
-            SidebarEntry {
-                slug: "mg-xss",
-                label: "mg-xss",
-            },
-            SidebarEntry {
-                slug: "mg-sqli",
-                label: "mg-sqli",
-            },
-            SidebarEntry {
-                slug: "mg-ssti",
-                label: "mg-ssti",
-            },
-            SidebarEntry {
-                slug: "mg-cmdinject",
-                label: "mg-cmdinject",
-            },
-            SidebarEntry {
-                slug: "mg-xxe",
-                label: "mg-xxe",
-            },
-            SidebarEntry {
-                slug: "mg-traversal",
-                label: "mg-traversal",
-            },
-            SidebarEntry {
-                slug: "mg-redirect",
-                label: "mg-redirect",
-            },
-            SidebarEntry {
-                slug: "mg-csrf",
-                label: "mg-csrf",
-            },
-            SidebarEntry {
-                slug: "mg-smuggle",
-                label: "mg-smuggle",
-            },
-            SidebarEntry {
-                slug: "mg-cors-exploit",
-                label: "mg-cors-exploit",
-            },
-            SidebarEntry {
-                slug: "mg-cache-poison",
-                label: "mg-cache-poison",
-            },
-            SidebarEntry {
-                slug: "mg-proto-pollute",
-                label: "mg-proto-pollute",
-            },
-            SidebarEntry {
-                slug: "mg-deser",
-                label: "mg-deser",
-            },
-        ],
+        heading: "Web Vulnerability Scanning",
+        entries: &[SidebarEntry {
+            slug: "mg-webscan",
+            label: "mg-webscan",
+        }],
     },
     SidebarSection {
         heading: "Auth & Session",
@@ -244,12 +186,8 @@ const SIDEBAR: &[SidebarSection] = &[
         ],
     },
     SidebarSection {
-        heading: "SSRF & OOB",
+        heading: "OOB & Cloud SSRF",
         entries: &[
-            SidebarEntry {
-                slug: "mg-ssrf",
-                label: "mg-ssrf",
-            },
             SidebarEntry {
                 slug: "mg-oob",
                 label: "mg-oob",
@@ -361,7 +299,7 @@ const SIDEBAR: &[SidebarSection] = &[
         ],
     },
     SidebarSection {
-        heading: "Retired artifact pages",
+        heading: "Retired pages",
         entries: &[
             SidebarEntry {
                 slug: "mg-apikey",
@@ -386,6 +324,62 @@ const SIDEBAR: &[SidebarSection] = &[
             SidebarEntry {
                 slug: "mg-sourcemap",
                 label: "mg-sourcemap → mg-artifact-audit",
+            },
+            SidebarEntry {
+                slug: "mg-xss",
+                label: "mg-xss → mg-webscan",
+            },
+            SidebarEntry {
+                slug: "mg-sqli",
+                label: "mg-sqli → mg-webscan",
+            },
+            SidebarEntry {
+                slug: "mg-ssrf",
+                label: "mg-ssrf → mg-webscan",
+            },
+            SidebarEntry {
+                slug: "mg-ssti",
+                label: "mg-ssti → mg-webscan",
+            },
+            SidebarEntry {
+                slug: "mg-xxe",
+                label: "mg-xxe → mg-webscan",
+            },
+            SidebarEntry {
+                slug: "mg-traversal",
+                label: "mg-traversal → mg-webscan",
+            },
+            SidebarEntry {
+                slug: "mg-redirect",
+                label: "mg-redirect → mg-webscan",
+            },
+            SidebarEntry {
+                slug: "mg-csrf",
+                label: "mg-csrf → mg-webscan",
+            },
+            SidebarEntry {
+                slug: "mg-cmdinject",
+                label: "mg-cmdinject → mg-webscan",
+            },
+            SidebarEntry {
+                slug: "mg-cors-exploit",
+                label: "mg-cors-exploit → mg-webscan",
+            },
+            SidebarEntry {
+                slug: "mg-cache-poison",
+                label: "mg-cache-poison → mg-webscan",
+            },
+            SidebarEntry {
+                slug: "mg-proto-pollute",
+                label: "mg-proto-pollute → mg-webscan",
+            },
+            SidebarEntry {
+                slug: "mg-deser",
+                label: "mg-deser → mg-webscan",
+            },
+            SidebarEntry {
+                slug: "mg-smuggle",
+                label: "mg-smuggle → mg-webscan",
             },
         ],
     },
@@ -420,10 +414,6 @@ const SIDEBAR: &[SidebarSection] = &[
             SidebarEntry {
                 slug: "mg-timeline",
                 label: "mg-timeline",
-            },
-            SidebarEntry {
-                slug: "mg-nuclei-bridge",
-                label: "mg-nuclei-bridge",
             },
             SidebarEntry {
                 slug: "mg-dns-rebind",
