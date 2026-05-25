@@ -8,7 +8,18 @@
   <meta property="og:description" content="{{ self.description() }}">
   <meta property="og:type" content="website">
   <title>{{ self.title() }}</title>
-  <link rel="stylesheet" href="/static/css/style.css?v=20260524-dracula">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("theme");
+        if (t !== "light" && t !== "dark") {
+          t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        }
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="/static/css/style.css?v=20260525-themed">
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
@@ -16,12 +27,15 @@
   <header class="site-header">
     <nav class="site-nav" aria-label="Primary navigation">
       <a class="brand" href="/">machinageist</a>
-      <div class="nav-links">
-        <a href="/about"     class="nav-link{% if self.section() == "about"     %} is-active{% endif %}">About</a>
-        <a href="/portfolio" class="nav-link{% if self.section() == "portfolio" %} is-active{% endif %}">Portfolio</a>
-        <a href="/blog"      class="nav-link{% if self.section() == "writing"   %} is-active{% endif %}">Writing</a>
-        <a href="/wiki"      class="nav-link{% if self.section() == "wiki"      %} is-active{% endif %}">Wiki</a>
-        <a href="/releases"  class="nav-link{% if self.section() == "releases"  %} is-active{% endif %}">Releases</a>
+      <div class="nav-right">
+        <div class="nav-links">
+          <a href="/about"     class="nav-link{% if self.section() == "about"     %} is-active{% endif %}">About</a>
+          <a href="/portfolio" class="nav-link{% if self.section() == "portfolio" %} is-active{% endif %}">Portfolio</a>
+          <a href="/blog"      class="nav-link{% if self.section() == "writing"   %} is-active{% endif %}">Writing</a>
+          <a href="/wiki"      class="nav-link{% if self.section() == "wiki"      %} is-active{% endif %}">Wiki</a>
+          <a href="/releases"  class="nav-link{% if self.section() == "releases"  %} is-active{% endif %}">Releases</a>
+        </div>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle light/dark theme"></button>
       </div>
     </nav>
   </header>
@@ -35,11 +49,11 @@
       <span>machinageist.dev &mdash; Jeff Cincoski</span>
       <nav aria-label="Footer navigation">
         <a href="https://github.com/machinageist/mg-server" rel="noopener noreferrer">Source</a>
-        <span>updated on: 2026-05-18</span>
+        <span>updated on: 2026-05-24</span>
       </nav>
     </div>
   </footer>
 
-  <script src="/static/js/main.js?v=20260522"></script>
+  <script src="/static/js/main.js?v=20260525-themed"></script>
 </body>
 </html>
