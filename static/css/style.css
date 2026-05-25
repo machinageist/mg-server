@@ -520,6 +520,11 @@ hr {
     border-right: 1px solid #44475a;
 }
 
+/* wide screens: nav is always expanded, toggle hidden */
+.wiki-nav > summary {
+    display: none;
+}
+
 .wiki-sidebar nav {
     display:        flex;
     flex-direction: column;
@@ -571,5 +576,37 @@ hr {
         border-right:   none;
         border-bottom:  1px solid #44475a;
         padding-bottom: 1rem;
+    }
+
+    /* narrow screens: collapse the nav behind a toggle */
+    .wiki-nav > summary {
+        display:     block;
+        cursor:      pointer;
+        color:       #bd93f9;
+        font-size:   0.85rem;
+        padding:     0.15rem 0;
+        list-style:  none;
+    }
+
+    .wiki-nav > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .wiki-nav > summary::before {
+        content:       "\25B8 ";
+        display:       inline-block;
+        transition:    transform 0.15s ease;
+    }
+
+    .wiki-nav[open] > summary::before {
+        transform: rotate(90deg);
+    }
+
+    .wiki-nav:not([open]) > nav {
+        display: none;
+    }
+
+    .wiki-nav > nav {
+        margin-top: 0.75rem;
     }
 }

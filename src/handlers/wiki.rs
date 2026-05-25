@@ -564,10 +564,19 @@ mod tests {
         }
         .render()
         .expect("template renders");
-        // The active entry's <li> carries class="active" and contains the slug
-        let needle = "<li class=\"active\">\n            \n            <a href=\"/wiki/mg-aifuzz\">mg-aifuzz</a>";
+        // Exactly one entry is active, and its <li> wraps the mg-aifuzz link
+        assert_eq!(
+            html.matches("class=\"active\"").count(),
+            1,
+            "exactly one sidebar entry should be active"
+        );
+        let active_li = html
+            .split("<li class=\"active\">")
+            .nth(1)
+            .and_then(|rest| rest.split("</li>").next())
+            .expect("an active sidebar entry should exist");
         assert!(
-            html.contains(needle),
+            active_li.contains("/wiki/mg-aifuzz"),
             "expected mg-aifuzz to be the active sidebar entry"
         );
     }

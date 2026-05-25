@@ -2,24 +2,27 @@
 {% block content %}
 <div class="wiki-layout">
   <aside class="wiki-sidebar" aria-label="Wiki navigation">
-    <nav>
-      {% for section in sidebar %}
-      <section class="wiki-section">
-        <h2>{{ section.heading }}</h2>
-        <ul>
-          {% for entry in section.entries %}
-          <li{% if entry.slug == active_slug %} class="active"{% endif %}>
-            {% if entry.slug == "index" %}
-            <a href="/wiki">{{ entry.label }}</a>
-            {% else %}
-            <a href="/wiki/{{ entry.slug }}">{{ entry.label }}</a>
-            {% endif %}
-          </li>
-          {% endfor %}
-        </ul>
-      </section>
-      {% endfor %}
-    </nav>
+    <details class="wiki-nav">
+      <summary>Wiki navigation</summary>
+      <nav>
+        {% for section in sidebar %}
+        <section class="wiki-section">
+          <h2>{{ section.heading }}</h2>
+          <ul>
+            {% for entry in section.entries %}
+            <li{% if entry.slug == active_slug %} class="active"{% endif %}>
+              {% if entry.slug == "index" %}
+              <a href="/wiki">{{ entry.label }}</a>
+              {% else %}
+              <a href="/wiki/{{ entry.slug }}">{{ entry.label }}</a>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+        </section>
+        {% endfor %}
+      </nav>
+    </details>
   </aside>
 
   <article class="wiki-article article-page">
