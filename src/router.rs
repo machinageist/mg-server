@@ -40,8 +40,12 @@ pub fn build() -> Router {
         // Capture :slug as a single path segment, passed to handler as Path<String>
         .route("/blog/:slug", get(blog::post))
         .route("/releases", get(releases::list))
-        // RFC 9116 security disclosure contact
+        // RFC 9116 security disclosure contact. Serve both the canonical
+        // well-known URL and root fallback for scanners that check either path.
         .route("/.well-known/security.txt", get(well_known::security_txt))
+        .route("/security.txt", get(well_known::security_txt))
+        // Explicit crawler policy for AI bots that ignore Cloudflare's content signals
+        .route("/robots.txt", get(well_known::robots_txt))
         // Map /static/* URL prefix to ./static/ directory on disk
         .nest_service("/static", ServeDir::new("static"))
         // -----------------------------------------------------------------------
