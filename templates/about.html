@@ -5,98 +5,28 @@
   <h1>About</h1>
   <p class="bio">{{ bio }}</p>
 
-  <h2>Role focus</h2>
+  <h2>What I work with</h2>
   <ul class="about-list">
-    <li>
-      <strong>Systems Administrator (Linux/Windows, junior)</strong> &mdash;
-      users and permissions, systemd services, package and storage management,
-      and service operations on hardware I actually run.
-    </li>
-    <li>
-      <strong>NOC / Network Operations</strong> &mdash;
-      DNS and HTTP triage, subnet/VLAN mapping, request-path documentation,
-      CLI diagnostics, and structured incident notes that say what broke, how it
-      was checked, and what remains fragile.
-    </li>
+    <li><strong>Systems:</strong> Linux, systemd, journald, and a Proxmox homelab &mdash; VMs, a small cluster, backups, monitoring.</li>
+    <li><strong>Networking:</strong> DNS, subnetting and VLANs, the Cloudflare Tunnel &rarr; Caddy &rarr; mg-server request path, and CLI diagnostics (<code>dig</code>, <code>ss</code>, <code>curl</code>).</li>
+    <li><strong>Automation:</strong> Rust and Python for small operations tools, health checks, and reports.</li>
+    <li><strong>Security:</strong> HTTP headers, SSH and TLS hardening, and auth-log detection, on things I own.</li>
   </ul>
 
-  <h2>Portfolio pillars</h2>
-  <ul class="about-list">
-    <li><strong>Homelab &amp; Proxmox:</strong> node baseline, VM fleet, backup/restore, and monitoring on a mini-PC Proxmox server.</li>
-    <li><strong>Networking:</strong> DNS, subnetting/VLANs, the Cloudflare Tunnel &rarr; Caddy &rarr; mg-server request path, and <code>dig</code>/<code>ss</code>/<code>curl</code> diagnostics (the Network+ lane).</li>
-    <li><strong>Linux / SysAdmin:</strong> systemd, journald, users and permissions, service lifecycle, and small Bash/Python automation.</li>
-    <li><strong>Security (defensive, small):</strong> HTTP security headers, SSH hardening, TLS, and auth-log detection &mdash; owned scope only, built to grow after Security+.</li>
-    <li><strong>Certification journey:</strong> Network+ &rarr; Security+ &rarr; Linux+ &rarr; Server+, targeted for January 2027, each cert anchored to a homelab project.</li>
-  </ul>
-
-  <h2>Approach</h2>
+  <h2>Certifications</h2>
   <p>
-    Evidence before titles. Each public artifact should show the starting state,
-    commands or configs used, what failed or could fail, verification output,
-    what I understand now, and what I still need to learn. "In training / building
-    toward" is stated plainly, not hidden. The work is written up on
-    <a href="/blog">the blog</a>.
+    Working through CompTIA Network+, Security+, Linux+, and Server+, each one tied
+    to a homelab project.
   </p>
 
-  <h2>Where this could lead &mdash; fields I'm drawn to</h2>
+  <h2>Further out</h2>
   <p>
-    The SysAdmin/NOC work above comes first; everything in this section is
-    subordinate to it and to getting the fundamentals right. But I'm in this for
-    the long haul, and a few fields genuinely pull at me. These are
-    <strong>interests and possible directions &mdash; not current skills,
-    credentials, or commitments</strong>. They may be on the table as the
-    foundation matures; none of them is a promise.
-  </p>
-  <ul class="about-list">
-    <li>
-      <strong>AI infrastructure &amp; platform engineering</strong> &mdash; the
-      natural horizon past operations: cloud, infrastructure-as-code, containers
-      and Kubernetes, observability, and eventually the GPU / distributed-systems
-      and high-performance-networking side of AI infrastructure. It builds
-      directly on the Linux, networking, and homelab work, which is why it draws
-      me most.
-    </li>
-    <li>
-      <strong>Open &amp; heterogeneous hardware</strong> &mdash; FPGA, RISC-V, and
-      photonic / optical interconnect, and how AI workloads actually run across
-      different silicon. A curiosity I'd like to explore, not a claim.
-    </li>
-    <li>
-      <strong>Resilient &amp; off-grid compute and comms</strong> &mdash;
-      Meshtastic / LoRa mesh networks, cyberdecks, and solar-powered nodes:
-      systems built to keep working off the grid.
-    </li>
-    <li>
-      <strong>Adaptive, secure, auditable AI systems</strong> &mdash; a
-      longer-horizon research interest in agents that learn over time and can
-      still be inspected and controlled. Honestly a moonshot &mdash; something
-      worth pursuing eventually, not something I've started or can claim.
-    </li>
-    <li>
-      <strong>Robotics, edge AI, and biosensing</strong> &mdash; later, careful
-      interests at the edges of the above, named as directions rather than plans.
-    </li>
-    <li>
-      <strong>Independent, self-directed work</strong> &mdash; over time, building
-      a consultable infrastructure niche rather than only climbing an employed
-      ladder. I don't have to choose the path yet.
-    </li>
-  </ul>
-  <p>
-    If any of these becomes real, it will show up here as evidence held to the
-    same standard as everything else &mdash; not as a title claimed ahead of the
-    work.
+    Past the day-to-day, I&rsquo;m drawn to AI infrastructure and platform work, open
+    and heterogeneous hardware (FPGA, RISC-V, photonics), resilient off-grid compute
+    and comms, and adaptive, auditable AI systems. Interests, mostly &mdash; the kind
+    of thing I&rsquo;d chase once the foundation is solid.
   </p>
 
-  <h2>What I am not claiming yet</h2>
-  <p>
-    This portfolio is not claiming senior DevOps, SRE, production network
-    engineering, a passed certification before it is passed, penetration testing,
-    AI infrastructure engineering, or advanced Rust backend expertise. Some of
-    those (AI infrastructure, for one) are fields I'm drawn to above &mdash; but an
-    interest is not a credential, and those labels wait until the evidence supports
-    them directly.
-    Location: Portland, OR &mdash; relocating to the South Bay Area.
-  </p>
+  <p class="bio-loc">Portland, OR &mdash; heading for the South Bay.</p>
 </section>
 {% endblock %}

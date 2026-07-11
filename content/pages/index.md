@@ -15,12 +15,9 @@ tags: [reference, geistscope, archive, ai-experiment, scope-control]
 > honest full story is in the
 > [GeistScope retrospective](/blog/geistscope-retrospective).
 
-This section keeps the GeistScope tool notes reachable as a reference archive. It
-is **not the lead resume artifact** for the current `machinageist.dev` portfolio.
-The active work is the Systems Administrator / NOC track — a Proxmox homelab,
-networking, Linux, a small defensive-security section, and the certification
-journey. Start with [Start Here](/start-here), [Portfolio](/portfolio), and
-[Writing](/blog).
+This section keeps the GeistScope tool notes reachable as a reference archive.
+It's older work &mdash; start with the [projects](/portfolio) and
+[writing](/blog) instead.
 
 ## Why the notes are kept
 

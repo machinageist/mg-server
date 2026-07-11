@@ -76,60 +76,45 @@ pub fn all() -> Vec<Project> {
     vec![
         Project {
             name: "Homelab project 1 — internal DNS + network map",
-            description: "Anchors Network+. Building an internal resolver (Pi-hole/dnsmasq) with local records \
-                          for the Proxmox lab, a subnet/VLAN + service map that now spans a three-node Proxmox \
-                          cluster over a shared managed switch, the bridges and VM IPs, and the Cloudflare Tunnel \
-                          to Caddy to mg-server path, plus a dig/nslookup/ping/curl/ss troubleshooting writeup \
-                          captured before and after breaking one record. Safe claim: implemented and validated \
-                          internal DNS for a Proxmox homelab and documented its subnet layout and \
-                          name-resolution troubleshooting. Evidence in progress — the two new nodes and switch \
-                          are being brought up now; not resume-facing until the writeup and command output are \
-                          captured.",
+            description: "An internal DNS resolver (Pi-hole/dnsmasq) for the Proxmox lab, a subnet/VLAN and \
+                          service map now spanning a three-node cluster over a shared managed switch, and a \
+                          dig/nslookup/ss name-resolution writeup captured before and after breaking a record. \
+                          Anchored to Network+.",
             tags: &["homelab", "networking", "dns", "proxmox", "network+"],
             url: None,
             status: ProjectStatus::InProgress,
         },
         Project {
             name: "Homelab project 2 — harden & monitor the homelab",
-            description: "Anchors Security+ (planned for the Security+ phase). A host-hardening pass on a VM and \
-                          mg-server (key-only SSH, host firewall, non-root service users, unattended updates), a \
-                          security-headers audit of machinageist.dev, and a log-based failed-login detector with \
-                          triage notes. Safe claim: hardened Linux hosts and built a failed-login detector on an \
-                          owned homelab. Planned — artifacts not yet captured.",
+            description: "A hardening pass across a lab VM and this server — key-only SSH, a host firewall, \
+                          non-root service users, unattended updates — a security-headers audit of the site, and \
+                          a log-based failed-login detector with triage notes. Anchored to Security+.",
             tags: &["homelab", "security", "linux", "hardening", "security+"],
             url: None,
             status: ProjectStatus::InProgress,
         },
         Project {
             name: "Homelab project 3 — Proxmox cluster ops: backup/restore, monitoring, HA",
-            description: "Anchors Server+ and pulls in Linux+ automation (planned for the Server+/Linux+ phase). \
-                          A Proxmox baseline and asset inventory across the three-node cluster, a validated VM \
-                          backup and restore with RPO/RTO notes, a monitoring stack, structured NOC-style incident \
-                          reports, and high availability as the later capstone. Honest sequencing: nodes joined and \
-                          quorum validated first, HA claimed only once failover is actually measured — not HA yet. \
-                          Safe claim: documented a small Proxmox cluster and validated VM backup/restore with \
-                          monitoring and incident reports. Planned — artifacts not yet captured.",
+            description: "The three-node Proxmox cluster's operations: a baseline and asset inventory, a validated \
+                          VM backup and restore with RPO/RTO notes, a monitoring stack, structured incident \
+                          write-ups, and high availability as the capstone. Anchored to Server+ and Linux+.",
             tags: &["homelab", "proxmox", "backup", "monitoring", "server+"],
             url: None,
             status: ProjectStatus::InProgress,
         },
         Project {
             name: "mg-server",
-            description: "The Rust/Axum application that serves this site — a narrow, honest self-hosting artifact. \
-                          Axum routes, Askama templates, flat-file Markdown content, request tracing, defensive \
-                          response headers, and rate limiting, deployed on a Proxmox Debian VM behind Caddy and a \
-                          Cloudflare Tunnel. Supports Linux service-operations and request-path discussions without \
-                          overstating backend engineering seniority.",
+            description: "The Rust/Axum app that serves this site: routes, Askama templates, flat-file Markdown, \
+                          request tracing, defensive response headers, and rate limiting, on a Proxmox Debian VM \
+                          behind Caddy and a Cloudflare Tunnel.",
             tags: &["rust", "axum", "linux-service", "self-hosting", "headers"],
             url: Some("https://github.com/machinageist/mg-server"),
             status: ProjectStatus::Active,
         },
         Project {
             name: "Certification track — Network+ to Server+ by Jan 2027",
-            description: "The through-line for this portfolio: Network+ then Security+ then Linux+ then Server+, \
-                          each cert anchored to one of the homelab projects above. Progress is stated honestly — a \
-                          cert is listed as passed only once it is passed. Writeups link back from each cert phase \
-                          as the homelab evidence is captured.",
+            description: "Network+, Security+, Linux+, then Server+, each one anchored to a homelab project above. \
+                          Writeups link from each as the work lands.",
             tags: &["comptia", "network+", "security+", "linux+", "server+"],
             url: None,
             status: ProjectStatus::InProgress,

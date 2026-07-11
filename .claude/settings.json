@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=\"$(jq -r '.tool_input.command // empty')\"; if printf '%s' \"$cmd\" | grep -q 'git commit'; then cd \"$(git rev-parse --show-toplevel)\" && perl -i -pe 'BEGIN{chomp($d=`date +%F`)} s/updated on: \\d{4}-\\d{2}-\\d{2}/updated on: $d/' templates/base.html && git add templates/base.html; fi 2>/dev/null; true",
+            "statusMessage": "Stamping footer date"
+          }
+        ]
+      }
+    ]
+  }
+}

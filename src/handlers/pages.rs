@@ -33,7 +33,7 @@ impl IndexTemplate {
         "machinageist"
     }
     pub fn description(&self) -> &str {
-        "Systems Administrator / NOC Technician (in training). An evidence-first infrastructure-support portfolio around a Proxmox homelab, networking, Linux, and a four-CompTIA-cert journey."
+        "Homelab, networking, and Linux notes from machinageist — a Proxmox lab, CompTIA study, and the projects that come out of it."
     }
     pub fn section(&self) -> &str {
         "home"
@@ -45,32 +45,6 @@ pub async fn home() -> impl IntoResponse {
     IndexTemplate {
         name: "machinageist".to_string(),
     }
-}
-
-// -----------------------------------------------------------------------
-// Start Here page — start_here.html
-// -----------------------------------------------------------------------
-
-#[derive(Template)]
-#[template(path = "start_here.html")]
-pub struct StartHereTemplate;
-
-impl StartHereTemplate {
-    // Supply page title to base.html <title> slot
-    pub fn title(&self) -> &str {
-        "Start Here — machinageist"
-    }
-    pub fn description(&self) -> &str {
-        "Start here for machinageist.dev: an evidence-first portfolio for Systems Administrator and NOC roles, built around a Proxmox homelab, networking, Linux, and a four-CompTIA-cert journey."
-    }
-    pub fn section(&self) -> &str {
-        "start"
-    }
-}
-
-// Render reviewer orientation page
-pub async fn start_here() -> impl IntoResponse {
-    StartHereTemplate
 }
 
 // -----------------------------------------------------------------------
@@ -89,7 +63,7 @@ impl AboutTemplate {
         "About — machinageist"
     }
     pub fn description(&self) -> &str {
-        "About Jeff Cincoski, a Systems Administrator / NOC Technician in training documenting a Proxmox homelab, networking, Linux service operations, and a four-CompTIA-cert journey."
+        "About Jeff Cincoski — a Proxmox homelab, networking and Linux operations, small automation, and CompTIA study."
     }
     pub fn section(&self) -> &str {
         "about"
@@ -99,12 +73,8 @@ impl AboutTemplate {
 // Render about page with bio text
 pub async fn about() -> impl IntoResponse {
     AboutTemplate {
-        bio: "Systems Administrator / NOC Technician in training. I run a Proxmox homelab as an \
-              operations lab and document the work: homelab and networking writeups as the content \
-              engine, Linux service operations, and small support automation. The through-line is a \
-              four-CompTIA-cert journey — Network+ then Security+ then Linux+ then Server+, targeted \
-              for January 2027 — with each cert anchored to a homelab project. Portland, OR, \
-              relocating to the South Bay Area."
+        bio: "I'm Jeff. I run a homelab, write about what breaks and how I fix it, and I'm working \
+              through the CompTIA stack. Most of what's here comes out of hardware I own and operate."
             .to_string(),
     }
 }
@@ -126,7 +96,7 @@ impl PortfolioTemplate {
         "Portfolio — machinageist"
     }
     pub fn description(&self) -> &str {
-        "Homelab operations projects, this self-hosted site, and a four-CompTIA-cert track — the SysAdmin/NOC portfolio artifacts machinageist is building with real commands and verification."
+        "The homelab projects, this self-hosted site, and the CompTIA track — what machinageist builds and runs."
     }
     pub fn section(&self) -> &str {
         "portfolio"
@@ -146,19 +116,21 @@ mod tests {
     use askama::Template;
 
     #[test]
-    fn home_page_frames_site_as_sysadmin_noc_portfolio() {
+    fn home_page_shows_concrete_work_without_strategy_narration() {
         let html = IndexTemplate {
             name: "machinageist".to_string(),
         }
         .render()
         .expect("home template renders");
 
-        // Lead identity + pillars + cert through-line
-        assert!(html.contains("Systems Administrator"));
-        assert!(html.contains("NOC"));
-        assert!(html.contains("infrastructure-support portfolio"));
+        // Concrete work, shown not told
         assert!(html.contains("homelab"));
-        assert!(html.contains("certification journey"));
+        assert!(html.contains("Proxmox"));
+        assert!(html.contains("CompTIA"));
+        // Quiet confidence: no self-describing strategy meta-copy
+        assert!(!html.contains("infrastructure-support"));
+        assert!(!html.contains("in training"));
+        assert!(!html.contains("evidence-first"));
         // Anti-overclaim guards — no offensive/senior first-person framing
         assert!(!html.contains("security engineer"));
         assert!(!html.contains("offensive security"));
@@ -166,46 +138,24 @@ mod tests {
     }
 
     #[test]
-    fn about_page_keeps_claims_conservative_and_role_aligned() {
+    fn about_page_describes_work_plainly_without_disclaimers() {
         let html = AboutTemplate {
-            bio: "Systems Administrator / NOC Technician in training.".to_string(),
+            bio: "I run a homelab and work through the CompTIA stack.".to_string(),
         }
         .render()
         .expect("about template renders");
 
-        // Lead roles + pillar structure
-        assert!(html.contains("Systems Administrator"));
-        assert!(html.contains("NOC"));
-        assert!(html.contains("Homelab"));
-        assert!(html.contains("Certification journey"));
-        assert!(html.contains("What I am not claiming yet"));
-        // Long-term aspirations are framed as interests, not commitments
-        assert!(html.contains("fields I'm drawn to"));
-        assert!(html.contains("not current skills"));
-        // Anti-overclaim guards
+        // Plain description of the actual work
+        assert!(html.contains("What I work with"));
+        assert!(html.contains("Certifications"));
+        assert!(html.contains("homelab"));
+        // Show, don't tell: no defensive/strategy sections
+        assert!(!html.contains("What I am not claiming yet"));
+        assert!(!html.contains("in training"));
+        assert!(!html.contains("evidence-first"));
+        // Anti-overclaim guards still hold
         assert!(!html.contains("security engineer"));
         assert!(!html.contains("red-team"));
         assert!(!html.contains("offensive security"));
-    }
-
-    #[test]
-    fn start_here_page_orients_reviewers_to_evidence_and_next_paths() {
-        let html = StartHereTemplate
-            .render()
-            .expect("start-here template renders");
-
-        assert!(html.contains("Start Here"));
-        assert!(html.contains("~/tech-skill-up/"));
-        assert!(html.contains("Evidence standard"));
-        assert!(html.contains("First reviewer paths"));
-        assert!(html.contains("What this portfolio is not claiming"));
-        assert!(html.contains("Systems Administrator"));
-        assert!(html.contains("NOC"));
-        assert!(html.contains("Certification journey"));
-        assert!(html.contains("not claiming production-grade infrastructure"));
-        // Anti-overclaim guards
-        assert!(!html.contains("red-team"));
-        assert!(!html.contains("offensive security"));
-        assert!(!html.contains(">Releases</a>"));
     }
 }

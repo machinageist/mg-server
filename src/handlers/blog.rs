@@ -64,7 +64,7 @@ impl BlogListTemplate {
         "Writing — machinageist"
     }
     pub fn description(&self) -> &str {
-        "Homelab, networking, Linux/SysAdmin, and defensive-security writeups, plus notes tracking a four-CompTIA-cert journey."
+        "Notes on the homelab, networking, Linux, and defensive security by machinageist — mostly what broke and how it got fixed."
     }
     pub fn section(&self) -> &str {
         "writing"

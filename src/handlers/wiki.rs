@@ -542,8 +542,8 @@ mod tests {
             "overview should frame wiki as a reference archive, not the primary portfolio path"
         );
         assert!(
-            html.contains("not the lead resume artifact"),
-            "overview should demote GeistScope for the current portfolio campaign"
+            html.contains("older work"),
+            "overview should quietly frame GeistScope as older, secondary work"
         );
         assert!(
             html.contains("generative-AI experimentation"),

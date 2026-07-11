@@ -32,7 +32,6 @@ pub fn build() -> Router {
     // -----------------------------------------------------------------------
     Router::new()
         .route("/", get(pages::home))
-        .route("/start-here", get(pages::start_here))
         .route("/about", get(pages::about))
         .route("/portfolio", get(pages::portfolio))
         .route("/blog", get(blog::list))

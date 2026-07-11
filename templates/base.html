@@ -20,6 +20,7 @@
     })();
   </script>
   <link rel="stylesheet" href="/static/css/style.css?v=20260711-wiki-disclaimer">
+  {% block head_extra %}{% endblock %}
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
@@ -29,7 +30,6 @@
       <a class="brand" href="/">machinageist</a>
       <div class="nav-right">
         <div class="nav-links">
-          <a href="/start-here" class="nav-link{% if self.section() == "start"     %} is-active{% endif %}">Start Here</a>
           <a href="/about"     class="nav-link{% if self.section() == "about"     %} is-active{% endif %}">About</a>
           <a href="/portfolio" class="nav-link{% if self.section() == "portfolio" %} is-active{% endif %}">Portfolio</a>
           <a href="/blog"      class="nav-link{% if self.section() == "writing"   %} is-active{% endif %}">Writing</a>
@@ -49,11 +49,12 @@
       <span>machinageist.dev &mdash; Jeff Cincoski</span>
       <nav aria-label="Footer navigation">
         <a href="https://github.com/machinageist/mg-server" rel="noopener noreferrer">Source</a>
-        <span>updated on: 2026-07-10</span>
+        <span>updated on: 2026-07-11</span>
       </nav>
     </div>
   </footer>
 
   <script src="/static/js/main.js?v=20260525-themed"></script>
+  {% block scripts %}{% endblock %}
 </body>
 </html>
