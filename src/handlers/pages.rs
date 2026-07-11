@@ -33,7 +33,7 @@ impl IndexTemplate {
         "machinageist"
     }
     pub fn description(&self) -> &str {
-        "Systems programmer and security engineer building Rust security tooling, technical writing, and the machinageist.dev server."
+        "Systems Administrator / NOC Technician (in training). An evidence-first infrastructure-support portfolio around a Proxmox homelab, networking, Linux, and a four-CompTIA-cert journey."
     }
     pub fn section(&self) -> &str {
         "home"
@@ -45,6 +45,32 @@ pub async fn home() -> impl IntoResponse {
     IndexTemplate {
         name: "machinageist".to_string(),
     }
+}
+
+// -----------------------------------------------------------------------
+// Start Here page — start_here.html
+// -----------------------------------------------------------------------
+
+#[derive(Template)]
+#[template(path = "start_here.html")]
+pub struct StartHereTemplate;
+
+impl StartHereTemplate {
+    // Supply page title to base.html <title> slot
+    pub fn title(&self) -> &str {
+        "Start Here — machinageist"
+    }
+    pub fn description(&self) -> &str {
+        "Start here for machinageist.dev: an evidence-first portfolio for Systems Administrator and NOC roles, built around a Proxmox homelab, networking, Linux, and a four-CompTIA-cert journey."
+    }
+    pub fn section(&self) -> &str {
+        "start"
+    }
+}
+
+// Render reviewer orientation page
+pub async fn start_here() -> impl IntoResponse {
+    StartHereTemplate
 }
 
 // -----------------------------------------------------------------------
@@ -63,7 +89,7 @@ impl AboutTemplate {
         "About — machinageist"
     }
     pub fn description(&self) -> &str {
-        "About Jeff Cincoski, a systems programmer and security engineer focused on Rust, offensive security tooling, and infrastructure."
+        "About Jeff Cincoski, a Systems Administrator / NOC Technician in training documenting a Proxmox homelab, networking, Linux service operations, and a four-CompTIA-cert journey."
     }
     pub fn section(&self) -> &str {
         "about"
@@ -73,10 +99,12 @@ impl AboutTemplate {
 // Render about page with bio text
 pub async fn about() -> impl IntoResponse {
     AboutTemplate {
-        bio: "Systems programmer and security engineer. I build tools in Rust — an offensive \
-              security toolchain, the server you're reading this on, and production software \
-              for real clients. I came to web security from C and x86 assembly, which shapes \
-              how I think about trust boundaries and failure modes. Based in Portland, OR."
+        bio: "Systems Administrator / NOC Technician in training. I run a Proxmox homelab as an \
+              operations lab and document the work: homelab and networking writeups as the content \
+              engine, Linux service operations, and small support automation. The through-line is a \
+              four-CompTIA-cert journey — Network+ then Security+ then Linux+ then Server+, targeted \
+              for January 2027 — with each cert anchored to a homelab project. Portland, OR, \
+              relocating to the South Bay Area."
             .to_string(),
     }
 }
@@ -98,7 +126,7 @@ impl PortfolioTemplate {
         "Portfolio — machinageist"
     }
     pub fn description(&self) -> &str {
-        "Selected Rust security tooling, systems programming projects, and infrastructure work by machinageist."
+        "Homelab operations projects, this self-hosted site, and a four-CompTIA-cert track — the SysAdmin/NOC portfolio artifacts machinageist is building with real commands and verification."
     }
     pub fn section(&self) -> &str {
         "portfolio"
@@ -109,5 +137,72 @@ impl PortfolioTemplate {
 pub async fn portfolio() -> impl IntoResponse {
     PortfolioTemplate {
         projects: project::all(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use askama::Template;
+
+    #[test]
+    fn home_page_frames_site_as_sysadmin_noc_portfolio() {
+        let html = IndexTemplate {
+            name: "machinageist".to_string(),
+        }
+        .render()
+        .expect("home template renders");
+
+        // Lead identity + pillars + cert through-line
+        assert!(html.contains("Systems Administrator"));
+        assert!(html.contains("NOC"));
+        assert!(html.contains("infrastructure-support portfolio"));
+        assert!(html.contains("homelab"));
+        assert!(html.contains("certification journey"));
+        // Anti-overclaim guards — no offensive/senior first-person framing
+        assert!(!html.contains("security engineer"));
+        assert!(!html.contains("offensive security"));
+        assert!(!html.contains("red-team"));
+    }
+
+    #[test]
+    fn about_page_keeps_claims_conservative_and_role_aligned() {
+        let html = AboutTemplate {
+            bio: "Systems Administrator / NOC Technician in training.".to_string(),
+        }
+        .render()
+        .expect("about template renders");
+
+        // Lead roles + pillar structure
+        assert!(html.contains("Systems Administrator"));
+        assert!(html.contains("NOC"));
+        assert!(html.contains("Homelab"));
+        assert!(html.contains("Certification journey"));
+        assert!(html.contains("What I am not claiming yet"));
+        // Anti-overclaim guards
+        assert!(!html.contains("security engineer"));
+        assert!(!html.contains("red-team"));
+        assert!(!html.contains("offensive security"));
+    }
+
+    #[test]
+    fn start_here_page_orients_reviewers_to_evidence_and_next_paths() {
+        let html = StartHereTemplate
+            .render()
+            .expect("start-here template renders");
+
+        assert!(html.contains("Start Here"));
+        assert!(html.contains("~/tech-skill-up/"));
+        assert!(html.contains("Evidence standard"));
+        assert!(html.contains("First reviewer paths"));
+        assert!(html.contains("What this portfolio is not claiming"));
+        assert!(html.contains("Systems Administrator"));
+        assert!(html.contains("NOC"));
+        assert!(html.contains("Certification journey"));
+        assert!(html.contains("not claiming production-grade infrastructure"));
+        // Anti-overclaim guards
+        assert!(!html.contains("red-team"));
+        assert!(!html.contains("offensive security"));
+        assert!(!html.contains(">Releases</a>"));
     }
 }

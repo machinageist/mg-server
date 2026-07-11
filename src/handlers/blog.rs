@@ -28,15 +28,34 @@ use std::path::PathBuf;
 // Canonical path to posts directory — single definition prevents typo drift
 const POSTS_DIR: &str = "content/posts";
 
+// Portfolio pillars, in display order. A post's `category` frontmatter field is
+// matched against these to group the blog list. Posts with no category (or a
+// category outside this set) fall into the trailing "Other writing" group.
+const PILLARS: &[&str] = &[
+    "Homelab & Proxmox",
+    "Networking",
+    "Linux / SysAdmin",
+    "Security",
+];
+
+// Heading for posts that do not belong to a named pillar
+const OTHER_GROUP: &str = "Other writing";
+
 // -----------------------------------------------------------------------
 // Blog list page — blog_list.html
 // -----------------------------------------------------------------------
 
+// One pillar section in the grouped blog list
+pub struct PostGroup {
+    pub label: String,
+    pub posts: Vec<BlogPost>,
+}
+
 #[derive(Template)]
 #[template(path = "blog_list.html")]
 pub struct BlogListTemplate {
-    // Vec sorted newest-first by BlogPost::load_all()
-    pub posts: Vec<BlogPost>,
+    // Non-empty pillar groups in PILLARS order, then "Other writing"
+    pub groups: Vec<PostGroup>,
 }
 
 impl BlogListTemplate {
@@ -45,19 +64,58 @@ impl BlogListTemplate {
         "Writing — machinageist"
     }
     pub fn description(&self) -> &str {
-        "Technical writing on Rust, systems programming, security tooling, and infrastructure."
+        "Homelab, networking, Linux/SysAdmin, and defensive-security writeups, plus notes tracking a four-CompTIA-cert journey."
     }
     pub fn section(&self) -> &str {
         "writing"
     }
 }
 
-// Scan posts directory, load all posts, render index page
+// Scan posts directory, load all posts, group them by pillar, render index page
 pub async fn list() -> Result<impl IntoResponse, SiteError> {
     let posts_dir = PathBuf::from(POSTS_DIR);
     // ? propagates SiteError::Io if directory read fails
     let posts = BlogPost::load_all(&posts_dir)?;
-    Ok(BlogListTemplate { posts })
+    Ok(BlogListTemplate {
+        groups: group_by_pillar(posts),
+    })
+}
+
+// Bucket posts into pillar groups (PILLARS order) plus a trailing "Other writing"
+// group; drop empty groups. Input order (newest-first) is preserved within each.
+fn group_by_pillar(posts: Vec<BlogPost>) -> Vec<PostGroup> {
+    let mut groups: Vec<PostGroup> = Vec::new();
+
+    for &pillar in PILLARS {
+        let matched: Vec<BlogPost> = posts
+            .iter()
+            .filter(|p| p.category.as_deref() == Some(pillar))
+            .cloned()
+            .collect();
+        if !matched.is_empty() {
+            groups.push(PostGroup {
+                label: pillar.to_string(),
+                posts: matched,
+            });
+        }
+    }
+
+    // Anything without a recognized pillar category lands here
+    let other: Vec<BlogPost> = posts
+        .into_iter()
+        .filter(|p| match p.category.as_deref() {
+            Some(c) => !PILLARS.contains(&c),
+            None => true,
+        })
+        .collect();
+    if !other.is_empty() {
+        groups.push(PostGroup {
+            label: OTHER_GROUP.to_string(),
+            posts: other,
+        });
+    }
+
+    groups
 }
 
 // -----------------------------------------------------------------------
@@ -96,4 +154,43 @@ pub async fn post(Path(slug): Path<String>) -> Result<impl IntoResponse, SiteErr
     // ? returns 404 via SiteError::PostNotFound if file doesn't exist
     let post = BlogPost::find(&posts_dir, &slug)?;
     Ok(BlogPostTemplate { post })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use chrono::NaiveDate;
+
+    // Build a minimal post carrying only the fields grouping cares about
+    fn post(slug: &str, category: Option<&str>) -> BlogPost {
+        BlogPost {
+            slug: slug.to_string(),
+            title: slug.to_string(),
+            date: NaiveDate::from_ymd_opt(2026, 1, 1).unwrap(),
+            summary: String::new(),
+            tags: Vec::new(),
+            category: category.map(str::to_string),
+            content_html: String::new(),
+        }
+    }
+
+    #[test]
+    fn grouping_orders_pillars_and_collects_the_rest_under_other() {
+        let posts = vec![
+            post("uncategorized", None),
+            post("net-a", Some("Networking")),
+            post("sec-a", Some("Security")),
+            post("unknown-pillar", Some("Nonsense")),
+        ];
+
+        let groups = group_by_pillar(posts);
+        let labels: Vec<&str> = groups.iter().map(|g| g.label.as_str()).collect();
+
+        // Pillars appear in PILLARS order; empty pillars are dropped; Other is last
+        assert_eq!(labels, vec!["Networking", "Security", OTHER_GROUP]);
+
+        // Both the None post and the non-pillar category land in Other
+        let other = groups.last().unwrap();
+        assert_eq!(other.posts.len(), 2);
+    }
 }

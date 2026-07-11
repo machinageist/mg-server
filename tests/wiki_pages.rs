@@ -10,25 +10,17 @@ use std::path::Path;
 
 // Slugs must stay in sync with src/handlers/wiki.rs::SIDEBAR. The list is
 // duplicated here on purpose so the test crate stays decoupled from the bin.
+// This is the pruned archive KEEP set (see docs/geistscope-page-triage.md).
 const WIKI_SLUGS: &[&str] = &[
     "index",
     "mg-engagement",
     "mg-harness",
     "mg-tui",
-    "subdomain-enum",
-    "mg-scan",
     "mg-fingerprint",
-    "mg-recon",
-    "corpus-builder",
-    "mg-crawl",
     "mg-probe",
-    "mg-fuzz",
-    "mg-replay",
-    "ai-prioritize",
+    "mg-artifact-audit",
+    "mg-csp",
     "mg-report",
-    "mg-recopilot",
-    "mg-aifuzz",
-    "mg-exploitgen",
     "libraries",
 ];
 
@@ -48,6 +40,28 @@ fn every_wiki_slug_has_a_parseable_page() {
         assert!(
             raw.contains("title:"),
             "wiki page {} must declare a title",
+            path.display()
+        );
+    }
+}
+
+// Reverse guard: no orphaned page files. Every .md under content/pages/ must be
+// listed in WIKI_SLUGS, or a pruned page silently lingers with no sidebar link.
+#[test]
+fn no_orphaned_wiki_pages_on_disk() {
+    let pages_dir = Path::new("content").join("pages");
+    for entry in std::fs::read_dir(&pages_dir).expect("read content/pages") {
+        let path = entry.expect("dir entry").path();
+        if path.extension().and_then(|e| e.to_str()) != Some("md") {
+            continue;
+        }
+        let slug = path
+            .file_stem()
+            .and_then(|s| s.to_str())
+            .expect("utf-8 file stem");
+        assert!(
+            WIKI_SLUGS.contains(&slug),
+            "orphaned wiki page not in SIDEBAR/WIKI_SLUGS: {}",
             path.display()
         );
     }

@@ -2,6 +2,7 @@
 title: "Building a Port Scanner in Rust"
 date: 2026-04-03
 summary: "Rewriting a Python port scanner in Rust — ownership, async I/O, and why it's an order of magnitude faster."
+category: "Networking"
 tags: [rust, networking, tools, security]
 ---
 
@@ -140,10 +141,10 @@ is your first cross-reference point against known CVEs for that service.
 
 ## Where This Lives Now
 
-The port scanner is now `mg-scan` in GeistScope, the bug bounty toolchain.
-It accepts `--engagement` to scope-check targets and write output to the engagement
-directory automatically. The standalone binary works as before; the engagement mode
-adds the pipeline integration.
-
-The port scanner writeup from the mg-server blog post that introduced this project
-was the starting point. `mg-scan` is where that exploration landed.
+The port scanner later became one of the recon tools in GeistScope, an early
+security-tooling project I have since pulled back and archived. The honest story
+of that project — what was real, what was over-scoped, and why I pruned it — is
+in the [GeistScope retrospective](/blog/geistscope-retrospective). This standalone
+scanner is the part I still stand behind: a focused exercise in async Rust,
+ownership across await points, and how TCP connect/refuse/timeout maps to open,
+closed, and filtered port states.

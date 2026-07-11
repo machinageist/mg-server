@@ -39,7 +39,7 @@ roadmap.
 Stack-aware payload selection for fuzzing and harness planning. Knows
 about MySQL vs Postgres vs MSSQL SQLi shapes, Jinja2/Twig/Freemarker SSTI
 forms, AWS/GCP/Azure SSRF metadata URLs, and the
-`PromptInjectionCategory` corpus used by [mg-aifuzz](/wiki/mg-aifuzz).
+`PromptInjectionCategory` corpus used by `mg-aifuzz` (archived, no page).
 
 ### `http-client`
 
@@ -56,7 +56,7 @@ Unified Anthropic + Ollama client. Public surface is small:
 ### `fingerprint`
 
 Reusable HTTP-response fingerprinting logic used by
-[mg-fingerprint](/wiki/mg-fingerprint) and [mg-recon](/wiki/mg-recon).
+[mg-fingerprint](/wiki/mg-fingerprint) and `mg-recon` (archived, no page).
 Ships as both a library and a CLI binary.
 
 ## Conventions

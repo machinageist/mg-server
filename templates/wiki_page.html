@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="wiki-layout">
-  <aside class="wiki-sidebar" aria-label="Wiki navigation">
+  <aside class="wiki-sidebar" aria-label="Reference navigation">
     <details class="wiki-nav">
-      <summary>Wiki navigation</summary>
+      <summary>Reference navigation</summary>
       <nav>
         {% for section in sidebar %}
         <section class="wiki-section">
@@ -26,7 +26,7 @@
   </aside>
 
   <article class="wiki-article article-page">
-    <a class="back-link" href="/wiki">Tool suite index</a>
+    <a class="back-link" href="/wiki">Reference archive</a>
     <header class="post-header">
       <h1>{{ page.title }}</h1>
       <div class="post-meta">

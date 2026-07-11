@@ -5,34 +5,46 @@
   <h1>About</h1>
   <p class="bio">{{ bio }}</p>
 
-  <h2>Currently building</h2>
+  <h2>Role focus</h2>
   <ul class="about-list">
     <li>
-      <strong>GeistScope</strong> &mdash;
-      Automated offensive security toolchain in async Rust. Recon, crawling, fuzzing,
-      AI-ranked attack surface analysis, and a Ratatui terminal dashboard.
-      Eleven binaries covering the full recon-to-verification pipeline.
+      <strong>Systems Administrator (Linux/Windows, junior)</strong> &mdash;
+      users and permissions, systemd services, package and storage management,
+      and service operations on hardware I actually run.
     </li>
     <li>
-      <strong>mg-server</strong> &mdash;
-      This site. Axum routing, Askama compile-time templates, flat-file Markdown
-      blog, security headers middleware. Deployed behind Caddy and Cloudflare
-      with no open inbound ports.
+      <strong>NOC / Network Operations</strong> &mdash;
+      DNS and HTTP triage, subnet/VLAN mapping, request-path documentation,
+      CLI diagnostics, and structured incident notes that say what broke, how it
+      was checked, and what remains fragile.
     </li>
   </ul>
 
-  <h2>Technical range</h2>
+  <h2>Portfolio pillars</h2>
   <ul class="about-list">
-    <li><strong>Languages:</strong> Rust, C (reading and auditing), Python</li>
-    <li><strong>Security:</strong> Subdomain enumeration, port scanning, web crawling, payload fuzzing, finding verification, passive posture analysis, security headers, CORS policy, rate limiting</li>
-    <li><strong>Infrastructure:</strong> Proxmox, Ubuntu VMs, Caddy, Cloudflare Tunnel, systemd, cargo-audit, cargo-geiger</li>
+    <li><strong>Homelab &amp; Proxmox:</strong> node baseline, VM fleet, backup/restore, and monitoring on a mini-PC Proxmox server.</li>
+    <li><strong>Networking:</strong> DNS, subnetting/VLANs, the Cloudflare Tunnel &rarr; Caddy &rarr; mg-server request path, and <code>dig</code>/<code>ss</code>/<code>curl</code> diagnostics (the Network+ lane).</li>
+    <li><strong>Linux / SysAdmin:</strong> systemd, journald, users and permissions, service lifecycle, and small Bash/Python automation.</li>
+    <li><strong>Security (defensive, small):</strong> HTTP security headers, SSH hardening, TLS, and auth-log detection &mdash; owned scope only, built to grow after Security+.</li>
+    <li><strong>Certification journey:</strong> Network+ &rarr; Security+ &rarr; Linux+ &rarr; Server+, targeted for January 2027, each cert anchored to a homelab project.</li>
   </ul>
 
   <h2>Approach</h2>
   <p>
-    Building the tools first, then using them. Every binary in GeistScope does real
-    work &mdash; the gaps show up in the implementation, not in a list of planned
-    features. Writing about what I learn on <a href="/blog">the blog</a>.
+    Evidence before titles. Each public artifact should show the starting state,
+    commands or configs used, what failed or could fail, verification output,
+    what I understand now, and what I still need to learn. "In training / building
+    toward" is stated plainly, not hidden. The work is written up on
+    <a href="/blog">the blog</a>.
+  </p>
+
+  <h2>What I am not claiming yet</h2>
+  <p>
+    This portfolio is not claiming senior DevOps, SRE, production network
+    engineering, a passed certification before it is passed, penetration testing,
+    AI infrastructure engineering, or advanced Rust backend expertise. Those
+    labels can wait until the evidence supports them directly.
+    Location: Portland, OR &mdash; relocating to the South Bay Area.
   </p>
 </section>
 {% endblock %}

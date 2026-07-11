@@ -4,18 +4,25 @@
 <section>
   <h1>Writing</h1>
   <p class="section-intro">
-    Implementation notes on Rust, systems programming, security tooling,
-    and the infrastructure behind the work.
+    Homelab, networking, Linux/SysAdmin, and defensive-security writeups, grouped
+    by portfolio pillar, plus notes tracking a four-CompTIA-cert journey. Posts
+    show real commands and verification; anything not yet captured is labeled as
+    in progress.
   </p>
 
-  <ul class="post-list">
-    {% for post in posts %}
-    <li class="post-item">
-      <span class="post-date">{{ post.date }}</span>
-      <a href="/blog/{{ post.slug }}">{{ post.title }}</a>
-      <p class="post-summary">{{ post.summary }}</p>
-    </li>
-    {% endfor %}
-  </ul>
+  {% for group in groups %}
+  <section class="post-group" aria-label="{{ group.label }}">
+    <h2 class="post-group-heading">{{ group.label }}</h2>
+    <ul class="post-list">
+      {% for post in group.posts %}
+      <li class="post-item">
+        <span class="post-date">{{ post.date }}</span>
+        <a href="/blog/{{ post.slug }}">{{ post.title }}</a>
+        <p class="post-summary">{{ post.summary }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endfor %}
 </section>
 {% endblock %}

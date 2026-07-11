@@ -29,11 +29,11 @@
       <a class="brand" href="/">machinageist</a>
       <div class="nav-right">
         <div class="nav-links">
+          <a href="/start-here" class="nav-link{% if self.section() == "start"     %} is-active{% endif %}">Start Here</a>
           <a href="/about"     class="nav-link{% if self.section() == "about"     %} is-active{% endif %}">About</a>
           <a href="/portfolio" class="nav-link{% if self.section() == "portfolio" %} is-active{% endif %}">Portfolio</a>
           <a href="/blog"      class="nav-link{% if self.section() == "writing"   %} is-active{% endif %}">Writing</a>
-          <a href="/wiki"      class="nav-link{% if self.section() == "wiki"      %} is-active{% endif %}">Wiki</a>
-          <a href="/releases"  class="nav-link{% if self.section() == "releases"  %} is-active{% endif %}">Releases</a>
+          <a href="/wiki"      class="nav-link{% if self.section() == "wiki"      %} is-active{% endif %}">Archive</a>
         </div>
         <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle light/dark theme"></button>
       </div>

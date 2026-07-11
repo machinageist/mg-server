@@ -9,7 +9,7 @@ tags: [geistscope, cli, recon, fingerprint]
 
 Probe HTTP-accessible hosts and produce a structured tech-stack fingerprint
 for the engagement. Used by [payload-engine](/wiki/libraries) and
-[ai-prioritize](/wiki/ai-prioritize) to pick stack-aware payloads and to
+`ai-prioritize` (archived, no page) to pick stack-aware payloads and to
 explain the attack surface to the LLM.
 
 ## Output

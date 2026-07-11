@@ -39,6 +39,11 @@ struct Frontmatter {
     date: String, // parsed into NaiveDate below — kept as String here for flexibility
     summary: String,
     tags: Vec<String>,
+    // Optional pillar label used to group the blog list. Must stay Option so
+    // older posts without the field keep loading — a missing required field
+    // breaks parsing of every post.
+    #[serde(default)]
+    category: Option<String>,
 }
 
 // -----------------------------------------------------------------------
@@ -52,7 +57,8 @@ pub struct BlogPost {
     pub date: NaiveDate, // parsed from frontmatter date string
     pub summary: String, // from frontmatter — used in list view
     pub tags: Vec<String>,
-    pub content_html: String, // Markdown body converted to HTML — empty in list view
+    pub category: Option<String>, // optional pillar label — used to group the list view
+    pub content_html: String,     // Markdown body converted to HTML — empty in list view
 }
 
 impl BlogPost {
@@ -98,6 +104,7 @@ impl BlogPost {
             date,
             summary: fm.summary,
             tags: fm.tags,
+            category: fm.category,
             content_html,
         })
     }

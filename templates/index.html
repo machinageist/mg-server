@@ -4,27 +4,33 @@
 <section class="hero">
   <h1>{{ name }}</h1>
   <p class="hero-lede">
-    Systems programmer and security engineer. Building in Rust — security tooling,
-    production servers, and research that ends up in the code or the writing.
+    Systems Administrator / NOC Technician in training. I run a Proxmox homelab
+    as an operations lab and document the work &mdash; homelab and networking
+    writeups as the content engine, and a four-CompTIA-cert journey
+    (Network+ &rarr; Security+ &rarr; Linux+ &rarr; Server+) as the through-line.
   </p>
   <nav class="hero-actions" aria-label="Quick navigation">
+    <a href="/start-here">Start Here</a>
     <a href="/portfolio">Portfolio</a>
     <a href="/blog">Writing</a>
-    <a href="/wiki">Tool wiki</a>
+    <a href="/wiki">Archive</a>
   </nav>
 </section>
 
 <hr>
 
 <section aria-label="Current work">
-  <h2>Currently building</h2>
+  <h2>Current portfolio focus</h2>
   <p>
-    <strong style="color: #c8c8c8;">GeistScope</strong> &mdash;
-    An automated offensive security toolchain in async Rust. Subdomain enumeration,
-    port scanning, HTTP fingerprinting, BFS crawling, payload fuzzing, finding
-    verification, and an LLM-ranked attack surface view. Eleven binaries sharing
-    a common file layout so an AI operator can read the state of an engagement
-    with no custom IPC.
+    This is an evidence-first infrastructure-support portfolio for the work tracked
+    in <code>~/tech-skill-up/</code>. It is organized around five pillars: a
+    <strong>homelab &amp; Proxmox</strong> operations lab, <strong>networking</strong>
+    (DNS, subnetting, request-path, CLI diagnostics), <strong>Linux / SysAdmin</strong>
+    (systemd, journald, service ops, small automation), a small
+    <strong>defensive security</strong> section, and an honest
+    <strong>certification journey</strong>. The strongest artifacts are homelab
+    writeups, incident reports, and service runbooks with real commands and
+    verification &mdash; each cert tied to a homelab project.
   </p>
 </section>
 {% endblock %}

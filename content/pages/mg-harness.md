@@ -42,26 +42,34 @@ Every endpoint declares a risk class:
 - `state_change` — writes engagement state (e.g. records consent, imports traffic).
 - `destructive` — post-exploitation; blocked unless the chat REPL is in `--unsafe-mode` or the JSON caller is explicitly authorized.
 
-90+ endpoints are registered today. The core control surface:
+The historical catalog is large, but the pruning pass treats it as inventory
+rather than public surface. The core control surface:
 
 | Endpoint | Risk | What it does |
 |---|---|---|
 | `endpoint.registry` | read | List every registered endpoint with its risk class and status. |
+| `chain.plan` | read | Return ordered, non-executing endpoint chains for common local/authorized workflows. |
 | `engagement.open` / `engagement.status` | read | Workspace metadata and output-file summary. |
 | `scope.check` | read | Test a host or URL against `scope.json`. |
-| `recon.run` | high_active | Run the [mg-recon](/wiki/mg-recon) pipeline after confirmation. |
+| `recon.run` | high_active | Run the `mg-recon` (archived, no page) pipeline after confirmation. |
 | `graph.summary` / `graph.neighbors` | read | Read the local security graph with bounded sampling. |
 | `request.import` / `request.search` / `request.replay` | mixed | Bring HAR / Burp / Caido traffic in; search the corpus; replay one. |
 | `finding.create` / `finding.read` | read / state | Scoped finding creation and bounded reads. |
 | `chain.read` | read | Bounded read of `recon/chain-analysis.{md,json}`. |
 | `report.generate` / `report.disclose` | read | Run [mg-report](/wiki/mg-report) generate / disclose. |
-| `re.analyze` / `re.read` | read | Drive [mg-recopilot](/wiki/mg-recopilot). |
+| `re.analyze` / `re.read` | read | Drive `mg-recopilot` (archived, no page). |
 | `artifact.audit` | passive_remote | Run the merged [mg-artifact-audit](/wiki/mg-artifact-audit) analyzers. |
-| `aifuzz.consent` / `aifuzz.run` | state / high_active | Record consent then run [mg-aifuzz](/wiki/mg-aifuzz). |
-| `exploit.scaffold` | read | Scaffold an [mg-exploitgen](/wiki/mg-exploitgen) tree. |
+| `aifuzz.consent` / `aifuzz.run` | state / high_active | Record consent then run `mg-aifuzz` (archived, no page). |
+| `exploit.scaffold` | read | Scaffold an `mg-exploitgen` (archived, no page) tree. |
 | `session.set` / `session.get_headers` | state / read | Manage env-var-backed session profiles; return only redacted header metadata. |
 
-The 67 subprocess-dispatched tool endpoints (`xss.scan`, `sqli.scan`,
+`chain.plan` is the first friction-reduction endpoint for pruning. It does not
+run tools; it returns ordered steps, risk classes, pack/exposure metadata, and
+handoff notes for goals such as `local_passive_proof`, `artifact_audit`,
+`protocol_audit`, `web_vuln_lab`, `identity_review`, and `reporting`. The
+actual tool execution still goes through normal risk prompts and scope policy.
+
+The currently inventoried subprocess-dispatched tool endpoints (`xss.scan`, `sqli.scan`,
 `jwt.analyze`, `tls.scan`, `aws.chain`, `graphql.scan`, `shodan.lookup`,
 `takeover.scan`, …) all live in one `SUBPROCESS_TOOLS` const slice that pairs
 each endpoint with its binary, risk class, and short description. Dispatch,
@@ -104,7 +112,10 @@ the same tool against the same target is idempotent. Evidence is capped at
 
 ## Chat REPL
 
-Tool calls flow through the same risk policy as the JSON path:
+Tool calls flow through the same risk policy as the JSON path. Tool results
+include risk, output files, evidence refs, redaction counts, policy, and reason
+fields so later steps can chain from real outputs instead of asking the model to
+infer state from prose.
 
 - `read_only` and `passive_remote` endpoints run immediately.
 - `low_active`, `high_active`, and `state_change` endpoints prompt the user

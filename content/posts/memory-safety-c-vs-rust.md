@@ -2,6 +2,7 @@
 title: "Memory Safety: C vs Rust"
 date: 2026-04-02
 summary: "Why most C CVEs are memory safety bugs, and how Rust eliminates that class at the compiler level."
+category: "Security"
 tags: [rust, c, security, memory-safety]
 ---
 

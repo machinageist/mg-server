@@ -1,0 +1,98 @@
+---
+title: "Security Headers on machinageist.dev"
+date: 2026-07-09
+summary: "A defensive walkthrough of the HTTP response headers this site sets — what each one does, the real curl -I output, where they come from in the code, and the honest limits of header hardening on an owned personal site."
+category: "Security"
+tags: [security, defensive, http-headers, csp, hsts, owned-scope]
+---
+
+This is a small, defensive writeup for an owned site. mg-server stamps a set of
+HTTP security-response headers on every response, and this post documents them:
+what each header tells the browser to do, the real headers on the wire, and where
+they are set in the code. It is scoped honestly — this is header hardening on a
+personal site, not a claim that the application is "secured."
+
+## The headers on the wire
+
+Live capture (Cloudflare's own reporting headers trimmed):
+
+```console
+$ curl -sSI https://machinageist.dev
+HTTP/2 200
+content-type: text/html; charset=utf-8
+content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-content-type-options: nosniff
+x-frame-options: DENY
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+server: cloudflare
+```
+
+(Captured 2026-07-09. Run it yourself — the point of a header audit is that it is
+reproducible.)
+
+## What each header does
+
+- **Content-Security-Policy** — restricts where the browser may load resources
+  from. `default-src 'self'` means only this origin; there are no inline scripts
+  and no third-party CDNs. Even if an injection vector existed, the browser would
+  refuse to load an off-origin `<script>`. `frame-ancestors 'none'` blocks framing
+  at the CSP level.
+- **Strict-Transport-Security** — tells the browser to use HTTPS for two years
+  (`max-age=63072000`), including subdomains, and marks the site preload-eligible.
+  After the first visit the browser upgrades to HTTPS on its own, which closes the
+  SSL-stripping window on repeat visits.
+- **X-Content-Type-Options: nosniff** — the browser trusts the declared
+  `Content-Type` instead of guessing, so a file can't be re-interpreted as script.
+- **X-Frame-Options: DENY** — no framing from any origin, a second clickjacking
+  control alongside `frame-ancestors`.
+- **Referrer-Policy: strict-origin-when-cross-origin** — cross-origin navigations
+  leak only the origin, not the full path.
+- **Permissions-Policy** — denies camera, microphone, geolocation, and payment
+  outright; this site uses none of them.
+- **Server header removed** — mg-server strips its own `Server` header so it does
+  not advertise a name or version. (`server: cloudflare` above is the edge, not the
+  app.)
+
+## Where they come from
+
+These are set in one place, an Axum middleware applied at the router level so it
+runs on every response: `src/middleware/security_headers.rs`. A couple of the
+inserts:
+
+```rust
+headers.insert(
+    "content-security-policy",
+    "default-src 'self'; script-src 'self'; style-src 'self'; \
+     img-src 'self' data:; font-src 'self'; connect-src 'self'; \
+     frame-ancestors 'none'".parse().unwrap(),
+);
+headers.insert(
+    "strict-transport-security",
+    "max-age=63072000; includeSubDomains; preload".parse().unwrap(),
+);
+// ...
+headers.remove("server");
+```
+
+A useful verification point: the live `curl -I` output and the source config
+agree — same CSP, same two-year HSTS. The header the browser receives is the
+header the code sets.
+
+## Honest limits
+
+- Headers are one browser-enforced layer. They do not fix an application logic
+  bug; CSP mitigates the impact of injection, it does not remove the vector.
+- **TLS terminates at Cloudflare's edge**, not on my VM, so HSTS protects the
+  browser-to-edge leg. That tradeoff is worth stating rather than glossing.
+- This is an owned personal site with no user input, no auth, and no database, so
+  the header set is deliberately strict and easy — a real application would need
+  a looser, carefully-reasoned CSP.
+- **Safe claim:** reviewed and documented the HTTP security headers for an owned
+  web service, with reproducible `curl` evidence. **Not** a claim to have "secured
+  the application."
+
+This is the first note in the site's defensive-security pillar. It is intended to
+grow — SSH hardening, TLS configuration, and auth-log detection are planned
+alongside the Security+ homelab project, on owned scope only.

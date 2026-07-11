@@ -40,6 +40,7 @@ pub enum ProjectStatus {
     Active,
     #[allow(dead_code)]
     InProgress,
+    #[allow(dead_code)]
     Complete,
 }
 
@@ -69,78 +70,111 @@ impl std::fmt::Display for ProjectStatus {
 // -----------------------------------------------------------------------
 
 // Return canonical project list — called by portfolio handler on each request
+// Order is deliberate: homelab operations lead, then this site, the cert track,
+// and finally the demoted GeistScope archive line.
 pub fn all() -> Vec<Project> {
     vec![
         Project {
-            name: "GeistScope",
-            description: "AI-native bug-bounty and red-team toolchain in Rust. \
-                          A shared engagement workspace ties together recon, crawling, \
-                          posture checks, request-corpus search/replay, fuzzing, reporting, \
-                          a persistent security graph, and a scoped AI harness. \
-                          The harness now exposes a profile-filtered tool catalog \
-                          (`default`, `advanced`, `lab`) so agents see the right \
-                          pack of endpoints without raw shell access or noisy one-off tools. \
-                          Findings are standardized JSON records that flow into \
-                          prioritization, graph queries, and report generation.",
-            tags: &[
-                "rust",
-                "security",
-                "bug-bounty",
-                "async",
-                "tokio",
-                "ratatui",
-                "ai",
-            ],
-            url: Some("https://github.com/machinageist/geistscope"),
-            status: ProjectStatus::Active,
+            name: "Homelab project 1 — internal DNS + network map",
+            description: "Anchors Network+. Building an internal resolver (Pi-hole/dnsmasq) with local records \
+                          for the Proxmox lab, a subnet/VLAN + service map of the node, bridges, VM IPs, and the \
+                          Cloudflare Tunnel to Caddy to mg-server path, plus a dig/nslookup/ping/curl/ss \
+                          troubleshooting writeup captured before and after breaking one record. Safe claim: \
+                          implemented and validated internal DNS for a Proxmox homelab and documented \
+                          name-resolution troubleshooting. Evidence in progress — not yet resume-facing until \
+                          the writeup and command output are captured.",
+            tags: &["homelab", "networking", "dns", "proxmox", "network+"],
+            url: None,
+            status: ProjectStatus::InProgress,
+        },
+        Project {
+            name: "Homelab project 2 — harden & monitor the homelab",
+            description: "Anchors Security+ (planned for the Security+ phase). A host-hardening pass on a VM and \
+                          mg-server (key-only SSH, host firewall, non-root service users, unattended updates), a \
+                          security-headers audit of machinageist.dev, and a log-based failed-login detector with \
+                          triage notes. Safe claim: hardened Linux hosts and built a failed-login detector on an \
+                          owned homelab. Planned — artifacts not yet captured.",
+            tags: &["homelab", "security", "linux", "hardening", "security+"],
+            url: None,
+            status: ProjectStatus::InProgress,
+        },
+        Project {
+            name: "Homelab project 3 — Proxmox backup/restore + monitoring + incidents",
+            description: "Anchors Server+ and pulls in Linux+ automation (planned for the Server+/Linux+ phase). \
+                          A single-node Proxmox baseline and asset inventory, a validated VM backup and restore \
+                          with RPO/RTO notes, a monitoring stack, and structured NOC-style incident reports. Safe \
+                          claim: documented a single-node Proxmox environment and validated VM backup/restore \
+                          with monitoring and incident reports. Planned — artifacts not yet captured.",
+            tags: &["homelab", "proxmox", "backup", "monitoring", "server+"],
+            url: None,
+            status: ProjectStatus::InProgress,
         },
         Project {
             name: "mg-server",
-            description: "This site. Personal portfolio and blog server built from scratch in Rust. \
-                          Axum routing, Askama compile-time templates (broken template = build error, \
-                          not runtime 500), flat-file Markdown blog with YAML frontmatter, \
-                          security headers middleware, and a 60 req/min rate limiter. \
-                          Deployed behind Caddy and Cloudflare Tunnel — no open inbound ports. \
-                          Verified with gobuster, nmap, curl traversal payloads, and SSL Labs.",
-            tags: &["rust", "axum", "web", "askama", "security"],
+            description: "The Rust/Axum application that serves this site — a narrow, honest self-hosting artifact. \
+                          Axum routes, Askama templates, flat-file Markdown content, request tracing, defensive \
+                          response headers, and rate limiting, deployed on a Proxmox Debian VM behind Caddy and a \
+                          Cloudflare Tunnel. Supports Linux service-operations and request-path discussions without \
+                          overstating backend engineering seniority.",
+            tags: &["rust", "axum", "linux-service", "self-hosting", "headers"],
             url: Some("https://github.com/machinageist/mg-server"),
             status: ProjectStatus::Active,
         },
         Project {
-            name: "mg-scan",
-            description: "Async TCP port scanner with banner grabbing, randomised scan order, \
-                          configurable delay and jitter for rate-based IDS evasion, and optional \
-                          source port binding for firewall bypass testing. \
-                          Concurrency managed with Tokio JoinSet — no semaphore allocations \
-                          per task. Part of the GeistScope toolchain.",
-            tags: &["rust", "networking", "security", "tokio", "port-scanning"],
-            url: Some("https://github.com/machinageist/geistscope"),
-            status: ProjectStatus::Complete,
+            name: "Certification track — Network+ to Server+ by Jan 2027",
+            description: "The through-line for this portfolio: Network+ then Security+ then Linux+ then Server+, \
+                          each cert anchored to one of the homelab projects above. Progress is stated honestly — a \
+                          cert is listed as passed only once it is passed. Writeups link back from each cert phase \
+                          as the homelab evidence is captured.",
+            tags: &["comptia", "network+", "security+", "linux+", "server+"],
+            url: None,
+            status: ProjectStatus::InProgress,
         },
         Project {
-            name: "mg-fuzz",
-            description: "Burp Intruder-equivalent HTTP fuzzer. Reads raw HTTP request templates \
-                          with §marker§ injection positions. Four attack modes: sniper, battering-ram, \
-                          pitchfork, cluster-bomb. Built-in payload sets for SQLi, XSS, SSTI, \
-                          path traversal, SSRF, and more. Diffs each response against a baseline \
-                          (status, body hash, length delta, timing anomaly) to surface interesting \
-                          responses automatically.",
-            tags: &["rust", "security", "fuzzing", "web-security", "bug-bounty"],
-            url: Some("https://github.com/machinageist/geistscope"),
-            status: ProjectStatus::Complete,
-        },
-        Project {
-            name: "mg-tui",
-            description: "Ratatui terminal dashboard for the GeistScope toolchain. \
-                          Five tabs: engagements, hosts, findings (with severity filter), \
-                          fuzz results, and live audit log tail. Full mouse support — \
-                          scroll, click tab bar, click links in the built-in terminal browser. \
-                          The browser renders HTML to styled terminal spans with Unicode \
-                          half-block image rendering and a navigation history stack. \
-                          Refreshes from disk on a 2-second timer with no extra processes.",
-            tags: &["rust", "ratatui", "tui", "security", "terminal"],
-            url: Some("https://github.com/machinageist/geistscope"),
+            name: "GeistScope (archived reference)",
+            description: "An early AI-assisted-coding security-tooling experiment that over-scoped; the project has \
+                          been narrowed and archived as reference, not presented as professional security work. See \
+                          the retrospective on the blog and the pruned notes in the Archive.",
+            tags: &["rust", "archive", "retrospective", "scope-control"],
+            url: None,
             status: ProjectStatus::Complete,
         },
     ]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn portfolio_leads_with_homelab_and_cert_work_and_demotes_geistscope() {
+        let projects = all();
+
+        // The first three cards are the homelab operations projects
+        assert!(projects[0].name.contains("Homelab project 1"));
+        assert!(projects[1].name.contains("Homelab project 2"));
+        assert!(projects[2].name.contains("Homelab project 3"));
+
+        let combined = projects
+            .iter()
+            .map(|project| format!("{} {}", project.name, project.description))
+            .collect::<Vec<_>>()
+            .join("\n");
+
+        // New lead framing: homelab / Proxmox / networking / certs
+        assert!(combined.contains("homelab") || combined.contains("Homelab"));
+        assert!(combined.contains("Proxmox"));
+        assert!(combined.contains("Network+"));
+        assert!(combined.contains("Certification track"));
+
+        // GeistScope is present but demoted to one archived line, framed as an experiment
+        assert!(combined.contains("GeistScope"));
+        assert!(combined.contains("archived"));
+        assert!(combined.contains("experiment"));
+
+        // Anti-overclaim guards
+        assert!(!combined.contains("bug-bounty"));
+        assert!(!combined.contains("red-team"));
+        assert!(!combined.contains("offensive security"));
+    }
 }
