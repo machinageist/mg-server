@@ -51,16 +51,16 @@ rather than public surface. The core control surface:
 | `chain.plan` | read | Return ordered, non-executing endpoint chains for common local/authorized workflows. |
 | `engagement.open` / `engagement.status` | read | Workspace metadata and output-file summary. |
 | `scope.check` | read | Test a host or URL against `scope.json`. |
-| `recon.run` | high_active | Run the `mg-recon` (archived, no page) pipeline after confirmation. |
+| `recon.run` | high_active | Run the [mg-recon](/wiki/mg-recon) pipeline after confirmation. |
 | `graph.summary` / `graph.neighbors` | read | Read the local security graph with bounded sampling. |
 | `request.import` / `request.search` / `request.replay` | mixed | Bring HAR / Burp / Caido traffic in; search the corpus; replay one. |
 | `finding.create` / `finding.read` | read / state | Scoped finding creation and bounded reads. |
 | `chain.read` | read | Bounded read of `recon/chain-analysis.{md,json}`. |
 | `report.generate` / `report.disclose` | read | Run [mg-report](/wiki/mg-report) generate / disclose. |
-| `re.analyze` / `re.read` | read | Drive `mg-recopilot` (archived, no page). |
+| `re.analyze` / `re.read` | read | Drive [mg-recopilot](/wiki/mg-recopilot). |
 | `artifact.audit` | passive_remote | Run the merged [mg-artifact-audit](/wiki/mg-artifact-audit) analyzers. |
-| `aifuzz.consent` / `aifuzz.run` | state / high_active | Record consent then run `mg-aifuzz` (archived, no page). |
-| `exploit.scaffold` | read | Scaffold an `mg-exploitgen` (archived, no page) tree. |
+| `aifuzz.consent` / `aifuzz.run` | state / high_active | Record consent then run [mg-aifuzz](/wiki/mg-aifuzz). |
+| `exploit.scaffold` | read | Scaffold an [mg-exploitgen](/wiki/mg-exploitgen) tree. |
 | `session.set` / `session.get_headers` | state / read | Manage env-var-backed session profiles; return only redacted header metadata. |
 
 `chain.plan` is the first friction-reduction endpoint for pruning. It does not

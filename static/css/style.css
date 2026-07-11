@@ -339,6 +339,23 @@ hr {
 .back-link:hover  { color: var(--text); }
 .back-link::before { content: "← "; }
 
+/* Honesty banner on every wiki page: beginner AI experimentation, not pro research */
+.wiki-disclaimer {
+    display:       block;
+    margin:        0 0 2rem;
+    padding:       0.85rem 1rem;
+    background:    var(--surface);
+    border:        1px solid var(--border-subtle);
+    border-left:   3px solid #e0a458;
+    border-radius: 6px;
+    color:         var(--text-muted);
+    font-size:     0.85rem;
+    line-height:   1.5;
+}
+
+.wiki-disclaimer strong { color: var(--text); }
+.wiki-disclaimer a      { color: var(--accent); }
+
 .post-header {
     margin-bottom:  2.5rem;
     padding-bottom: 1.5rem;

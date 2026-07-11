@@ -77,12 +77,14 @@ pub fn all() -> Vec<Project> {
         Project {
             name: "Homelab project 1 — internal DNS + network map",
             description: "Anchors Network+. Building an internal resolver (Pi-hole/dnsmasq) with local records \
-                          for the Proxmox lab, a subnet/VLAN + service map of the node, bridges, VM IPs, and the \
-                          Cloudflare Tunnel to Caddy to mg-server path, plus a dig/nslookup/ping/curl/ss \
-                          troubleshooting writeup captured before and after breaking one record. Safe claim: \
-                          implemented and validated internal DNS for a Proxmox homelab and documented \
-                          name-resolution troubleshooting. Evidence in progress — not yet resume-facing until \
-                          the writeup and command output are captured.",
+                          for the Proxmox lab, a subnet/VLAN + service map that now spans a three-node Proxmox \
+                          cluster over a shared managed switch, the bridges and VM IPs, and the Cloudflare Tunnel \
+                          to Caddy to mg-server path, plus a dig/nslookup/ping/curl/ss troubleshooting writeup \
+                          captured before and after breaking one record. Safe claim: implemented and validated \
+                          internal DNS for a Proxmox homelab and documented its subnet layout and \
+                          name-resolution troubleshooting. Evidence in progress — the two new nodes and switch \
+                          are being brought up now; not resume-facing until the writeup and command output are \
+                          captured.",
             tags: &["homelab", "networking", "dns", "proxmox", "network+"],
             url: None,
             status: ProjectStatus::InProgress,
@@ -99,12 +101,14 @@ pub fn all() -> Vec<Project> {
             status: ProjectStatus::InProgress,
         },
         Project {
-            name: "Homelab project 3 — Proxmox backup/restore + monitoring + incidents",
+            name: "Homelab project 3 — Proxmox cluster ops: backup/restore, monitoring, HA",
             description: "Anchors Server+ and pulls in Linux+ automation (planned for the Server+/Linux+ phase). \
-                          A single-node Proxmox baseline and asset inventory, a validated VM backup and restore \
-                          with RPO/RTO notes, a monitoring stack, and structured NOC-style incident reports. Safe \
-                          claim: documented a single-node Proxmox environment and validated VM backup/restore \
-                          with monitoring and incident reports. Planned — artifacts not yet captured.",
+                          A Proxmox baseline and asset inventory across the three-node cluster, a validated VM \
+                          backup and restore with RPO/RTO notes, a monitoring stack, structured NOC-style incident \
+                          reports, and high availability as the later capstone. Honest sequencing: nodes joined and \
+                          quorum validated first, HA claimed only once failover is actually measured — not HA yet. \
+                          Safe claim: documented a small Proxmox cluster and validated VM backup/restore with \
+                          monitoring and incident reports. Planned — artifacts not yet captured.",
             tags: &["homelab", "proxmox", "backup", "monitoring", "server+"],
             url: None,
             status: ProjectStatus::InProgress,
@@ -134,7 +138,8 @@ pub fn all() -> Vec<Project> {
             name: "GeistScope (archived reference)",
             description: "An early AI-assisted-coding security-tooling experiment that over-scoped; the project has \
                           been narrowed and archived as reference, not presented as professional security work. See \
-                          the retrospective on the blog and the pruned notes in the Archive.",
+                          the retrospective on the blog and the archived notes in the Archive, which are kept in \
+                          full but labeled on every page as beginner generative-AI experimentation.",
             tags: &["rust", "archive", "retrospective", "scope-control"],
             url: None,
             status: ProjectStatus::Complete,

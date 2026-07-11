@@ -97,5 +97,7 @@ Linux operations evidence, a small defensive-security section built to grow
 after Security+, and a four-CompTIA-cert journey where each cert is tied to a
 homelab project with captured evidence. That is a narrower story, and a true one.
 
-The pruned GeistScope notes still live in the [Archive](/wiki) for the parts I
-can stand behind.
+The GeistScope tool notes still live in the [Archive](/wiki), kept in full but
+labeled honestly on every page: generative-AI experimentation by a beginner, not
+serious professional research. I chose to keep them visible with that disclaimer
+rather than quietly delete them — the honesty is the point.

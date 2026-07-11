@@ -179,6 +179,9 @@ mod tests {
         assert!(html.contains("Homelab"));
         assert!(html.contains("Certification journey"));
         assert!(html.contains("What I am not claiming yet"));
+        // Long-term aspirations are framed as interests, not commitments
+        assert!(html.contains("fields I'm drawn to"));
+        assert!(html.contains("not current skills"));
         // Anti-overclaim guards
         assert!(!html.contains("security engineer"));
         assert!(!html.contains("red-team"));

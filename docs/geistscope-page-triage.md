@@ -1,5 +1,13 @@
 # GeistScope wiki-page triage
 
+> **Update (2026-07-11):** the prune described below was **reversed** by later
+> request. The full GeistScope wiki is restored, but every page now carries a
+> disclaimer banner (in `templates/wiki_page.html`) framing it as generative-AI
+> experimentation by a beginner, not serious professional research. This file is
+> kept as the record of the original KEEP/REMOVE reasoning; it no longer reflects
+> the live page set (all pages are live again).
+
+
 Reviewable classification for the wiki prune (Phase 4 of the site reorg). Every
 `content/pages/*.md` file is marked **KEEP** or **REMOVE**. The rule, per Jeff's
 locked decision, is: keep only the pages that correspond to the *still-active,

@@ -1,54 +1,40 @@
 ---
 title: "Reference archive — GeistScope notes"
 date: 2026-07-08
-summary: "A small archive of the still-active GeistScope tool notes. Not the primary reviewer path — start with Portfolio and Writing."
-tags: [reference, geistscope, archive, scope-control]
+summary: "A reference archive of GeistScope tool notes — generative-AI experimentation by a beginner, not serious professional research. Not the primary reviewer path; start with Portfolio and Writing."
+tags: [reference, geistscope, archive, ai-experiment, scope-control]
 ---
 
 ## Reference archive
 
-This is a small archive of the **still-active, safe-core** GeistScope tool notes.
-GeistScope was an early AI-assisted security-tooling experiment that over-scoped;
-I pruned it and archived what I can still stand behind. The full, honest story is
-in the [GeistScope retrospective](/blog/geistscope-retrospective).
+> **About this archive:** GeistScope is **generative-AI experimentation by a
+> beginner learning in public** — not a serious project by a professional security
+> researcher. Most of these pages were AI-generated while I explored what such a
+> toolkit might look like. Read them as a learning sandbox, not as authoritative,
+> production-ready, or expert references. Every page carries this note, and the
+> honest full story is in the
+> [GeistScope retrospective](/blog/geistscope-retrospective).
 
-This section is **not the lead resume artifact** for the current
-`machinageist.dev` portfolio. Start with [Start Here](/start-here),
-[Portfolio](/portfolio), and [Writing](/blog) instead — that is where the active
-work lives (Systems Administrator / NOC, a Proxmox homelab, networking, Linux,
-a small defensive-security section, and the certification journey).
+This section keeps the GeistScope tool notes reachable as a reference archive. It
+is **not the lead resume artifact** for the current `machinageist.dev` portfolio.
+The active work is the Systems Administrator / NOC track — a Proxmox homelab,
+networking, Linux, a small defensive-security section, and the certification
+journey. Start with [Start Here](/start-here), [Portfolio](/portfolio), and
+[Writing](/blog).
 
-## What remains here
+## Why the notes are kept
 
-Only the pages that map to the parts of `~/geistscope` I kept as the safe core:
+GeistScope over-scoped and got pruned back; I later chose to keep the full set of
+notes here, with the disclaimer above, rather than hide them. The value now is
+honesty: showing an early AI-assisted experiment for what it was — including the
+parts that were aspirational rather than real — instead of quietly deleting it.
+The retrospective explains what was real versus aspirational, what I learned, and
+why my focus moved to the operations/cert work.
 
-**Engagement & harness:**
-[mg-engagement](/wiki/mg-engagement),
-[mg-harness](/wiki/mg-harness),
-[mg-tui](/wiki/mg-tui)
+## How to read these pages
 
-**Passive checks:**
-[mg-fingerprint](/wiki/mg-fingerprint),
-[mg-probe](/wiki/mg-probe),
-[mg-artifact-audit](/wiki/mg-artifact-audit),
-[mg-csp](/wiki/mg-csp)
-
-**Reporting:**
-[mg-report](/wiki/mg-report)
-
-**Libraries:**
-[shared libraries](/wiki/libraries)
-
-## What was removed
-
-The active recon/scan, web-vulnerability, cloud, auth, and post-exploitation
-pages were removed. They were labeled *needs-ownership-walkthrough*, *archive*,
-or *unsafe* in GeistScope's own pruning inventory — not public-claim-ready. Old
-links to those pages will 404, and that is an acceptable tradeoff: honesty over
-preservation. The active tooling, if any, lives in `~/geistscope`, not here.
-
-## How to read what remains
-
-Treat these as historical reference notes. Anything describing active testing,
-credential handling, or callbacks should be read as lab-gated until a current,
-local/owned reproduction with a scope statement and claim-defense sheet exists.
+Use the sidebar to browse the tool notes by section. Treat each page as a
+historical, AI-generated reference note. Anything describing active testing,
+credential handling, cloud metadata, out-of-band callbacks, or post-access
+behavior should be read as a learning-sandbox description, not a demonstrated
+capability or a claim of professional security work.
