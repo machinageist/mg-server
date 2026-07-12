@@ -34,7 +34,7 @@ In this repo:
   `content/posts/*.md`, `content/pages/*.md`.
 
 In `~/tech-skill-up/` (the authoritative career plan — do not duplicate, link/point to it):
-- `ROADMAP.md` — four-cert spine + SysAdmin/NOC goal, South Bay, AI-infra pivot deferred.
+- `ROADMAP.md` — four-cert spine + SysAdmin/NOC goal, AI-infra pivot deferred.
 - `CERT_PLAN.md` — dated Network+ → Security+ → Linux+ → Server+ schedule (Jan 2027).
 - `HOMELAB_PROJECTS.md` — the **three homelab projects** that should anchor the blog and
   portfolio: (1) Internal DNS + network map [Network+], (2) Harden & monitor the homelab
@@ -125,9 +125,8 @@ Commit after each phase (conventional commits, e.g. `refactor(site): …`). Keep
 - `templates/index.html` (hero): lead with SysAdmin/NOC-in-training + homelab/networking + cert
   journey. CTA to Portfolio and Writing.
 - `templates/about.html` + `src/handlers/pages.rs::about()` bio: rewrite role focus to the five
-  pillars; security as a **supporting** competency; honest "what I'm not claiming yet." Fix the
-  location line (currently "Based in Portland, OR" — Jeff is targeting the South Bay; use
-  "Portland, OR — relocating to the South Bay Area" or neutral wording).
+  pillars; security as a **supporting** competency; honest "what I'm not claiming yet." Keep the
+  location line current and city-only; do not publish relocation plans.
 - `templates/start_here.html`: reorient reviewer paths + evidence standard to the new pillars and
   the cert spine; keep the non-claims block.
 - Handler `description()` strings in `pages.rs`, `blog.rs`: update to the new framing.
