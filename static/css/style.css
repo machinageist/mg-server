@@ -9,17 +9,18 @@
 }
 
 /* -----------------------------------------------------------------------
-   Theme palettes — dark (Dracula) is the default, light overrides below
+   Theme palettes — the existing terminal identity, warmed slightly with
+   forest-charcoal and field-paper neutrals
    ----------------------------------------------------------------------- */
 
 :root {
-    --bg:            #282a36;
-    --surface:       #21222c;
-    --text:          #f8f8f2;
-    --text-muted:    #6272a4;
-    --text-faint:    #44475a;
-    --border:        #44475a;
-    --border-subtle: #383a47;
+    --bg:            #252b28;
+    --surface:       #1f2522;
+    --text:          #f5f4ea;
+    --text-muted:    #9aa99e;
+    --text-faint:    #87958c;
+    --border:        #45534a;
+    --border-subtle: #343f38;
     --accent:        #bd93f9;
     --accent-hover:  #cba5ff;
     --accent-border: #bd93f944;
@@ -29,18 +30,18 @@
 }
 
 :root[data-theme="light"] {
-    --bg:            #f7f7fb;
-    --surface:       #eceef5;
-    --text:          #1f2230;
-    --text-muted:    #4d5573;
-    --text-faint:    #8a90a8;
-    --border:        #d3d6e3;
-    --border-subtle: #e4e6f0;
+    --bg:            #f4f2e8;
+    --surface:       #eae7da;
+    --text:          #20251f;
+    --text-muted:    #4f5f52;
+    --text-faint:    #667067;
+    --border:        #cfcbb9;
+    --border-subtle: #e0dccd;
     --accent:        #7c3aed;
     --accent-hover:  #6d28d9;
     --accent-border: #7c3aed44;
     --code:          #0f7b3f;
-    --shadow:        0 8px 24px rgba(31, 34, 48, 0.12);
+    --shadow:        0 8px 24px rgba(50, 58, 49, 0.12);
     color-scheme:    light;
 }
 
