@@ -20,6 +20,7 @@ mod handlers;
 mod middleware;
 mod models;
 mod router;
+mod state;
 
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
@@ -36,8 +37,11 @@ async fn main() {
         )
         .init();
 
+    // Construct shared state once — counters and build metadata live here
+    let state = state::AppState::new();
+
     // Build the complete application — routes, static files, middleware all wired inside
-    let app = router::build();
+    let app = router::build(state);
 
     // Resolve bind address — default is 127.0.0.1 so only Caddy (same host) can reach us.
     // MG_BIND_ADDR overrides for local dev when binding 0.0.0.0 is needed.

@@ -59,3 +59,11 @@ hex  = "0.4"
 # -----------------------------------------------------------------------
 # hyper        = { version = "1", features = ["full"] }
 # serde_json   = "1"
+
+# -----------------------------------------------------------------------
+# Test-only — ServiceExt::oneshot for driving the router in unit tests.
+# tower is already a dependency; "util" is enabled here for tests only, so
+# the release binary's feature set is unchanged.
+# -----------------------------------------------------------------------
+[dev-dependencies]
+tower = { version = "0.4", features = ["util"] }

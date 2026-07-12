@@ -17,13 +17,15 @@
 use crate::handlers::{blog, pages, releases, well_known, wiki};
 use crate::middleware::rate_limit::{build_limiter, rate_limit};
 use crate::middleware::security_headers::add_security_headers;
+use crate::middleware::vitals;
+use crate::state::AppState;
 use axum::middleware as mw;
 use axum::{Router, routing::get};
 use tower_http::services::ServeDir;
 use tower_http::trace::TraceLayer;
 
 // Build and return the fully configured Axum application
-pub fn build() -> Router {
+pub fn build(state: AppState) -> Router {
     // Construct rate limiter once — Arc inside allows cheap cloning across tasks
     let limiter = build_limiter();
 
@@ -53,6 +55,9 @@ pub fn build() -> Router {
         // -----------------------------------------------------------------------
         // Stamp security headers onto every outgoing response
         .layer(mw::from_fn(add_security_headers))
+        // Count requests and per-route hits — inside the limiter so throttled
+        // floods (already rejected below) never reach the counters
+        .layer(mw::from_fn_with_state(state.clone(), vitals::count))
         // Check rate limit before request reaches any handler
         // Clone limiter into closure so each task gets a shared reference
         .layer(mw::from_fn(move |req, next| {
