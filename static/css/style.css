@@ -9,39 +9,42 @@
 }
 
 /* -----------------------------------------------------------------------
-   Theme palettes — the existing terminal identity, warmed slightly with
-   forest-charcoal and field-paper neutrals
+   Core theme palettes — official Dracula dark and Alucard light colors
    ----------------------------------------------------------------------- */
 
 :root {
-    --bg:            #252b28;
-    --surface:       #1f2522;
-    --text:          #f5f4ea;
-    --text-muted:    #9aa99e;
-    --text-faint:    #87958c;
-    --border:        #45534a;
-    --border-subtle: #343f38;
+    --bg:            #282a36;
+    --surface:       #21222c;
+    --text:          #f8f8f2;
+    --text-muted:    #a9aec2;
+    --text-faint:    #8f96ad;
+    --border:        #44475a;
+    --border-subtle: #383a47;
     --accent:        #bd93f9;
     --accent-hover:  #cba5ff;
     --accent-border: #bd93f944;
     --code:          #50fa7b;
     --shadow:        0 8px 24px rgba(0, 0, 0, 0.45);
+    --font-body:     ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --font-mono:     ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     color-scheme:    dark;
 }
 
 :root[data-theme="light"] {
-    --bg:            #f4f2e8;
-    --surface:       #eae7da;
-    --text:          #20251f;
-    --text-muted:    #4f5f52;
-    --text-faint:    #667067;
-    --border:        #cfcbb9;
-    --border-subtle: #e0dccd;
-    --accent:        #7c3aed;
-    --accent-hover:  #6d28d9;
-    --accent-border: #7c3aed44;
-    --code:          #0f7b3f;
-    --shadow:        0 8px 24px rgba(50, 58, 49, 0.12);
+    --bg:            #fffbeb;
+    --surface:       #f4f0df;
+    --text:          #1f1f1f;
+    --text-muted:    #6c664b;
+    --text-faint:    #6c664b;
+    --border:        #cfcfde;
+    --border-subtle: #e4dfcf;
+    --accent:        #644ac9;
+    --accent-hover:  #4f36ad;
+    --accent-border: #644ac944;
+    --code:          #14710a;
+    --shadow:        0 8px 24px rgba(55, 48, 35, 0.12);
+    --font-body:     ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --font-mono:     ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     color-scheme:    light;
 }
 
@@ -64,6 +67,8 @@
     --accent-border: #4afa6e44;
     --code:          #9dff57;
     --shadow:        0 8px 24px rgba(0, 0, 0, 0.6);
+    --font-body:     ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --font-mono:     ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     color-scheme:    dark;
 }
 
@@ -81,6 +86,8 @@
     --accent-border: #ffb00044;
     --code:          #ffe9b0;
     --shadow:        0 8px 24px rgba(0, 0, 0, 0.6);
+    --font-body:     ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --font-mono:     ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     color-scheme:    dark;
 }
 
@@ -98,6 +105,46 @@
     --accent-border: #8a2f1344;
     --code:          #2f5d3a;
     --shadow:        0 8px 24px rgba(60, 55, 40, 0.15);
+    --font-body:     Charter, "Bitstream Charter", "Sitka Text", Georgia, serif;
+    --font-mono:     ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color-scheme:    light;
+}
+
+/* Warm rose and clay — softer editorial reading */
+:root[data-theme="dawn"] {
+    --bg:            #fff7f1;
+    --surface:       #f5e9e1;
+    --text:          #3b302f;
+    --text-muted:    #6f5a56;
+    --text-faint:    #75615d;
+    --border:        #dec9bf;
+    --border-subtle: #eadbd3;
+    --accent:        #9a4f72;
+    --accent-hover:  #7d3b59;
+    --accent-border: #9a4f7244;
+    --code:          #486b58;
+    --shadow:        0 8px 24px rgba(92, 63, 57, 0.12);
+    --font-body:     Charter, "Bitstream Charter", "Sitka Text", Georgia, serif;
+    --font-mono:     ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color-scheme:    light;
+}
+
+/* Soft blue-gray — friendly and quiet without losing structure */
+:root[data-theme="cloud"] {
+    --bg:            #f3f6fb;
+    --surface:       #e7edf5;
+    --text:          #273243;
+    --text-muted:    #56657a;
+    --text-faint:    #607087;
+    --border:        #cad4e2;
+    --border-subtle: #dce3ec;
+    --accent:        #566cab;
+    --accent-hover:  #43568f;
+    --accent-border: #566cab44;
+    --code:          #3c6e71;
+    --shadow:        0 8px 24px rgba(57, 72, 96, 0.12);
+    --font-body:     ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, sans-serif;
+    --font-mono:     ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     color-scheme:    light;
 }
 
@@ -129,11 +176,11 @@
 }
 
 /* -----------------------------------------------------------------------
-   Base — monospace throughout, palette driven by theme variables
+   Base — font role and palette are both theme-driven
    ----------------------------------------------------------------------- */
 
 body {
-    font-family:  ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-family:  var(--font-body);
     background:   var(--bg);
     color:        var(--text);
     min-height:   100vh;
@@ -141,6 +188,16 @@ body {
     flex-direction: column;
     font-size:    15px;
     line-height:  1.7;
+}
+
+.brand,
+.post-content code,
+.post-content pre,
+.vitals-strip,
+.status-readout,
+.boot-line,
+.boot-title {
+    font-family: var(--font-mono);
 }
 
 a {

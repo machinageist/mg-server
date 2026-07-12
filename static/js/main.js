@@ -9,8 +9,8 @@
     if (!wrap || !btn || !menu) return;
 
     var mql = matchMedia("(prefers-color-scheme: light)");
-    var MODES = ["system", "light", "dark", "crt", "amber", "paper"];
-    var ICON = { system: "◐", light: "☀", dark: "☾", crt: "▦", amber: "◈", paper: "¶" };
+    var MODES = ["system", "light", "dark", "crt", "amber", "paper", "dawn", "cloud"];
+    var ICON = { system: "◐", light: "☀", dark: "☾", crt: "▦", amber: "◈", paper: "¶", dawn: "◒", cloud: "☁" };
     var items = menu.querySelectorAll("[data-mode]");
 
     // Read the stored mode (defaults to system)

@@ -8,8 +8,8 @@
   <meta property="og:description" content="{{ self.description() }}">
   <meta property="og:type" content="website">
   <title>{{ self.title() }}</title>
-  <script src="/static/js/theme-init.js?v=20260712-modes"></script>
-  <link rel="stylesheet" href="/static/css/style.css?v=20260712-fieldtones">
+  <script src="/static/js/theme-init.js?v=20260712-softthemes"></script>
+  <link rel="stylesheet" href="/static/css/style.css?v=20260712-softthemes">
   {% block head_extra %}{% endblock %}
 </head>
 <body>
@@ -36,6 +36,8 @@
             <button type="button" role="menuitemradio" data-mode="crt"    aria-checked="false"><span aria-hidden="true">▦</span> CRT</button>
             <button type="button" role="menuitemradio" data-mode="amber"  aria-checked="false"><span aria-hidden="true">◈</span> Amber</button>
             <button type="button" role="menuitemradio" data-mode="paper"  aria-checked="false"><span aria-hidden="true">¶</span> Paper</button>
+            <button type="button" role="menuitemradio" data-mode="dawn"   aria-checked="false"><span aria-hidden="true">◒</span> Dawn</button>
+            <button type="button" role="menuitemradio" data-mode="cloud"  aria-checked="false"><span aria-hidden="true">☁</span> Cloud</button>
           </div>
         </div>
       </div>
@@ -57,7 +59,7 @@
     {% include "vitals_strip.html" %}
   </footer>
 
-  <script src="/static/js/main.js?v=20260712-aria"></script>
+  <script src="/static/js/main.js?v=20260712-softthemes"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>
