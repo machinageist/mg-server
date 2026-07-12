@@ -736,6 +736,7 @@ dependencies = [
  "hex",
  "pulldown-cmark",
  "serde",
+ "serde_json",
  "sha2",
  "thiserror",
  "tokio",

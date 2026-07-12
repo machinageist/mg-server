@@ -14,7 +14,8 @@
 //              axum::middleware aliased to `mw` — avoids collision with our own
 //              `middleware` module which occupies the same name in scope.
 
-use crate::handlers::{blog, pages, releases, well_known, wiki};
+use crate::errors;
+use crate::handlers::{blog, pages, releases, status, well_known, wiki};
 use crate::middleware::rate_limit::{build_limiter, rate_limit};
 use crate::middleware::security_headers::add_security_headers;
 use crate::middleware::vitals;
@@ -42,6 +43,9 @@ pub fn build(state: AppState) -> Router {
         // Capture :slug as a single path segment, passed to handler as Path<String>
         .route("/blog/:slug", get(blog::post))
         .route("/releases", get(releases::list))
+        // Process vitals — human page and the JSON the /tty terminal consumes
+        .route("/status", get(status::page))
+        .route("/status.json", get(status::json))
         // RFC 9116 security disclosure contact. Serve both the canonical
         // well-known URL and root fallback for scanners that check either path.
         .route("/.well-known/security.txt", get(well_known::security_txt))
@@ -50,6 +54,8 @@ pub fn build(state: AppState) -> Router {
         .route("/robots.txt", get(well_known::robots_txt))
         // Map /static/* URL prefix to ./static/ directory on disk
         .nest_service("/static", ServeDir::new("static"))
+        // Every unmatched route renders the themed 404 with the requested path
+        .fallback(errors::fallback_404)
         // -----------------------------------------------------------------------
         // Middleware layers — applied bottom-up on request, top-down on response
         // -----------------------------------------------------------------------

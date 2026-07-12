@@ -2,7 +2,7 @@
 // Date:        2026-04
 // Description: Entry point for mg-server. Configures the tracing (logging)
 //              subscriber, builds the Axum router with all routes and middleware
-//              attached, binds a TCP listener to 0.0.0.0:3000, and hands it to
+//              attached, binds a TCP listener to loopback by default, and hands it to
 //              Axum's serve loop. Stays thin — all routing and middleware logic
 //              lives in router.rs. This file is only responsible for startup.
 //
@@ -10,9 +10,7 @@
 //                RUST_LOG=info cargo run        — normal operation
 //                RUST_LOG=debug cargo run       — full tower internals
 //                RUST_LOG=mg_server=debug       — only this crate's debug output
-//              Binding 0.0.0.0 accepts connections on all interfaces.
-//              In production behind Caddy, change to 127.0.0.1 so the port
-//              is only reachable from localhost — Caddy handles public traffic.
+//              MG_BIND_ADDR can override loopback for an explicit deployment need.
 
 // Declare modules — tells Rust each file exists as part of this crate
 mod errors;
@@ -37,12 +35,6 @@ async fn main() {
         )
         .init();
 
-    // Construct shared state once — counters and build metadata live here
-    let state = state::AppState::new();
-
-    // Build the complete application — routes, static files, middleware all wired inside
-    let app = router::build(state);
-
     // Resolve bind address — default is 127.0.0.1 so only Caddy (same host) can reach us.
     // MG_BIND_ADDR overrides for local dev when binding 0.0.0.0 is needed.
     // Defaulting to loopback closes the LAN-side bypass of Caddy and the Cloudflare Tunnel.
@@ -51,6 +43,15 @@ async fn main() {
         .and_then(|s| s.parse().ok())
         .unwrap_or(IpAddr::V4(Ipv4Addr::LOCALHOST));
     let addr = SocketAddr::from((host, 3000));
+
+    // Construct state from the resolved listener configuration, then publish the
+    // exact same runtime to the footer/status read handle before building the router
+    let state = state::AppState::with_bind_addr(host);
+    state::init_global(state.clone()).expect("global state must match router state");
+
+    // Build the complete application — routes, static files, middleware all wired inside
+    let app = router::build(state);
+
     tracing::info!("server starting on http://{}", addr);
 
     // Open the TCP socket — equivalent to socket() + bind() + listen() in C

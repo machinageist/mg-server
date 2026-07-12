@@ -2,8 +2,10 @@
 
 {% block content %}
 <section class="error-page">
-  <h1>404</h1>
-  <p>The page you requested is not available.</p>
-  <a class="button secondary" href="/">Return home</a>
+  <p class="boot-line boot-line-1">MG-BIOS v0.1 &mdash; DISK CHECK</p>
+  <p class="boot-line boot-line-2">seeking track&hellip; head aligned&hellip; read error</p>
+  <h1 class="boot-title boot-line-3">SECTOR NOT FOUND</h1>
+  <p class="boot-line boot-line-4">0 pages read at <span class="boot-path">{{ path }}</span></p>
+  <p class="boot-line boot-line-5"><a href="/">(A)bort &rarr; return home</a></p>
 </section>
 {% endblock %}

@@ -45,6 +45,89 @@
 }
 
 /* -----------------------------------------------------------------------
+   Display modes — retro palettes; every variable above is redefined so no
+   page is ever half-themed. Contrast holds WCAG AA in all three.
+   ----------------------------------------------------------------------- */
+
+/* Green phosphor on near-black — the terminal the 90s promised */
+:root[data-theme="crt"] {
+    --bg:            #0a0e0a;
+    --surface:       #0f150f;
+    --text:          #4afa6e;
+    --text-muted:    #2fbf50;
+    --text-faint:    #279a44;
+    --border:        #1c4a28;
+    --border-subtle: #133619;
+    --accent:        #7dffa0;
+    --accent-hover:  #b0ffc4;
+    --accent-border: #4afa6e44;
+    --code:          #9dff57;
+    --shadow:        0 8px 24px rgba(0, 0, 0, 0.6);
+    color-scheme:    dark;
+}
+
+/* P3 amber phosphor — the other terminal */
+:root[data-theme="amber"] {
+    --bg:            #100c04;
+    --surface:       #171106;
+    --text:          #ffb000;
+    --text-muted:    #cc8c00;
+    --text-faint:    #a8760c;
+    --border:        #4a3608;
+    --border-subtle: #33250a;
+    --accent:        #ffcf5e;
+    --accent-hover:  #ffe08a;
+    --accent-border: #ffb00044;
+    --code:          #ffe9b0;
+    --shadow:        0 8px 24px rgba(0, 0, 0, 0.6);
+    color-scheme:    dark;
+}
+
+/* Ink on newsprint — the zine photocopy */
+:root[data-theme="paper"] {
+    --bg:            #f4f1e8;
+    --surface:       #ebe7da;
+    --text:          #1c1a15;
+    --text-muted:    #4f4a3d;
+    --text-faint:    #6e6759;
+    --border:        #ccc5b2;
+    --border-subtle: #ddd7c6;
+    --accent:        #8a2f13;
+    --accent-hover:  #6b2410;
+    --accent-border: #8a2f1344;
+    --code:          #2f5d3a;
+    --shadow:        0 8px 24px rgba(60, 55, 40, 0.15);
+    color-scheme:    light;
+}
+
+/* Phosphor glow — decorative only, never load-bearing for contrast */
+:root[data-theme="crt"] body   { text-shadow: 0 0 6px rgba(74, 250, 110, 0.22); }
+:root[data-theme="amber"] body { text-shadow: 0 0 6px rgba(255, 176, 0, 0.22); }
+
+/* CRT scanlines — fixed pure-CSS overlay, clicks pass straight through */
+:root[data-theme="crt"] body::after {
+    content:        "";
+    position:       fixed;
+    inset:          0;
+    pointer-events: none;
+    z-index:        9999;
+    background:     repeating-linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.16) 0px,
+        rgba(0, 0, 0, 0.16) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+}
+
+/* Reduced motion: no scanline texture, no glow — plain phosphor palette */
+@media (prefers-reduced-motion: reduce) {
+    :root[data-theme="crt"] body::after { display: none; }
+    :root[data-theme="crt"] body,
+    :root[data-theme="amber"] body { text-shadow: none; }
+}
+
+/* -----------------------------------------------------------------------
    Base — monospace throughout, palette driven by theme variables
    ----------------------------------------------------------------------- */
 
@@ -303,6 +386,75 @@ hr {
     text-decoration: none;
 }
 .footer-inner a:hover { color: var(--text-muted); }
+
+/* -----------------------------------------------------------------------
+   Vitals strip — rack-mount readout stamped into the footer, zero JS
+   ----------------------------------------------------------------------- */
+
+.vitals-strip {
+    max-width:      900px;
+    margin:         0.75rem auto 0;
+    padding-top:    0.75rem;
+    border-top:     1px solid var(--border-subtle);
+    color:          var(--text-faint);
+    font-size:      0.75rem;
+    letter-spacing: 0.08em;
+    display:        flex;
+    gap:            0.6rem;
+    flex-wrap:      wrap;
+}
+
+.vitals-sep { user-select: none; }
+
+.vitals-link {
+    color:           var(--text-faint);
+    text-decoration: none;
+}
+.vitals-link:hover { color: var(--text-muted); }
+
+/* -----------------------------------------------------------------------
+   Status page — full readout behind the footer strip
+   ----------------------------------------------------------------------- */
+
+.status-page {
+    max-width: 700px;
+    margin:    0 auto;
+    padding:   3rem 2rem;
+}
+
+.status-page h1 {
+    font-size:     1.4rem;
+    margin-bottom: 1.25rem;
+}
+
+.status-intro,
+.status-outro {
+    color:         var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.status-readout {
+    display:               grid;
+    grid-template-columns: max-content 1fr;
+    gap:                   0.5rem 1.5rem;
+    padding:               1.25rem 1.5rem;
+    margin-bottom:         1.5rem;
+    background:            var(--surface);
+    border:                1px solid var(--border);
+    border-radius:         6px;
+    letter-spacing:        0.06em;
+}
+
+.status-readout dt {
+    color:       var(--accent);
+    font-weight: 700;
+}
+
+.status-note {
+    color:       var(--text-faint);
+    font-size:   0.8rem;
+    margin-left: 0.5rem;
+}
 
 /* -----------------------------------------------------------------------
    Hero — index page
@@ -656,13 +808,47 @@ hr {
 .error-page {
     display:        flex;
     flex-direction: column;
-    gap:            1rem;
+    gap:            0.75rem;
+    max-width:      700px;
+    margin:         0 auto;
+    padding:        4rem 2rem;
 }
 
-.error-page h1 {
-    font-size:   5rem;
-    color:       var(--text-faint);
-    line-height: 1;
+.error-page .boot-title {
+    font-size:      2.2rem;
+    line-height:    1.2;
+    letter-spacing: 0.06em;
+}
+
+.boot-line {
+    color:          var(--text-muted);
+    letter-spacing: 0.05em;
+}
+
+.boot-path {
+    color:      var(--code);
+    word-break: break-all;
+}
+
+/* Staged type-in — each line pops in like a boot log scrolling past.
+   The hidden "from" state lives inside the animation (fill-mode both),
+   so if animations never run the page is simply fully visible. Static
+   under prefers-reduced-motion. */
+@media (prefers-reduced-motion: no-preference) {
+    .error-page .boot-line,
+    .error-page .boot-title {
+        animation: boot-line-in 0.2s steps(1, end) both;
+    }
+    .error-page .boot-line-1 { animation-delay: 0.15s; }
+    .error-page .boot-line-2 { animation-delay: 0.55s; }
+    .error-page .boot-line-3 { animation-delay: 1.0s;  }
+    .error-page .boot-line-4 { animation-delay: 1.35s; }
+    .error-page .boot-line-5 { animation-delay: 1.8s;  }
+}
+
+@keyframes boot-line-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 /* -----------------------------------------------------------------------

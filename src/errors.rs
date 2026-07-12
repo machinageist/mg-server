@@ -62,7 +62,10 @@ pub enum SiteError {
 
 #[derive(Template)]
 #[template(path = "error_404.html")]
-struct Error404Template;
+struct Error404Template {
+    // The path the visitor asked for — Askama auto-escapes it on render
+    path: String,
+}
 
 impl Error404Template {
     // Return page title for base.html <title> tag
@@ -104,11 +107,7 @@ impl IntoResponse for SiteError {
             // Log slug for operator visibility, render 404 page for user
             SiteError::PostNotFound(ref slug) | SiteError::PageNotFound(ref slug) => {
                 error!(slug = %slug, "404 not found");
-                // Render template or fall back to plain text if template itself fails
-                match Error404Template.render() {
-                    Ok(html) => (StatusCode::NOT_FOUND, Html(html)).into_response(),
-                    Err(_) => (StatusCode::NOT_FOUND, "404 not found").into_response(),
-                }
+                render_404(slug.clone())
             }
             // Log full internal error, return generic 500 — no internals exposed to user
             other => {
@@ -123,5 +122,73 @@ impl IntoResponse for SiteError {
                 }
             }
         }
+    }
+}
+
+// Render the boot-sequence 404 for a requested path or slug
+fn render_404(path: String) -> Response {
+    // Render template or fall back to plain text if template itself fails
+    match (Error404Template { path }).render() {
+        Ok(html) => (StatusCode::NOT_FOUND, Html(html)).into_response(),
+        Err(_) => (StatusCode::NOT_FOUND, "404 not found").into_response(),
+    }
+}
+
+// Catch every unmatched route with the themed 404 — registered as the
+// router fallback so bare Axum defaults never reach a visitor
+pub async fn fallback_404(uri: axum::http::Uri) -> Response {
+    render_404(uri.path().to_string())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::router;
+    use crate::state::AppState;
+    use axum::body::Body;
+    use axum::http::Request;
+    use tower::ServiceExt;
+
+    // Collect a response body into a string
+    async fn body_string(response: Response) -> String {
+        let bytes = axum::body::to_bytes(response.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        String::from_utf8(bytes.to_vec()).unwrap()
+    }
+
+    #[test]
+    fn requested_path_is_html_escaped() {
+        let html = Error404Template {
+            path: "<script>alert(1)</script>".to_string(),
+        }
+        .render()
+        .expect("404 template renders");
+        assert!(html.contains("&lt;script&gt;"), "probe must be escaped");
+        assert!(!html.contains("<script>alert"), "probe must never be live");
+    }
+
+    #[tokio::test]
+    async fn unknown_route_returns_boot_sequence_404() {
+        let app = router::build(AppState::new());
+        let response = app
+            .oneshot(Request::get("/no-such-page").body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::NOT_FOUND);
+        let body = body_string(response).await;
+        assert!(body.contains("SECTOR NOT FOUND"));
+        assert!(body.contains("/no-such-page"), "path must echo back");
+    }
+
+    #[tokio::test]
+    async fn internal_error_page_leaks_nothing() {
+        let inner = std::io::Error::other("secret-internal-detail at src/models/post.rs");
+        let response = SiteError::Io(inner).into_response();
+        assert_eq!(response.status(), StatusCode::INTERNAL_SERVER_ERROR);
+        let body = body_string(response).await;
+        assert!(!body.contains("secret-internal-detail"));
+        assert!(!body.contains("src/"));
+        assert!(!body.contains(".rs"));
     }
 }

@@ -8,8 +8,8 @@
   <meta property="og:description" content="{{ self.description() }}">
   <meta property="og:type" content="website">
   <title>{{ self.title() }}</title>
-  <script src="/static/js/theme-init.js?v=20260712-theme"></script>
-  <link rel="stylesheet" href="/static/css/style.css?v=20260712-theme">
+  <script src="/static/js/theme-init.js?v=20260712-modes"></script>
+  <link rel="stylesheet" href="/static/css/style.css?v=20260712-boot">
   {% block head_extra %}{% endblock %}
 </head>
 <body>
@@ -33,6 +33,9 @@
             <button type="button" role="menuitemradio" data-mode="system" aria-checked="false"><span aria-hidden="true">◐</span> System</button>
             <button type="button" role="menuitemradio" data-mode="light"  aria-checked="false"><span aria-hidden="true">☀</span> Light</button>
             <button type="button" role="menuitemradio" data-mode="dark"   aria-checked="false"><span aria-hidden="true">☾</span> Dark</button>
+            <button type="button" role="menuitemradio" data-mode="crt"    aria-checked="false"><span aria-hidden="true">▦</span> CRT</button>
+            <button type="button" role="menuitemradio" data-mode="amber"  aria-checked="false"><span aria-hidden="true">◈</span> Amber</button>
+            <button type="button" role="menuitemradio" data-mode="paper"  aria-checked="false"><span aria-hidden="true">¶</span> Paper</button>
           </div>
         </div>
       </div>
@@ -51,9 +54,10 @@
         <span>updated on: 2026-07-12</span>
       </nav>
     </div>
+    {% include "vitals_strip.html" %}
   </footer>
 
-  <script src="/static/js/main.js?v=20260712-theme"></script>
+  <script src="/static/js/main.js?v=20260712-aria"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -1,0 +1,19 @@
+{#
+  Engine-room vitals strip — included from base.html on every page.
+  Server-rendered at request time from the process-global AppState.
+  A status stamp, not a live feed: no polling, no JavaScript.
+#}
+{% let vitals = crate::state::Status::current() %}
+<div class="vitals-strip" aria-label="Server vitals">
+  <span class="vitals-item">UP {{ vitals.uptime }}</span>
+  <span class="vitals-sep" aria-hidden="true">&middot;</span>
+  <span class="vitals-item">REQ {{ vitals.requests }}</span>
+  {% match vitals.rss_mib %}
+  {% when Some with (mem) %}
+  <span class="vitals-sep" aria-hidden="true">&middot;</span>
+  <span class="vitals-item">MEM {{ mem }} MiB</span>
+  {% when None %}
+  {% endmatch %}
+  <span class="vitals-sep" aria-hidden="true">&middot;</span>
+  <a class="vitals-item vitals-link" href="/status">v{{ vitals.version }} &middot; built {{ vitals.build }}</a>
+</div>
