@@ -9,8 +9,8 @@
     if (!wrap || !btn || !menu) return;
 
     var mql = matchMedia("(prefers-color-scheme: light)");
-    var MODES = ["system", "light", "dark", "crt", "amber", "paper", "dawn", "cloud"];
-    var ICON = { system: "◐", light: "☀", dark: "☾", crt: "▦", amber: "◈", paper: "¶", dawn: "◒", cloud: "☁" };
+    var MODES = ["system", "lunarcore", "solarcore", "dark", "light", "crt", "amber", "paper", "dawn", "cloud", "gameboy", "c64", "teletext", "nes", "matrix", "solarized", "nord", "gruvbox", "synthwave", "vaporwave", "cyberpunk", "tron", "blueprint", "sepia"];
+    var ICON = { system: "◐", lunarcore: "⏾", solarcore: "✸", dark: "✦", light: "☀", crt: "▦", amber: "◈", paper: "¶", dawn: "◒", cloud: "☁", gameboy: "▣", c64: "▩", teletext: "⌗", nes: "✜", matrix: "⌁", solarized: "◉", nord: "❄", gruvbox: "◆", synthwave: "▹", vaporwave: "▧", cyberpunk: "⌖", tron: "⊞", blueprint: "⊟", sepia: "⚙" };
     var items = menu.querySelectorAll("[data-mode]");
 
     // Read the stored mode (defaults to system)
@@ -19,7 +19,7 @@
         catch (e) { return "system"; }
     }
     // Resolve a mode to an actual theme
-    function resolve(mode) { return mode === "system" ? (mql.matches ? "light" : "dark") : mode; }
+    function resolve(mode) { return mode === "system" ? (mql.matches ? "solarcore" : "lunarcore") : mode; }
 
     // Apply + persist a chosen mode, then reflect it in the UI
     function apply(mode) {
