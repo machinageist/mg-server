@@ -71,7 +71,7 @@ impl std::fmt::Display for ProjectStatus {
 
 // Return canonical project list — called by portfolio handler on each request
 // Order is deliberate: homelab operations lead, then this site, the cert track,
-// and finally the demoted GeistScope archive line.
+// and finally the demoted GeistScope retrospective.
 pub fn all() -> Vec<Project> {
     vec![
         Project {
@@ -120,13 +120,13 @@ pub fn all() -> Vec<Project> {
             status: ProjectStatus::InProgress,
         },
         Project {
-            name: "GeistScope (archived reference)",
+            name: "GeistScope (retrospective)",
             description: "An early AI-assisted-coding security-tooling experiment that over-scoped; the project has \
-                          been narrowed and archived as reference, not presented as professional security work. See \
-                          the retrospective on the blog and the archived notes in the Archive, which are kept in \
-                          full but labeled on every page as beginner generative-AI experimentation.",
-            tags: &["rust", "archive", "retrospective", "scope-control"],
-            url: None,
+                          been removed from the public tool catalog and is not presented as professional security \
+                          work. The retrospective records what was real, what was aspirational, and the publication \
+                          gate future tools must meet.",
+            tags: &["rust", "ai-assisted", "retrospective", "scope-control"],
+            url: Some("/blog/geistscope-retrospective"),
             status: ProjectStatus::Complete,
         },
     ]
@@ -157,9 +157,9 @@ mod tests {
         assert!(combined.contains("Network+"));
         assert!(combined.contains("Certification track"));
 
-        // GeistScope is present but demoted to one archived line, framed as an experiment
+        // GeistScope is present but demoted to one retrospective, framed as an experiment.
         assert!(combined.contains("GeistScope"));
-        assert!(combined.contains("archived"));
+        assert!(combined.contains("retrospective"));
         assert!(combined.contains("experiment"));
 
         // Anti-overclaim guards

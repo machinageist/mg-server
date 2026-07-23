@@ -22,3 +22,8 @@ config.local.toml
 
 # Claude Code local settings (project-specific permissions, not shared)
 .claude/settings.local.json
+
+# Compressed binary
+mg-server.tar.gz
+
+

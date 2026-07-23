@@ -1,5 +1,10 @@
 # Site reorg changelog — SysAdmin/NOC retarget
 
+> **Later change (2026-07-23):** the wiki became a curated education section. All
+> GeistScope tool pages were removed, leaving the retrospective as the public record.
+> Git retains the complete experiment; tools return only after meeting the current
+> pipeline, human/AI operation, and authorized-engagement evidence gate.
+
 Branch: `site-reorg-sysadmin-noc` (off `main`). Done 2026-07-10.
 Every phase kept `cargo fmt`/`clippy -D warnings`/`build`/`test` green; each phase
 is its own conventional commit.

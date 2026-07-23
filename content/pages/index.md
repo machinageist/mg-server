@@ -1,37 +1,59 @@
 ---
-title: "Reference archive — GeistScope notes"
-date: 2026-07-08
-summary: "A reference archive of GeistScope tool notes — generative-AI experimentation by a beginner, not serious professional research. Not the primary reviewer path; start with Portfolio and Writing."
-tags: [reference, geistscope, archive, ai-experiment, scope-control]
+title: "Education wiki"
+date: 2026-07-23
+summary: "Free, FOSS-first IT foundations paired with suggested practice and evidence from a learning-in-public systems and networking portfolio."
+tags: [education, networking, linux, digital-literacy, digital-sovereignty]
 ---
 
-## Reference archive
+## A doorway into technical agency
 
-> **About this archive:** GeistScope is **generative-AI experimentation by a
-> beginner learning in public** — not a serious project by a professional security
-> researcher. Most of these pages were AI-generated while I explored what such a
-> toolkit might look like. Read them as a learning sandbox, not as authoritative,
-> production-ready, or expert references. Every page carries this note, and the
-> honest full story is in the
-> [GeistScope retrospective](/blog/geistscope-retrospective).
+This wiki is for curious adults who use technology every day but want to understand,
+operate, troubleshoot, and eventually build more of it themselves. It begins with the
+systems and networking foundations I am studying for an early career in Linux systems
+administration and network operations.
 
-This section keeps the GeistScope tool notes reachable as a reference archive.
-It's older work &mdash; start with the [projects](/portfolio) and
-[writing](/blog) instead.
+The goal is not to make every reader a specialist. It is to provide enough context to
+see the larger technical landscape, understand ordinary documentation, and choose a
+useful next direction.
 
-## Why the notes are kept
+## Understand → Practice → Evidence
 
-GeistScope over-scoped and got pruned back; I later chose to keep the full set of
-notes here, with the disclaimer above, rather than hide them. The value now is
-honesty: showing an early AI-assisted experiment for what it was — including the
-parts that were aspirational rather than real — instead of quietly deleting it.
-The retrospective explains what was real versus aspirational, what I learned, and
-why my focus moved to the operations/cert work.
+Topics are developed as flexible learning clusters:
 
-## How to read these pages
+1. **Understand** — connect a concept to the larger system and explain it in ordinary
+   language before moving toward protocols and technical specifications.
+2. **Practice** — use an accessible lab to observe, configure, break, or troubleshoot
+   the concept. Most suggested labs should work on an ordinary computer with free and
+   open-source software.
+3. **Evidence** — connect the subject to completed, documented work where I have
+   personally applied it.
 
-Use the sidebar to browse the tool notes by section. Treat each page as a
-historical, AI-generated reference note. Anything describing active testing,
-credential handling, cloud metadata, out-of-band callbacks, or post-access
-behavior should be read as a learning-sandbox description, not a demonstrated
-capability or a claim of professional security work.
+Not every topic needs all three parts. A foundational page may stand alone; an applied
+claim should be supported by work I performed and can explain.
+
+## Networking foundations
+
+- [OSI model](/wiki/osi-model) — a seven-layer reference model for connecting
+  protocols, devices, encapsulation, and troubleshooting to the larger communication
+  system.
+- [Network appliances](/wiki/network-appliances) — the physical and virtual systems
+  that forward, filter, distribute, store, and expose network traffic.
+- [Network applications](/wiki/network-applications) — beginning with content delivery
+  networks and the relationship between distributed infrastructure and applications.
+- [Network functions](/wiki/network-functions) — VPNs, tunneling, IPsec, quality of
+  service, and the lifetime of routed packets.
+
+This is an intentionally small first release. It will expand as finished notes and
+completed labs move from my private study workspace into reviewed public editions.
+
+## Authorship and scope
+
+The educational substance begins in notes I typed while studying or in labs I
+performed and documented. AI may help interview me, organize the material, correct
+presentation, and fit it into the site, but it is not used to manufacture unlearned
+expertise or unperformed evidence.
+
+The material is FOSS-first because free tools and owned systems make practice more
+accessible. Proprietary workplace systems will still be addressed where reality
+requires them, with a clear distinction between transferable concepts, documentation-
+based comparisons, and systems I have personally operated.

@@ -1,5 +1,10 @@
 # mg-server reorg — CLI agent handoff prompt
 
+> **Superseded 2026-07-23:** this is a historical handoff, not current direction.
+> The wiki is now curated public education. All GeistScope tool pages were removed;
+> only the retrospective remains public until a tool works in the complete pipeline,
+> supports human and AI operation, and has authorized-engagement evidence.
+
 > Paste everything below the line into the Claude Code CLI agent running inside the
 > `mg-server` repo. It is self-contained but expects read access to two sibling repos on
 > the same machine: `~/tech-skill-up/` (career/curriculum source of truth) and
