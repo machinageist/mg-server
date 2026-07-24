@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="wiki-layout">
-  <aside class="wiki-sidebar" aria-label="Reference navigation">
+  <aside class="wiki-sidebar" aria-label="Education wiki navigation">
     <details class="wiki-nav">
-      <summary>Reference navigation</summary>
+      <summary>Wiki navigation</summary>
       <nav>
         {% for section in sidebar %}
         <section class="wiki-section">
@@ -26,16 +26,7 @@
   </aside>
 
   <article class="wiki-article article-page">
-    <a class="back-link" href="/wiki">Reference archive</a>
-    <aside class="wiki-disclaimer" role="note">
-      <strong>About these notes:</strong> GeistScope is generative-AI
-      experimentation by a beginner learning in public &mdash; not a serious project
-      by a professional security researcher. The pages here were largely
-      AI-generated while exploring what such tooling might look like; read them as a
-      learning sandbox, not as authoritative, production-ready, or expert
-      references. The honest account is in the
-      <a href="/blog/geistscope-retrospective">GeistScope retrospective</a>.
-    </aside>
+    <a class="back-link" href="/wiki">Education wiki</a>
     <header class="post-header">
       <h1>{{ page.title }}</h1>
       <div class="post-meta">

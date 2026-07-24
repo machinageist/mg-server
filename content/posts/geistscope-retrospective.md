@@ -70,8 +70,8 @@ my résumé:
 - Rewrote the README down to an honest posture: authorized/local scope only,
   passive and report-first workflows first, active and destructive surfaces
   archived or lab-gated until they have a walkthrough and safe local proof.
-- Froze public claims. GeistScope is now presented as an archived reference and
-  a learning experiment — not as security work I did professionally.
+- Froze public claims. GeistScope is now represented by this learning retrospective,
+  not presented as security work I did professionally.
 
 The safe core that survives is small: scope/workspace management, passive
 fingerprint and header checks, and evidence reporting. That small core is worth
@@ -97,7 +97,12 @@ Linux operations evidence, a small defensive-security section built to grow
 after Security+, and a four-CompTIA-cert journey where each cert is tied to a
 homelab project with captured evidence. That is a narrower story, and a true one.
 
-The GeistScope tool notes still live in the [Archive](/wiki), kept in full but
-labeled honestly on every page: generative-AI experimentation by a beginner, not
-serious professional research. I chose to keep them visible with that disclaimer
-rather than quietly delete them — the honesty is the point.
+The individual GeistScope tool pages are no longer published. Git preserves the full
+experiment, while this retrospective preserves the public record without presenting
+unfinished scaffolding as useful documentation.
+
+A tool can earn a public page in the future, but the gate is deliberately higher: it
+must fit and work within the complete GeistScope pipeline, be operable through both a
+human interface and a stable machine interface for AI agents, and have sanitized
+evidence from an actual authorized engagement. Until then, preserving an idea in the
+repository is not the same as publishing it as a usable tool.

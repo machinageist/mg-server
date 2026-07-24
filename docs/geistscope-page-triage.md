@@ -1,11 +1,11 @@
 # GeistScope wiki-page triage
 
-> **Update (2026-07-11):** the prune described below was **reversed** by later
-> request. The full GeistScope wiki is restored, but every page now carries a
-> disclaimer banner (in `templates/wiki_page.html`) framing it as generative-AI
-> experimentation by a beginner, not serious professional research. This file is
-> kept as the record of the original KEEP/REMOVE reasoning; it no longer reflects
-> the live page set (all pages are live again).
+> **Final decision (2026-07-23):** all individual GeistScope wiki pages were removed.
+> Git preserves the experiment, and the public site retains only the honest
+> retrospective. A tool may earn a new public page only after it works within the
+> complete pipeline, supports both human and AI operation, and has sanitized evidence
+> from an actual authorized engagement. The classifications below remain as a record
+> of the earlier triage, not as the live page set.
 
 
 Reviewable classification for the wiki prune (Phase 4 of the site reorg). Every

@@ -47,7 +47,7 @@ Recommended public-facing navigation/content groups, mapped to the five pillars:
 6. Certification journey
 7. Resume Claim Defense
 
-These do not all need to be top-level routes. The first pass uses the existing homepage, About, Start Here, Portfolio, and Blog routes, with the blog grouped by pillar via a `category` frontmatter field, while the wiki is kept only as a small GeistScope archive.
+These do not all need to be top-level routes. The site uses the existing homepage, About, Start Here, Portfolio, Blog, and education-wiki routes, with the blog grouped by pillar via a `category` frontmatter field. GeistScope is represented by one retrospective rather than unfinished tool pages.
 
 ## First content slices
 
@@ -112,9 +112,9 @@ The first corrected slice updates:
 
 ## Resolved structure decisions (site reorg, 2026-07)
 
-- Nav label `Reference` renamed to `Archive`; the wiki is now a 10-page GeistScope safe-core archive (see `docs/geistscope-page-triage.md`).
+- The former GeistScope archive has been replaced by a curated education wiki. Individual GeistScope tool pages are removed; the retrospective is its only public record until a tool passes the pipeline, human/AI operation, and authorized-engagement evidence gate.
 - A dedicated `/start-here` route exists and is the reviewer orientation page (About covers role focus and pillars).
-- The GeistScope pages outside the safe core were pruned; old URLs to them 404, an accepted tradeoff (honesty over preservation).
+- Old GeistScope tool URLs return 404, an accepted tradeoff: Git preserves the experiment while the website publishes only useful, defensible material.
 - First polished artifacts published: "How machinageist.dev Is Hosted" and "Security Headers on machinageist.dev", plus the "GeistScope retrospective" replacing 22 devlogs.
 - Blog is grouped by the five pillars via a `category` frontmatter field.
 
