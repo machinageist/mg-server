@@ -2,6 +2,15 @@
 
 > Planning only. Do not implement from this document until Jeff reviews the parallel Claude changes, revises this draft, and explicitly approves implementation.
 
+**2026-07-25 status:** Re-checked against the live `~/digital-liberty-website`
+(formerly `jeffcincoski-consulting`) — the six consulting modules referenced
+below (Home Systems Reset, Network + Device Upgrade, Secure Remote Access,
+Local Media + Personal Cloud, Home Ops Copilot/Hermes, and the à la carte
+installs) still match `src/pages/services.astro` and `src/pages/index.astro`
+verbatim. Idea-pulling from that site into this backlog has begun per Jeff's
+direction; the implementation-approval gate above is unchanged — no lab has
+been built, and none of this is public.
+
 ## Goal
 
 Turn a small, credible subset of the current `jeffcincoski-consulting` offer into repeatable labs that produce honest SysAdmin/NOC portfolio evidence while also rehearsing work Jeff may later deliver for clients.
