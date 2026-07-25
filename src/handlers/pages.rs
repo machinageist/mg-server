@@ -96,7 +96,7 @@ impl PortfolioTemplate {
         "Portfolio — machinageist"
     }
     pub fn description(&self) -> &str {
-        "The homelab projects, this self-hosted site, and the CompTIA track — what machinageist builds and runs."
+        "What machinageist builds and runs — verified, evidenced work only."
     }
     pub fn section(&self) -> &str {
         "portfolio"

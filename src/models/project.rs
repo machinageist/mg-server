@@ -70,66 +70,19 @@ impl std::fmt::Display for ProjectStatus {
 // -----------------------------------------------------------------------
 
 // Return canonical project list — called by portfolio handler on each request
-// Order is deliberate: homelab operations lead, then this site, the cert track,
-// and finally the demoted GeistScope retrospective.
+// The homelab, cert-track, and GeistScope entries are archived pending a
+// long-form rewrite (see content/drafts/portfolio-entries.md) — this list
+// only carries entries with verifiable status and evidence.
 pub fn all() -> Vec<Project> {
-    vec![
-        Project {
-            name: "Homelab project 1 — internal DNS + network map",
-            description: "An internal DNS resolver (Pi-hole/dnsmasq) for the Proxmox lab, a subnet/VLAN and \
-                          service map now spanning a three-node cluster over a shared managed switch, and a \
-                          dig/nslookup/ss name-resolution writeup captured before and after breaking a record. \
-                          Anchored to Network+.",
-            tags: &["homelab", "networking", "dns", "proxmox", "network+"],
-            url: None,
-            status: ProjectStatus::InProgress,
-        },
-        Project {
-            name: "Homelab project 2 — harden & monitor the homelab",
-            description: "A hardening pass across a lab VM and this server — key-only SSH, a host firewall, \
-                          non-root service users, unattended updates — a security-headers audit of the site, and \
-                          a log-based failed-login detector with triage notes. Anchored to Security+.",
-            tags: &["homelab", "security", "linux", "hardening", "security+"],
-            url: None,
-            status: ProjectStatus::InProgress,
-        },
-        Project {
-            name: "Homelab project 3 — Proxmox cluster ops: backup/restore, monitoring, HA",
-            description: "The three-node Proxmox cluster's operations: a baseline and asset inventory, a validated \
-                          VM backup and restore with RPO/RTO notes, a monitoring stack, structured incident \
-                          write-ups, and high availability as the capstone. Anchored to Server+ and Linux+.",
-            tags: &["homelab", "proxmox", "backup", "monitoring", "server+"],
-            url: None,
-            status: ProjectStatus::InProgress,
-        },
-        Project {
-            name: "mg-server",
-            description: "The Rust/Axum app that serves this site: routes, Askama templates, flat-file Markdown, \
-                          request tracing, defensive response headers, and rate limiting, on a Proxmox Debian VM \
-                          behind Caddy and a Cloudflare Tunnel.",
-            tags: &["rust", "axum", "linux-service", "self-hosting", "headers"],
-            url: Some("https://github.com/machinageist/mg-server"),
-            status: ProjectStatus::Active,
-        },
-        Project {
-            name: "Certification track — Network+ to Server+ by Jan 2027",
-            description: "Network+, Security+, Linux+, then Server+, each one anchored to a homelab project above. \
-                          Writeups link from each as the work lands.",
-            tags: &["comptia", "network+", "security+", "linux+", "server+"],
-            url: None,
-            status: ProjectStatus::InProgress,
-        },
-        Project {
-            name: "GeistScope (retrospective)",
-            description: "An early AI-assisted-coding security-tooling experiment that over-scoped; the project has \
-                          been removed from the public tool catalog and is not presented as professional security \
-                          work. The retrospective records what was real, what was aspirational, and the publication \
-                          gate future tools must meet.",
-            tags: &["rust", "ai-assisted", "retrospective", "scope-control"],
-            url: Some("/blog/geistscope-retrospective"),
-            status: ProjectStatus::Complete,
-        },
-    ]
+    vec![Project {
+        name: "mg-server",
+        description: "The Rust/Axum app that serves this site: routes, Askama templates, flat-file Markdown, \
+                      request tracing, defensive response headers, and rate limiting, on a Proxmox Debian VM \
+                      behind Caddy and a Cloudflare Tunnel.",
+        tags: &["rust", "axum", "linux-service", "self-hosting", "headers"],
+        url: Some("https://github.com/machinageist/mg-server"),
+        status: ProjectStatus::Active,
+    }]
 }
 
 #[cfg(test)]
@@ -137,13 +90,15 @@ mod tests {
     use super::*;
 
     #[test]
-    fn portfolio_leads_with_homelab_and_cert_work_and_demotes_geistscope() {
+    fn portfolio_only_carries_entries_with_verifiable_status_and_evidence() {
         let projects = all();
 
-        // The first three cards are the homelab operations projects
-        assert!(projects[0].name.contains("Homelab project 1"));
-        assert!(projects[1].name.contains("Homelab project 2"));
-        assert!(projects[2].name.contains("Homelab project 3"));
+        // Homelab, cert-track, and GeistScope entries are archived pending a
+        // rewrite — only mg-server, an Active entry with a real URL, remains.
+        assert_eq!(projects.len(), 1);
+        assert_eq!(projects[0].name, "mg-server");
+        assert_eq!(projects[0].status, ProjectStatus::Active);
+        assert!(projects[0].url.is_some());
 
         let combined = projects
             .iter()
@@ -151,18 +106,10 @@ mod tests {
             .collect::<Vec<_>>()
             .join("\n");
 
-        // New lead framing: homelab / Proxmox / networking / certs
-        assert!(combined.contains("homelab") || combined.contains("Homelab"));
-        assert!(combined.contains("Proxmox"));
-        assert!(combined.contains("Network+"));
-        assert!(combined.contains("Certification track"));
-
-        // GeistScope is present but demoted to one retrospective, framed as an experiment.
-        assert!(combined.contains("GeistScope"));
-        assert!(combined.contains("retrospective"));
-        assert!(combined.contains("experiment"));
-
-        // Anti-overclaim guards
+        // Anti-overclaim guards: nothing archived-but-unwritten should reappear here
+        assert!(!combined.contains("Homelab"));
+        assert!(!combined.contains("GeistScope"));
+        assert!(!combined.contains("Certification track"));
         assert!(!combined.contains("bug-bounty"));
         assert!(!combined.contains("red-team"));
         assert!(!combined.contains("offensive security"));

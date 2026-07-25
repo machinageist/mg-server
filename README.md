@@ -51,10 +51,13 @@ mg-server/
 │   ├── posts                # blog posts, grouped by pillar via `category` frontmatter
 │   │   ├── hosting-machinageist-dev.md
 │   │   ├── security-headers-on-machinageist-dev.md
-│   │   ├── port-scanner-in-rust.md
-│   │   ├── memory-safety-c-vs-rust.md
-│   │   └── geistscope-retrospective.md
-│   └── pages                # curated education wiki (served at /learn)
+│   │   └── solarpunk-is-an-operations-question.md
+│   ├── pages                # curated education wiki (served at /learn)
+│   └── drafts                # unrouted — archived writing/portfolio text awaiting rewrite
+│       ├── port-scanner-in-rust.md
+│       ├── memory-safety-c-vs-rust.md
+│       ├── geistscope-retrospective.md
+│       └── portfolio-entries.md
 ├── docs                     # planning docs, claim-defense, geistscope page triage
 ├── IMPROVEMENT_PLAN.md
 ├── README.md
