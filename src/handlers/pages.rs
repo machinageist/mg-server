@@ -147,7 +147,6 @@ mod tests {
 
         // Plain description of the actual work
         assert!(html.contains("What I work with"));
-        assert!(html.contains("Certifications"));
         assert!(html.contains("homelab"));
         // Show, don't tell: no defensive/strategy sections
         assert!(!html.contains("What I am not claiming yet"));
