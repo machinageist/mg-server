@@ -1,16 +1,19 @@
 // Author:      machinageist
 // Date:        2026-05-15
 // Description: Handlers for the wiki section.
-//              `/wiki` renders the overview page (content/pages/index.md).
-//              `/wiki/:slug` renders one tool page (content/pages/<slug>.md).
+//              `/learn` renders the overview page (content/pages/index.md).
+//              `/learn/:slug` renders one tool page (content/pages/<slug>.md).
 //              Both responses include a left navigation sidebar with the
 //              active entry highlighted.
+//              `/wiki` and `/wiki/:slug` are the pre-rename URLs; they permanently
+//              redirect to the `/learn` equivalents so old links keep working.
 
 use crate::errors::SiteError;
 use crate::models::page::Page;
 use askama::Template;
 use askama_axum::IntoResponse;
 use axum::extract::Path as AxumPath;
+use axum::response::Redirect;
 use std::path::PathBuf;
 
 const PAGES_DIR: &str = "content/pages";
@@ -55,6 +58,18 @@ const SIDEBAR: &[SidebarSection] = &[
             SidebarEntry {
                 slug: "network-functions",
                 label: "Network functions",
+            },
+            SidebarEntry {
+                slug: "network-protocols",
+                label: "Network protocols and ports",
+            },
+            SidebarEntry {
+                slug: "traffic-types",
+                label: "Network traffic types",
+            },
+            SidebarEntry {
+                slug: "cloud-computing",
+                label: "Cloud computing concepts",
             },
         ],
     },
@@ -105,6 +120,16 @@ async fn render_for_slug(slug: &'static str) -> Result<WikiPageTemplate, SiteErr
     })
 }
 
+// Permanently redirect the legacy /wiki root to /learn
+pub async fn redirect_index() -> Redirect {
+    Redirect::permanent("/learn")
+}
+
+// Permanently redirect a legacy /wiki/:slug URL to its /learn/:slug equivalent
+pub async fn redirect_page(AxumPath(slug): AxumPath<String>) -> Redirect {
+    Redirect::permanent(&format!("/learn/{slug}"))
+}
+
 // Look up a slug in the sidebar; returns the static slug reference if known
 fn lookup_sidebar_slug(slug: &str) -> Option<&'static str> {
     for section in SIDEBAR {
@@ -136,7 +161,7 @@ mod tests {
         assert!(html.contains("wiki-layout"), "missing wiki layout shell");
         assert!(html.contains("wiki-sidebar"), "missing sidebar block");
         assert!(
-            html.contains("/wiki/network-appliances"),
+            html.contains("/learn/network-appliances"),
             "sidebar should link to the networking education pages"
         );
         assert!(
@@ -176,7 +201,7 @@ mod tests {
             .and_then(|rest| rest.split("</li>").next())
             .expect("an active sidebar entry should exist");
         assert!(
-            active_li.contains("/wiki/osi-model"),
+            active_li.contains("/learn/osi-model"),
             "expected OSI model to be the active sidebar entry"
         );
     }
@@ -184,5 +209,30 @@ mod tests {
     #[test]
     fn unknown_slug_returns_none() {
         assert!(lookup_sidebar_slug("does-not-exist").is_none());
+    }
+
+    #[tokio::test]
+    async fn legacy_wiki_root_redirects_to_learn() {
+        let response = redirect_index().await.into_response();
+        assert_eq!(
+            response.status(),
+            axum::http::StatusCode::PERMANENT_REDIRECT
+        );
+        assert_eq!(response.headers().get("location").unwrap(), "/learn");
+    }
+
+    #[tokio::test]
+    async fn legacy_wiki_slug_redirects_to_matching_learn_slug() {
+        let response = redirect_page(AxumPath("osi-model".to_string()))
+            .await
+            .into_response();
+        assert_eq!(
+            response.status(),
+            axum::http::StatusCode::PERMANENT_REDIRECT
+        );
+        assert_eq!(
+            response.headers().get("location").unwrap(),
+            "/learn/osi-model"
+        );
     }
 }

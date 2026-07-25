@@ -75,11 +75,11 @@ This is an observation exercise, not proof of a provider's private architecture.
 
 ## Related pages
 
-- [The OSI model](/wiki/osi-model) — a functional map for following application data
+- [The OSI model](/learn/osi-model) — a functional map for following application data
   through transport, routing, local links, and physical media.
-- [Network appliances](/wiki/network-appliances) — load balancers, proxies, firewalls,
+- [Network appliances](/learn/network-appliances) — load balancers, proxies, firewalls,
   and other roles that may participate in a delivery path.
-- [Network functions](/wiki/network-functions) — traffic handling, tunneling, quality
+- [Network functions](/learn/network-functions) — traffic handling, tunneling, quality
   of service, and packet lifetime.
 - [How machinageist.dev is hosted](/blog/hosting-machinageist-dev) — documented
   evidence from this site's request path.

@@ -127,11 +127,11 @@ itself demonstrate VPN confidentiality or QoS policy.
 
 ## Related pages
 
-- [The OSI model](/wiki/osi-model) — the layered reference model that places these
+- [The OSI model](/learn/osi-model) — the layered reference model that places these
   functions in a larger communication system.
-- [Network appliances](/wiki/network-appliances) — routers, firewalls, and other
+- [Network appliances](/learn/network-appliances) — routers, firewalls, and other
   systems that implement these functions.
-- [Network applications](/wiki/network-applications) — distributed applications whose
+- [Network applications](/learn/network-applications) — distributed applications whose
   traffic may be tunneled, filtered, or prioritized.
 
 ## Sources and further reading

@@ -204,11 +204,11 @@ controlled failure tests would provide stronger evidence for how each device beh
 
 ## Related pages
 
-- [The OSI model](/wiki/osi-model) — the layered reference model used to distinguish
+- [The OSI model](/learn/osi-model) — the layered reference model used to distinguish
   the functions these appliances perform.
-- [Network applications](/wiki/network-applications) — how distributed application
+- [Network applications](/learn/network-applications) — how distributed application
   delivery uses network infrastructure.
-- [Network functions](/wiki/network-functions) — tunneling, IPsec, QoS, and packet
+- [Network functions](/learn/network-functions) — tunneling, IPsec, QoS, and packet
   lifetime.
 
 ## Sources and further reading

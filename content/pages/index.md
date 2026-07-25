@@ -33,15 +33,22 @@ claim should be supported by work I performed and can explain.
 
 ## Networking foundations
 
-- [OSI model](/wiki/osi-model) — a seven-layer reference model for connecting
+- [OSI model](/learn/osi-model) — a seven-layer reference model for connecting
   protocols, devices, encapsulation, and troubleshooting to the larger communication
   system.
-- [Network appliances](/wiki/network-appliances) — the physical and virtual systems
+- [Network appliances](/learn/network-appliances) — the physical and virtual systems
   that forward, filter, distribute, store, and expose network traffic.
-- [Network applications](/wiki/network-applications) — beginning with content delivery
+- [Network applications](/learn/network-applications) — beginning with content delivery
   networks and the relationship between distributed infrastructure and applications.
-- [Network functions](/wiki/network-functions) — VPNs, tunneling, IPsec, quality of
+- [Network functions](/learn/network-functions) — VPNs, tunneling, IPsec, quality of
   service, and the lifetime of routed packets.
+- [Network protocols and ports](/learn/network-protocols) — common application
+  protocols, the port ranges IANA allocates, and the network-layer protocols that
+  carry them.
+- [Network traffic types](/learn/traffic-types) — unicast, multicast, anycast, and
+  broadcast delivery patterns.
+- [Cloud computing concepts](/learn/cloud-computing) — NFV, virtual private clouds,
+  cloud traffic controls, and deployment and service models.
 
 This is an intentionally small first release. It will expand as finished notes and
 completed labs move from my private study workspace into reviewed public editions.

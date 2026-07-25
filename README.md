@@ -54,7 +54,7 @@ mg-server/
 │   │   ├── port-scanner-in-rust.md
 │   │   ├── memory-safety-c-vs-rust.md
 │   │   └── geistscope-retrospective.md
-│   └── pages                # curated education wiki (served at /wiki)
+│   └── pages                # curated education wiki (served at /learn)
 ├── docs                     # planning docs, claim-defense, geistscope page triage
 ├── IMPROVEMENT_PLAN.md
 ├── README.md

@@ -38,8 +38,11 @@ pub fn build(state: AppState) -> Router {
         .route("/about", get(pages::about))
         .route("/portfolio", get(pages::portfolio))
         .route("/blog", get(blog::list))
-        .route("/wiki", get(wiki::index))
-        .route("/wiki/:slug", get(wiki::page))
+        .route("/learn", get(wiki::index))
+        .route("/learn/:slug", get(wiki::page))
+        // /wiki is the pre-rename URL — keep old links and bookmarks working
+        .route("/wiki", get(wiki::redirect_index))
+        .route("/wiki/:slug", get(wiki::redirect_page))
         // Capture :slug as a single path segment, passed to handler as Path<String>
         .route("/blog/:slug", get(blog::post))
         .route("/releases", get(releases::list))

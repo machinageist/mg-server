@@ -278,11 +278,11 @@ the functions; the captured commands supply the evidence.
 
 ## Related pages
 
-- [Network appliances](/wiki/network-appliances) — switches, routers, firewalls,
+- [Network appliances](/learn/network-appliances) — switches, routers, firewalls,
   proxies, load balancers, storage, and wireless systems.
-- [Network applications](/wiki/network-applications) — content delivery networks and
+- [Network applications](/learn/network-applications) — content delivery networks and
   distributed request paths.
-- [Network functions](/wiki/network-functions) — tunnels, IPsec, QoS, and IP packet
+- [Network functions](/learn/network-functions) — tunnels, IPsec, QoS, and IP packet
   lifetime.
 
 ## Sources and further reading

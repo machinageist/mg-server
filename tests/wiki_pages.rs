@@ -17,6 +17,9 @@ const WIKI_SLUGS: &[&str] = &[
     "network-appliances",
     "network-applications",
     "network-functions",
+    "network-protocols",
+    "traffic-types",
+    "cloud-computing",
 ];
 
 #[test]
