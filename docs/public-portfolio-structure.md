@@ -1,5 +1,17 @@
 # Public portfolio structure
 
+> ## ⚠️ AMENDED 2026-07-25 — pillar 5 and the cert references are retired
+>
+> **All public cert claims have been removed from the site** until an exam voucher is
+> actually booked. Concretely, for this document:
+>
+> - **Pillar 5 ("Certification journey") is dropped.** The site now has **four** pillars: Proxmox homelab, networking, Linux/SysAdmin, defensive security. Do not rebuild a cert route or cert card.
+> - The **cert spine referenced below is two revisions stale.** Security+, Linux+, and Server+ were dropped 2026-07-20; CCNA was dropped 2026-07-25. Current plan: Network+ then RHCSA — **internal only, not published.**
+> - **Primary audience is unchanged and now confirmed:** Systems Administrator. Most likely reached via a small-company IT generalist role. NOC moves to Tier 2 (day-shift constraint).
+> - Phrases like *"built to grow past Security+"* or *"if the funnel stalls past the certs"* should be rewritten to reference **capabilities**, not exams.
+>
+> See `mg-coreforge/AMENDMENT-2026-07-25.md` and `mg-coreforge/PUBLIC_FACE.md`.
+
 This repository is the development source for `machinageist.dev`. The site should read as a professional, evidence-first portfolio for the skills being built in `~/tech-skill-up/`, not as a claim that this checkout is the deployment server.
 
 ## Primary audience

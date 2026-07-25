@@ -91,11 +91,10 @@ more to me than the sprawling version, because I can actually explain it.
 
 ## Where my focus went instead
 
-I redirected the effort into the work this site is actually about: a Systems
-Administrator / NOC track anchored in a Proxmox homelab, real networking and
-Linux operations evidence, a small defensive-security section built to grow
-after Security+, and a four-CompTIA-cert journey where each cert is tied to a
-homelab project with captured evidence. That is a narrower story, and a true one.
+I redirected the effort into the work this site is actually about: infrastructure
+work anchored in a Proxmox homelab, real networking and Linux operations evidence,
+and a small defensive-security section built to grow — each piece tied to a homelab
+project with captured evidence. That is a narrower story, and a true one.
 
 The individual GeistScope tool pages are no longer published. Git preserves the full
 experiment, while this retrospective preserves the public record without presenting

@@ -166,7 +166,7 @@ distinction:
 
 ## Sources and further reading
 
-This page was edited from my Network+ reading notes and checked against:
+This page was edited from my networking reading notes and checked against:
 
 - [NIST SP 800-145: The NIST Definition of Cloud Computing](https://csrc.nist.gov/pubs/sp/800/145/final)
   — the standard reference definitions for deployment and service models.

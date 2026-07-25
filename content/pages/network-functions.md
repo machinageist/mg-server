@@ -136,7 +136,7 @@ itself demonstrate VPN confidentiality or QoS policy.
 
 ## Sources and further reading
 
-This page was edited from my Network+ reading notes and corrected against:
+This page was edited from my networking reading notes and corrected against:
 
 - [RFC 791: Internet Protocol](https://www.rfc-editor.org/rfc/rfc791.txt) — IPv4 TTL.
 - [RFC 2474: Differentiated Services](https://www.rfc-editor.org/rfc/rfc2474.txt) — an

@@ -86,7 +86,7 @@ This is an observation exercise, not proof of a provider's private architecture.
 
 ## Sources and further reading
 
-This page was edited from my Network+ reading notes and checked against:
+This page was edited from my networking reading notes and checked against:
 
 - [RFC 3466: A Model for Content Internetworking](https://www.rfc-editor.org/rfc/rfc3466.txt)
   — terminology and functional model for content networks.

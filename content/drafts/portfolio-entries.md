@@ -5,6 +5,17 @@ values at the time of archiving, kept here so the long-form interview rewrite
 has the original wording to work from. None of this is live — see this
 directory's `README.md`.
 
+> **⚠️ Do not restore the cert wording below. Left verbatim on purpose —
+> editing a verbatim archive defeats its point — but it is out of date twice over.**
+>
+> - **Security+, Linux+, and Server+ were dropped** from the plan on 2026-07-20.
+> - **All public cert claims were retired 2026-07-25** until an exam voucher is booked.
+>
+> So when the interview rewrite pulls from these entries: keep the *project*
+> descriptions, **drop every "Anchored to [cert]" line, every cert tag, and the whole
+> "Certification track" entry.** Anchor each project to the capability it demonstrates
+> instead. See `mg-coreforge/PUBLIC_FACE.md`.
+
 ## Homelab project 1 — internal DNS + network map
 
 - description: An internal DNS resolver (Pi-hole/dnsmasq) for the Proxmox

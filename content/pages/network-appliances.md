@@ -213,7 +213,7 @@ controlled failure tests would provide stronger evidence for how each device beh
 
 ## Sources and further reading
 
-This page was edited from my Network+ reading notes and checked against:
+This page was edited from my networking reading notes and checked against:
 
 - [RFC 1812: Requirements for IPv4 Routers](https://www.rfc-editor.org/rfc/rfc1812.txt)
   — IP forwarding and router behavior.

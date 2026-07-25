@@ -81,7 +81,7 @@ On a network you own or are authorized to inspect, using Wireshark or
 
 ## Sources and further reading
 
-This page was edited from my Network+ reading notes and checked against:
+This page was edited from my networking reading notes and checked against:
 
 - [RFC 826: An Ethernet Address Resolution Protocol](https://www.rfc-editor.org/rfc/rfc826.txt)
   — ARP's broadcast request / unicast reply behavior.

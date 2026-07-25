@@ -94,5 +94,5 @@ header the code sets.
   the application."
 
 This is the first note in the site's defensive-security pillar. It is intended to
-grow — SSH hardening, TLS configuration, and auth-log detection are planned
-alongside the Security+ homelab project, on owned scope only.
+grow — SSH hardening, TLS configuration, and auth-log detection are planned next,
+on owned scope only.

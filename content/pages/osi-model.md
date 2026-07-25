@@ -287,7 +287,7 @@ the functions; the captured commands supply the evidence.
 
 ## Sources and further reading
 
-This page was edited from my Network+ reading notes and study log, with technical
+This page was edited from my networking reading notes and study log, with technical
 clarifications checked against:
 
 - [ISO/IEC 7498-1:1994 — Basic Reference Model](https://www.iso.org/standard/20269.html)

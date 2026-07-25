@@ -6,12 +6,14 @@ Personal website and web server for **machinageist.dev**, built in Rust.
 
 ## Overview
 
-`mg-server` powers **machinageist.dev**, an evidence-first portfolio for a
-**Systems Administrator / NOC Technician (in training)**. The site is organized
-around five pillars — a Proxmox homelab, networking, Linux / SysAdmin, a small
-defensive-security section, and a four-CompTIA-cert journey (Network+ → Security+
-→ Linux+ → Server+, targeted January 2027) — with each cert anchored to a homelab
-project.
+`mg-server` powers **machinageist.dev**, an evidence-first portfolio for an
+**infrastructure technician — Linux, networking, and virtualization**. The site is
+organized around four pillars — a Proxmox homelab, networking, Linux / SysAdmin, and a
+small defensive-security section — each anchored to a homelab project with real evidence.
+
+<!-- Cert claims removed 2026-07-25 by request: no public cert claims until an exam
+     voucher is booked. When one is, state only that single exam with its scheduled
+     date. See mg-coreforge/PUBLIC_FACE.md for the wording rules. -->
 
 It is also, honestly, a **learning platform** for Rust and the backend ecosystem:
 the app itself is a small, deliberately narrow self-hosting artifact, not a
