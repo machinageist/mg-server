@@ -7,18 +7,15 @@ tags: [education, networking, protocols, ports, network-plus]
 
 ## Overview
 
-A **protocol** is a standardized set of rules that lets independent systems
-exchange data predictably: how information is formatted, how peers are
-addressed, how flow is regulated, and how errors are detected. A **port
-number** identifies one of many possible communication endpoints on a single
-host, so a server and its neighbors can run several services on the same IP
-address at once.
+A **protocol** is a standard set of rules systems use to exchange data. It
+defines details such as formatting, addressing, flow control, and error
+detection. A **port number** identifies a communication endpoint on one host.
+Ports let several services use the same IP address at the same time.
 
-This page catalogs the application protocols and port numbers that come up
-constantly in networking work, and the ranges IANA uses to keep port numbers
-from colliding. The transport mechanics underneath these protocols — TCP's
-handshake and UDP's connectionless delivery — are covered on
-[the OSI model](/learn/osi-model) page rather than repeated here.
+This page collects the application protocols and ports that come up often in
+networking, along with the ranges IANA uses to organize port assignments. [The
+OSI model](/learn/osi-model) covers the transport details underneath them,
+including TCP's handshake and UDP's connectionless delivery.
 
 ## Port number ranges
 
@@ -31,11 +28,10 @@ into three ranges:
 | 1024–49151 | Registered ports | Vendor and application-specific services, e.g. 3389 (RDP), 3306 (MySQL) |
 | 49152–65535 | Dynamic/private ports | Short-lived client-side ports chosen for the life of one connection |
 
-A listening service usually binds a well-known or registered port; the client
-side of a connection typically picks an ephemeral port from the dynamic range
-for that one exchange. Nothing prevents an administrator from running a
-service on an unusual port — these ranges are a registration convention, not
-a technical restriction.
+A server usually listens on a well-known or registered port. A client normally
+chooses an ephemeral port from the dynamic range for the connection. An
+administrator can still run a service on an unusual port; these ranges are a
+registration convention, not a technical restriction.
 
 ## Common application protocols
 
@@ -61,44 +57,40 @@ a technical restriction.
 | RDP | Remote desktop for Windows systems | TCP 3389 |
 | SIP | Session setup for voice/video calls | UDP/TCP 5060, TCP 5061 (TLS) |
 
-A few corrections against common study-note shorthand:
+Some study-note shortcuts are easy to misread:
 
-- **SMTP is not itself a "secure" protocol.** Port 25 carries plain
-  server-to-server relay traffic; mail submission from a client normally uses
-  port 587 with STARTTLS, or port 465 for implicit TLS. "Secure SMTP"
-  describes the transport wrapper, not the base protocol.
-- **NTP runs over UDP, not TCP.** A stateless request/response exchange suits
-  time synchronization better than a connection-oriented one.
-- **Syslog's traditional transport is UDP 514.** TCP and TLS-protected
-  variants exist but are not the historical default.
-- **TLS and SQL are not single ports.** TLS is a transport-security layer used
-  by many protocols at many ports — 443 belongs to HTTPS, which happens to use
-  TLS, not to TLS itself. "SQL" is a query language, not a network protocol;
-  TCP 1433 belongs specifically to Microsoft SQL Server — MySQL defaults to
-  3306 and PostgreSQL to 5432.
-- **Spanning Tree Protocol (STP) has no TCP port.** STP is a Layer 2 protocol
-  that runs directly over Ethernet, not a TCP/IP service. 32768 is STP's
-  *default bridge priority* value, not a port number — an easy mix-up when
-  both concepts get called "priority."
+- **SMTP is not itself a "secure" protocol.** Port 25 carries server-to-server
+  relay traffic. Mail clients normally submit on port 587 with STARTTLS or port
+  465 with implicit TLS. The secure part is the transport wrapper, not SMTP by
+  itself.
+- **NTP runs over UDP, not TCP.** Its request/response exchange does not need a
+  connection-oriented transport.
+- **Syslog traditionally uses UDP 514.** TCP and TLS-protected versions also
+  exist, but they are not the historical default.
+- **TLS and SQL do not each have one port.** TLS protects many protocols on
+  different ports. Port 443 belongs to HTTPS, which uses TLS. SQL is a query
+  language, not a network protocol: TCP 1433 is Microsoft SQL Server's default,
+  while MySQL defaults to 3306 and PostgreSQL to 5432.
+- **Spanning Tree Protocol (STP) has no TCP port.** It runs directly over
+  Ethernet at Layer 2. The number 32768 is STP's *default bridge priority*, not
+  a port number.
 
 ## Network-layer and tunneling protocols
 
 - **Internet Control Message Protocol (ICMP)** carries diagnostic and error
-  messages for IP itself rather than application data. `ping` and
-  `traceroute`/`tracepath` are built on ICMP echo and time-exceeded messages.
+  messages for IP rather than application data. `ping` and
+  `traceroute`/`tracepath` use ICMP echo and time-exceeded messages.
 - **Generic Routing Encapsulation (GRE)** wraps one packet inside another to
-  build a point-to-point tunnel, including tunnels that carry non-IP or
-  mismatched IP versions across an IP network. GRE originated at Cisco but is
-  now an open standard. On its own, GRE provides **no encryption or
-  authentication**; it is frequently paired with IPsec when confidentiality is
-  required.
-- **IPsec** secures IP traffic and is covered in detail — AH, ESP, and IKE —
-  on the [network functions](/learn/network-functions) page.
+  make a point-to-point tunnel. It can carry non-IP traffic or one IP version
+  across another. GRE began as a Cisco protocol and is now an open standard. It
+  provides **no encryption or authentication** by itself, so it is often paired
+  with IPsec when confidentiality is needed.
+- **IPsec** secures IP traffic. The [network
+  functions](/learn/network-functions) page covers AH, ESP, and IKE.
 
-A commonly repeated figure worth qualifying: the "maximum packet size" most
-people learn is the 1500-byte Ethernet MTU, not a universal ceiling. Other
-link types and jumbo-frame configurations use different values, and IPv6
-requires a minimum link MTU of 1280 bytes.
+The familiar 1500-byte figure is the Ethernet MTU, not a universal maximum
+packet size. Other link types and jumbo-frame configurations use different
+values. IPv6 requires a minimum link MTU of 1280 bytes.
 
 ## Suggested practice: read ports off real traffic
 
@@ -106,13 +98,13 @@ On a network you own or are authorized to inspect:
 
 1. Start a capture with `tcpdump` or Wireshark.
 2. Run a DNS lookup (`dig` or `nslookup`) and load an HTTPS page.
-3. For each exchange, identify the destination port on the server side and the
-   ephemeral port chosen on the client side.
-4. Confirm the destination port falls in the well-known range and the
-   client's source port falls in the dynamic range.
-5. Find one ICMP message (an echo request/reply from `ping` is enough) and
-   note that it has no port numbers at all — a reminder that ICMP sits below
-   the transport layer's addressing scheme.
+3. For each exchange, find the server's destination port and the client's
+   ephemeral source port.
+4. Check whether the server port is in the well-known or registered range and
+   whether the client port is in the dynamic range.
+5. Find an ICMP message; an echo request or reply from `ping` is enough. Note
+   that it has no port numbers because ICMP sits below the transport layer's
+   port addressing.
 
 ## Related pages
 
@@ -121,8 +113,7 @@ On a network you own or are authorized to inspect:
 - [Network functions](/learn/network-functions) — IPsec, IKE, and tunneling
   built on top of these protocols.
 - [Network appliances](/learn/network-appliances) — firewalls and load
-  balancers that make decisions using this same port and protocol
-  information.
+  balancers that make decisions using this same port and protocol information.
 
 ## Sources and further reading
 
@@ -137,6 +128,5 @@ This page was edited from my networking reading notes and checked against:
 - [RFC 6409: Message Submission for Mail](https://www.rfc-editor.org/rfc/rfc6409.txt)
   — why mail submission is distinct from server-to-server relay.
 
-Port assignments and protocol behavior can be reconfigured on any real system;
-IANA's registry and the relevant RFCs describe the convention, not a technical
-guarantee.
+Port assignments can be changed on a real system. IANA's registry and the RFCs
+describe the convention, not a technical guarantee.
