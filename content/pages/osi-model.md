@@ -261,6 +261,8 @@ the evidence.
 
 ## Related pages
 
+- [Network topologies](/learn/network-topologies) — how nodes and links are
+  arranged, and why physical and logical topology can differ.
 - [Transmission media](/learn/transmission-media) — the copper, fiber, and radio
   that Layer 1 signals actually travel over.
 - [Network appliances](/learn/network-appliances) — switches, routers, firewalls,

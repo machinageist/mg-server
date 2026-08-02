@@ -14,6 +14,7 @@ use std::path::Path;
 const WIKI_SLUGS: &[&str] = &[
     "index",
     "osi-model",
+    "network-topologies",
     "transmission-media",
     "transceivers",
     "network-appliances",

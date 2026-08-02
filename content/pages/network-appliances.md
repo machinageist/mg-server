@@ -196,6 +196,8 @@ does.
   the functions these appliances perform.
 - [Transmission media](/learn/transmission-media) — the media these appliances
   terminate, and the collision-domain behavior hubs and switches inherit from it.
+- [Network topologies](/learn/network-topologies) — the arrangements these
+  appliances are wired into, and where each one sits in them.
 - [Network applications](/learn/network-applications) — how distributed application
   delivery uses network infrastructure.
 - [Network functions](/learn/network-functions) — tunneling, IPsec, QoS, and packet
