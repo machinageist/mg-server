@@ -26,8 +26,9 @@ main building blocks:
 - A **container** packages an application and its dependencies but shares the
   host operating system's kernel. Containers are lighter and usually start
   faster than VMs, but the shared kernel means less isolation. Docker is the
-  most common container runtime. Podman is a FOSS alternative that does not
-  require a root daemon.
+  most common container runtime; its engine is open source, though Docker
+  Desktop is not. Podman is an alternative that runs containers without a root
+  daemon.
 
 A **virtual appliance** packages a network function, such as a firewall,
 router, or load balancer, to run in a VM or container rather than on dedicated
@@ -115,8 +116,9 @@ There are two common ways to connect an on-premises network to cloud resources:
 - **Infrastructure as a Service (IaaS)** provides virtual compute, storage, and
   networking. The customer manages the operating system and everything above
   it.
-- **Platform as a Service (PaaS)** also manages the operating system, runtime,
-  and supporting application services.
+- **Platform as a Service (PaaS)** adds the operating system, runtime, and
+  supporting application services to what the provider manages, so the customer
+  deploys application code rather than servers.
 - **Software as a Service (SaaS)** provides a complete application, usually
   through a browser and subscription. Microsoft 365 is one example.
 
