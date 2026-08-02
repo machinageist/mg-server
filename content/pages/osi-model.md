@@ -261,6 +261,8 @@ the evidence.
 
 ## Related pages
 
+- [Transmission media](/learn/transmission-media) — the copper, fiber, and radio
+  that Layer 1 signals actually travel over.
 - [Network appliances](/learn/network-appliances) — switches, routers, firewalls,
   proxies, load balancers, storage, and wireless systems.
 - [Network applications](/learn/network-applications) — content delivery networks and

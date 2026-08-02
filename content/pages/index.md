@@ -36,6 +36,10 @@ claim should be supported by work I performed and can explain.
 - [OSI model](/learn/osi-model) — a seven-layer reference model for connecting
   protocols, devices, encapsulation, and troubleshooting to the larger communication
   system.
+- [Transmission media](/learn/transmission-media) — the radio, copper, and fiber that
+  carry data, and the 802.11 and 802.3 standards governing how each is shared.
+- [Transceivers and connectors](/learn/transceivers) — pluggable modules, their form
+  factors, and the connectors that terminate copper and fiber.
 - [Network appliances](/learn/network-appliances) — the physical and virtual systems
   that forward, filter, distribute, store, and expose network traffic.
 - [Network applications](/learn/network-applications) — beginning with content delivery

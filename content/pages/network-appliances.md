@@ -194,6 +194,8 @@ does.
 
 - [The OSI model](/learn/osi-model) — the layered reference model used to distinguish
   the functions these appliances perform.
+- [Transmission media](/learn/transmission-media) — the media these appliances
+  terminate, and the collision-domain behavior hubs and switches inherit from it.
 - [Network applications](/learn/network-applications) — how distributed application
   delivery uses network infrastructure.
 - [Network functions](/learn/network-functions) — tunneling, IPsec, QoS, and packet

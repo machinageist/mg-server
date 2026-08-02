@@ -48,6 +48,14 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "OSI model",
             },
             SidebarEntry {
+                slug: "transmission-media",
+                label: "Transmission media",
+            },
+            SidebarEntry {
+                slug: "transceivers",
+                label: "Transceivers and connectors",
+            },
+            SidebarEntry {
                 slug: "network-appliances",
                 label: "Network appliances",
             },
