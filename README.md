@@ -95,6 +95,27 @@ mg-server/
 
 ---
 
+## Running Locally
+
+Requires a stable Rust toolchain (install via [rustup](https://rustup.rs)).
+
+```sh
+git clone https://github.com/machinageist/mg-server.git
+cd mg-server
+RUST_LOG=info cargo run
+```
+
+Binds to `127.0.0.1:3000` by default — visit `http://127.0.0.1:3000`. No database or
+external service is required; content is read from `content/` at startup. Set
+`MG_BIND_ADDR` to override the bind address (e.g. `0.0.0.0` for LAN testing) and
+`RUST_LOG` to control log verbosity (`RUST_LOG=debug` for full `tower` internals).
+
+```sh
+cargo test    # includes a drift guard checking wiki SIDEBAR slugs against content/pages/
+```
+
+---
+
 ## Deployment
 
 The application is hosted on a **Proxmox** host inside a dedicated **Debian VM**.
