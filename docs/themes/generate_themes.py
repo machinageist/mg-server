@@ -238,15 +238,47 @@ def emit_icons():
     return "var ICON = { " + ", ".join(pairs) + " };"
 
 
+# Menu grouping — display order of the theme picker, which is deliberately not
+# THEMES order. "system" is not a theme (it follows the OS) so it is listed here
+# rather than in THEMES. Every theme slug must appear in exactly one group;
+# emit_menu raises if the roster and the grouping drift apart.
+MENU_GROUPS = [
+    ("Core", "Core", ["system", "lunarcore", "solarcore"]),
+    ("Editor", "Editor", ["dark", "solarized", "nord", "gruvbox"]),
+    ("Terminal", "Terminal", ["crt", "amber", "matrix", "teletext"]),
+    ("Retro", "Retro", ["gameboy", "c64", "nes"]),
+    ("Neon", "Neon", ["synthwave", "vaporwave", "cyberpunk", "tron"]),
+    ("Light and print", "Light &amp; print",
+     ["light", "paper", "dawn", "cloud", "blueprint", "sepia"]),
+]
+
+
 def emit_menu():
-    rows = ['<button type="button" role="menuitemradio" data-mode="system" '
-            'aria-checked="false"><span aria-hidden="true">◐</span> System</button>']
-    for t in THEMES:
-        rows.append(
-            f'<button type="button" role="menuitemradio" data-mode="{t["slug"]}" '
-            f'aria-checked="false"><span aria-hidden="true">{t["icon"]}</span> '
-            f'{t["label"]}</button>'
+    by_slug = {t["slug"]: t for t in THEMES}
+    by_slug["system"] = dict(slug="system", label="System", icon="◐")
+
+    # Drift guard — a theme added to THEMES but not grouped would silently vanish
+    # from the menu, and a stale slug here would emit a button with no palette
+    grouped = [slug for _, _, slugs in MENU_GROUPS for slug in slugs]
+    missing = [s for s in by_slug if s not in grouped]
+    unknown = [s for s in grouped if s not in by_slug]
+    if missing or unknown:
+        raise SystemExit(
+            f"MENU_GROUPS out of sync with THEMES — ungrouped: {missing}, unknown: {unknown}"
         )
+
+    rows = []
+    for aria_label, visible_label, slugs in MENU_GROUPS:
+        rows.append(f'<div class="theme-group" role="group" aria-label="{aria_label}">')
+        rows.append(f'  <span class="theme-group-label" aria-hidden="true">{visible_label}</span>')
+        for slug in slugs:
+            t = by_slug[slug]
+            rows.append(
+                f'  <button type="button" role="menuitemradio" data-mode="{t["slug"]}" '
+                f'aria-checked="false"><span aria-hidden="true">{t["icon"]}</span> '
+                f'{t["label"]}</button>'
+            )
+        rows.append('</div>')
     return "\n".join(rows)
 
 
