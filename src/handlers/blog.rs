@@ -26,7 +26,8 @@ use axum::extract::Path;
 use std::path::PathBuf;
 
 // Canonical path to posts directory — single definition prevents typo drift
-const POSTS_DIR: &str = "content/posts";
+// pub(crate) so the home page can pull its "latest writing" list from the same path
+pub(crate) const POSTS_DIR: &str = "content/posts";
 
 // Portfolio pillars, in display order. A post's `category` frontmatter field is
 // matched against these to group the blog list. Posts with no category (or a

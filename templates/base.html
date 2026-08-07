@@ -30,31 +30,52 @@
           <button id="theme-btn" class="theme-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Theme">
             <span class="theme-icon" aria-hidden="true">◐</span>
           </button>
+          {# Grouped for scanning only — every theme in the roster is still here.
+             Roving focus in main.js reads [data-mode] in document order, so the
+             group wrappers change arrow-key order but need no JS change. #}
           <div class="theme-menu" id="theme-menu" role="menu" aria-label="Theme" hidden>
-            <button type="button" role="menuitemradio" data-mode="system" aria-checked="false"><span aria-hidden="true">◐</span> System</button>
-            <button type="button" role="menuitemradio" data-mode="lunarcore" aria-checked="false"><span aria-hidden="true">⏾</span> Lunarcore</button>
-            <button type="button" role="menuitemradio" data-mode="solarcore" aria-checked="false"><span aria-hidden="true">✸</span> Solarcore</button>
-            <button type="button" role="menuitemradio" data-mode="dark" aria-checked="false"><span aria-hidden="true">✦</span> Dracula</button>
-            <button type="button" role="menuitemradio" data-mode="light" aria-checked="false"><span aria-hidden="true">☀</span> Light</button>
-            <button type="button" role="menuitemradio" data-mode="crt" aria-checked="false"><span aria-hidden="true">▦</span> CRT</button>
-            <button type="button" role="menuitemradio" data-mode="amber" aria-checked="false"><span aria-hidden="true">◈</span> Amber</button>
-            <button type="button" role="menuitemradio" data-mode="paper" aria-checked="false"><span aria-hidden="true">¶</span> Paper</button>
-            <button type="button" role="menuitemradio" data-mode="dawn" aria-checked="false"><span aria-hidden="true">◒</span> Dawn</button>
-            <button type="button" role="menuitemradio" data-mode="cloud" aria-checked="false"><span aria-hidden="true">☁</span> Cloud</button>
-            <button type="button" role="menuitemradio" data-mode="gameboy" aria-checked="false"><span aria-hidden="true">▣</span> Game Boy</button>
-            <button type="button" role="menuitemradio" data-mode="c64" aria-checked="false"><span aria-hidden="true">▩</span> Commodore</button>
-            <button type="button" role="menuitemradio" data-mode="teletext" aria-checked="false"><span aria-hidden="true">⌗</span> Teletext</button>
-            <button type="button" role="menuitemradio" data-mode="nes" aria-checked="false"><span aria-hidden="true">✜</span> 8-Bit</button>
-            <button type="button" role="menuitemradio" data-mode="matrix" aria-checked="false"><span aria-hidden="true">⌁</span> Matrix</button>
-            <button type="button" role="menuitemradio" data-mode="solarized" aria-checked="false"><span aria-hidden="true">◉</span> Solarized</button>
-            <button type="button" role="menuitemradio" data-mode="nord" aria-checked="false"><span aria-hidden="true">❄</span> Nord</button>
-            <button type="button" role="menuitemradio" data-mode="gruvbox" aria-checked="false"><span aria-hidden="true">◆</span> Gruvbox</button>
-            <button type="button" role="menuitemradio" data-mode="synthwave" aria-checked="false"><span aria-hidden="true">▹</span> Synthwave</button>
-            <button type="button" role="menuitemradio" data-mode="vaporwave" aria-checked="false"><span aria-hidden="true">▧</span> Vaporwave</button>
-            <button type="button" role="menuitemradio" data-mode="cyberpunk" aria-checked="false"><span aria-hidden="true">⌖</span> Cyberpunk</button>
-            <button type="button" role="menuitemradio" data-mode="tron" aria-checked="false"><span aria-hidden="true">⊞</span> Tron</button>
-            <button type="button" role="menuitemradio" data-mode="blueprint" aria-checked="false"><span aria-hidden="true">⊟</span> Blueprint</button>
-            <button type="button" role="menuitemradio" data-mode="sepia" aria-checked="false"><span aria-hidden="true">⚙</span> Steampunk</button>
+            <div class="theme-group" role="group" aria-label="Core">
+              <span class="theme-group-label" aria-hidden="true">Core</span>
+              <button type="button" role="menuitemradio" data-mode="system" aria-checked="false"><span aria-hidden="true">◐</span> System</button>
+              <button type="button" role="menuitemradio" data-mode="lunarcore" aria-checked="false"><span aria-hidden="true">⏾</span> Lunarcore</button>
+              <button type="button" role="menuitemradio" data-mode="solarcore" aria-checked="false"><span aria-hidden="true">✸</span> Solarcore</button>
+            </div>
+            <div class="theme-group" role="group" aria-label="Editor">
+              <span class="theme-group-label" aria-hidden="true">Editor</span>
+              <button type="button" role="menuitemradio" data-mode="dark" aria-checked="false"><span aria-hidden="true">✦</span> Dracula</button>
+              <button type="button" role="menuitemradio" data-mode="solarized" aria-checked="false"><span aria-hidden="true">◉</span> Solarized</button>
+              <button type="button" role="menuitemradio" data-mode="nord" aria-checked="false"><span aria-hidden="true">❄</span> Nord</button>
+              <button type="button" role="menuitemradio" data-mode="gruvbox" aria-checked="false"><span aria-hidden="true">◆</span> Gruvbox</button>
+            </div>
+            <div class="theme-group" role="group" aria-label="Terminal">
+              <span class="theme-group-label" aria-hidden="true">Terminal</span>
+              <button type="button" role="menuitemradio" data-mode="crt" aria-checked="false"><span aria-hidden="true">▦</span> CRT</button>
+              <button type="button" role="menuitemradio" data-mode="amber" aria-checked="false"><span aria-hidden="true">◈</span> Amber</button>
+              <button type="button" role="menuitemradio" data-mode="matrix" aria-checked="false"><span aria-hidden="true">⌁</span> Matrix</button>
+              <button type="button" role="menuitemradio" data-mode="teletext" aria-checked="false"><span aria-hidden="true">⌗</span> Teletext</button>
+            </div>
+            <div class="theme-group" role="group" aria-label="Retro">
+              <span class="theme-group-label" aria-hidden="true">Retro</span>
+              <button type="button" role="menuitemradio" data-mode="gameboy" aria-checked="false"><span aria-hidden="true">▣</span> Game Boy</button>
+              <button type="button" role="menuitemradio" data-mode="c64" aria-checked="false"><span aria-hidden="true">▩</span> Commodore</button>
+              <button type="button" role="menuitemradio" data-mode="nes" aria-checked="false"><span aria-hidden="true">✜</span> 8-Bit</button>
+            </div>
+            <div class="theme-group" role="group" aria-label="Neon">
+              <span class="theme-group-label" aria-hidden="true">Neon</span>
+              <button type="button" role="menuitemradio" data-mode="synthwave" aria-checked="false"><span aria-hidden="true">▹</span> Synthwave</button>
+              <button type="button" role="menuitemradio" data-mode="vaporwave" aria-checked="false"><span aria-hidden="true">▧</span> Vaporwave</button>
+              <button type="button" role="menuitemradio" data-mode="cyberpunk" aria-checked="false"><span aria-hidden="true">⌖</span> Cyberpunk</button>
+              <button type="button" role="menuitemradio" data-mode="tron" aria-checked="false"><span aria-hidden="true">⊞</span> Tron</button>
+            </div>
+            <div class="theme-group" role="group" aria-label="Light and print">
+              <span class="theme-group-label" aria-hidden="true">Light &amp; print</span>
+              <button type="button" role="menuitemradio" data-mode="light" aria-checked="false"><span aria-hidden="true">☀</span> Light</button>
+              <button type="button" role="menuitemradio" data-mode="paper" aria-checked="false"><span aria-hidden="true">¶</span> Paper</button>
+              <button type="button" role="menuitemradio" data-mode="dawn" aria-checked="false"><span aria-hidden="true">◒</span> Dawn</button>
+              <button type="button" role="menuitemradio" data-mode="cloud" aria-checked="false"><span aria-hidden="true">☁</span> Cloud</button>
+              <button type="button" role="menuitemradio" data-mode="blueprint" aria-checked="false"><span aria-hidden="true">⊟</span> Blueprint</button>
+              <button type="button" role="menuitemradio" data-mode="sepia" aria-checked="false"><span aria-hidden="true">⚙</span> Steampunk</button>
+            </div>
           </div>
         </div>
       </div>
@@ -65,19 +86,15 @@
     {% block content %}{% endblock %}
   </main>
 
-  
   <footer class="site-footer">
-<!--      
     <div class="footer-inner">
       <span>machinageist.dev &mdash; Jeff Cincoski</span>
       <nav aria-label="Footer navigation">
         <a href="https://github.com/machinageist/mg-server" rel="noopener noreferrer">Source</a>
-        <span>updated on: 2026-08-02</span>
       </nav>
     </div>
---!>    
     {% include "vitals_strip.html" %}
-    </footer> 
+  </footer>
 
   <script src="/static/js/main.js?v=20260719-spectrum"></script>
   {% block scripts %}{% endblock %}

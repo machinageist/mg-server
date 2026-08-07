@@ -56,6 +56,11 @@ claim should be supported by work I performed and can explain.
 - [Cloud computing concepts](/learn/cloud-computing) — NFV, virtual private clouds,
   cloud traffic controls, and deployment and service models.
 
+## Linux foundations
+
+- [Linux abstraction layers](/learn/linux-abstraction-layers) — hardware, kernel, and
+  user space, and what the kernel does at the boundary between them.
+
 This is an intentionally small first release. It will expand as finished notes and
 completed labs move from my private study workspace into reviewed public editions.
 

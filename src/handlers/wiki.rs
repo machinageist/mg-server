@@ -85,6 +85,13 @@ const SIDEBAR: &[SidebarSection] = &[
             },
         ],
     },
+    SidebarSection {
+        heading: "Linux Foundations",
+        entries: &[SidebarEntry {
+            slug: "linux-abstraction-layers",
+            label: "Linux abstraction layers",
+        }],
+    },
 ];
 
 #[derive(Template)]
