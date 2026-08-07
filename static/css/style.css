@@ -606,6 +606,28 @@ a:hover { color: var(--accent-hover); }
 }
 .theme-menu[hidden] { display: none; }
 
+/* Theme groups — headings are decorative; the group's aria-label carries the
+   name to assistive tech, so the visible span stays aria-hidden. */
+.theme-group {
+    display:        flex;
+    flex-direction: column;
+    gap:            0.1rem;
+}
+
+.theme-group + .theme-group {
+    margin-top:  0.35rem;
+    padding-top: 0.35rem;
+    border-top:  1px solid var(--border-subtle);
+}
+
+.theme-group-label {
+    padding:        0.25rem 0.55rem 0.15rem;
+    color:          var(--text-faint);
+    font-size:      0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
 .theme-menu button {
     display:         flex;
     align-items:     center;
