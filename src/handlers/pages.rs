@@ -13,18 +13,26 @@
 //              title() is called by {{ self.title() }} in base.html to set
 //              the per-page <title> tag without repeating the base layout.
 
+use crate::handlers::blog::POSTS_DIR;
+use crate::models::post::BlogPost;
 use crate::models::project::{self, Project};
 use askama::Template;
 use askama_axum::IntoResponse;
+use std::path::PathBuf;
 
 // -----------------------------------------------------------------------
 // Home page — index.html
 // -----------------------------------------------------------------------
 
+// How many recent posts the home page teases before sending readers to /blog
+const HOME_POST_COUNT: usize = 3;
+
 #[derive(Template)]
 #[template(path = "index.html")]
 pub struct IndexTemplate {
     pub name: String,
+    // Newest-first, capped at HOME_POST_COUNT — empty renders no section at all
+    pub posts: Vec<BlogPost>,
 }
 
 impl IndexTemplate {
@@ -40,10 +48,17 @@ impl IndexTemplate {
     }
 }
 
-// Render home page with owner name injected into hero section
+// Render home page with owner name and the most recent posts
+// Post loading degrades to an empty list rather than propagating SiteError — the
+// front door should still answer if content/posts is unreadable, and /blog is
+// the route that surfaces that failure honestly
 pub async fn home() -> impl IntoResponse {
+    let mut posts = BlogPost::load_all(&PathBuf::from(POSTS_DIR)).unwrap_or_default();
+    posts.truncate(HOME_POST_COUNT);
+
     IndexTemplate {
         name: "machinageist".to_string(),
+        posts,
     }
 }
 
@@ -115,10 +130,24 @@ mod tests {
     use super::*;
     use askama::Template;
 
+    // Build a minimal post carrying only the fields the home page teaser renders
+    fn teaser_post(slug: &str, title: &str) -> BlogPost {
+        BlogPost {
+            slug: slug.to_string(),
+            title: title.to_string(),
+            date: chrono::NaiveDate::from_ymd_opt(2026, 7, 31).unwrap(),
+            summary: "Summary line.".to_string(),
+            tags: Vec::new(),
+            category: None,
+            content_html: String::new(),
+        }
+    }
+
     #[test]
     fn home_page_shows_concrete_work_without_strategy_narration() {
         let html = IndexTemplate {
             name: "machinageist".to_string(),
+            posts: Vec::new(),
         }
         .render()
         .expect("home template renders");
@@ -135,6 +164,41 @@ mod tests {
         assert!(!html.contains("security engineer"));
         assert!(!html.contains("offensive security"));
         assert!(!html.contains("red-team"));
+    }
+
+    #[test]
+    fn home_page_teases_recent_posts_and_links_to_the_full_list() {
+        let html = IndexTemplate {
+            name: "machinageist".to_string(),
+            posts: vec![teaser_post("network-migration", "Moving My Homelab")],
+        }
+        .render()
+        .expect("home template renders");
+
+        assert!(html.contains("Latest writing"));
+        assert!(html.contains("/blog/network-migration"));
+        assert!(html.contains("Moving My Homelab"));
+        // The teaser always offers a way through to everything else
+        assert!(html.contains("All writing"));
+        assert!(html.contains("/learn"));
+    }
+
+    #[test]
+    fn home_page_omits_the_writing_section_when_no_posts_load() {
+        let html = IndexTemplate {
+            name: "machinageist".to_string(),
+            posts: Vec::new(),
+        }
+        .render()
+        .expect("home template renders");
+
+        // Post loading degrades to empty rather than 500ing — the section simply
+        // disappears instead of rendering an empty list with a dangling heading
+        assert!(!html.contains("Latest writing"));
+        assert!(!html.contains("All writing"));
+        // The rest of the page is unaffected
+        assert!(html.contains("Lately"));
+        assert!(html.contains("/learn"));
     }
 
     #[test]

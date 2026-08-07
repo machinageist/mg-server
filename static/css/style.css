@@ -1073,6 +1073,12 @@ hr {
     max-width:     65ch;
 }
 
+/* Trailing "see everything" link under a teaser section on the home page */
+.section-more {
+    margin-top: 1.25rem;
+    font-size:  0.875rem;
+}
+
 .project-list {
     list-style: none;
 }

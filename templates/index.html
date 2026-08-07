@@ -25,4 +25,35 @@
     <li>Hosting this site on the homelab, behind Caddy and a Cloudflare Tunnel.</li>
   </ul>
 </section>
+
+{# Skipped entirely when posts fail to load — see handlers::pages::home #}
+{% if !posts.is_empty() %}
+<hr>
+
+<section aria-label="Latest writing">
+  <h2>Latest writing</h2>
+  <ul class="post-list">
+    {% for post in posts %}
+    <li class="post-item">
+      <span class="post-date">{{ post.date }}</span>
+      <a href="/blog/{{ post.slug }}">{{ post.title }}</a>
+      <p class="post-summary">{{ post.summary }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+  <p class="section-more"><a href="/blog">All writing &rarr;</a></p>
+</section>
+{% endif %}
+
+<hr>
+
+<section aria-label="Learn">
+  <h2>Learn</h2>
+  <p>
+    I keep a public education wiki of the networking and systems material I&rsquo;m
+    working through &mdash; the OSI model, topologies, transmission media,
+    protocols and ports, and cloud concepts.
+  </p>
+  <p class="section-more"><a href="/learn">Education wiki &rarr;</a></p>
+</section>
 {% endblock %}
