@@ -23,6 +23,7 @@ const WIKI_SLUGS: &[&str] = &[
     "network-protocols",
     "traffic-types",
     "cloud-computing",
+    "linux-abstraction-layers",
 ];
 
 #[test]
