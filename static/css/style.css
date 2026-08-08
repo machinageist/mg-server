@@ -497,6 +497,13 @@
     /* Reading measure — caps line length independently of the 900px column,
        which is far wider than comfortable for continuous prose */
     --measure: 72ch;
+
+    /* Heights of the two pinned bars. Anything that has to sit clear of them --
+       the wiki sidebar, scroll-margin on anchor targets -- measures from here
+       rather than repeating a literal. Both are measured, and both are
+       overridden below where the nav and the vitals strip wrap to more rows. */
+    --header-h: 4.5rem;
+    --footer-h: 7.25rem;
 }
 
 /* -----------------------------------------------------------------------
@@ -535,16 +542,34 @@ a:hover { color: var(--accent-hover); }
     position: absolute;
     left:     -9999px;
     top:      0;
+    z-index:  60;
 }
-.skip-link:focus { left: 1rem; }
+
+/* Needs its own background and a z-index above the sticky header, or it lands
+   underneath it and reads as overlapping nav text */
+.skip-link:focus {
+    left:       1rem;
+    top:        0.5rem;
+    padding:    0.4rem 0.75rem;
+    background: var(--surface);
+    color:      var(--text);
+    border:     1px solid var(--accent);
+}
 
 /* -----------------------------------------------------------------------
    Header and navigation
    ----------------------------------------------------------------------- */
 
+/* Pinned to the top while scrolling. Needs an opaque background of its own --
+   it is transparent to the page behind it otherwise. z-index clears the wiki
+   sidebar (sticky) and the mobile wiki popover (20). */
 .site-header {
     padding:       1.25rem 2rem;
     border-bottom: 1px solid var(--border);
+    position:      sticky;
+    top:           0;
+    z-index:       50;
+    background:    var(--bg);
 }
 
 .site-nav {
@@ -787,11 +812,27 @@ hr {
    Footer
    ----------------------------------------------------------------------- */
 
+/* Pinned to the bottom while scrolling. Sticky rather than fixed so it still
+   occupies its own space at the end of the document and needs no padding
+   compensation on main. Same opaque background and stacking as the header. */
 .site-footer {
     padding:    1.5rem 2rem;
     border-top: 1px solid var(--border);
     color:      var(--text-faint);
     font-size:  0.8rem;
+    position:   sticky;
+    bottom:     0;
+    z-index:    50;
+    background: var(--bg);
+}
+
+/* On a short viewport two pinned bars eat most of the screen, so the footer
+   gives up its pin. The header keeps its own -- navigation is worth the space,
+   a colophon is not. */
+@media (max-height: 34rem) {
+    .site-footer {
+        position: static;
+    }
 }
 
 .footer-inner {
@@ -1112,6 +1153,13 @@ hr {
     max-width:    var(--measure);
 }
 
+/* The skip link jumps here, so it has to clear the sticky header or the target
+   lands underneath the nav. Headings carry no ids today, so nothing else on the
+   page is an anchor target yet. */
+#content {
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+
 /* Markdown tables. Like pre, a table is not continuous prose, so it takes the
    full column and scrolls inside itself instead of wrapping at --measure.
    display:block is what makes overflow-x apply; width:max-content keeps the
@@ -1335,10 +1383,14 @@ hr {
     align-items: start;
 }
 
+/* Sits in the gap between the two pinned bars, so it clears both rather than
+   scrolling its last entries underneath the footer. The 3.5rem is main's
+   padding-top: unstuck, the sidebar starts that far below the header, and
+   sizing for the stuck position alone would overlap the footer at scroll 0. */
 .wiki-sidebar {
     position:   sticky;
-    top:        2rem;
-    max-height: calc(100vh - 4rem);
+    top:        calc(var(--header-h) + 1rem);
+    max-height: calc(100vh - var(--header-h) - var(--footer-h) - 3.5rem);
     overflow-y: auto;
     padding:    0.5rem 0;
     border-right: 1px solid var(--border);
@@ -1473,6 +1525,13 @@ hr {
    ----------------------------------------------------------------------- */
 
 @media (max-width: 640px) {
+    /* The nav wraps to two rows here and the vitals strip to three, so both
+       pinned bars are taller and everything measuring from them has to follow */
+    :root {
+        --header-h: 6.5rem;
+        --footer-h: 8.75rem;
+    }
+
     .site-header { padding: 1rem 1.25rem; }
 
     .site-nav {
