@@ -48,7 +48,7 @@ has no definition and no test*.
 committed CSS/JS/HTML theme registries were regenerated from
 `docs/themes/generate_themes.py`, with zero contrast failures across the full
 matrix of **(token × background × usage size)** for all 23 themes — a matrix that
-today is not audited and, when computed, produces **19 failures** (§7.1.4).
+today is not audited and, when computed, produces **14 failures** (§7.1.4).
 
 **Observable:** a reader with JavaScript disabled and
 `prefers-color-scheme: light` set gets the Solarcore light palette rather than the
@@ -138,7 +138,7 @@ structure the system must keep working across 23 themes.
 | Portfolio | `/portfolio` | Divider list, status pill per row | Status vocabulary, pills |
 | Writing index | `/blog` | Grouped divider lists (`post-group`) | Group headings (currently unstyled — §7.1.6) |
 | Article | `/blog/:slug`, `/learn/:slug` | Prose column capped at `--measure`; `pre` uncapped and scrolling | The core reading surface |
-| Learn shell | `/learn`, `/learn/:slug` | 13rem sidebar + article grid, collapses to a `<details>` popover below 800px (`style.css:1300-1438`) | Sidebar hierarchy, active-page marker |
+| Learn shell | `/learn`, `/learn/:slug` | 13rem sidebar + article grid, collapses to a `<details>` popover below 800px (`style.css:1331-1469`) | Sidebar hierarchy, active-page marker |
 | Releases | `/releases` | Divider list with download affordance | Monospace SHA wrapping |
 | Status | `/status` | 700px `<dl>` readout on `--surface` | The one panel surface; `--accent` on `--surface` contrast |
 | Errors | any 404/500 | Boot-log column, staged reveal | The one place spectacle is free |
@@ -236,7 +236,7 @@ rendered as a heading over nothing (the home page already does this —
 `templates/index.html:30`, asserted at `pages.rs:186-202`); an empty list that
 *must* stay renders one `--text-muted` paragraph at body size inside
 `--measure-narrow`, never a placeholder card, never a spinner. `.releases-empty`
-(`style.css:1193-1196`) is the reference implementation.
+(`style.css:1224-1227`) is the reference implementation.
 
 ### 3.4 Input & gestures
 
@@ -245,7 +245,7 @@ rendered as a heading over nothing (the home page already does this —
   `style.css:705-708`), theme button, and menu items. All are additive; none
   changes layout, so no reflow on hover.
 - **Touch.** No hover-only affordance carries information. The 640px breakpoint
-  (`style.css:1444-1471`) wraps the nav and stacks `.project-header`. **Target
+  (`style.css:1475-1502`) wraps the nav and stacks `.project-header`. **Target
   addition:** the theme button is `2rem × 2rem` (32px) — below the 44×44 CSS-pixel
   target the WCAG 2.2 AAA / mobile-usability guidance recommends. Spec raises the
   *hit area* to 44px via padding while keeping the 32px visual box, which needs no
@@ -274,7 +274,7 @@ Complete inventory of motion on the site, all of it currently in `style.css`:
 | Menu pop-in (`theme-pop`) | `.theme-menu` | 0.16s | ✅ (`:721`) |
 | Blinking cursor (`cursor-blink`, infinite) | `.brand::after` | 1.2s | ✅ (`:722`) |
 | Staged boot-log reveal (`boot-line-in`) | error pages | 0.2s × 5 stagger | ✅ (`:1279-1289`) |
-| Wiki `<details>` marker rotation | `.wiki-nav > summary::before` | 0.15s | ❌ **unguarded** (`:1407-1411`) |
+| Wiki `<details>` marker rotation | `.wiki-nav > summary::before` | 0.15s | ❌ **unguarded** (`:1438-1442`) |
 | CRT scanline overlay (static, not animated) | `crt` body::after | — | ✅ removed under `reduce` (`:461-462`) |
 | Neon text-shadow on 7 opt-in themes | `body` | — | ✅ removed under `reduce` (`:463-469`) |
 
@@ -333,12 +333,12 @@ token × smallest rendered size)** pair is audited.
   18.66px bold / 24px regular; 3:1 above; 3:1 for the boundary of any interactive
   control (WCAG 1.4.11).
 - `--text-faint` is rendered at 0.65rem–0.8rem everywhere it appears
-  (`.theme-group-label` 0.65rem `:656`, `.wiki-sidebar h2` 0.68rem `:1342`,
+  (`.theme-group-label` 0.65rem `:656`, `.wiki-sidebar h2` 0.68rem `:1373`,
   `.vitals-strip` 0.75rem `:822`, `.post-date` 0.78rem `:973`, `.site-footer`
   0.8rem `:794`). That is small text. It must clear **4.5:1**, not the 3.0
   the generator currently asks for (`generate_themes.py:146-148`).
 
-Shipped state and the 19 failures this exposes are tabulated in §7.1.4.
+Shipped state and the 14 failures this exposes are tabulated in §7.1.4.
 
 **B. Colour independence.** No state is signalled by hue alone. Enumerated:
 
@@ -430,7 +430,7 @@ reference layers above it.
 Layer 0  Reset                    style.css:1-9        no tokens
 Layer 1  Theme layer              style.css:11-470     COLOUR + FONT ROLE only
 Layer 2  Measurement layer        style.css:472-500    SIZE + SPACE + LAYOUT only
-Layer 3  Component layer          style.css:502-1471   references L1 + L2, zero literals
+Layer 3  Component layer          style.css:502-1502   references L1 + L2, zero literals
 ```
 
 **The governing rule (criterion 2F):** *themes own colour and font role; they
@@ -633,7 +633,7 @@ why the pre-paint script exists at all.
 ### 4.6 Platform-specific considerations
 
 - **Browser support.** The stylesheet uses `:has()` (`style.css:740`),
-  `::details-content` (`:1330`), `:focus-visible`, `color-scheme`, and
+  `::details-content` (`:1361`), `:focus-visible`, `color-scheme`, and
   `overscroll-behavior`. `:has()` is the binding floor: Chrome/Edge 105+, Safari
   15.4+, Firefox 121+ (Dec 2023). Degradation is graceful in every case — without
   `:has()` the wiki page renders at 900px instead of 1200px, which is narrower but
@@ -661,7 +661,7 @@ Measured today:
 
 | Asset | Bytes | Notes |
 |---|---|---|
-| `static/css/style.css` | 41,272 (8,248 gzipped) | one file, 1,471 lines; the theme roster is lines 11–470 ≈ 30% |
+| `static/css/style.css` | 42,369 (8,544 gzipped) | one file, 1,502 lines; the theme roster is lines 11–470 ≈ 30% |
 | `static/js/main.js` | 4,664 (80 lines) | end of body, non-blocking |
 | `static/js/theme-init.js` | 960 (15 lines) | **render-blocking** in `<head>` |
 | `static/img/favicon.svg` | 2,387 | the only image any page requests |
@@ -726,7 +726,7 @@ has already occurred once (`fbc6c2e`).
 
 | # | Name | Assertion |
 |---|---|---|
-| P1 | `--check` contrast matrix | Every (token, background, size) pair in `USAGE` clears its threshold for all 23 themes. Exit non-zero otherwise. **Currently 19 failures** |
+| P1 | `--check` contrast matrix | Every (token, background, size) pair in `USAGE` clears its threshold for all 23 themes. Exit non-zero otherwise. **Currently 14 failures** |
 | P2 | contrast-function self-test | `contrast("#000","#fff") == 21.0` and `contrast("#777","#fff") ≈ 4.48` — the two canonical WCAG reference pairs, so a refactor of `_lin`/`_lum` cannot silently skew every result |
 | P3 | `MENU_GROUPS` drift guard | Existing (`:262-268`); every slug grouped exactly once |
 | P4 | codegen idempotence | `--write` then `git diff --exit-code` is clean. This is the guard that would have caught `fbc6c2e` before it happened |
@@ -777,7 +777,7 @@ none, so verification is tiered.
 **Tier 2 — token-contract changes only.** All 23, using a scratch page that renders
 every component once.
 
-**Surfaces checked in both tiers:** home, an article (`/blog/network-migration`), a
+**Surfaces checked in both tiers:** home, an article (`/blog/management-layer-first-network-migration`), a
 `/learn` page with sidebar, portfolio (status pills), `/status` (the `--surface`
 panel), and a 404.
 
@@ -906,7 +906,7 @@ stylesheet, preserving a second contradicting brand definition in `static/`.
 *Contrast.* The generator audits five tokens against `--bg` only, with `--text-faint`
 held to the AA-**large** 3.0 threshold (`generate_themes.py:146-148`). Re-running
 the same maths against the backgrounds and sizes the tokens are *actually*
-rendered at produces **19 failures**:
+rendered at produces **14 failures**:
 
 | Failure class | Themes affected | Worst ratio |
 |---|---|---|
@@ -916,7 +916,7 @@ rendered at produces **19 failures**:
 | `--accent` vs `--surface` | `cloud` 4.32, `solarized` 4.12 | 4.12:1 |
 | `--code` vs `--surface` — this is `.post-content code`, i.e. **inline code in every article** | `solarized` 4.06 | 4.06:1 |
 
-`solarized` accounts for five of the nineteen and is the palette that most needs
+`solarized` accounts for five of the fourteen and is the palette that most needs
 either a `--surface` lightening or removal from the roster.
 
 *Non-text contrast.* `--border` sits at **1.38:1–2.18:1** against `--bg` in every
@@ -928,7 +928,7 @@ worse, 1.41:1–2.08:1, and is correctly used only on non-interactive pills.
 *Text scaling.* `body { font-size: 15px }` (`:513`) is a fixed pixel size and
 overrides the reader's browser font-size preference.
 
-*Motion.* Nine motion sources; eight guarded, one not (`:1407-1411`).
+*Motion.* Nine motion sources; eight guarded, one not (`:1438-1442`).
 
 *No-JS.* Site fully readable; the OS light preference is honoured only via JS, and
 the theme button renders as a focusable dead control when JS is off.
@@ -952,9 +952,9 @@ the theme button renders as a focusable dead control when JS is off.
 
 **7.1.7 Status vocabulary — `implemented` for projects, `absent` for labs.**
 `.status-active` / `.status-in-progress` / `.status-complete` exist
-(`style.css:1185-1187`) and match `ProjectStatus::class_name`
+(`style.css:1216-1218`) and match `ProjectStatus::class_name`
 (`project.rs:48-54`). `LabStatus::class_name` (`lab.rs:50-58`) emits `queued` and
-`completed` — **neither has a rule.** `src/models/lab.rs` is untracked, has 12
+`completed` — **neither has a rule.** `src/models/lab.rs` is tracked (committed `e0b6c8b`), has 12
 entries all `Queued` with three tests (`:212-270`), and no handler, route, or
 template. C4 cannot render without this.
 
@@ -1021,7 +1021,7 @@ because there is no new architecture — the four-layer model already exists in 
 file, the generator already exists, and the CI already runs the right four
 commands.
 
-The L-shaped risk is the **19 contrast failures**. Fixing them means adjusting
+The L-shaped risk is the **14 contrast failures**. Fixing them means adjusting
 `--text-faint` and `--surface` in roughly seven palettes, and every adjustment is a
 visual judgment that must be re-eyeballed, not just re-computed. `solarized`
 specifically may not be salvageable while remaining recognisably Solarized (its
@@ -1057,7 +1057,7 @@ feature.
   `aria-current`, `asset_version()`, and `og:image` wiring land there against this
   contract.
 - **A3 ops-and-observability** — styles `/status` and the vitals strip on
-  `--surface`; two of the 19 contrast failures are on that surface.
+  `--surface`; two of the 14 contrast failures are on that surface.
 - **B1–B6** — every page inherits the type scale, measure, and status vocabulary.
 - **C1 search** — a results page needs list-row and empty-state patterns that
   exist here and nowhere else.
@@ -1083,7 +1083,7 @@ makes no claim.
   alternative is to rewrite in place and accept the name. — *Blocks:* §4.1, §7.2,
   and the wording of every downstream spec's "see the design system" reference.
 
-- **Q2 — `solarized` fails five of the nineteen contrast checks.** Its
+- **Q2 — `solarized` fails five of the fourteen contrast checks.** Its
   `--surface: #073642` against `--text-faint: #6d8087` is 3.15:1, and inline code
   on that surface is 4.06:1. Options: (a) lighten `--surface` toward `base02`,
   which drifts from canonical Solarized; (b) darken the whole palette to the
@@ -1099,7 +1099,7 @@ makes no claim.
   three entries in `THEMES`.
 
 - **Q4 — Is `--text-faint` worth keeping at all?** It is the source of ten of the
-  nineteen failures because it is a deliberately low-emphasis colour used at
+  fourteen failures because it is a deliberately low-emphasis colour used at
   deliberately small sizes — the two failure modes multiply. Options: (a) raise
   every failing palette's `faint` until it clears 4.5:1 on both backgrounds, which
   compresses it toward `--text-muted` and may make the ramp pointless; (b) retire
