@@ -80,6 +80,10 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "Network traffic types",
             },
             SidebarEntry {
+                slug: "ipv4-addressing",
+                label: "IPv4 addressing",
+            },
+            SidebarEntry {
                 slug: "cloud-computing",
                 label: "Cloud computing concepts",
             },

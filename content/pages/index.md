@@ -53,6 +53,8 @@ claim should be supported by work I performed and can explain.
   carry them.
 - [Network traffic types](/learn/traffic-types) — unicast, multicast, anycast, and
   broadcast delivery patterns.
+- [IPv4 addressing](/learn/ipv4-addressing) — binary octets, public and private
+  ranges, subnet masks, CIDR, and variable length subnet masking.
 - [Cloud computing concepts](/learn/cloud-computing) — NFV, virtual private clouds,
   cloud traffic controls, and deployment and service models.
 

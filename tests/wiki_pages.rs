@@ -22,6 +22,7 @@ const WIKI_SLUGS: &[&str] = &[
     "network-functions",
     "network-protocols",
     "traffic-types",
+    "ipv4-addressing",
     "cloud-computing",
     "linux-abstraction-layers",
 ];
