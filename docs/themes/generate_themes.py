@@ -140,25 +140,61 @@ def contrast(fg, bg):
     return (hi + 0.05) / (lo + 0.05)
 
 
+# Where each token is actually rendered, and against what.
+#
+# The old audit checked five tokens against --bg only, and held faint to the
+# AA-large 3.0 threshold. Both were too generous: every one of these tokens also
+# renders on --surface (cards, the theme menu, code spans, sidebars), and the
+# smallest size each is rendered at is well under the 18.66px that AA-large
+# permits. So every text token is held to 4.5 against both backgrounds.
+#
+# token          backgrounds        smallest rendered size   threshold
+USAGE = [
+    ("text",         ("bg", "surface"), "0.85rem", 4.5),
+    ("muted",        ("bg", "surface"), "0.78rem", 4.5),
+    ("faint",        ("bg", "surface"), "0.70rem", 4.5),
+    ("accent",       ("bg", "surface"), "0.72rem", 4.5),
+    ("accent_hover", ("bg", "surface"), "0.80rem", 4.5),
+    ("code",         ("bg", "surface"), "0.90rem", 4.5),
+]
+
+
+# Measure every (token, background) pair in USAGE across every theme
+# Returns printable rows plus the list of failures, so callers decide whether a
+# failure is advisory or fatal
 def audit():
-    # text/muted/accent/code are read as body/link text -> AA 4.5; faint is
-    # metadata (often larger/secondary) -> AA-large 3.0
-    rows, worst_fail = [], 0
+    rows, failures = [], []
     for t in THEMES:
-        checks = {
-            "text": (t["text"], 4.5), "muted": (t["muted"], 4.5),
-            "faint": (t["faint"], 3.0), "accent": (t["accent"], 4.5),
-            "code": (t["code"], 4.5),
-        }
         parts = []
-        for name, (color, need) in checks.items():
-            r = contrast(color, t["bg"])
-            ok = r >= need
-            if not ok:
-                worst_fail += 1
-            parts.append(f"{name} {r:4.1f}{'' if ok else ' !!'}")
+        for token, backgrounds, size, need in USAGE:
+            for bg_name in backgrounds:
+                ratio = contrast(t[token], t[bg_name])
+                ok = ratio >= need
+                if not ok:
+                    failures.append((t["slug"], token, bg_name, ratio, need, size))
+                parts.append(f"{token}/{bg_name} {ratio:4.1f}{'' if ok else ' !!'}")
         rows.append(f"  {t['slug']:11s} " + "  ".join(parts))
-    return rows, worst_fail
+    return rows, failures
+
+
+# Token key -> the CSS custom property it emits as, so failures name the
+# variable an author would actually go and edit
+CSS_VAR = {
+    "bg": "--bg", "surface": "--surface", "text": "--text",
+    "muted": "--text-muted", "faint": "--text-faint",
+    "accent": "--accent", "accent_hover": "--accent-hover", "code": "--code",
+}
+
+
+# Render the failure list as one line per failure, worst ratio first
+def format_failures(failures):
+    lines = []
+    for slug, token, bg_name, ratio, need, size in sorted(failures, key=lambda f: f[3]):
+        lines.append(
+            f"  {slug:11s} {CSS_VAR[token]} on {CSS_VAR[bg_name]}: "
+            f"{ratio:.2f}:1 (needs {need} at {size})"
+        )
+    return "\n".join(lines)
 
 
 # ---- Emitters -------------------------------------------------------------
@@ -293,7 +329,17 @@ if __name__ == "__main__":
     if arg in ("--menu", "all"):
         print(("\n===== MENU =====\n" if arg == "all" else "") + emit_menu())
     if arg == "all":
-        rows, fails = audit()
+        rows, failures = audit()
         print("\n===== CONTRAST AUDIT (>= threshold) =====")
         print("\n".join(rows))
-        print(f"\nfailures: {fails}  (themes: {len(THEMES)})")
+        print(f"\nfailures: {len(failures)}  (themes: {len(THEMES)})")
+    # --check is the CI-facing form: failures only, and a non-zero exit so the
+    # gate can fail on them. Plain `audit` stays advisory and always exits 0.
+    if arg == "--check":
+        _, failures = audit()
+        if not failures:
+            print(f"contrast: all pairs clear across {len(THEMES)} themes")
+            sys.exit(0)
+        print(f"contrast: {len(failures)} failing pairs across {len(THEMES)} themes\n")
+        print(format_failures(failures))
+        sys.exit(1)
