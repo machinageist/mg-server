@@ -23,6 +23,12 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
+      # Fails if any theme token drops below its WCAG threshold on any
+      # background it actually renders on. Cheap, and it runs before the Rust
+      # steps so a palette regression is reported in seconds.
+      - name: theme contrast
+        run: python3 docs/themes/generate_themes.py --check
+
       - name: cargo fmt
         run: cargo fmt --all -- --check
 
