@@ -390,12 +390,12 @@ renders, across all 23 theme blocks in `static/css/style.css`:
 
 | Pairing | Where it renders | Themes failing 4.5:1 |
 |---|---|---|
-| `--text-faint` on `--surface` | `.status-note` inside `.status-readout` (panel bg is `var(--surface)`, `style.css:864`) | **6 of 23** — lunarcore 4.47, cloud 4.28, gameboy 3.43, c64 3.27, nes 4.47, solarized 3.15, blueprint 4.41 |
+| `--text-faint` on `--surface` | `.status-note` inside `.status-readout` (panel bg is `var(--surface)`, `style.css:864`) | **7 of 23** — lunarcore 4.47, cloud 4.28, gameboy 3.43, c64 3.27, nes 4.47, solarized 3.15, blueprint 4.41 |
 | `--text-faint` on `--bg` | `.vitals-strip` and `.site-footer` (footer sets no background) | **3 of 23** — gameboy 3.97, c64 3.93, solarized 3.64 |
 
 Lunarcore is the **default** theme, and the `.status-note` text renders at
 `0.8rem` — nowhere near the 18.66 px large-text threshold, so 4.5:1 is the
-binding floor. The generator validated `--text-faint` against `--bg`, and six
+binding floor. The generator validated `--text-faint` against `--bg`, and seven
 themes fail once the same token lands on a `--surface` panel. That is precisely
 the `generate_themes.py` drift class criterion 5B names.
 
@@ -409,7 +409,7 @@ vitals strip, and the error pages must meet **4.5:1 in all 23 themes**.
 - *Interim fallback if A1 does not move first:* switch `.status-note` and
   `.vitals-strip` from `--text-faint` to `--text-muted`. Measured: `--text-muted`
   passes on `--bg` in **all 23** themes, and on `--surface` in **22 of 23** (only
-  solarized fails, at 4.13). That reduces failures from 6 to 1 and leaves a
+  solarized fails, at 4.13). That reduces failures from 7 to 1 and leaves a
   single named palette bug for A1.
 - *Drift guard (§5.1 T8):* a contrast test that fails CI, so this cannot regress
   silently and the "all WCAG-AA validated" comment becomes enforceable rather
@@ -742,7 +742,38 @@ criterion 5E targets.
 
 ### 4.5 Dependencies
 
-**Added:** none.
+**Added crates:** none.
+
+**Added feature on an existing crate: `tower-http/set-header` — required, and the
+manifest edit is stated here so it is not discovered at compile time.** §4.7
+Phase 1 uses `SetResponseHeaderLayer`, which lives in `tower_http::set_header`
+behind `#[cfg(feature = "set-header")]` (tower-http 0.5.2 `src/lib.rs:232`).
+`Cargo.toml:14` enables only `["fs", "trace"]`, so the type does not exist in
+this build today. Exact edit:
+
+```toml
+# Cargo.toml:13-14 — before
+# "fs" = ServeDir static file serving  "trace" = TraceLayer request logging
+tower-http = { version = "0.5", features = ["fs", "trace"] }
+
+# after
+# "fs" = ServeDir static file serving  "trace" = TraceLayer request logging
+# "set-header" = SetResponseHeaderLayer, the /static Cache-Control layer (§4.7)
+tower-http = { version = "0.5", features = ["fs", "trace", "set-header"] }
+```
+
+**Why enable the feature rather than hand-roll the header.** `set-header = []` in
+tower-http 0.5.2's manifest — it is a pure code-gating feature that pulls in **no
+transitive crates**, so the supply-chain surface added is zero and `Cargo.lock`
+does not change. `cargo tree -e features -i tower-http` confirms `set-header` is
+not currently enabled (`fs` transitively enables `set-status`, which is a
+different feature). The considered alternative was a `mw::from_fn` layer on the
+nested `/static` service, matching the shape of `add_security_headers` — that
+would need no manifest edit, but it means writing and testing bespoke middleware
+to set one constant header that the dependency already ships, which §2E-style
+restraint argues against. **Decision: enable the feature.** If a future reviewer
+prefers zero manifest churn, the `mw::from_fn` variant is a drop-in substitute
+and nothing else in this spec depends on which one is chosen.
 
 **Removed:** `axum-client-ip = "0.5"` — declared in `Cargo.toml`, zero references
 in `src/` (verified by grep). See §4.3 for the gate and the re-add condition.
@@ -754,7 +785,8 @@ in `src/` (verified by grep). See §4.3 for the gate and the re-add condition.
   needs no manifest change.
 - `tower-http` with `["fs", "trace"]` — `ServeDir::not_found_service` is in `fs`;
   `TraceLayer` level configuration (`DefaultMakeSpan`, `DefaultOnRequest`,
-  `DefaultOnResponse`) is in `trace`.
+  `DefaultOnResponse`) is in `trace`. **`SetResponseHeaderLayer` is not** — see
+  the feature note above.
 
 **Assets:** none. **Infrastructure:** none inside this repo. Cloudflare, Caddy,
 the Tunnel, and the systemd unit are referenced but not modified — the feature
@@ -813,8 +845,13 @@ so even warm revalidations spend tokens. A single genuine reader browsing quickl
 can approach the bucket — a self-DoS, not an attack.
 
 **Target (phased, because the second phase has a footgun):**
-- *Phase 1 (safe now):* add `Cache-Control: public, max-age=3600` to `/static`
-  responses via `SetResponseHeaderLayer` on the nested service.
+- *Phase 1 (safe now, but not free):* add `Cache-Control: public, max-age=3600`
+  to `/static` responses via `SetResponseHeaderLayer` on the nested service.
+  **This requires enabling tower-http's `set-header` feature** — the type is
+  `#[cfg(feature = "set-header")]`-gated and `Cargo.toml:14` does not enable it,
+  so this phase does not compile without the one-word manifest edit spelled out
+  in §4.5. It is the only manifest change in this spec besides the
+  `axum-client-ip` removal.
 - *Phase 2 (requires the version-token fix):* raise to
   `max-age=31536000, immutable`. This is only safe once the `?v=` cache-buster is
   derived from the build stamp instead of hand-typed — `templates/base.html`
@@ -971,7 +1008,7 @@ failure):**
   against **both** `--bg` and `--surface`.
   *Placement:* this is a whole-site palette guard, so it belongs to **A1** if A1
   specifies one; A3 asserts it because A3's surfaces are where the failure
-  renders. **This test fails today** — 6 themes for `faint`-on-`surface`, 3 for
+  renders. **This test fails today** — 7 themes for `faint`-on-`surface`, 3 for
   `faint`-on-`bg`, 1 for `muted`-on-`surface` (solarized). It must be introduced
   *with* the palette fix, in the same commit, or CI goes red on an unrelated
   change. Coordinate with A1 before landing.
@@ -1039,7 +1076,7 @@ error**, caught by `cargo build --release`); and no-JS behavior by the fact that
 
 | Configuration | What to check | Why |
 |---|---|---|
-| All 23 themes on `/status` | `.status-note` legible against the `--surface` panel; `<dt>` labels distinguishable in grayscale | The measured 4.5:1 failures in §3.7 — check lunarcore (default), cloud, gameboy, c64, nes, solarized, blueprint first |
+| All 23 themes on `/status` | `.status-note` legible against the `--surface` panel; `<dt>` labels distinguishable in grayscale | The seven measured 4.5:1 failures in §3.7 — check lunarcore (default), cloud, gameboy, c64, nes, solarized, blueprint, which are all seven of them |
 | All 23 themes, footer strip | Strip text legible against page `--bg` | gameboy, c64, solarized fail today |
 | Light and dark extremes | `paper` / `teletext` vs `lunarcore` / `matrix` | Widest luminance span in the roster |
 | 200 % browser zoom, 24 px root | `.status-readout` grid does not force horizontal body scroll | `max-content` first column |
@@ -1180,7 +1217,7 @@ own binding standards.
 | **1C GeistScope gate** | N/A — no GeistScope surface is touched. `/status` shows process facts only, no tool claims |
 | **1D Copy currency** | §6.3 audits all eleven user-visible strings; two need edits; the stale cert spine in `IMPROVEMENT_PLAN.md` is flagged rather than reused |
 | **1E Role posture** | §6.3 forbidden-word list; the framing is owned-scope self-hosting, and §1.2 explicitly calls the threat model "background internet noise" rather than a targeted adversary |
-| **1F Test-encoded policy** | Every existing anti-leak test is kept and **strengthened** (T8, T9, T15); none is weakened or deleted |
+| **1F Test-encoded policy** | Every existing anti-leak test is kept and **strengthened** (T8, T9, T15); none is weakened. One is *updated* — `bind_description_comes_from_the_resolved_listener_address` (`src/state.rs:348-370`) asserts the literals `BindMode::description` currently returns, so §4.2's rewrite necessarily changes them. That edit is recorded in §7.2 and strictly *reduces* disclosure (`"loopback (IPv4)"` names less than `"loopback (127.0.0.1)"`), so it tightens the anti-leak boundary rather than relaxing it |
 | **2E Restraint** | No dashboard, no gauges, no sparklines, no badge; the a11y fix is a copy edit rather than new markup; `429` stays plain text |
 | **2F Theme integrity** | This feature adds no per-theme rule. §3.7 identifies a *palette* defect, which 2F explicitly allows to be a per-theme concern, and hands it to A1 with measured numbers |
 | **3A No-JS floor** | Verified with `curl` on every surface |
@@ -1250,7 +1287,7 @@ own binding standards.
   references in `src/`. It implies per-IP limiting exists. It does not
   (`src/middleware/rate_limit.rs:12`).
 
-- **F6 — `--text-faint` fails WCAG AA on this feature's surfaces in 6 of 23
+- **F6 — `--text-faint` fails WCAG AA on this feature's surfaces in 7 of 23
   themes** (on `--surface`) and 3 of 23 (on `--bg`), including the **default**
   theme. Computed from the token blocks in `static/css/style.css`; full table in
   §3.7. The header comment at `style.css:10-13` asserts all 23 are AA-validated.
@@ -1286,7 +1323,8 @@ own binding standards.
   Verified on `127.0.0.2`. Safe but inaccurate.
 
 - **F15 — documentation drift.** `README.md`'s project tree omits `state.rs`,
-  `middleware/vitals.rs`, `handlers/status.rs`, and `handlers/releases.rs`; the
+  `middleware/vitals.rs`, and `handlers/status.rs` (`handlers/releases.rs` **is**
+  present, at `README.md:72` — an earlier draft of this spec said otherwise); the
   Security section lists the six headers but not the rate limiter's actual
   (global, non-per-IP) behavior. `IMPROVEMENT_PLAN.md:15,41-47` maps ops artifacts
   onto a superseded four-CompTIA cert spine. `docs/agent-context/README.md` is
@@ -1310,7 +1348,7 @@ a `/stats` route, request tracing across the Cloudflare/Caddy hops.
 | `src/router.rs` | Move `add_security_headers` from innermost to just inside `TraceLayer`; update the three ordering comments; configure `TraceLayer` levels + path-only span; attach `not_found_service` and a `Cache-Control` layer to the `/static` service | F1, F2, F3, F13 |
 | `src/middleware/rate_limit.rs` | Add `Content-Type`, `Retry-After` (from `NotUntil::wait_time_from`), `Cache-Control: no-store` to the `429`; rewrite the header comment so per-IP reads as gated, not imminent; **add a `#[cfg(test)]` module** (T2–T4) | F1, F4, F5 |
 | `src/middleware/security_headers.rs` | **Add a `#[cfg(test)]` module** (T1) | F4 |
-| `src/state.rs` | Extract `parse_vm_rss`; correct `BindMode::description` to family-only; rewrite the `/stats` comment on `hits()`; doc-comment `init_global`'s one-publisher rule; add T5–T7 | F12, F14, F11 |
+| `src/state.rs` | Extract `parse_vm_rss`; correct `BindMode::description` to family-only; **update `bind_description_comes_from_the_resolved_listener_address` (`:348-370`) to the new literals — `"loopback (IPv4)"`, `"loopback (IPv6)"`, `"all IPv4 interfaces"`, `"all IPv6 interfaces"`, `"custom interface"`** — it asserts the old strings and would otherwise fail; rewrite the `/stats` comment on `hits()`; doc-comment `init_global`'s one-publisher rule; add T5–T7 | F12, F14, F11 |
 | `src/handlers/status.rs` | Add T8–T10; keep all existing tests | F4, 1F |
 | `src/handlers/well_known.rs` | Second `Canonical` line; dated "AI list last reviewed" comment; add T11–T13 | F9, F10 |
 | `src/errors.rs` | Fix 404/500 `title()` to site convention; add T14–T16 | a11y, F3 |
@@ -1350,7 +1388,7 @@ works.
 
 | Blocker | Owner | Blocks | Notes |
 |---|---|---|---|
-| `--text-faint` palette fix across 23 themes | **A1** | S4, T17 | Measured failures in §3.7. Interim: switch to `--text-muted` (6 failures → 1) |
+| `--text-faint` palette fix across 23 themes | **A1** | S4, T17 | Measured failures in §3.7. Interim: switch to `--text-muted` (7 failures → 1) |
 | T17 landing **with** the palette fix | **A1** | S4 | Landing the test first turns CI red on unrelated work |
 | Vitals strip role-bearing element | **A2** | a11y sign-off | `aria-label` on a bare `<div>` is dropped by most AT |
 | `asset_version` in `base.html` (4 sites) | **A2** | Caching phase 2 | `immutable` before this lands is a year-long stale-asset footgun |
