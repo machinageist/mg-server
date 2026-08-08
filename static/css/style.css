@@ -1112,6 +1112,37 @@ hr {
     max-width:    var(--measure);
 }
 
+/* Markdown tables. Like pre, a table is not continuous prose, so it takes the
+   full column and scrolls inside itself instead of wrapping at --measure.
+   display:block is what makes overflow-x apply; width:max-content keeps the
+   columns sized to their content rather than collapsing to the container. */
+.post-content table {
+    display:         block;
+    width:           max-content;
+    max-width:       100%;
+    overflow-x:      auto;
+    border-collapse: collapse;
+    margin:          var(--space-4) 0;
+    font-size:       var(--text-sm);
+    color:           var(--text-muted);
+}
+
+.post-content th,
+.post-content td {
+    border:  1px solid var(--border);
+    padding: var(--space-1) var(--space-2);
+}
+
+/* Header cells lead on weight and a heavier rule, not on colour alone.
+   No text-align here — pulldown-cmark emits per-column alignment as an inline
+   style, and a rule set here would be overridden by it anyway. */
+.post-content th {
+    background:    var(--surface);
+    color:         var(--text);
+    font-weight:   bold;
+    border-bottom: 2px solid var(--border);
+}
+
 /* -----------------------------------------------------------------------
    Portfolio
    ----------------------------------------------------------------------- */
