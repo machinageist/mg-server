@@ -27,9 +27,9 @@ Status flow: `pending` → `spec-in-progress` → `spec-complete` →
 | B1 | home | pass | `specs/B1-home.md` | `scorecards/B1-home-scorecard.md` | 2.62 | 1 |
 | B2 | about | pass | `specs/B2-about.md` | `scorecards/B2-about-scorecard.md` | 2.95 | 1 |
 | B3 | portfolio | pass | `specs/B3-portfolio.md` | `scorecards/B3-portfolio-scorecard.md` | 2.79 | 1 |
-| B4 | writing | pending | — | — | — | 0 |
-| B5 | learn | pending | — | — | — | 0 |
-| B6 | releases | pending | — | — | — | 0 |
+| B4 | writing | spec-complete | `specs/B4-writing.md` | — | — | 0 |
+| B5 | learn | pass | `specs/B5-learn.md` | `scorecards/B5-learn-scorecard.md` | 2.83 | 1 |
+| B6 | releases | pass | `specs/B6-releases.md` | `scorecards/B6-releases-scorecard.md` | 2.88 | 1 |
 | C1 | search | pending | — | — | — | 0 |
 | C2 | glossary | pending | — | — | — | 0 |
 | C3 | study-tools | pending | — | — | — | 0 |
@@ -49,6 +49,7 @@ misleads whoever implements it.
 | B1 | — | none (scorecard reported no P1 items) |
 | B2 | — | none (scorecard reported no P1 items) |
 | B3 | — | `--text-2xs` token cited but absent from `style.css` (real floor is `--text-xs` 0.75rem) — reconcile via A1 sweep or map 0.72rem literals to `--text-xs`; add designed empty-state to `portfolio.html`; add external-link cue to entry link; add rendered-HTML anti-overclaim test in `pages.rs`; fix line citations (nav link base.html:26, card transition style.css:744) |
+| B5 | — | stale `network-plus` tag on 11 of 12 learn pages (criterion 1D, borderline 0): retag networking pages to the live spine (drop `network-plus`, use `ccna` where apt), correct spec §6.3's false "aligned with the live cert spine" claim, extend the A2 retired-claims guard to cover the tags field |
 
 **Note on the +31 drift:** A1's and A3's `style.css` citations above line 1112
 were correct when written. Commit `5e98092` (Markdown table rules) inserted 31
