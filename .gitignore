@@ -27,3 +27,6 @@ config.local.toml
 mg-server.tar.gz
 
 
+resume-commands
+gauntlet-output gauntlet-universal
+gauntlet-output gauntlet-universal
