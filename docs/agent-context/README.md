@@ -211,6 +211,17 @@ pill reads as a credential claim rather than a citation — and were removed in 
 
 ---
 
+## 6a. Search
+
+`/search` is server-rendered, has no JavaScript, and indexes **routable content
+only** — every post, plus the `SIDEBAR`-allowlisted learn pages. That corpus rule
+is what makes a result unable to 404 and a draft unable to leak, and both are
+pinned by tests. Read `docs/design/SEARCH.md` before changing anything in
+`src/search.rs`, especially `highlight_snippet` — its escaping order is a
+security contract, not a style choice.
+
+---
+
 ## 7. Verification
 
 Exactly what CI runs (`.github/workflows/`), in order:

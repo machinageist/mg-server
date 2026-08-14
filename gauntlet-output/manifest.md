@@ -22,7 +22,7 @@ Status flow: `pending` → `spec-in-progress` → `spec-complete` →
 | B4 | writing | pass | `specs/B4-writing.md` | `scorecards/B4-writing-scorecard.md` | 2.76 | 1 |
 | B5 | learn | pass | `specs/B5-learn.md` | `scorecards/B5-learn-scorecard.md` | 2.83 | 1 |
 | B6 | releases | pass | `specs/B6-releases.md` | `scorecards/B6-releases-scorecard.md` | 2.88 | 1 |
-| C1 | search | spec-complete | `specs/C1-search.md` | — | — | 1 |
+| C1 | search | spec-complete, **implemented** | `specs/C1-search.md` | — | — | 1 |
 | C2 | glossary | spec-complete | `specs/C2-glossary.md` | — | — | 1 |
 | C3 | study-tools | pending | — | — | — | 0 |
 | C4 | progress | pending | — | — | — | 0 |
@@ -45,6 +45,13 @@ markers for three days. See the resolution note below.
 
 **2026-08-14.** Conflicts resolved by hand. Several outstanding correction items
 applied. C1 and C2 specs committed (they had been sitting untracked on disk).
+
+**2026-08-14, later.** The criteria gained an enforcement point for shipped
+output — `tests/content_lint.rs` in CI plus the `/review-page` command — and
+**C1 search was built and shipped** to its spec (`8ab4731`). The C1 spec has not
+been blind-verified; it was implemented directly because the design questions in
+its §8 were already resolved and the answers were the ones the implementation
+wanted. Verification of the spec would now be verification after the fact.
 
 ## The B1 / B2 merge resolution
 
