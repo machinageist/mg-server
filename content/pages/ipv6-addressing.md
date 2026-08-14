@@ -207,8 +207,8 @@ IPv6, so I only have link-local" is a real and useful finding.
   replaces, and the scarcity workarounds it removes.
 - [Network traffic types](/learn/traffic-types) — unicast, multicast, anycast,
   and broadcast, and why IPv6 dropped one of them.
-- [Modern network environments](/learn/modern-network-environments) — the SDN,
-  overlay, and zero-trust designs that assume plentiful addressing.
+- [Software-defined networking](/learn/software-defined-networking) — the SDN
+  and overlay designs that assume plentiful addressing.
 - [The OSI model](/learn/osi-model) — where addressing sits relative to
   framing and transport.
 

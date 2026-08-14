@@ -96,8 +96,12 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "Cloud computing concepts",
             },
             SidebarEntry {
-                slug: "modern-network-environments",
-                label: "Modern network environments",
+                slug: "software-defined-networking",
+                label: "Software-defined networking",
+            },
+            SidebarEntry {
+                slug: "zero-trust-architecture",
+                label: "Zero-trust architecture",
             },
         ],
     },

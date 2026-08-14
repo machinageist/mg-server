@@ -62,9 +62,10 @@ claim should be supported by work I performed and can explain.
   IPv4.
 - [Cloud computing concepts](/learn/cloud-computing) — NFV, virtual private clouds,
   cloud traffic controls, and deployment and service models.
-- [Modern network environments](/learn/modern-network-environments) — SDN and
-  SD-WAN, VXLAN overlays, zero-trust architecture, SASE, and infrastructure as
-  code.
+- [Software-defined networking](/learn/software-defined-networking) — separating
+  the control and data planes, SD-WAN, VXLAN overlays, and infrastructure as code.
+- [Zero-trust architecture](/learn/zero-trust-architecture) — verifying every
+  request rather than trusting a location, the NIST policy model, and SASE.
 
 ## Linux foundations
 
