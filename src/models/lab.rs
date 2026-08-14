@@ -77,6 +77,11 @@ impl std::fmt::Display for Phase {
     }
 }
 
+// InProgress and Done are unconstructed today because nothing has been started
+// yet — which is the honest state, not an oversight. They are part of the model
+// so that starting a lab is a one-word edit here rather than a refactor, and the
+// tests below already assert what Done must satisfy.
+#[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LabStatus {
     // Unblocked and startable today. The runbooks name exactly one of these.
@@ -155,8 +160,9 @@ pub fn all() -> Vec<Lab> {
         Lab {
             name: "R2 — Firewall policy on the recovery subnet",
             entails: "Reconcile host firewall policy across all three nodes. Two still allow the old \
-                      10.0.1.0/24 as a management source and then drop management ports from anywhere \
-                      else; one has no host firewall file at all, so its intended policy is undefined.",
+                      pre-migration subnet as a management source and then drop management ports from \
+                      anywhere else; one has no host firewall file at all, so its intended policy is \
+                      undefined.",
             why: "On the new subnet those stale allow-rules can lock SSH and the web UI out of the \
                   cluster, depending on rule evaluation order. A firewall that was correct for the old \
                   network is a lockout risk on the new one.",
@@ -168,10 +174,10 @@ pub fn all() -> Vec<Lab> {
         },
         Lab {
             name: "R3 — Names, addresses, and DNS ownership",
-            entails: "Build one authoritative host/IP/DNS table and remove stale 10.0.1.x references \
-                      from active automation. The preserved /etc/hosts files disagree with each other \
-                      about this server's address across three different values, while the guest agent \
-                      proves a fourth.",
+            entails: "Build one authoritative host/IP/DNS table and remove stale pre-migration \
+                      references from active automation. The preserved /etc/hosts files disagree with \
+                      each other about this server's address across three different values, while the \
+                      guest agent proves a fourth.",
             why: "Four sources of truth for one address is not a documentation problem, it is the \
                   thing that breaks a VLAN cutover. Inventory has to be settled before anything moves.",
             phase: Phase::Recovery,

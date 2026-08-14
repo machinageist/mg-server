@@ -1086,6 +1086,125 @@ hr {
 }
 
 /* -----------------------------------------------------------------------
+   Labs — /labs, the homelab progress surface
+   ----------------------------------------------------------------------- */
+
+.labs-lede,
+.labs-phase-blurb,
+.labs-footnote {
+    color:       var(--text-muted);
+    max-width:   var(--measure);
+    line-height: 1.75;
+}
+
+.labs-footnote {
+    margin-top:  var(--space-6);
+    padding-top: var(--space-3);
+    border-top:  1px solid var(--border);
+}
+
+/* The one startable item, lifted out of the list so the page answers
+   "what happens next" without the reader hunting for it */
+.labs-next {
+    border-left: 2px solid var(--accent);
+    padding:     var(--space-2) 0 var(--space-2) var(--space-3);
+    margin:      var(--space-4) 0;
+    max-width:   var(--measure);
+}
+
+.labs-next-label {
+    color:          var(--accent);
+    font-size:      0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.labs-next-name {
+    font-weight: 600;
+    margin-top:  0.2rem;
+}
+
+.labs-next-why {
+    color:       var(--text-muted);
+    margin-top:  0.3rem;
+    line-height: 1.7;
+}
+
+.labs-phase {
+    margin-top: var(--space-6);
+}
+
+.labs-list {
+    list-style: none;
+    padding:    0;
+    margin:     var(--space-3) 0 0;
+}
+
+.lab {
+    border-left:   1px solid var(--border);
+    padding-left:  var(--space-3);
+    margin-bottom: var(--space-4);
+    max-width:     var(--measure);
+}
+
+/* Only the startable item gets a stronger rule. Every other status is
+   distinguished by its word, not by colour — criteria 3B. */
+.lab-next {
+    border-left-color: var(--accent);
+}
+
+.lab-head {
+    display:   flex;
+    gap:       0.6rem;
+    flex-wrap: wrap;
+    align-items: baseline;
+}
+
+.lab-status {
+    color:          var(--text-faint);
+    font-size:      0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border:         1px solid var(--border);
+    padding:        0.05rem 0.4rem;
+    white-space:    nowrap;
+}
+
+.lab-next .lab-status {
+    color:        var(--accent);
+    border-color: var(--accent);
+}
+
+.lab-name {
+    font-weight: 600;
+}
+
+.lab-entails,
+.lab-why {
+    color:       var(--text-muted);
+    margin-top:  0.4rem;
+    line-height: 1.7;
+}
+
+.lab-why-label {
+    color:       var(--text-faint);
+    font-style:  italic;
+}
+
+.lab-meta {
+    display:    flex;
+    gap:        1rem;
+    flex-wrap:  wrap;
+    margin-top: 0.5rem;
+    color:      var(--text-faint);
+    font-size:  0.8rem;
+}
+
+.lab-runbook {
+    font-family: var(--font-mono, monospace);
+}
+
+/* -----------------------------------------------------------------------
    Search — /search
    ----------------------------------------------------------------------- */
 

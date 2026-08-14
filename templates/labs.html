@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="labs-page">
+  <h1>Labs</h1>
+
+  <p class="labs-lede">
+    The homelab work in progress &mdash; {{ self.total() }} items across recovery,
+    network segmentation, and services, in the order they have to happen. Nothing
+    here is finished. Each entry says what it involves, why it exists, and what
+    is blocking it.
+  </p>
+
+  {% if let Some(next) = next_up %}
+  <div class="labs-next">
+    <p class="labs-next-label">Next up</p>
+    <p class="labs-next-name">{{ next.name }}</p>
+    <p class="labs-next-why">{{ next.why }}</p>
+  </div>
+  {% endif %}
+
+  {% for group in groups %}
+  <section class="labs-phase" aria-labelledby="phase-{{ loop.index }}">
+    <h2 id="phase-{{ loop.index }}">{{ group.label }}</h2>
+    <p class="labs-phase-blurb">{{ group.blurb }}</p>
+
+    <ol class="labs-list">
+      {% for lab in group.labs %}
+      <li class="lab lab-{{ lab.status_class() }}">
+        <p class="lab-head">
+          {# Status is a word first. The class only tints it — criteria 3B. #}
+          <span class="lab-status">{{ lab.status }}</span>
+          <span class="lab-name">{{ lab.name }}</span>
+        </p>
+        <p class="lab-entails">{{ lab.entails }}</p>
+        <p class="lab-why"><span class="lab-why-label">Why:</span> {{ lab.why }}</p>
+        <p class="lab-meta">
+          {# Present only once a lab is Done, which the model defines to require
+             a published writeup. Until then there is nothing to link to. #}
+          {% if let Some(writeup) = lab.writeup_url %}
+          <a class="lab-writeup" href="{{ writeup }}">Read the writeup</a>
+          {% endif %}
+          {% if let Some(blocker) = lab.blocked_by %}
+          <span class="lab-blocked">Blocked by {{ blocker }}</span>
+          {% endif %}
+          {# Provenance, not a link — the runbooks are a private repo. Naming the
+             document says this came from a written change plan rather than an
+             intention. #}
+          <span class="lab-runbook">{{ lab.runbook }}</span>
+        </p>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+  {% endfor %}
+
+  <p class="labs-footnote">
+    These are transcribed from the runbooks I actually work from. An item moves to
+    done when it is finished <em>and</em> written up &mdash; there is no state for
+    finished-but-undocumented, because that is how a list like this stops being
+    true.
+  </p>
+</section>
+{% endblock %}
