@@ -232,6 +232,38 @@ updated in the same change.
 
 ---
 
+## Applying this to shipped output
+
+**Added 2026-08-14.** These criteria were written to grade *spec documents*, and
+for the first run that is all they graded. Nothing applied them to a published
+page, which meant the standard existed and had nowhere to bite — a page could
+ship carrying a claim that auto-fail rule 1 forbids, and did.
+
+The same lenses now grade shipped content, at two enforcement points:
+
+**The floor — `tests/content_lint.rs`, in CI.** Mechanical and always on. It
+checks the frontmatter schema, the tag vocabulary (no certification slug may
+return as a tag — criterion 1D), the page-authoring contract, that every
+internal link and section anchor resolves, and that site copy carries none of
+the claim language rule 1 and criterion 1E forbid. Two further checks live in
+`src/handlers/wiki.rs` because they need the real Markdown renderer: the
+`SIDEBAR` ↔ `WIKI_SLUGS` agreement, and anchor resolution.
+
+The claim check is scoped to frontmatter and templates, not page bodies. A topic
+page explaining what penetration testing *is* is teaching, not claiming, and the
+distinction is the difference between a useful guard and one that gets disabled.
+
+**The ceiling — the `/review-page` command.** Judgment, run before publishing.
+It grades the criteria a test cannot: 1A–1F, 2B–2E, 3B/3D/3F, 4A/4C, and 5E. The
+one that carries the most weight on an education page is **2C** — a page that
+bullet-dumps a source note passes every mechanical check and still fails the
+thing the wiki exists to do.
+
+Neither replaces the other. The lint cannot tell whether an explanation is any
+good; the review cannot run on every commit.
+
+---
+
 ## Scoring Summary
 
 | Lens | Criteria count | Weight | Auto-fail conditions |
