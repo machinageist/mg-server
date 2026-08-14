@@ -7,11 +7,18 @@
 
   <h2>What I work with</h2>
   <ul class="about-list">
-    <li><strong>Systems:</strong> Linux, systemd, journald, and a Proxmox homelab &mdash; VMs, a small cluster, backups, monitoring.</li>
-    <li><strong>Networking:</strong> DNS, subnetting and VLANs, the Cloudflare Tunnel &rarr; Caddy &rarr; mg-server request path, and CLI diagnostics (<code>dig</code>, <code>ss</code>, <code>curl</code>).</li>
-    <li><strong>Automation:</strong> Rust and Python for small operations tools, health checks, and reports.</li>
-    <li><strong>Security:</strong> HTTP headers, SSH and TLS hardening, and auth-log detection, on things I own.</li>
+    <li><strong>Systems:</strong> Linux, systemd, and journald on a three-node Proxmox cluster I built and run &mdash; including <a href="/blog/management-layer-first-network-migration">the day I broke it and got it back</a>.</li>
+    <li><strong>Networking:</strong> DNS, subnetting, and the Cloudflare Tunnel &rarr; Caddy &rarr; mg-server <a href="/blog/hosting-machinageist-dev">request path</a>, diagnosed with <code>dig</code>, <code>ss</code>, and <code>curl</code>.</li>
+    <li><strong>Automation:</strong> Rust and Python for small operations tools. This site is one of them.</li>
+    <li><strong>Security:</strong> <a href="/blog/security-headers-on-machinageist-dev">HTTP security headers</a> on this site, on owned scope only.</li>
   </ul>
+
+  {# Every capability above is backed by a published post. Do not add one that is
+     not: hosting-machinageist-dev.md:103-106 records that monitoring and tested
+     backup/restore do NOT exist, management-layer-first-network-migration.md:15
+     records that VLAN segmentation has not started, and
+     security-headers-on-machinageist-dev.md:96-98 records SSH/TLS hardening and
+     auth-log detection as planned. This list claimed all five until 2026-08-14. #}
 
   <h2>What I publish</h2>
   <p>

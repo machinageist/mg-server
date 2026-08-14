@@ -230,4 +230,34 @@ mod tests {
         assert!(!html.contains("red-team"));
         assert!(!html.contains("offensive security"));
     }
+
+    // Every capability /about names must be backed by a published post. These five
+    // were all claimed until 2026-08-14 while the site's own writing called them
+    // absent or planned — the contradiction was one click away. Each banned term
+    // is justified by the post that disowns it:
+    //   monitoring, backup     hosting-machinageist-dev.md:103-106
+    //   VLAN                   management-layer-first-network-migration.md:15
+    //   auth-log               security-headers-on-machinageist-dev.md:96-98
+    //   health check           no post mentions one
+    // When one becomes real, the commit that makes it real updates the post, the
+    // copy, and this list together.
+    #[test]
+    fn about_page_claims_no_capability_the_posts_call_planned() {
+        let html = AboutTemplate {
+            bio: "I run a homelab and study Linux systems administration.".to_string(),
+        }
+        .render()
+        .expect("about template renders");
+        let body = html
+            .split_once("<main")
+            .map(|(_, rest)| rest)
+            .expect("layout always renders a <main>");
+
+        for term in ["monitoring", "backup", "VLAN", "auth-log", "health check"] {
+            assert!(
+                !body.contains(term),
+                "/about claims {term:?}, which the blog posts record as absent or planned"
+            );
+        }
+    }
 }
