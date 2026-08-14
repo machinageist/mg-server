@@ -73,9 +73,11 @@ claim should be supported by work I performed and can explain.
 - [The Linux filesystem hierarchy](/learn/linux-filesystem-hierarchy) — one tree
   from a single root, what each top-level directory holds, and how root access is
   meant to be used.
-- [The shell and the command line](/learn/linux-shell) — reading a command, the
-  three standard streams, redirection and pipes, variables, and the manual pages
+- [The shell and the command line](/learn/linux-shell) — reading a command, dot
+  files, shell versus environment variables, `PATH`, and the manual pages
   already on the machine.
+- [Streams, redirection, and pipes](/learn/linux-streams) — the three streams
+  every process gets, how the shell repoints them, and the `2>&1` ordering trap.
 - [File permissions and links](/learn/linux-permissions) — the user/group/other
   model, `chmod` in both notations, umask defaults, symbolic links, and archives
   that preserve all of it.

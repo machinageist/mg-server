@@ -1,7 +1,7 @@
 ---
 title: "The shell and the command line"
 date: 2026-08-14
-summary: "What a shell is, how to read a command line, the three standard streams and how to redirect them, shell versus environment variables, and using the manual pages already on the machine."
+summary: "What a shell is, how to read a command line, dot files, shell versus environment variables and what export really does, PATH, and using the manual pages already on the machine."
 tags: [education, linux, shell, bash, streams]
 ---
 
@@ -63,80 +63,12 @@ $ ls -l --color=auto /etc
 Some commands add a **subcommand** before the options, which is common in newer
 tooling: `systemctl restart sshd`, `git commit -m "..."`, `ip addr show`.
 
-## The three standard streams
+## Where the output goes
 
-Unix processes read and write through **streams**, and there are three by
-default:
-
-| Stream | Number | Default |
-|---|---:|---|
-| Standard input (`stdin`) | 0 | The keyboard |
-| Standard output (`stdout`) | 1 | The terminal |
-| Standard error (`stderr`) | 2 | The terminal |
-
-The design choice that matters is that none of these has to be a terminal. A
-stream can be a file, a device, another process, or nothing at all, and the
-program does not need to know or care. It writes to standard output; where that
-goes is the shell's business.
-
-Two streams for output rather than one looks redundant until you separate them.
-Results go to standard output, and diagnostics go to standard error, so that
-piping a command's results somewhere does not also pipe its complaints there.
-
-## Redirection and pipes
-
-Redirection is the shell's most useful feature, and it follows from streams
-being interchangeable.
-
-**Send output to a file** with `>`, which creates or overwrites:
-
-```text
-$ ls /etc > listing.txt
-```
-
-**Append instead** with `>>`:
-
-```text
-$ date >> logbook.txt
-```
-
-**Read input from a file** with `<`:
-
-```text
-$ sort < names.txt
-```
-
-**Connect two commands** with the pipe character `|`, which sends the standard
-output of one process to the standard input of the next:
-
-```text
-$ ps -ef | grep sshd
-```
-
-Pipes are what make small single-purpose tools add up to something. Each program
-does one job and passes its output along, and the combination does work no
-individual tool was written for.
-
-**Redirect standard error separately** with `2>`:
-
-```text
-$ find / -name "*.conf" > found.txt 2> errors.txt
-```
-
-Results land in one file, permission-denied complaints in the other.
-
-**Send both to the same place** with `2>&1`, which means "make stream 2 go
-wherever stream 1 currently goes":
-
-```text
-$ command > everything.txt 2>&1
-```
-
-Order matters here, and it is a classic trap. `> file 2>&1` redirects stdout to
-the file and then points stderr at the same place. `2>&1 > file` points stderr
-at the terminal — where stdout was at that moment — and only then moves stdout
-to the file, so errors still appear on screen. Bash also accepts `&>` as a
-shorthand for the correct form.
+A command's results and its error messages are separate streams, and the shell
+can point either one at a file or at another program. That plumbing is the
+subject of its own page:
+[streams, redirection, and pipes](/learn/linux-streams).
 
 ## Error messages
 
@@ -257,7 +189,7 @@ Getting comfortable here removes a dependency on having a browser open, and the
 documentation matches the version installed rather than whatever version a web
 result was written about.
 
-## Suggested practice: work the streams
+## Suggested practice: find out what your shell is doing
 
 Every step runs on any Linux machine as an ordinary user.
 
@@ -266,22 +198,24 @@ Every step runs on any Linux machine as an ordinary user.
 2. Set a shell variable, check it with `echo`, then start a new shell with
    `bash` and check again — it is gone. Repeat with `export` before starting the
    child shell, and watch it survive.
-3. Run `find /etc -name "*.conf"` as a normal user and watch results and errors
-   interleave. Separate them with `> found.txt 2> errors.txt` and read each
-   file.
-4. Build a pipeline a step at a time, checking the output after each addition:
-   `ps -ef`, then `ps -ef | grep bash`, then `ps -ef | grep bash | wc -l`.
-5. Compare `command > out.txt 2>&1` with `command 2>&1 > out.txt` on something
-   that produces both kinds of output. Confirm the ordering rule for yourself
-   rather than taking it from this page.
-6. Add a directory to `PATH`, put a script in it, and run the script by name
+3. Run `type ls`, `type cd`, and `type ll`. One is a file on disk, one is built
+   into the shell, and the third is probably an alias. Knowing which is which
+   explains why `man cd` does not work.
+4. Add a directory to `PATH`, put a script in it, and run the script by name
    from somewhere else. Then remove it from `PATH` and confirm the shell can no
    longer find it.
-7. Open `man man`, then find one option of a command you use often that you did
-   not know about.
+5. Run `ls -a ~` and open one dot file you did not know you had. Most of your
+   home directory is configuration.
+6. Open `man man`, then find one option of a command you use often that you did
+   not know about. Then find the same command's entry with `man -k`.
+
+The redirection and pipeline exercises live on
+[streams, redirection, and pipes](/learn/linux-streams#suggested-practice-watch-the-streams-separate).
 
 ## Related pages
 
+- [Streams, redirection, and pipes](/learn/linux-streams) — where a command's
+  output actually goes, and how to send it somewhere else.
 - [The Linux filesystem hierarchy](/learn/linux-filesystem-hierarchy) — the tree
   you are navigating, and where `PATH` points.
 - [File permissions and links](/learn/linux-permissions) — reading `ls -l`
@@ -296,7 +230,7 @@ Works: What Every Superuser Should Know* (No Starch Press), and checked against
 the primary documentation:
 
 - [`bash(1)`](https://man7.org/linux/man-pages/man1/bash.1.html) — the shell's
-  own manual, including redirection and parameter expansion.
+  own manual, including parameter expansion and the shell builtins.
 - [The GNU Bash Reference Manual](https://www.gnu.org/software/bash/manual/bash.html)
   — the same material in a form that is easier to read end to end.
 - [`man(1)`](https://man7.org/linux/man-pages/man1/man.1.html) and

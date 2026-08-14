@@ -30,6 +30,7 @@ const WIKI_SLUGS: &[&str] = &[
     "linux-abstraction-layers",
     "linux-filesystem-hierarchy",
     "linux-shell",
+    "linux-streams",
     "linux-permissions",
 ];
 

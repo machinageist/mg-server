@@ -117,6 +117,10 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "The shell and the command line",
             },
             SidebarEntry {
+                slug: "linux-streams",
+                label: "Streams, redirection, and pipes",
+            },
+            SidebarEntry {
                 slug: "linux-permissions",
                 label: "File permissions and links",
             },
