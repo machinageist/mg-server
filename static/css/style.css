@@ -1103,31 +1103,29 @@ hr {
     border-top:  1px solid var(--border);
 }
 
-/* The one startable item, lifted out of the list so the page answers
-   "what happens next" without the reader hunting for it */
+/* A signpost to the one startable item — a single line, because the entry
+   itself is a few inches below and repeating its rationale made the reader
+   read the same paragraph twice */
 .labs-next {
-    border-left: 2px solid var(--accent);
-    padding:     var(--space-2) 0 var(--space-2) var(--space-3);
-    margin:      var(--space-4) 0;
+    display:     flex;
+    gap:         0.6rem;
+    flex-wrap:   wrap;
+    align-items: baseline;
+    margin:      var(--space-4) 0 var(--space-6);
     max-width:   var(--measure);
 }
 
 .labs-next-label {
     color:          var(--accent);
-    font-size:      0.75rem;
+    font-size:      0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
+    white-space:    nowrap;
 }
 
 .labs-next-name {
+    color:       var(--text);
     font-weight: 600;
-    margin-top:  0.2rem;
-}
-
-.labs-next-why {
-    color:       var(--text-muted);
-    margin-top:  0.3rem;
-    line-height: 1.7;
 }
 
 .labs-phase {
@@ -1137,26 +1135,26 @@ hr {
 .labs-list {
     list-style: none;
     padding:    0;
-    margin:     var(--space-3) 0 0;
+    margin:     var(--space-4) 0 0;
 }
 
+/* Entries are separated by a rule rather than each carrying its own left
+   border — twenty repeated vertical lines grouped nothing and read as noise */
 .lab {
-    border-left:   1px solid var(--border);
-    padding-left:  var(--space-3);
-    margin-bottom: var(--space-4);
-    max-width:     var(--measure);
+    padding-top: var(--space-4);
+    border-top:  1px solid var(--border);
+    max-width:   var(--measure);
 }
 
-/* Only the startable item gets a stronger rule. Every other status is
-   distinguished by its word, not by colour — criteria 3B. */
-.lab-next {
-    border-left-color: var(--accent);
+.lab:first-child {
+    padding-top: 0;
+    border-top:  0;
 }
 
 .lab-head {
-    display:   flex;
-    gap:       0.6rem;
-    flex-wrap: wrap;
+    display:     flex;
+    gap:         0.7rem;
+    flex-wrap:   wrap;
     align-items: baseline;
 }
 
@@ -1165,43 +1163,55 @@ hr {
     font-size:      0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    border:         1px solid var(--border);
-    padding:        0.05rem 0.4rem;
     white-space:    nowrap;
 }
 
+/* The startable item is the only one that earns emphasis. Every other state
+   is carried by its word, not by colour — criteria 3B. */
 .lab-next .lab-status {
-    color:        var(--accent);
-    border-color: var(--accent);
+    color: var(--accent);
 }
 
+/* The name is the scan target: brightest thing in the entry, and the only
+   part at full text colour */
 .lab-name {
+    color:       var(--text);
+    font-size:   var(--text-lg);
     font-weight: 600;
 }
 
-.lab-entails,
-.lab-why {
+.lab-entails {
     color:       var(--text-muted);
-    margin-top:  0.4rem;
+    margin-top:  0.5rem;
     line-height: 1.7;
 }
 
-.lab-why-label {
-    color:       var(--text-faint);
-    font-style:  italic;
+/* The rationale is the best writing on the page and the easiest to skim past
+   when it is a third identical paragraph. Set off and quieter, so it reads as
+   commentary on the item rather than more of its description. */
+.lab-why {
+    margin-top:   0.6rem;
+    padding-left: var(--space-3);
+    border-left:  1px solid var(--border);
+    color:        var(--text-faint);
+    font-size:    0.9rem;
+    line-height:  1.7;
 }
 
+/* No bottom margin — the next entry's padding-top provides the gap, and
+   having both produced roughly double the intended separation */
 .lab-meta {
     display:    flex;
-    gap:        1rem;
+    gap:        0.3rem 1.2rem;
     flex-wrap:  wrap;
-    margin-top: 0.5rem;
+    margin:     0.7rem 0 0;
     color:      var(--text-faint);
-    font-size:  0.8rem;
+    font-size:  0.75rem;
 }
 
 .lab-runbook {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-mono);
+    opacity:     0.75;
 }
 
 /* -----------------------------------------------------------------------

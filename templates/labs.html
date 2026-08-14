@@ -11,12 +11,13 @@
     is blocking it.
   </p>
 
+  {# A signpost, not a summary — the entry itself is a few lines down and
+     repeating its rationale here just made the reader read it twice. #}
   {% if let Some(next) = next_up %}
-  <div class="labs-next">
-    <p class="labs-next-label">Next up</p>
-    <p class="labs-next-name">{{ next.name }}</p>
-    <p class="labs-next-why">{{ next.why }}</p>
-  </div>
+  <p class="labs-next">
+    <span class="labs-next-label">Next up</span>
+    <span class="labs-next-name">{{ next.name }}</span>
+  </p>
   {% endif %}
 
   {% for group in groups %}
@@ -33,13 +34,11 @@
           <span class="lab-name">{{ lab.name }}</span>
         </p>
         <p class="lab-entails">{{ lab.entails }}</p>
-        <p class="lab-why"><span class="lab-why-label">Why:</span> {{ lab.why }}</p>
+        {# The rationale is the most valuable thing here and the easiest to skim
+           past, so it is set off rather than stacked as a third identical
+           paragraph. #}
+        <p class="lab-why">{{ lab.why }}</p>
         <p class="lab-meta">
-          {# Present only once a lab is Done, which the model defines to require
-             a published writeup. Until then there is nothing to link to. #}
-          {% if let Some(writeup) = lab.writeup_url %}
-          <a class="lab-writeup" href="{{ writeup }}">Read the writeup</a>
-          {% endif %}
           {% if let Some(blocker) = lab.blocked_by %}
           <span class="lab-blocked">Blocked by {{ blocker }}</span>
           {% endif %}
@@ -47,6 +46,11 @@
              document says this came from a written change plan rather than an
              intention. #}
           <span class="lab-runbook">{{ lab.runbook }}</span>
+          {# Present only once a lab is Done, which the model defines to require
+             a published writeup. Until then there is nothing to link to. #}
+          {% if let Some(writeup) = lab.writeup_url %}
+          <a class="lab-writeup" href="{{ writeup }}">Read the writeup &rarr;</a>
+          {% endif %}
         </p>
       </li>
       {% endfor %}
