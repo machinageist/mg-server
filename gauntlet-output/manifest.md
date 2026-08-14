@@ -21,7 +21,7 @@ Status flow: `pending` → `spec-in-progress` → `spec-complete` →
 | B3 | portfolio | pass | `specs/B3-portfolio.md` | `scorecards/B3-portfolio-scorecard.md` | 2.79 | 1 |
 | B4 | writing | pass | `specs/B4-writing.md` | `scorecards/B4-writing-scorecard.md` | 2.76 | 1 |
 | B5 | learn | pass | `specs/B5-learn.md` | `scorecards/B5-learn-scorecard.md` | 2.83 | 1 |
-| B6 | releases | pass | `specs/B6-releases.md` | `scorecards/B6-releases-scorecard.md` | 2.88 | 1 |
+| B6 | releases | pass, **unpublished 2026-08-14** | `specs/B6-releases.md` | `scorecards/B6-releases-scorecard.md` | 2.88 | 1 |
 | C1 | search | spec-complete, **implemented** | `specs/C1-search.md` | — | — | 1 |
 | C2 | glossary | spec-complete | `specs/C2-glossary.md` | — | — | 1 |
 | C3 | study-tools | pending | — | — | — | 0 |
@@ -91,7 +91,7 @@ wrong numbers still misleads whoever implements it.
 | B3 | — | designed empty state, external-link cue, anti-overclaim test. **Two of its "corrections" are wrong** — the nav link really is `base.html:25` and the card transition really is `style.css:745`. See `REMEDIATION-BRIEF.md` |
 | B4 | heading-id pass for deep-linkable anchors, its P3 item 2 (`cca5910`) | P2: summary-guard mismatch, designed empty state, pillar landmark over-labeling |
 | B5 | stale `network-plus` tags dropped from all learn pages (`9664566`) — this was its only P1 | G1–G12 refinements remain open |
-| B6 | — | none recorded |
+| B6 | — | surface removed, see below |
 
 **On the "+31" drift note.** Earlier revisions of this manifest recorded that
 commit `5e98092` inserted 31 lines into `style.css` above line 1112, staling A1's
@@ -99,6 +99,28 @@ and A3's citations. **That rule is now obsolete** — `style.css` has grown acro
 four further commits and every affected citation has been re-verified against
 source in `gauntlet-output/REMEDIATION-BRIEF.md`. Use the brief, not the
 scorecards' own line numbers.
+
+## Releases, unpublished 2026-08-14
+
+`/releases` served four GeistScope source tarballs and nothing else. GeistScope
+sits behind the publication gate in `criteria.md` 1C — full pipeline, human and
+AI operation, sanitized evidence from an authorized engagement — and none of
+that is met, so shipping its build artifacts was the gate being bypassed by a
+side door. `src/models/project.rs` already archived the GeistScope *portfolio*
+entry and tests that it stays out; the releases page was the same claim in a
+different place.
+
+Removed: the route, handler, template, the four tarballs, the surface registry
+entry, and the `sha2` dependency they were the only consumer of. The tarballs
+remain in git history, so nothing is lost.
+
+**Reintroduction condition:** when GeistScope is complete enough to publish, it
+comes back as part of an applications wiki rather than as a bare artifact list —
+the thing a reader needs is what it does and how it was built, with downloads as
+a detail of that rather than the whole surface.
+
+`/releases` now 404s. B6's spec and scorecard are kept as the record of what the
+surface was, for whoever rebuilds it.
 
 ## Open decision for Jeff
 

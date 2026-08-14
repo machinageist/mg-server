@@ -69,7 +69,9 @@ mg-server/
 │   │   ├── blog.rs          # blog list (pillar-grouped) + single post
 │   │   ├── pages.rs         # home, start-here, about, portfolio
 │   │   ├── wiki.rs          # archive index + pages, hardcoded SIDEBAR
-│   │   ├── releases.rs
+│   │   ├── labs.rs          # /labs index + per-lab procedure pages
+│   │   ├── glossary.rs      # terms and command reference
+│   │   ├── search.rs        # server-rendered /search
 │   │   ├── well_known.rs    # security.txt, robots.txt
 │   │   └── mod.rs
 │   ├── main.rs

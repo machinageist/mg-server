@@ -100,13 +100,6 @@ pub const SURFACES: &[Surface] = &[
         in_nav: true,
     },
     Surface {
-        path: "/releases",
-        label: "Releases",
-        blurb: "Source tarballs for this site.",
-        section: "releases",
-        in_nav: false,
-    },
-    Surface {
         path: "/status",
         label: "Status",
         blurb: "Live uptime and request counts for this server.",
@@ -197,7 +190,6 @@ mod tests {
         let home = crate::handlers::pages::IndexTemplate {
             name: "machinageist".to_string(),
             posts: Vec::new(),
-            learn_count: 20,
         }
         .render()
         .expect("home renders");

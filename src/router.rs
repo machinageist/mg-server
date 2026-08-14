@@ -15,7 +15,7 @@
 //              `middleware` module which occupies the same name in scope.
 
 use crate::errors;
-use crate::handlers::{blog, glossary, labs, pages, releases, search, status, well_known, wiki};
+use crate::handlers::{blog, glossary, labs, pages, search, status, well_known, wiki};
 use crate::middleware::rate_limit::{build_limiter, rate_limit};
 use crate::middleware::security_headers::add_security_headers;
 use crate::middleware::vitals;
@@ -51,7 +51,6 @@ pub fn build(state: AppState) -> Router {
         .route("/wiki/:slug", get(wiki::redirect_page))
         // Capture :slug as a single path segment, passed to handler as Path<String>
         .route("/blog/:slug", get(blog::post))
-        .route("/releases", get(releases::list))
         // Process vitals — human page and the JSON the /tty terminal consumes
         .route("/status", get(status::page))
         .route("/status.json", get(status::json))
