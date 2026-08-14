@@ -4,7 +4,7 @@
 //              from_file() reads a .md file, splits the YAML frontmatter block
 //              from the Markdown body using gray_matter, deserializes metadata
 //              into a typed Frontmatter struct, parses the date string into a
-//              NaiveDate, and converts the Markdown body to HTML with pulldown-cmark.
+//              NaiveDate, and converts the Markdown body to HTML via models::markdown.
 //              load_all() scans a directory, calls from_file() on every .md file,
 //              and returns the results sorted newest-first by date.
 //              find() locates one post by slug and delegates to from_file().
@@ -20,10 +20,10 @@
 //              name are intentionally kept in sync.
 
 use crate::errors::SiteError;
+use crate::models::markdown;
 use chrono::NaiveDate;
 use gray_matter::Matter;
 use gray_matter::engine::YAML;
-use pulldown_cmark::{Options, Parser, html};
 use serde::Deserialize;
 use std::fs;
 use std::path::Path;
@@ -93,10 +93,8 @@ impl BlogPost {
         let date = NaiveDate::parse_from_str(&fm.date, "%Y-%m-%d")
             .map_err(|e| SiteError::DateParse(e.to_string()))?;
 
-        // Convert Markdown body to HTML — Options::all() enables tables, footnotes, strikethrough
-        let md_parser = Parser::new_ext(&parsed.content, Options::all());
-        let mut content_html = String::new();
-        html::push_html(&mut content_html, md_parser);
+        // Convert Markdown body to HTML — shared with Page, and adds heading anchor ids
+        let content_html = markdown::to_html(&parsed.content);
 
         Ok(BlogPost {
             slug,

@@ -4,14 +4,14 @@
 //              from_file() reads a .md file, splits the YAML frontmatter block
 //              from the Markdown body using gray_matter, deserializes metadata
 //              into a typed Frontmatter struct, parses the date string into a
-//              NaiveDate, and converts the Markdown body to HTML with pulldown-cmark.
+//              NaiveDate, and converts the Markdown body to HTML via models::markdown.
 //              find() locates one page by slug and delegates to from_file().
 
 use crate::errors::SiteError;
+use crate::models::markdown;
 use chrono::NaiveDate;
 use gray_matter::Matter;
 use gray_matter::engine::YAML;
-use pulldown_cmark::{Options, Parser, html};
 use serde::Deserialize;
 use std::fs;
 use std::path::Path;
@@ -55,9 +55,7 @@ impl Page {
         let date = NaiveDate::parse_from_str(&fm.date, "%Y-%m-%d")
             .map_err(|e| SiteError::DateParse(e.to_string()))?;
 
-        let md_parser = Parser::new_ext(&parsed.content, Options::all());
-        let mut content_html = String::new();
-        html::push_html(&mut content_html, md_parser);
+        let content_html = markdown::to_html(&parsed.content);
 
         Ok(Page {
             slug,

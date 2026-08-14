@@ -1102,6 +1102,37 @@ hr {
     margin:    var(--space-5) 0 var(--space-1);
 }
 
+/* Anchor jumps land under the sticky header without a scroll margin, so the
+   heading a reader followed a link to would be hidden behind it */
+.post-content h2,
+.post-content h3 {
+    scroll-margin-top: 5rem;
+}
+
+/* Every article h2/h3 trails a permalink so one section can be cited directly.
+   Hidden until its heading is hovered or the link itself takes keyboard focus
+   — shown always it would be noise running down the left of every page. */
+.post-content .heading-anchor {
+    margin-left:     var(--space-1);
+    color:           var(--text-muted);
+    font-weight:     400;
+    text-decoration: none;
+    opacity:         0;
+}
+
+.post-content h2:hover  .heading-anchor,
+.post-content h3:hover  .heading-anchor,
+.post-content .heading-anchor:hover,
+.post-content .heading-anchor:focus-visible {
+    opacity: 1;
+}
+
+.post-content .heading-anchor:hover { color: var(--accent); }
+
+@media (prefers-reduced-motion: no-preference) {
+    .post-content .heading-anchor { transition: opacity 0.15s ease; }
+}
+
 .post-content p {
     margin-bottom: var(--space-3);
     color:         var(--text-muted);

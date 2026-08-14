@@ -251,6 +251,36 @@ mod tests {
         );
     }
 
+    // End-to-end guard for the heading-anchor pass in models::markdown: a real
+    // published page, rendered through the real template, must come out with
+    // addressable section ids. Unit tests cover the slug rules; this covers the
+    // wiring actually reaching the page a reader sees.
+    #[test]
+    fn published_pages_render_addressable_section_anchors() {
+        let slug = "osi-model";
+        let page = Page::find(&PathBuf::from(PAGES_DIR), slug).expect("OSI page must exist");
+        let html = WikiPageTemplate {
+            page,
+            sidebar: SIDEBAR,
+            active_slug: slug,
+        }
+        .render()
+        .expect("template renders");
+
+        assert!(
+            html.contains(r#"<h2 id="overview""#),
+            "article headings should carry generated ids"
+        );
+        assert!(
+            html.contains(r##"class="heading-anchor" href="#overview""##),
+            "each heading should trail a permalink to its own id"
+        );
+        assert!(
+            html.contains(r#"id="encapsulation-and-decapsulation""#),
+            "multi-word headings should slug predictably, so cross-page links stay stable"
+        );
+    }
+
     #[test]
     fn unknown_slug_returns_none() {
         assert!(lookup_sidebar_slug("does-not-exist").is_none());
