@@ -2,7 +2,7 @@
 title: "IPv4 addressing"
 date: 2026-08-07
 summary: "How a 32-bit IPv4 address is built from binary octets, what public, private, link-local, and loopback addresses are for, and how masks, CIDR, and VLSM divide a network."
-tags: [education, networking, addressing, subnetting, cidr, network-plus]
+tags: [education, networking, addressing, subnetting, cidr]
 ---
 
 ## Overview

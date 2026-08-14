@@ -2,7 +2,7 @@
 title: "IPv6 addressing"
 date: 2026-08-14
 summary: "128-bit addresses, hextets and zero compression, the address types you actually meet on a link, and the mechanisms that let IPv6 and IPv4 share a network."
-tags: [education, networking, addressing, ipv6, ccna]
+tags: [education, networking, addressing, ipv6]
 ---
 
 ## Overview

@@ -2,7 +2,7 @@
 title: "Network appliances"
 date: 2026-07-23
 summary: "The physical and virtual systems that connect, forward, filter, distribute, store, and expose network traffic."
-tags: [education, networking, infrastructure, appliances, network-plus]
+tags: [education, networking, infrastructure, appliances]
 ---
 
 ## Overview

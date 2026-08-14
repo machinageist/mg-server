@@ -2,7 +2,7 @@
 title: "The Linux filesystem hierarchy"
 date: 2026-08-14
 summary: "One tree from a single root: what each top-level directory is for, why /usr absorbed several of them, and how root access is meant to be used."
-tags: [education, linux, filesystem, fhs, sudo, rhcsa]
+tags: [education, linux, filesystem, fhs, sudo]
 ---
 
 ## Overview

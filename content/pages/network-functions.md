@@ -2,7 +2,7 @@
 title: "Network functions: tunnels, traffic priority, and packet lifetime"
 date: 2026-07-23
 summary: "How VPNs and IPsec protect traffic, how QoS treats competing traffic, and how IP limits packet lifetime."
-tags: [education, networking, vpn, ipsec, qos, ttl, network-plus]
+tags: [education, networking, vpn, ipsec, qos, ttl]
 ---
 
 ## Overview

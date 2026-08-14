@@ -2,7 +2,7 @@
 title: "File permissions and links"
 date: 2026-08-14
 summary: "Reading ls -l, the user/group/other model, chmod in both notations, what permissions mean on a directory, umask defaults, symbolic links, and archives that preserve all of it."
-tags: [education, linux, permissions, chmod, umask, rhcsa]
+tags: [education, linux, permissions, chmod, umask]
 ---
 
 ## Overview

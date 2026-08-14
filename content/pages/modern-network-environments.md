@@ -2,7 +2,7 @@
 title: "Modern network environments"
 date: 2026-08-14
 summary: "Software-defined networking, SD-WAN, VXLAN overlays, zero-trust architecture, SASE, and infrastructure as code — the shift from configuring devices to declaring policy."
-tags: [education, networking, sdn, zero-trust, automation, ccna]
+tags: [education, networking, sdn, zero-trust, automation]
 ---
 
 ## Overview

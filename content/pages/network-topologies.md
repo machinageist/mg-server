@@ -2,7 +2,7 @@
 title: "Network topologies"
 date: 2026-08-02
 summary: "How nodes and links are arranged — mesh, star, ring, spine-and-leaf, and the tiered designs used in enterprise and data center networks."
-tags: [education, networking, topology, architecture, data-center, network-plus]
+tags: [education, networking, topology, architecture, data-center]
 ---
 
 ## Overview

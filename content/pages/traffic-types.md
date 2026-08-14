@@ -2,7 +2,7 @@
 title: "Network traffic types"
 date: 2026-07-24
 summary: "Unicast, multicast, anycast, and broadcast: the delivery patterns that describe who receives a transmission."
-tags: [education, networking, addressing, multicast, broadcast, network-plus]
+tags: [education, networking, addressing, multicast, broadcast]
 ---
 
 ## Overview

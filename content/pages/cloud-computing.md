@@ -2,7 +2,7 @@
 title: "Cloud computing concepts for networking"
 date: 2026-07-24
 summary: "NFV, virtual private clouds, cloud-native traffic controls, connectivity options, deployment models, and how cloud resources scale."
-tags: [education, networking, cloud, nfv, virtualization, network-plus]
+tags: [education, networking, cloud, nfv, virtualization]
 ---
 
 ## Overview

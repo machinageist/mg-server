@@ -2,7 +2,7 @@
 title: "The OSI model"
 date: 2026-07-23
 summary: "A seven-layer reference model for connecting network functions, protocols, devices, encapsulation, and troubleshooting."
-tags: [education, networking, osi, tcp-ip, troubleshooting, network-plus]
+tags: [education, networking, osi, tcp-ip, troubleshooting]
 ---
 
 ## Overview

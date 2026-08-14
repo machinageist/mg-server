@@ -2,7 +2,7 @@
 title: "Linux abstraction layers"
 date: 2026-08-07
 summary: "Hardware, kernel, and user space: the three layers Linux is usually divided into, and what the kernel does at the boundary between them."
-tags: [education, linux, kernel, processes, memory, rhcsa]
+tags: [education, linux, kernel, processes, memory]
 ---
 
 ## Overview

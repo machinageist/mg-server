@@ -2,7 +2,7 @@
 title: "Transmission media"
 date: 2026-08-02
 summary: "The physical media that carry data — radio, copper, and fiber — and the 802.11 and 802.3 standards that govern how each one is shared."
-tags: [education, networking, physical-layer, wireless, cabling, network-plus]
+tags: [education, networking, physical-layer, wireless, cabling]
 ---
 
 ## Overview

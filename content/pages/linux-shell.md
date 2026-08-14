@@ -2,7 +2,7 @@
 title: "The shell and the command line"
 date: 2026-08-14
 summary: "What a shell is, how to read a command line, the three standard streams and how to redirect them, shell versus environment variables, and using the manual pages already on the machine."
-tags: [education, linux, shell, bash, streams, rhcsa]
+tags: [education, linux, shell, bash, streams]
 ---
 
 ## Overview

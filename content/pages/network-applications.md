@@ -2,7 +2,7 @@
 title: "Network applications: content delivery networks"
 date: 2026-07-23
 summary: "A foundational overview of content delivery networks and how distributed infrastructure supports web applications."
-tags: [education, networking, applications, cdn, network-plus]
+tags: [education, networking, applications, cdn]
 ---
 
 ## Overview

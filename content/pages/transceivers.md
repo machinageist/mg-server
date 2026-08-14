@@ -2,7 +2,7 @@
 title: "Transceivers and connectors"
 date: 2026-08-02
 summary: "Pluggable transceiver modules, the form factors that define their shape, and the connectors that terminate copper and fiber."
-tags: [education, networking, physical-layer, fiber, cabling, network-plus]
+tags: [education, networking, physical-layer, fiber, cabling]
 ---
 
 ## Overview

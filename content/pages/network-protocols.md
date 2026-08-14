@@ -2,7 +2,7 @@
 title: "Network protocols and ports"
 date: 2026-07-24
 summary: "Common application protocols, the port numbers they rely on, and how port ranges are allocated."
-tags: [education, networking, protocols, ports, network-plus]
+tags: [education, networking, protocols, ports]
 ---
 
 ## Overview
