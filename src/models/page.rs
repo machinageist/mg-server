@@ -8,7 +8,7 @@
 //              find() locates one page by slug and delegates to from_file().
 
 use crate::errors::SiteError;
-use crate::models::markdown;
+use crate::models::markdown::{self, Heading};
 use chrono::NaiveDate;
 use gray_matter::Matter;
 use gray_matter::engine::YAML;
@@ -36,6 +36,8 @@ pub struct Page {
     pub content_html: String,
     // Body as plain text — what search matches on and snippets are cut from
     pub content_text: String,
+    // The h2/h3 outline, for pages that render an on-page contents list
+    pub outline: Vec<Heading>,
 }
 
 impl Page {
@@ -59,6 +61,7 @@ impl Page {
 
         let content_html = markdown::to_html(&parsed.content);
         let content_text = markdown::to_text(&parsed.content);
+        let outline = markdown::outline(&parsed.content);
 
         Ok(Page {
             slug,
@@ -68,6 +71,7 @@ impl Page {
             tags: fm.tags,
             content_html,
             content_text,
+            outline,
         })
     }
 

@@ -70,6 +70,54 @@ pub fn to_html(markdown: &str) -> String {
     html_output
 }
 
+// One heading in a document's outline, for building an on-page contents list
+#[derive(Debug, Clone)]
+pub struct Heading {
+    pub level: u8,
+    pub id: String,
+    pub text: String,
+}
+
+// Extract the h2/h3 outline of a document
+//
+// Runs the same slug generation as to_html, so the ids here are the ids the
+// rendered page actually carries. Deriving the contents list from the document
+// rather than maintaining it by hand is what stops the two drifting apart.
+pub fn outline(markdown: &str) -> Vec<Heading> {
+    let mut headings = Vec::new();
+    let mut seen: HashMap<String, usize> = HashMap::new();
+    let mut open: Option<(u8, Option<String>)> = None;
+    let mut text = String::new();
+
+    for event in Parser::new_ext(markdown, Options::all()) {
+        match event {
+            Event::Start(Tag::Heading { level, ref id, .. }) => {
+                open = Some((level as u8, id.as_ref().map(|id| id.to_string())));
+                text.clear();
+            }
+            Event::Text(ref chunk) | Event::Code(ref chunk) if open.is_some() => {
+                text.push_str(chunk);
+            }
+            Event::End(TagEnd::Heading(_)) => {
+                if let Some((level, explicit)) = open.take() {
+                    // The slug counter must advance for every heading, not just
+                    // the listed ones, or ids here stop matching the page
+                    let generated = unique_slug(&text, &mut seen);
+                    if (2..=3).contains(&level) {
+                        headings.push(Heading {
+                            level,
+                            id: explicit.unwrap_or(generated),
+                            text: text.trim().to_string(),
+                        });
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+    headings
+}
+
 // Flatten a Markdown body to plain text for search matching and snippets
 //
 // Matching against content_html would match inside tags and produce snippets
@@ -236,6 +284,35 @@ mod tests {
         let html = to_html("Some **bold** text and a [link](/learn/osi-model).\n");
         assert!(html.contains("<strong>bold</strong>"));
         assert!(html.contains(r#"href="/learn/osi-model""#));
+    }
+
+    #[test]
+    fn the_outline_ids_match_the_ids_the_page_renders() {
+        let source = "# Title\n\n## First section\n\ntext\n\n### A sub\n\n## First section\n";
+        let html = to_html(source);
+        let outline = outline(source);
+
+        // h1 is excluded — it is the page title, not a section
+        assert_eq!(outline.len(), 3);
+        assert_eq!(outline[0].text, "First section");
+        assert_eq!(outline[1].level, 3);
+
+        // The duplicate must carry the same suffix the renderer gave it, or the
+        // contents link would point at nothing
+        assert_eq!(outline[2].id, "first-section-2");
+        for heading in &outline {
+            assert!(
+                html.contains(&format!(r#"id="{}""#, heading.id)),
+                "outline id {:?} is not in the rendered page",
+                heading.id
+            );
+        }
+    }
+
+    #[test]
+    fn an_explicit_heading_id_is_used_by_the_outline_too() {
+        let outline = outline("## Redirection and pipes {#pipes}\n");
+        assert_eq!(outline[0].id, "pipes");
     }
 
     #[test]

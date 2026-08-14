@@ -13,6 +13,7 @@
 
 use crate::errors::SiteError;
 use crate::models::lab::{self, Lab, Phase};
+use crate::models::markdown::Heading;
 use crate::models::page::Page;
 use askama::Template;
 use askama_axum::IntoResponse;
@@ -107,6 +108,9 @@ pub struct LabPageTemplate {
     pub lab: Lab,
     // The step-by-step procedure, rendered from content/labs/<slug>.md
     pub page: Page,
+    // Derived from the document rather than maintained by hand, so a renamed
+    // section cannot leave a contents entry pointing at nothing
+    pub outline: Vec<Heading>,
 }
 
 impl LabPageTemplate {
@@ -134,7 +138,8 @@ pub async fn lab_page(AxumPath(slug): AxumPath<String>) -> Result<impl IntoRespo
         .find(|entry| entry.slug == slug)
         .ok_or_else(|| SiteError::PageNotFound(slug.clone()))?;
     let page = Page::find(&PathBuf::from(LABS_DIR), lab.slug)?;
-    Ok(LabPageTemplate { lab, page })
+    let outline = page.outline.clone();
+    Ok(LabPageTemplate { lab, page, outline })
 }
 
 #[cfg(test)]
