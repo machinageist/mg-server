@@ -41,7 +41,7 @@ impl IndexTemplate {
         "machinageist"
     }
     pub fn description(&self) -> &str {
-        "Homelab, networking, and Linux notes from machinageist — a Proxmox lab, CompTIA study, and the projects that come out of it."
+        "Homelab, networking, and Linux notes from machinageist — a Proxmox lab, a public education wiki, and the projects that come out of it."
     }
     pub fn section(&self) -> &str {
         "home"
@@ -78,7 +78,7 @@ impl AboutTemplate {
         "About — machinageist"
     }
     pub fn description(&self) -> &str {
-        "About Jeff Cincoski — a Proxmox homelab, networking and Linux operations, small automation, and CompTIA study."
+        "About Jeff Cincoski — a Proxmox homelab, networking and Linux operations, small automation tools, and a public education wiki."
     }
     pub fn section(&self) -> &str {
         "about"
@@ -88,8 +88,9 @@ impl AboutTemplate {
 // Render about page with bio text
 pub async fn about() -> impl IntoResponse {
     AboutTemplate {
-        bio: "I'm Jeff. I run a homelab, write about what breaks and how I fix it, and I'm working \
-              through the CompTIA stack. Most of what's here comes out of hardware I own and operate."
+        bio: "I'm Jeff. I run a homelab, write about what breaks and how I fix it, and study \
+              Linux systems administration and networking. Most of what's here comes out of \
+              hardware I own and operate."
             .to_string(),
     }
 }
@@ -152,10 +153,18 @@ mod tests {
         .render()
         .expect("home template renders");
 
-        // Concrete work, shown not told
-        assert!(html.contains("homelab"));
-        assert!(html.contains("Proxmox"));
-        assert!(html.contains("CompTIA"));
+        // Concrete work, shown not told. These strings must appear in the page
+        // body, not only in <meta description> — asserting on a term that lives
+        // solely in the metadata makes this test pass for the wrong reason and
+        // break when unrelated copy is edited.
+        let body = html
+            .split_once("<main")
+            .map(|(_, rest)| rest)
+            .expect("about/home layout always renders a <main>");
+        assert!(body.contains("homelab"));
+        assert!(body.contains("Proxmox"));
+        assert!(body.contains("cluster"));
+        assert!(body.contains("Cloudflare Tunnel"));
         // Quiet confidence: no self-describing strategy meta-copy
         assert!(!html.contains("infrastructure-support"));
         assert!(!html.contains("in training"));
@@ -204,7 +213,7 @@ mod tests {
     #[test]
     fn about_page_describes_work_plainly_without_disclaimers() {
         let html = AboutTemplate {
-            bio: "I run a homelab and work through the CompTIA stack.".to_string(),
+            bio: "I run a homelab and study Linux systems administration.".to_string(),
         }
         .render()
         .expect("about template renders");
