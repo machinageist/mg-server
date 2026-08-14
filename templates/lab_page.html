@@ -2,20 +2,26 @@
 
 {% block content %}
 <div class="lab-layout">
-  {# Derived from the document, so a renamed section cannot leave an entry here
-     pointing at nothing. Collapsed behind a toggle on narrow screens, where
-     there is no column to put it in. #}
-  <aside class="lab-contents" aria-label="Contents">
-    <details class="lab-contents-nav" open>
-      <summary>Contents</summary>
+  {# The whole program, in dependency order, with the lab being read marked
+     active — the same navigation /learn/:slug carries. A procedure is one link
+     in a chain, and what it is blocked by is on the list above it. Collapsed
+     behind a toggle on narrow screens, where there is no column to put it in. #}
+  <aside class="lab-sidebar" aria-label="Labs navigation">
+    <details class="lab-nav">
+      <summary>Labs navigation</summary>
       <nav>
-        <ol>
-          {% for heading in outline %}
-          <li class="toc-h{{ heading.level }}">
-            <a href="#{{ heading.id }}">{{ heading.text }}</a>
-          </li>
-          {% endfor %}
-        </ol>
+        {% for group in groups %}
+        <section class="lab-nav-section">
+          <h2>{{ group.label }}</h2>
+          <ul>
+            {% for entry in group.labs %}
+            <li{% if entry.slug == lab.slug %} class="active"{% endif %}>
+              <a href="/labs/{{ entry.slug }}">{{ entry.name }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </section>
+        {% endfor %}
       </nav>
     </details>
   </aside>
@@ -33,6 +39,25 @@
         {% endif %}
       </p>
     </header>
+
+    {# Contents belongs to the document, so it sits in the document rather than
+       under the navigation: section titles are sentences that wrap three deep
+       at sidebar width, and stacking them below fourteen labs would push the
+       list a reader actually jumps from below the fold of a sticky column.
+       Derived from the parse that generates the heading ids, so a renamed
+       section cannot leave an entry here pointing at nothing. #}
+    <details class="lab-contents" open>
+      <summary>Contents</summary>
+      <nav aria-label="Contents">
+        <ol>
+          {% for heading in outline %}
+          <li class="toc-h{{ heading.level }}">
+            <a href="#{{ heading.id }}">{{ heading.text }}</a>
+          </li>
+          {% endfor %}
+        </ol>
+      </nav>
+    </details>
 
     {# Sanitized on the way out of the private runbooks: zones are named, the
        addressing scheme is described rather than enumerated, and no host name

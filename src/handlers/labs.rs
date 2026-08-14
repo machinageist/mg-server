@@ -111,6 +111,11 @@ pub struct LabPageTemplate {
     // Derived from the document rather than maintained by hand, so a renamed
     // section cannot leave a contents entry pointing at nothing
     pub outline: Vec<Heading>,
+    // The whole program, grouped the same way the index groups it — the
+    // sidebar /learn/:slug carries, applied to a chain where knowing what comes
+    // before an entry is most of the point. Reuses grouped() so the two
+    // surfaces cannot disagree about which phase a lab is in.
+    pub groups: Vec<PhaseGroup>,
 }
 
 impl LabPageTemplate {
@@ -127,19 +132,29 @@ impl LabPageTemplate {
     }
 }
 
-// Render one lab's procedure, selected by URL slug
+// Build one lab's detail view
 //
 // The slug is checked against the model rather than passed to the filesystem,
 // so an unknown slug is a 404 from the allowlist and never a path read — the
 // same shape /learn/:slug uses.
-pub async fn lab_page(AxumPath(slug): AxumPath<String>) -> Result<impl IntoResponse, SiteError> {
+fn lab_page_view(slug: &str) -> Result<LabPageTemplate, SiteError> {
     let lab = lab::all()
         .into_iter()
         .find(|entry| entry.slug == slug)
-        .ok_or_else(|| SiteError::PageNotFound(slug.clone()))?;
+        .ok_or_else(|| SiteError::PageNotFound(slug.to_string()))?;
     let page = Page::find(&PathBuf::from(LABS_DIR), lab.slug)?;
     let outline = page.outline.clone();
-    Ok(LabPageTemplate { lab, page, outline })
+    Ok(LabPageTemplate {
+        lab,
+        page,
+        outline,
+        groups: grouped(),
+    })
+}
+
+// Render one lab's procedure, selected by URL slug
+pub async fn lab_page(AxumPath(slug): AxumPath<String>) -> Result<impl IntoResponse, SiteError> {
+    lab_page_view(&slug)
 }
 
 #[cfg(test)]
@@ -148,6 +163,85 @@ mod tests {
 
     fn render() -> String {
         labs_view().render().expect("labs template renders")
+    }
+
+    fn render_detail(slug: &str) -> String {
+        lab_page_view(slug)
+            .unwrap_or_else(|err| panic!("{slug} must resolve: {err:?}"))
+            .render()
+            .expect("lab page template renders")
+    }
+
+    // The detail page carries the whole program, the way /learn/:slug carries
+    // the wiki. A reader who lands mid-chain from a search result can see what
+    // has to happen before this lab and what it unblocks, without going back
+    // to the index — and the entry they are reading is the one marked.
+    #[test]
+    fn the_detail_sidebar_lists_every_lab_and_marks_exactly_one_active() {
+        let slug = "segmentation-lab";
+        let html = render_detail(slug);
+
+        for entry in lab::all() {
+            assert!(
+                html.contains(&format!("/labs/{}", entry.slug)),
+                "{} is in the model but not in the detail sidebar",
+                entry.slug
+            );
+            assert!(
+                html.contains(entry.name),
+                "{} is linked in the sidebar with no label",
+                entry.slug
+            );
+        }
+
+        assert_eq!(
+            html.matches("class=\"active\"").count(),
+            1,
+            "exactly one sidebar entry should be active"
+        );
+        let active = html
+            .split("<li class=\"active\">")
+            .nth(1)
+            .and_then(|rest| rest.split("</li>").next())
+            .expect("an active sidebar entry should exist");
+        assert!(
+            active.contains(&format!("/labs/{slug}")),
+            "the active entry should be the lab being read"
+        );
+    }
+
+    // The navigation replaced the contents list in the sidebar; it did not
+    // replace the contents list. Both are on the page, and every contents
+    // entry addresses a heading the document actually renders.
+    #[test]
+    fn the_detail_page_keeps_its_contents_beside_the_navigation() {
+        let slug = "segmentation-lab";
+        let view = lab_page_view(slug).expect("the lab must resolve");
+        assert!(!view.outline.is_empty(), "the procedure has sections");
+        let html = render_detail(slug);
+
+        assert!(html.contains("lab-sidebar"), "missing the labs navigation");
+        assert!(html.contains("lab-contents"), "missing the contents list");
+        for heading in &view.outline {
+            assert!(
+                html.contains(&format!("href=\"#{}\"", heading.id)),
+                "{:?} is missing from the contents list",
+                heading.text
+            );
+            assert!(
+                html.contains(&format!("id=\"{}\"", heading.id)),
+                "the contents links to #{}, which the document does not render",
+                heading.id
+            );
+        }
+    }
+
+    #[test]
+    fn an_unknown_lab_slug_is_not_a_path_read() {
+        assert!(matches!(
+            lab_page_view("../../etc/passwd"),
+            Err(SiteError::PageNotFound(_))
+        ));
     }
 
     #[test]
