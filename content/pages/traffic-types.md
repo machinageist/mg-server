@@ -80,7 +80,8 @@ On a network you own or are authorized to inspect, use Wireshark or `tcpdump`:
 
 ## Sources and further reading
 
-This page was edited from my networking reading notes and checked against:
+This page was edited from my own study notes, taken from Ian Neil's CompTIA
+Network+ certification guide, and checked against the primary sources:
 
 - [RFC 826: An Ethernet Address Resolution Protocol](https://www.rfc-editor.org/rfc/rfc826.txt)
   — ARP's broadcast request / unicast reply behavior.

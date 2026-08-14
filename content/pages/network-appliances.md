@@ -205,7 +205,8 @@ does.
 
 ## Sources and further reading
 
-I checked these networking notes against:
+This page was edited from my own study notes, taken from Ian Neil's CompTIA
+Network+ certification guide, and checked against the primary sources:
 
 - [RFC 1812: Requirements for IPv4 Routers](https://www.rfc-editor.org/rfc/rfc1812.txt)
   — IP forwarding and router behavior.

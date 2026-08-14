@@ -274,7 +274,8 @@ the evidence.
 
 ## Sources and further reading
 
-I checked these networking notes against:
+This page was edited from my own study notes, taken from Ian Neil's CompTIA
+Network+ certification guide, and checked against the primary sources:
 
 - [ISO/IEC 7498-1:1994 — Basic Reference Model](https://www.iso.org/standard/20269.html)
   — the formal OSI reference model.

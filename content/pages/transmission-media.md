@@ -287,7 +287,8 @@ rather than infer.
 
 ## Sources and further reading
 
-This page was edited from my networking reading notes and checked against:
+This page was edited from my own study notes, taken from Ian Neil's CompTIA
+Network+ certification guide, and checked against the primary sources:
 
 - [IEEE 802.3 Ethernet Working Group](https://www.ieee802.org/3/) — the wired
   Ethernet standards, port types, and media specifications.

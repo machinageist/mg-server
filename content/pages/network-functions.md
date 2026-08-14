@@ -130,7 +130,8 @@ confidentiality or the presence of a QoS policy.
 
 ## Sources and further reading
 
-I checked these networking notes against:
+This page was edited from my own study notes, taken from Ian Neil's CompTIA
+Network+ certification guide, and checked against the primary sources:
 
 - [RFC 791: Internet Protocol](https://www.rfc-editor.org/rfc/rfc791.txt) — IPv4 TTL.
 - [RFC 2474: Differentiated Services](https://www.rfc-editor.org/rfc/rfc2474.txt) — an

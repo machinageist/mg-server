@@ -84,7 +84,8 @@ private architecture.
 
 ## Sources and further reading
 
-This page was edited from my networking reading notes and checked against:
+This page was edited from my own study notes, taken from Ian Neil's CompTIA
+Network+ certification guide, and checked against the primary sources:
 
 - [RFC 3466: A Model for Content Internetworking](https://www.rfc-editor.org/rfc/rfc3466.txt)
   — terminology and functional model for content networks.

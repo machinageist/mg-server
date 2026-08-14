@@ -117,7 +117,8 @@ On a network you own or are authorized to inspect:
 
 ## Sources and further reading
 
-This page was edited from my networking reading notes and checked against:
+This page was edited from my own study notes, taken from Ian Neil's CompTIA
+Network+ certification guide, and checked against the primary sources:
 
 - [IANA Service Name and Transport Protocol Port Number Registry](https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml)
   — the authoritative port assignment list.

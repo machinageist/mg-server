@@ -273,7 +273,8 @@ most Linux systems. Nothing here needs root or changes any configuration.
 
 ## Sources and further reading
 
-This page was edited from my networking reading notes and checked against:
+This page was edited from my own study notes, taken from Ian Neil's CompTIA
+Network+ certification guide, and checked against the primary sources:
 
 - [RFC 791: Internet Protocol](https://www.rfc-editor.org/rfc/rfc791.txt) — the
   32-bit address, the original class definitions, and the header that carries
