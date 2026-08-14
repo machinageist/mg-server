@@ -62,10 +62,12 @@ src/
   router.rs               # ALL routes + middleware order — single source of truth
   state.rs                # AppState: request counters, uptime, RSS; Status snapshot
   errors.rs               # SiteError + the themed 404/500 fallbacks
+  search.rs               # search corpus, ranking, snippet escaping — see docs/design/SEARCH.md
   handlers/
     pages.rs              # home, about, portfolio
     blog.rs               # /blog list (grouped by pillar) + /blog/:slug
     wiki.rs               # /learn index + pages; hardcoded SIDEBAR lives here
+    search.rs             # /search — form, ranking call, results
     releases.rs           # /releases
     status.rs             # /status (human) + /status.json (machine)
     well_known.rs         # security.txt, robots.txt
@@ -74,7 +76,7 @@ src/
     rate_limit.rs         # governor token bucket, 60 req/min, per-instance not per-IP
     vitals.rs             # request + per-route counters, inside the limiter
   models/
-    markdown.rs           # pulldown-cmark rendering
+    markdown.rs           # pulldown-cmark rendering, heading anchor ids, plaintext for search
     page.rs               # content/pages/*.md  -> Page
     post.rs               # content/posts/*.md  -> BlogPost
     project.rs            # hardcoded portfolio entries + the anti-overclaim test
@@ -89,6 +91,7 @@ docs/                     # planning docs, theme generator, solarcore brand spec
 gauntlet-universal/       # the portable spec pipeline
 gauntlet-output/          # this project's criteria, feature tree, specs, scorecards
 tests/wiki_pages.rs       # drift guard for the /learn wiki
+tests/content_lint.rs     # the content quality floor — frontmatter, tags, links, claims
 ```
 
 ### Routes
@@ -96,6 +99,7 @@ tests/wiki_pages.rs       # drift guard for the /learn wiki
 `src/router.rs` is the authority. As of this writing:
 
 `/` · `/about` · `/portfolio` · `/blog` · `/blog/:slug` · `/learn` · `/learn/:slug` ·
+`/search` ·
 `/wiki` and `/wiki/:slug` (permanent redirects to `/learn`, kept so old links work) ·
 `/releases` · `/status` · `/status.json` · `/.well-known/security.txt` · `/security.txt` ·
 `/robots.txt` · `/static/*` (ServeDir) · fallback 404.
