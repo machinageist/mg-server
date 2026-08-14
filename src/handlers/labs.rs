@@ -26,9 +26,6 @@ pub struct PhaseGroup {
 #[template(path = "labs.html")]
 pub struct LabsTemplate {
     pub groups: Vec<PhaseGroup>,
-    // The single startable item, surfaced above the list so the page answers
-    // "what happens next" without the reader scanning for it
-    pub next_up: Option<Lab>,
 }
 
 impl LabsTemplate {
@@ -53,10 +50,6 @@ impl LabsTemplate {
 // Describe what each phase is for, so a group heading is not just a label
 fn blurb(phase: Phase) -> &'static str {
     match phase {
-        Phase::Recovery => {
-            "Get the flat network coherent and evidenced again after an outage I caused. \
-             Everything else is frozen until the exit gate at the end of this phase passes."
-        }
         Phase::Segmentation => {
             "Divide the flat network into VLANs, one change domain at a time, lowest-risk zone \
              first and the management network last."
@@ -88,14 +81,7 @@ fn grouped() -> Vec<PhaseGroup> {
 
 // Build the labs view
 fn labs_view() -> LabsTemplate {
-    let next_up = lab::all()
-        .into_iter()
-        .find(|entry| entry.status == lab::LabStatus::Next);
-
-    LabsTemplate {
-        groups: grouped(),
-        next_up,
-    }
+    LabsTemplate { groups: grouped() }
 }
 
 // Render the homelab progress page
@@ -139,12 +125,30 @@ mod tests {
         assert_eq!(labels.len(), count, "a phase was split across two groups");
     }
 
+    // The page must name the off-list precondition, or every entry reads as
+    // blocked for no stated reason
     #[test]
-    fn the_page_names_the_one_thing_that_can_start_today() {
-        let view = labs_view();
-        let next = view.next_up.expect("the model always names a next action");
-        assert!(next.blocked_by.is_none());
-        assert!(render().contains(next.name));
+    fn the_page_states_the_precondition_and_links_its_writeup() {
+        let rendered = render();
+        assert!(
+            rendered.contains(lab::RECOVERY_GATE),
+            "the page must say what everything is waiting on"
+        );
+        assert!(
+            rendered.contains("/blog/management-layer-first-network-migration"),
+            "the precondition must link the post that covers it"
+        );
+    }
+
+    #[test]
+    fn no_recovery_work_appears_on_the_page() {
+        let rendered = render();
+        for stage in ["R0 —", "R1 —", "R2 —", "R3 —", "R4 —"] {
+            assert!(
+                !rendered.contains(stage),
+                "{stage} is recovery work — covered by the blog post, not queued here"
+            );
+        }
     }
 
     // criteria.md 1C: a progress surface may show work in progress and may not

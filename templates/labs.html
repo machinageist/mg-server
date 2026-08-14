@@ -5,20 +5,21 @@
   <h1>Labs</h1>
 
   <p class="labs-lede">
-    The homelab work in progress &mdash; {{ self.total() }} items across recovery,
-    network segmentation, and services, in the order they have to happen. Nothing
-    here is finished. Each entry says what it involves, why it exists, and what
-    is blocking it.
+    What I plan to build next in the homelab &mdash; {{ self.total() }} items
+    across network segmentation and the services that land on it, in the order
+    they have to happen. Each entry says what it involves, why it exists, and
+    what is blocking it.
   </p>
 
-  {# A signpost, not a summary — the entry itself is a few lines down and
-     repeating its rationale here just made the reader read it twice. #}
-  {% if let Some(next) = next_up %}
-  <p class="labs-next">
-    <span class="labs-next-label">Next up</span>
-    <span class="labs-next-name">{{ next.name }}</span>
+  {# Everything here waits on work that is not on this list. Saying so once, up
+     front, is what stops twenty "blocked" labels reading as excuses. #}
+  <p class="labs-precondition">
+    All of it is gated behind <strong>{{ crate::models::lab::RECOVERY_GATE }}</strong>:
+    I moved the lab between subnets, broke the cluster, and took this site
+    offline for two days. Closing that out with evidence comes before any new
+    VLAN work &mdash;
+    <a href="/blog/management-layer-first-network-migration">what happened and how it was recovered</a>.
   </p>
-  {% endif %}
 
   {% for group in groups %}
   <section class="labs-phase" aria-labelledby="phase-{{ loop.index }}">
@@ -29,15 +30,22 @@
       {% for lab in group.labs %}
       <li class="lab lab-{{ lab.status_class() }}">
         <p class="lab-head">
-          {# Status is a word first. The class only tints it — criteria 3B. #}
-          <span class="lab-status">{{ lab.status }}</span>
           <span class="lab-name">{{ lab.name }}</span>
+          {# Status is shown by exception. Everything is blocked, so printing
+             "blocked" fourteen times said nothing — the per-entry blocker below
+             is the part that differs. A lab that starts or finishes is the
+             thing worth a label, and it gets a word, never colour alone. #}
+          {% if lab.status_class() != "blocked" %}
+          <span class="lab-status">{{ lab.status }}</span>
+          {% endif %}
         </p>
-        <p class="lab-entails">{{ lab.entails }}</p>
-        {# The rationale is the most valuable thing here and the easiest to skim
-           past, so it is set off rather than stacked as a third identical
-           paragraph. #}
+        {# The rationale leads. It is the reason the item is on the list and the
+           only part a skimming reader needs; the mechanics are one click away. #}
         <p class="lab-why">{{ lab.why }}</p>
+        <details class="lab-detail">
+          <summary>What this involves</summary>
+          <p>{{ lab.entails }}</p>
+        </details>
         <p class="lab-meta">
           {% if let Some(blocker) = lab.blocked_by %}
           <span class="lab-blocked">Blocked by {{ blocker }}</span>

@@ -14,13 +14,16 @@
 //              when it has a published writeup_url, and the tests below fail
 //              if that is ever violated.
 //
-//              The dependency chain is the honest part. Almost everything here
-//              is Blocked, and it is blocked on a specific named thing rather
-//              than on enthusiasm. The recovery exit gate in
-//              network-segmentation-runbook.md §5 freezes all segmentation
-//              work until thirteen checks pass with fresh evidence; that freeze
-//              is why a list of a dozen network projects has exactly one entry
-//              anyone can start today.
+//              Scope is deliberately forward-looking: planned work only. The
+//              recovery that precedes all of it is finished writing rather than
+//              a queue item — it is told properly in the network-migration post,
+//              and listing it here again would make the page about the past.
+//
+//              The dependency chain is the honest part. Everything is Blocked,
+//              on a specific named thing rather than on enthusiasm, and the
+//              first blocker is off-list: the recovery exit gate in
+//              network-segmentation-runbook.md §5 freezes all segmentation work
+//              until thirteen checks pass with fresh evidence.
 
 // -----------------------------------------------------------------------
 // Data types
@@ -50,12 +53,14 @@ impl Lab {
     }
 }
 
-// The three stages of the homelab program, in the order they must happen
+// The precondition every entry here waits on. It is not a lab on this list:
+// closing out the recovery is current work, written up rather than queued.
+pub const RECOVERY_GATE: &str = "the recovery exit gate";
+
+// The two stages of planned work, in the order they must happen
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Phase {
-    // Get the flat 10.0.10.0/24 baseline coherent and evidenced
-    Recovery,
-    // Divide it into VLANs, one change domain at a time
+    // Divide the flat network into VLANs, one change domain at a time
     Segmentation,
     // Put each service on its target VLAN and prove its config
     Services,
@@ -64,7 +69,6 @@ pub enum Phase {
 impl Phase {
     pub fn label(&self) -> &'static str {
         match self {
-            Phase::Recovery => "Recovery",
             Phase::Segmentation => "Segmentation",
             Phase::Services => "Services",
         }
@@ -84,7 +88,7 @@ impl std::fmt::Display for Phase {
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LabStatus {
-    // Unblocked and startable today. The runbooks name exactly one of these.
+    // Unblocked and startable today. Nothing is, until the gate passes.
     Next,
     // Waiting on something specific, named in blocked_by
     Blocked,
@@ -125,100 +129,7 @@ impl std::fmt::Display for LabStatus {
 // Return the canonical lab list in dependency order
 pub fn all() -> Vec<Lab> {
     vec![
-        // ---- Phase 1: recovery on the flat network -------------------------
-        Lab {
-            name: "R0 — Fresh read-only snapshot",
-            entails: "Run the same read-only checks on all three Proxmox nodes and save timestamped \
-                      output outside /etc/pve: addressing, routes, resolver, service state, corosync \
-                      config hashes, quorum, VM inventory, firewall status, and the guest-agent view \
-                      from the VM serving this site.",
-            why: "Every other item on this list depends on knowing the real current state. The last \
-                  evidence on file is a historical checkpoint from an incident, not a description of \
-                  the machines as they are now. Acting on a stale snapshot is how the outage happened \
-                  the first time.",
-            phase: Phase::Recovery,
-            status: LabStatus::Next,
-            blocked_by: None,
-            runbook: "runbooks/network/00-recovery-snapshot.md",
-            writeup_url: None,
-        },
-        Lab {
-            name: "R1 — One coherent three-node cluster",
-            entails: "Bring all three nodes into agreement at every layer, not just at Corosync: the \
-                      same config version and ring addresses on each node, both peers connected, and \
-                      the Proxmox cluster filesystem actually attached — node 2's corosync.conf row \
-                      was missing from its database and node 3 has no successful recovery log.",
-            why: "Corosync reporting quorum is not the same as the cluster filesystem being healthy, \
-                  and the difference is exactly what was misread during the incident. Nothing built on \
-                  top of a half-attached cluster can be trusted.",
-            phase: Phase::Recovery,
-            status: LabStatus::Blocked,
-            blocked_by: Some("R0 — Fresh read-only snapshot"),
-            runbook: "runbooks/network/01-recovery-cluster.md",
-            writeup_url: None,
-        },
-        Lab {
-            name: "R2 — Firewall policy on the recovery subnet",
-            entails: "Reconcile host firewall policy across all three nodes. Two still allow the old \
-                      pre-migration subnet as a management source and then drop management ports from \
-                      anywhere else; one has no host firewall file at all, so its intended policy is \
-                      undefined.",
-            why: "On the new subnet those stale allow-rules can lock SSH and the web UI out of the \
-                  cluster, depending on rule evaluation order. A firewall that was correct for the old \
-                  network is a lockout risk on the new one.",
-            phase: Phase::Recovery,
-            status: LabStatus::Blocked,
-            blocked_by: Some("R1 — One coherent three-node cluster"),
-            runbook: "runbooks/network/02-recovery-firewall.md",
-            writeup_url: None,
-        },
-        Lab {
-            name: "R3 — Names, addresses, and DNS ownership",
-            entails: "Build one authoritative host/IP/DNS table and remove stale pre-migration \
-                      references from active automation. The preserved /etc/hosts files disagree with \
-                      each other about this server's address across three different values, while the \
-                      guest agent proves a fourth.",
-            why: "Four sources of truth for one address is not a documentation problem, it is the \
-                  thing that breaks a VLAN cutover. Inventory has to be settled before anything moves.",
-            phase: Phase::Recovery,
-            status: LabStatus::Blocked,
-            blocked_by: Some("R2 — Firewall policy on the recovery subnet"),
-            runbook: "runbooks/network/03-recovery-inventory-dns.md",
-            writeup_url: None,
-        },
-        Lab {
-            name: "R4 — Prove and soak the flat baseline",
-            entails: "Run the positive and negative flow tests against the flat network and leave it \
-                      alone long enough to see whether it stays healthy — cluster membership, the \
-                      public request path, and DNS all still working after a period of no changes.",
-            why: "A baseline that works once is not a baseline. Soaking it is what separates \
-                  'recovered' from 'not currently broken', and it is the last chance to find a fault \
-                  while the network is still simple enough to reason about.",
-            phase: Phase::Recovery,
-            status: LabStatus::Blocked,
-            blocked_by: Some("R3 — Names, addresses, and DNS ownership"),
-            runbook: "runbooks/network/04-recovery-soak.md",
-            writeup_url: None,
-        },
-        Lab {
-            name: "The recovery exit gate",
-            entails: "Thirteen checks, each needing fresh evidence: three quorate nodes, matching \
-                      config hashes, documented firewall policy on every node, a verified management \
-                      path, a completed host/IP/DNS table, captured VM inventory, a verified public \
-                      request path, exported and recoverable firewall and switch configs, and at least \
-                      one tested rollback path for each of host networking, firewall, OPNsense, and \
-                      the switch.",
-            why: "This is the freeze. Until every box is checked, no VLAN filtering, no switch PVID \
-                  change, no VM tag, no OPNsense interface change. The gate exists because the last \
-                  attempt at segmentation started from an unproven baseline and took the cluster, \
-                  remote access, and this site down for two days.",
-            phase: Phase::Recovery,
-            status: LabStatus::Blocked,
-            blocked_by: Some("R4 — Prove and soak the flat baseline"),
-            runbook: "runbooks/network/05-recovery-exit-gate.md",
-            writeup_url: None,
-        },
-        // ---- Phase 2: segmentation, one change domain at a time ------------
+        // ---- Segmentation, one change domain at a time ---------------------
         Lab {
             name: "S0 — Document the physical topology",
             entails: "Record what is actually plugged in where: switch model, firmware, and exported \
@@ -230,7 +141,7 @@ pub fn all() -> Vec<Lab> {
                   path for each cutover has to be identified before the cutover, not during it.",
             phase: Phase::Segmentation,
             status: LabStatus::Blocked,
-            blocked_by: Some("The recovery exit gate"),
+            blocked_by: Some(RECOVERY_GATE),
             runbook: "runbooks/network/10-segmentation-topology.md",
             writeup_url: None,
         },
@@ -317,7 +228,7 @@ pub fn all() -> Vec<Lab> {
             runbook: "runbooks/network/16-segmentation-mgmt.md",
             writeup_url: None,
         },
-        // ---- Phase 3: services onto their target zones ---------------------
+        // ---- Services onto their target zones -------------------------------
         Lab {
             name: "Firewall and router configuration",
             entails: "Prove what is actually configured inside the OPNsense VM: which interfaces and \
@@ -455,24 +366,11 @@ mod tests {
         }
     }
 
-    // The dependency chain is the reason this page is worth showing. If every
-    // entry were startable, "blocked" would be an excuse; because the runbooks
-    // name one next action and a hard gate, it is a plan.
+    // The dependency chain is the reason this page is worth showing. If entries
+    // were blocked on nothing in particular, "blocked" would be an excuse.
     #[test]
-    fn exactly_one_lab_is_startable_and_the_rest_name_their_blocker() {
-        let labs = all();
-        let startable: Vec<&str> = labs
-            .iter()
-            .filter(|lab| lab.status == LabStatus::Next)
-            .map(|lab| lab.name)
-            .collect();
-        assert_eq!(
-            startable.len(),
-            1,
-            "the runbooks name exactly one immediate next action, found {startable:?}"
-        );
-
-        for lab in &labs {
+    fn every_blocked_lab_says_what_is_blocking_it() {
+        for lab in all() {
             match lab.status {
                 LabStatus::Next => assert!(
                     lab.blocked_by.is_none(),
@@ -489,19 +387,45 @@ mod tests {
         }
     }
 
-    // A blocker has to be a lab on this list, or the chain is decorative
+    // A blocker has to resolve to something real, or the chain is decorative.
+    // Exactly one blocker is allowed to be off-list — the recovery gate, which
+    // is current work rather than planned work and is written up instead.
     #[test]
-    fn every_blocker_names_a_lab_that_exists() {
+    fn every_blocker_resolves_to_a_lab_or_the_declared_precondition() {
         let labs = all();
         let names: Vec<&str> = labs.iter().map(|lab| lab.name).collect();
         for lab in &labs {
             if let Some(blocker) = lab.blocked_by {
                 assert!(
-                    names.contains(&blocker),
-                    "{} is blocked by {blocker:?}, which is not on the list",
+                    names.contains(&blocker) || blocker == RECOVERY_GATE,
+                    "{} is blocked by {blocker:?}, which is neither on the list nor the \
+                     declared precondition",
                     lab.name
                 );
             }
+        }
+    }
+
+    // Scope guard. The recovery work is covered by the network-migration post;
+    // re-listing it here would make a page about planned work into a rehash.
+    #[test]
+    fn the_list_carries_planned_work_only() {
+        let labs = all();
+        assert!(
+            labs.iter()
+                .all(|lab| matches!(lab.phase, Phase::Segmentation | Phase::Services)),
+            "only segmentation and services are planned work"
+        );
+        for lab in &labs {
+            assert!(
+                !lab.name.starts_with("R0")
+                    && !lab.name.starts_with("R1")
+                    && !lab.name.starts_with("R2")
+                    && !lab.name.starts_with("R3")
+                    && !lab.name.starts_with("R4"),
+                "{} is a recovery phase — that work is written up, not queued",
+                lab.name
+            );
         }
     }
 

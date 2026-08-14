@@ -1103,29 +1103,15 @@ hr {
     border-top:  1px solid var(--border);
 }
 
-/* A signpost to the one startable item — a single line, because the entry
-   itself is a few inches below and repeating its rationale made the reader
-   read the same paragraph twice */
-.labs-next {
-    display:     flex;
-    gap:         0.6rem;
-    flex-wrap:   wrap;
-    align-items: baseline;
-    margin:      var(--space-4) 0 var(--space-6);
-    max-width:   var(--measure);
-}
-
-.labs-next-label {
-    color:          var(--accent);
-    font-size:      0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    white-space:    nowrap;
-}
-
-.labs-next-name {
-    color:       var(--text);
-    font-weight: 600;
+/* The one precondition everything waits on, stated once up front — without it
+   twenty "blocked" labels read as excuses rather than as an order of work */
+.labs-precondition {
+    border-left:  2px solid var(--accent);
+    padding-left: var(--space-3);
+    margin:       var(--space-4) 0 var(--space-6);
+    max-width:    var(--measure);
+    color:        var(--text-muted);
+    line-height:  1.75;
 }
 
 .labs-phase {
@@ -1140,10 +1126,12 @@ hr {
 
 /* Entries are separated by a rule rather than each carrying its own left
    border — twenty repeated vertical lines grouped nothing and read as noise */
+/* Symmetric padding, so the separating rule sits midway between two entries
+   rather than hugging the end of the one above it */
 .lab {
-    padding-top: var(--space-4);
-    border-top:  1px solid var(--border);
-    max-width:   var(--measure);
+    padding:    var(--space-4) 0;
+    border-top: 1px solid var(--border);
+    max-width:  var(--measure);
 }
 
 .lab:first-child {
@@ -1158,20 +1146,6 @@ hr {
     align-items: baseline;
 }
 
-.lab-status {
-    color:          var(--text-faint);
-    font-size:      0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    white-space:    nowrap;
-}
-
-/* The startable item is the only one that earns emphasis. Every other state
-   is carried by its word, not by colour — criteria 3B. */
-.lab-next .lab-status {
-    color: var(--accent);
-}
-
 /* The name is the scan target: brightest thing in the entry, and the only
    part at full text colour */
 .lab-name {
@@ -1180,22 +1154,63 @@ hr {
     font-weight: 600;
 }
 
-.lab-entails {
+/* Shown only when a lab is not in the default blocked state, so a label
+   carries information instead of repeating on every row */
+.lab-status {
+    color:          var(--accent);
+    font-size:      0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space:    nowrap;
+}
+
+/* The rationale leads the entry, so it reads at body weight rather than being
+   the quietest thing on a page it is the best part of */
+.lab-why {
     color:       var(--text-muted);
     margin-top:  0.5rem;
     line-height: 1.7;
 }
 
-/* The rationale is the best writing on the page and the easiest to skim past
-   when it is a third identical paragraph. Set off and quieter, so it reads as
-   commentary on the item rather than more of its description. */
-.lab-why {
-    margin-top:   0.6rem;
-    padding-left: var(--space-3);
-    border-left:  1px solid var(--border);
-    color:        var(--text-faint);
+/* The mechanics, one click away. Native <details> — no JavaScript, keyboard
+   operable for free, and it keeps fourteen entries scannable instead of
+   stacking twenty-eight paragraphs down the page. */
+.lab-detail {
+    margin-top: 0.6rem;
+}
+
+.lab-detail > summary {
+    color:      var(--text-faint);
+    font-size:  0.8rem;
+    cursor:     pointer;
+    list-style: none;
+    width:      fit-content;
+}
+
+.lab-detail > summary::-webkit-details-marker {
+    display: none;
+}
+
+.lab-detail > summary::before {
+    content:       "\25B8 ";
+    display:       inline-block;
+    margin-right:  0.25rem;
+}
+
+.lab-detail[open] > summary {
+    margin-bottom: 0.4rem;
+}
+
+.lab-detail > summary:hover {
+    color: var(--accent);
+}
+
+.lab-detail > p {
+    color:        var(--text-muted);
     font-size:    0.9rem;
     line-height:  1.7;
+    padding-left: var(--space-3);
+    border-left:  1px solid var(--border);
 }
 
 /* No bottom margin — the next entry's padding-top provides the gap, and
@@ -1212,6 +1227,11 @@ hr {
 .lab-runbook {
     font-family: var(--font-mono);
     opacity:     0.75;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .lab-detail > summary::before { transition: transform 0.15s ease; }
+    .lab-detail[open] > summary::before { transform: rotate(90deg); }
 }
 
 /* -----------------------------------------------------------------------
