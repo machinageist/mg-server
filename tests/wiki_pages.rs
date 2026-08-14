@@ -16,6 +16,8 @@ const WIKI_SLUGS: &[&str] = &[
     "osi-model",
     "network-topologies",
     "transmission-media",
+    "wireless-media",
+    "wired-media",
     "transceivers",
     "network-appliances",
     "network-applications",

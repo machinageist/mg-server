@@ -56,6 +56,14 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "Transmission media",
             },
             SidebarEntry {
+                slug: "wireless-media",
+                label: "Wireless media",
+            },
+            SidebarEntry {
+                slug: "wired-media",
+                label: "Wired media",
+            },
+            SidebarEntry {
                 slug: "transceivers",
                 label: "Transceivers and connectors",
             },

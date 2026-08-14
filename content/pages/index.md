@@ -38,8 +38,12 @@ claim should be supported by work I performed and can explain.
   system.
 - [Network topologies](/learn/network-topologies) — how nodes and links are arranged,
   from mesh and star to spine-and-leaf and tiered enterprise designs.
-- [Transmission media](/learn/transmission-media) — the radio, copper, and fiber that
-  carry data, and the 802.11 and 802.3 standards governing how each is shared.
+- [Transmission media](/learn/transmission-media) — the radio, copper, and fiber
+  that carry data, what bounds each one, and who standardizes what.
+- [Wireless media](/learn/wireless-media) — taking turns on a shared channel,
+  the 802.11 generations and their bands, cellular, and satellite.
+- [Wired media](/learn/wired-media) — copper categories, the 802.3 standards,
+  single-mode and multimode fiber, coax, and plenum ratings.
 - [Transceivers and connectors](/learn/transceivers) — pluggable modules, their form
   factors, and the connectors that terminate copper and fiber.
 - [Network appliances](/learn/network-appliances) — the physical and virtual systems
