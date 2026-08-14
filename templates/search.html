@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="search-page">
+  <h1>Search</h1>
+
+  {# A plain GET form. No JavaScript is involved in submitting it, rendering the
+     results, or navigating to one — criteria.md auto-fail rule 3. #}
+  <form class="search-form" role="search" method="get" action="/search">
+    <label class="vh" for="search-q">Search the site</label>
+    <input
+      id="search-q"
+      name="q"
+      type="search"
+      value="{{ query }}"
+      placeholder="Search writing and learn pages"
+      maxlength="128"
+      autocomplete="off"
+      spellcheck="false">
+    <button type="submit">Search</button>
+  </form>
+
+  {% if searched %}
+  <p class="search-count">{{ self.result_summary() }} for &ldquo;{{ query }}&rdquo;</p>
+
+    {% if !results.is_empty() %}
+    {# An ordered list because the ranking is meaningful. Result titles are links
+       inside list items, not headings — a results list is a list, and headings
+       here would compete with the page outline. #}
+    <ol class="search-results">
+      {% for result in results %}
+      <li class="search-result">
+        <a class="search-result-title" href="{{ result.url }}">{{ result.title }}</a>
+        <p class="search-result-meta">
+          {# The surface is named in a word, never signalled by colour alone #}
+          <span class="search-result-kind">{{ result.kind_label }}</span>
+          <span class="search-result-date">{{ result.date }}</span>
+          {% if let Some(category) = result.category %}
+          <span class="search-result-category">{{ category }}</span>
+          {% endif %}
+        </p>
+        {# |safe is sound here only because search::highlight_snippet escapes
+           every character before introducing any <mark>. See src/search.rs. #}
+        <p class="search-result-snippet">{{ result.snippet_html|safe }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <p class="search-empty">
+      Nothing matched that. Every word has to appear somewhere in a page, so a
+      shorter query usually finds more. You can also browse
+      <a href="/blog">all writing</a> or the <a href="/learn">education wiki</a>.
+    </p>
+    {% endif %}
+
+  {% else %}
+  <p class="search-empty">
+    Searches the writing and the education wiki — titles, summaries, tags, and
+    the full text of every page. Or browse <a href="/blog">all writing</a> and
+    the <a href="/learn">education wiki</a>.
+  </p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -16,7 +16,7 @@ use axum::extract::Path as AxumPath;
 use axum::response::Redirect;
 use std::path::PathBuf;
 
-const PAGES_DIR: &str = "content/pages";
+pub(crate) const PAGES_DIR: &str = "content/pages";
 const OVERVIEW_SLUG: &str = "index";
 
 // One entry in the left wiki sidebar
@@ -199,6 +199,14 @@ pub async fn redirect_page(AxumPath(slug): AxumPath<String>) -> Redirect {
     Redirect::permanent(&format!("/learn/{slug}"))
 }
 
+// List every slug the sidebar offers — the allowlist of servable /learn pages
+pub(crate) fn sidebar_slugs() -> Vec<&'static str> {
+    SIDEBAR
+        .iter()
+        .flat_map(|section| section.entries.iter().map(|entry| entry.slug))
+        .collect()
+}
+
 // Look up a slug in the sidebar; returns the static slug reference if known
 fn lookup_sidebar_slug(slug: &str) -> Option<&'static str> {
     for section in SIDEBAR {
@@ -308,14 +316,6 @@ mod tests {
     #[test]
     fn unknown_slug_returns_none() {
         assert!(lookup_sidebar_slug("does-not-exist").is_none());
-    }
-
-    // Every slug the sidebar offers
-    fn sidebar_slugs() -> Vec<&'static str> {
-        SIDEBAR
-            .iter()
-            .flat_map(|section| section.entries.iter().map(|entry| entry.slug))
-            .collect()
     }
 
     // B5 gap G4. SIDEBAR and tests/wiki_pages.rs::WIKI_SLUGS are deliberately

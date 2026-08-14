@@ -15,7 +15,7 @@
 //              `middleware` module which occupies the same name in scope.
 
 use crate::errors;
-use crate::handlers::{blog, pages, releases, status, well_known, wiki};
+use crate::handlers::{blog, pages, releases, search, status, well_known, wiki};
 use crate::middleware::rate_limit::{build_limiter, rate_limit};
 use crate::middleware::security_headers::add_security_headers;
 use crate::middleware::vitals;
@@ -38,6 +38,7 @@ pub fn build(state: AppState) -> Router {
         .route("/about", get(pages::about))
         .route("/portfolio", get(pages::portfolio))
         .route("/blog", get(blog::list))
+        .route("/search", get(search::search))
         .route("/learn", get(wiki::index))
         .route("/learn/:slug", get(wiki::page))
         // /wiki is the pre-rename URL — keep old links and bookmarks working

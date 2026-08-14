@@ -172,6 +172,7 @@ mod tests {
             tags: Vec::new(),
             category: category.map(str::to_string),
             content_html: String::new(),
+            content_text: String::new(),
         }
     }
 

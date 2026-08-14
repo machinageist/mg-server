@@ -34,6 +34,8 @@ pub struct Page {
     pub summary: String,
     pub tags: Vec<String>,
     pub content_html: String,
+    // Body as plain text — what search matches on and snippets are cut from
+    pub content_text: String,
 }
 
 impl Page {
@@ -56,6 +58,7 @@ impl Page {
             .map_err(|e| SiteError::DateParse(e.to_string()))?;
 
         let content_html = markdown::to_html(&parsed.content);
+        let content_text = markdown::to_text(&parsed.content);
 
         Ok(Page {
             slug,
@@ -64,6 +67,7 @@ impl Page {
             summary: fm.summary,
             tags: fm.tags,
             content_html,
+            content_text,
         })
     }
 

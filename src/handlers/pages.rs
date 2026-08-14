@@ -141,6 +141,7 @@ mod tests {
             tags: Vec::new(),
             category: None,
             content_html: String::new(),
+            content_text: String::new(),
         }
     }
 

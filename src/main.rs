@@ -18,6 +18,7 @@ mod handlers;
 mod middleware;
 mod models;
 mod router;
+mod search;
 mod state;
 
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};

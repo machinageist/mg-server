@@ -1085,6 +1085,112 @@ hr {
     font-size:  0.72rem;
 }
 
+/* -----------------------------------------------------------------------
+   Search — /search
+   ----------------------------------------------------------------------- */
+
+/* Visually hidden but still announced. Used for the search input's label, whose
+   purpose is obvious to a sighted reader from the placeholder and button but
+   must still be programmatic. Not display:none, which would hide it from
+   assistive technology too. */
+.vh {
+    position:    absolute;
+    width:       1px;
+    height:      1px;
+    padding:     0;
+    margin:      -1px;
+    overflow:    hidden;
+    clip-path:   inset(50%);
+    white-space: nowrap;
+    border:      0;
+}
+
+.search-form {
+    display:   flex;
+    gap:       var(--space-1);
+    flex-wrap: wrap;
+    max-width: var(--measure);
+    margin:    var(--space-4) 0;
+}
+
+.search-form input[type="search"] {
+    flex:       1 1 18rem;
+    background: var(--surface);
+    border:     1px solid var(--border);
+    color:      var(--text);
+    font:       inherit;
+    padding:    0.5rem 0.7rem;
+}
+
+.search-form button {
+    background: var(--surface);
+    border:     1px solid var(--border);
+    color:      var(--text);
+    font:       inherit;
+    padding:    0.5rem 1.1rem;
+    cursor:     pointer;
+}
+
+.search-form button:hover {
+    border-color: var(--accent);
+    color:        var(--accent);
+}
+
+.search-count,
+.search-empty {
+    color:     var(--text-muted);
+    max-width: var(--measure);
+}
+
+.search-empty {
+    line-height: 1.75;
+}
+
+.search-results {
+    list-style: none;
+    padding:    0;
+    margin:     var(--space-4) 0 0;
+}
+
+.search-result {
+    margin-bottom: var(--space-4);
+    max-width:     var(--measure);
+}
+
+.search-result-title {
+    font-size: var(--text-lg);
+}
+
+.search-result-meta {
+    display:    flex;
+    gap:        1rem;
+    flex-wrap:  wrap;
+    margin-top: 0.3rem;
+    color:      var(--text-faint);
+    font-size:  0.8rem;
+}
+
+.search-result-snippet {
+    margin-top:  0.4rem;
+    color:       var(--text-muted);
+    line-height: 1.7;
+}
+
+/* A match must stay visible for a reader who overrides background colours, and
+   a themed background alone could fail contrast in some of the 23 palettes. So
+   the highlight is carried by weight and an underline as well as the tint —
+   never by colour alone (criteria 3B). */
+mark {
+    background:              var(--surface);
+    color:                   var(--text);
+    font-weight:             600;
+    text-decoration:         underline;
+    text-decoration-color:   var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset:   2px;
+    padding:                 0 0.1rem;
+}
+
 /* Inside an article, headings are real headings again — full size, mixed
    case — rather than the uppercase section labels used on listing pages */
 .post-content h2 {
@@ -1106,7 +1212,7 @@ hr {
    heading a reader followed a link to would be hidden behind it */
 .post-content h2,
 .post-content h3 {
-    scroll-margin-top: 5rem;
+    scroll-margin-top: calc(var(--header-h) + var(--space-2));
 }
 
 /* Every article h2/h3 trails a permalink so one section can be cited directly.

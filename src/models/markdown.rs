@@ -70,6 +70,28 @@ pub fn to_html(markdown: &str) -> String {
     html_output
 }
 
+// Flatten a Markdown body to plain text for search matching and snippets
+//
+// Matching against content_html would match inside tags and produce snippets
+// containing markup, so the searchable form of a document is built here from the
+// same parse the HTML comes from — one definition of what a document says.
+pub fn to_text(markdown: &str) -> String {
+    let mut text = String::with_capacity(markdown.len());
+    for event in Parser::new_ext(markdown, Options::all()) {
+        match event {
+            Event::Text(chunk) | Event::Code(chunk) => {
+                text.push_str(&chunk);
+                text.push(' ');
+            }
+            // Block boundaries become spaces so words either side never fuse
+            Event::End(_) | Event::HardBreak | Event::SoftBreak => text.push(' '),
+            _ => {}
+        }
+    }
+    // Collapse the runs of whitespace the folding above produces
+    text.split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
 // Render the permalink that trails a heading, letting a reader cite one section
 fn heading_anchor(id: &str) -> String {
     format!(
@@ -214,6 +236,21 @@ mod tests {
         let html = to_html("Some **bold** text and a [link](/learn/osi-model).\n");
         assert!(html.contains("<strong>bold</strong>"));
         assert!(html.contains(r#"href="/learn/osi-model""#));
+    }
+
+    #[test]
+    fn plain_text_extraction_drops_markup_and_keeps_words() {
+        let text = to_text("## A heading\n\nSome **bold** text and `code`.\n\n- a list item\n");
+        assert_eq!(text, "A heading Some bold text and code . a list item");
+        assert!(!text.contains('<'), "no markup may survive into the index");
+    }
+
+    #[test]
+    fn plain_text_never_fuses_words_across_blocks() {
+        // Without a separator at block boundaries "first" and "second" would run
+        // together and stop matching either term
+        let text = to_text("first\n\nsecond\n");
+        assert_eq!(text, "first second");
     }
 
     #[test]

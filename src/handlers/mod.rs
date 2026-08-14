@@ -3,6 +3,7 @@
 pub mod blog;
 pub mod pages;
 pub mod releases;
+pub mod search;
 pub mod status;
 pub mod well_known;
 pub mod wiki;

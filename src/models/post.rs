@@ -59,6 +59,8 @@ pub struct BlogPost {
     pub tags: Vec<String>,
     pub category: Option<String>, // optional pillar label — used to group the list view
     pub content_html: String,     // Markdown body converted to HTML — empty in list view
+    // Body as plain text — what search matches on and snippets are cut from
+    pub content_text: String,
 }
 
 impl BlogPost {
@@ -95,6 +97,7 @@ impl BlogPost {
 
         // Convert Markdown body to HTML — shared with Page, and adds heading anchor ids
         let content_html = markdown::to_html(&parsed.content);
+        let content_text = markdown::to_text(&parsed.content);
 
         Ok(BlogPost {
             slug,
@@ -104,6 +107,7 @@ impl BlogPost {
             tags: fm.tags,
             category: fm.category,
             content_html,
+            content_text,
         })
     }
 
