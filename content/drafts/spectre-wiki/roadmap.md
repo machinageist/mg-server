@@ -1,8 +1,8 @@
 ---
-title: "Geist roadmap"
+title: "Spectre roadmap"
 date: 2026-08-06
-summary: "A dependency-ordered map of Geist milestones R0 through R12, separating verified foundations, active work, and deferred outcomes."
-tags: [draft, geist, roadmap, milestones, validation]
+summary: "A dependency-ordered map of Spectre milestones R0 through R12, separating verified foundations, active work, and deferred outcomes."
+tags: [draft, spectre, roadmap, milestones, validation]
 ---
 
 > **DRAFT / UNPUBLISHED.** This page is not routed or listed on the public site.
@@ -12,7 +12,7 @@ tags: [draft, geist, roadmap, milestones, validation]
 
 ## How to read the roadmap
 
-Geist uses milestones to prove dependency-ordered capabilities. A milestone is not done
+Spectre uses milestones to prove dependency-ordered capabilities. A milestone is not done
 because a crate compiles, a control appears in a window, or a design document exists.
 Its named outcome and exit evidence must agree.
 
@@ -39,14 +39,14 @@ The labels below mean:
 | **R8 — VST3 host** | Isolated scanning, processing, state, editor integration, placeholders, and fixture matrix; binding/license decision at intake | **Deferred and gated** |
 | **R9 — Automation and modulation** | Stable bindings, required sample accuracy, override/restore semantics, and visible overlays; semantics tests | **Deferred** |
 | **R10 — Session and live performance** | Clip slots, scenes, quantized launch, explicit per-track timeline/performance authority, and performance capture drills | **Deferred** |
-| **R11 — Geist identity** | Original modular surface, flagship synth, deeper MIDI, and effect catalog; identity-layer QA | **Deferred.** The identity is accepted direction, not a completed surface |
+| **R11 — Spectre identity** | Original modular surface, flagship synth, deeper MIDI, and effect catalog; identity-layer QA | **Deferred.** The identity is accepted direction, not a completed surface |
 | **R12 — Release qualification** | Performance and soak evidence, accessibility, recovery, packaging, documentation, and published release gates | **Deferred** |
 
 ## Release bars are not current claims
 
 The accepted vision places a credible alpha at verified R4, a musician beta after the
 loop-first production core and project-safety work across R5–R10, and a 1.0 only after
-VST3 hosting, the Geist identity layer, accessibility, and packaging are ready. A later
+VST3 hosting, the Spectre identity layer, accessibility, and packaging are ready. A later
 professional-ready bar also requires workflow, reliability, performance-budget,
 recovery, compatibility, and documentation evidence.
 
@@ -63,7 +63,7 @@ Some future work has safe planning defaults but still requires evidence or owner
 - sample decode/streaming and time-stretch details wait for R7 evidence;
 - undo architecture is revisited at R5 exit;
 - accessibility receives an R4 audit and blocks beta if its baseline is unmet; and
-- every numeric limit needs a Geist rationale rather than inheritance from a reference
+- every numeric limit needs a Spectre rationale rather than inheritance from a reference
   product.
 
 Deferring these decisions is deliberate dependency control, not evidence that the

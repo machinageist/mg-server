@@ -1234,6 +1234,54 @@ hr {
     .lab-detail[open] > summary::before { transform: rotate(90deg); }
 }
 
+/* One lab's procedure — /labs/:slug */
+
+.lab-page-why {
+    color:       var(--text-muted);
+    line-height: 1.75;
+    max-width:   var(--measure);
+    margin-top:  var(--space-2);
+}
+
+.lab-phase-tag {
+    color:          var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.lab-page-footnote {
+    margin-top:  var(--space-6);
+    padding-top: var(--space-3);
+    border-top:  1px solid var(--border);
+    color:       var(--text-faint);
+    font-size:   0.85rem;
+    line-height: 1.7;
+    max-width:   var(--measure);
+}
+
+/* Procedures are checklists, so the Markdown task-list syntax renders as real
+   checkboxes. Left-align them with the surrounding prose rather than letting
+   the browser's default list indent push them out of the text column. */
+.post-content ul:has(> li > input[type="checkbox"]) {
+    list-style:   none;
+    padding-left: 0;
+}
+
+/* Hanging indent, so a wrapped line aligns under the text rather than running
+   back to the margin beneath the checkbox. Deliberately not flex: that makes
+   every inline child a flex item, which reflows <strong> and <em> out of the
+   sentence they belong to. */
+.post-content li:has(> input[type="checkbox"]) {
+    padding-left: 1.6em;
+    text-indent:  -1.6em;
+}
+
+.post-content li > input[type="checkbox"] {
+    width:        1em;
+    margin-right: 0.6em;
+    accent-color: var(--accent);
+}
+
 /* -----------------------------------------------------------------------
    Search — /search
    ----------------------------------------------------------------------- */

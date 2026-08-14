@@ -31,9 +31,11 @@
 
 #[derive(Debug, Clone)]
 pub struct Lab {
+    // URL segment for the detail page at /labs/<slug>, and the file stem of
+    // its Markdown procedure under content/labs/. What a lab involves is
+    // written there rather than duplicated here — one definition of the work.
+    pub slug: &'static str,
     pub name: &'static str,
-    // What the work actually consists of
-    pub entails: &'static str,
     // Why it exists — the reason it is on the list at all, not a restatement
     // of the task. This is the field that makes the page worth reading.
     pub why: &'static str,
@@ -131,11 +133,8 @@ pub fn all() -> Vec<Lab> {
     vec![
         // ---- Segmentation, one change domain at a time ---------------------
         Lab {
+            slug: "segmentation-topology",
             name: "S0 — Document the physical topology",
-            entails: "Record what is actually plugged in where: switch model, firmware, and exported \
-                      config; port to device to NIC mapping; current PVID and VLAN membership per port; \
-                      the firewall's parent interface and assignments; the real NIC names on each node, \
-                      which differ; and every VM's ID, MAC, node, bridge, address, and target VLAN.",
             why: "No exported switch config, port map, or PVID table exists anywhere in the evidence. \
                   Configuring VLANs against a remembered topology is guessing, and the out-of-band \
                   path for each cutover has to be identified before the cutover, not during it.",
@@ -146,10 +145,8 @@ pub fn all() -> Vec<Lab> {
             writeup_url: None,
         },
         Lab {
+            slug: "segmentation-prepare",
             name: "S1 — Prepare without moving traffic",
-            entails: "Make the VLAN-aware bridges, switch VLAN definitions, and firewall interfaces \
-                      exist without moving a single host onto them. Nothing changes broadcast domain \
-                      in this stage.",
             why: "Separating 'the plumbing exists' from 'traffic now uses it' halves the number of \
                   things that can be wrong when something breaks. If preparation and cutover happen in \
                   one window, a failure has twice as many candidate causes.",
@@ -160,10 +157,8 @@ pub fn all() -> Vec<Lab> {
             writeup_url: None,
         },
         Lab {
+            slug: "segmentation-lab",
             name: "S2 — Prove LAB (VLAN 50) first",
-            entails: "Move the disposable lab VMs onto VLAN 50 and test the policy in both directions: \
-                      that they can reach DNS, NTP, and updates, and that they cannot reach the \
-                      management, trusted, server, or admin networks at all.",
             why: "LAB goes first because it is the zone whose failure costs nothing. Proving the \
                   mechanism — tagging, PVIDs, inter-VLAN rules, negative tests — on throwaway machines \
                   means the first real cutover is not also the first attempt.",
@@ -174,10 +169,8 @@ pub fn all() -> Vec<Lab> {
             writeup_url: None,
         },
         Lab {
+            slug: "segmentation-guest-trusted",
             name: "S3 — GUEST (60) and TRUSTED (20)",
-            entails: "Stand up the untrusted client network with internet and approved DNS only, and \
-                      the trusted client network with its narrower set of allowed internal \
-                      destinations. Negative tests prove guest traffic cannot reach any internal range.",
             why: "These two zones are where the household actually lives, so they are the first \
                   segmentation anyone else in the building will notice. Getting them wrong is visible \
                   immediately, which is a good property this early.",
@@ -188,10 +181,8 @@ pub fn all() -> Vec<Lab> {
             writeup_url: None,
         },
         Lab {
+            slug: "segmentation-admin",
             name: "S4 — ADMIN (40)",
-            entails: "Move the bastion and the VPN endpoint onto the admin network, so that \
-                      administrative access to everything else has one identified entry point rather \
-                      than being reachable from wherever an admin happens to be sitting.",
             why: "The admin zone has to exist before management traffic can be restricted, because \
                   restricting management without a proven admin path is how you lock yourself out of \
                   your own cluster.",
@@ -202,11 +193,8 @@ pub fn all() -> Vec<Lab> {
             writeup_url: None,
         },
         Lab {
+            slug: "segmentation-servers",
             name: "S5 — SERVERS (30), this site last",
-            entails: "Move the service VMs onto VLAN 30 with egress limited to DNS, NTP, updates, and \
-                      the outbound tunnel, and inbound from the internal networks denied. The VM \
-                      serving machinageist.dev moves last, and the public request path is re-verified \
-                      after it.",
             why: "This site is the one guest whose failure is publicly visible, so it moves only after \
                   the same change has been proven on something that does not have an audience.",
             phase: Phase::Segmentation,
@@ -216,9 +204,8 @@ pub fn all() -> Vec<Lab> {
             writeup_url: None,
         },
         Lab {
+            slug: "segmentation-mgmt",
             name: "S6 — MGMT (10) explicitly tagged",
-            entails: "Make the management network an explicitly tagged VLAN rather than the untagged \
-                      default it is today, and confirm the cluster stays healthy across the change.",
             why: "Management goes last because it is the network the recovery is being performed \
                   over. Re-tagging it earlier would mean changing the road while driving on it, with \
                   no other road available.",
@@ -230,12 +217,8 @@ pub fn all() -> Vec<Lab> {
         },
         // ---- Services onto their target zones -------------------------------
         Lab {
+            slug: "firewall-policy",
             name: "Firewall and router configuration",
-            entails: "Prove what is actually configured inside the OPNsense VM: which interfaces and \
-                      VLANs it holds, whether it genuinely owns the gateway address, and an exported, \
-                      restorable config. Then implement the inter-zone policy matrix as rules on the \
-                      interface where traffic enters, using aliases rather than repeated literal \
-                      addresses.",
             why: "The VM exists and the gateway address answers DNS and routes traffic, but no \
                   evidence proves which of those the firewall is responsible for. The policy matrix is \
                   the whole point of segmenting; without it, VLANs are just extra subnets.",
@@ -246,9 +229,8 @@ pub fn all() -> Vec<Lab> {
             writeup_url: None,
         },
         Lab {
+            slug: "bastion-host",
             name: "Bastion host",
-            entails: "Define and document what the bastion VM is for, harden it, and make it the \
-                      single identified path to administrative interfaces.",
             why: "The VM exists and its role is undocumented, which means it is currently a machine \
                   with access rather than a control. A bastion nobody has written down the purpose of \
                   is an unaudited entry point.",
@@ -259,9 +241,8 @@ pub fn all() -> Vec<Lab> {
             writeup_url: None,
         },
         Lab {
+            slug: "remote-access",
             name: "Remote access — pick one primary",
-            entails: "Decide between the self-hosted WireGuard endpoint and Tailscale as the primary \
-                      remote-access path, then configure, prove, and document the one that wins.",
             why: "Tailscale is WireGuard with coordination and NAT traversal on top, so running both \
                   means two remote-access paths, two policy surfaces, and two ways to bypass the \
                   firewall matrix being built. The runbooks state the tradeoff deliberately and do not \
@@ -273,9 +254,8 @@ pub fn all() -> Vec<Lab> {
             writeup_url: None,
         },
         Lab {
+            slug: "container-host",
             name: "Container host and its workloads",
-            entails: "Document what actually runs on the Docker host, put it on the servers network, \
-                      and bring its egress under the same policy as every other service VM.",
             why: "The VM exists and its workloads are undocumented. An unknown set of containers on a \
                   network being locked down is the thing most likely to break in a way nobody can \
                   diagnose.",
@@ -286,10 +266,8 @@ pub fn all() -> Vec<Lab> {
             writeup_url: None,
         },
         Lab {
+            slug: "media-service",
             name: "Media service, LAN-only by default",
-            entails: "Install and run the media server on the container host, reachable from the local \
-                      network only. Any public exposure is a separate decision with its own risk \
-                      writeup.",
             why: "It does not exist yet — no VM, no install. Recording it as LAN-only by default \
                   matters because the tempting move is to reuse the tunnel that already fronts this \
                   site, and the runbook says explicitly not to infer that.",
@@ -300,10 +278,8 @@ pub fn all() -> Vec<Lab> {
             writeup_url: None,
         },
         Lab {
+            slug: "lab-network",
             name: "Isolated lab VMs",
-            entails: "Keep the disposable lab machines on VLAN 50 with no route to any other internal \
-                      zone, reachable over SSH only when the connection is initiated from the admin \
-                      network. These are the machines S2 uses to prove the segmentation mechanism.",
             why: "The value here is the isolation, not the machines. A zone whose members are expected \
                   to be rebuilt, broken, or thrown away is the correct place to test whether the \
                   negative firewall rules actually hold.",
@@ -314,11 +290,8 @@ pub fn all() -> Vec<Lab> {
             writeup_url: None,
         },
         Lab {
+            slug: "rhel-study-box",
             name: "RHEL study box",
-            entails: "Keep a Red Hat Enterprise Linux VM on the lab network as the practice machine \
-                      for the Linux systems administration work — the environment where the commands \
-                      documented in the education wiki get run against the distribution they are \
-                      written for.",
             why: "The Linux pages on this site are checked against man pages and the Filesystem \
                   Hierarchy Standard, but this server runs Debian. A RHEL box is where a claim about \
                   RHEL tooling can be tested rather than assumed.",
@@ -440,11 +413,7 @@ mod tests {
                 lab.name,
                 lab.runbook
             );
-            assert!(
-                !lab.why.is_empty() && !lab.entails.is_empty(),
-                "{} must say both what it involves and why it exists",
-                lab.name
-            );
+            assert!(!lab.why.is_empty(), "{} must say why it exists", lab.name);
         }
     }
 
@@ -453,7 +422,7 @@ mod tests {
         let labs = all();
         let combined = labs
             .iter()
-            .map(|lab| format!("{} {} {}", lab.name, lab.entails, lab.why))
+            .map(|lab| format!("{} {}", lab.name, lab.why))
             .collect::<Vec<_>>()
             .join("\n");
 
@@ -488,7 +457,7 @@ mod tests {
         let labs = all();
         let combined = labs
             .iter()
-            .map(|lab| format!("{} {} {}", lab.name, lab.entails, lab.why))
+            .map(|lab| format!("{} {}", lab.name, lab.why))
             .collect::<Vec<_>>()
             .join("\n");
 

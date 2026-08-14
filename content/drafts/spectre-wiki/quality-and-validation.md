@@ -1,8 +1,8 @@
 ---
-title: "Geist quality and validation"
+title: "Spectre quality and validation"
 date: 2026-08-06
-summary: "How Geist separates slice evidence, deterministic DSP checks, realtime contracts, blind review, and product readiness."
-tags: [draft, geist, quality, testing, realtime, audio]
+summary: "How Spectre separates slice evidence, deterministic DSP checks, realtime contracts, blind review, and product readiness."
+tags: [draft, spectre, quality, testing, realtime, audio]
 ---
 
 > **DRAFT / UNPUBLISHED.** This page is not routed or listed on the public site.
@@ -14,7 +14,7 @@ tags: [draft, geist, quality, testing, realtime, audio]
 ## Quality is a chain of scoped claims
 
 A DAW can pass a unit test and still lose a project, glitch under load, misplace an
-event, or make a common musical task exhausting. Geist therefore treats evidence as a
+event, or make a common musical task exhausting. Spectre therefore treats evidence as a
 chain: a small implementation slice must pass its own gate, the milestone must pass its
 exit gate, and the product must eventually pass release-level workflow, reliability,
 performance, recovery, compatibility, accessibility, and documentation gates.
@@ -75,16 +75,16 @@ is architectural preparation for realtime work, not a substitute for a callback 
 
 ## Blind AAA process: proposed, not yet accepted or run
 
-The accepted Geist quality documents do not yet define an official “blind AAA”
+The accepted Spectre quality documents do not yet define an official “blind AAA”
 protocol. Until a quality contract does, this phrase should describe only a proposed
-external-quality review process—not a badge, milestone, or claim that Geist matches a
+external-quality review process—not a badge, milestone, or claim that Spectre matches a
 commercial product.
 
 A defensible process would:
 
 1. define one musical task, source material, level-matching method, and defect rubric
    before rendering;
-2. produce multiple anonymized outputs, including the Geist candidate and lawful
+2. produce multiple anonymized outputs, including the Spectre candidate and lawful
    reference/control renders, without disclosing which system produced which;
 3. separate technical defects—clicks, instability, timing errors, aliasing, unexpected
    gain—from preference and genre fit;
@@ -97,9 +97,9 @@ A defensible process would:
 
 Reference renders must use properly licensed tools and material. The exercise must not
 copy presets, proprietary assets, hidden algorithms, or vendor-specific limits into
-Geist. Failed or mixed results are evidence to improve the design, not results to hide.
+Spectre. Failed or mixed results are evidence to improve the design, not results to hide.
 
-Before this process can become authoritative, Geist needs an accepted quality contract
+Before this process can become authoritative, Spectre needs an accepted quality contract
 that defines the acronym, sampling and blinding rules, evaluator qualifications,
 artifact-retention policy, thresholds, and how subjective results interact with
 objective DSP tests.
@@ -107,7 +107,7 @@ objective DSP tests.
 ## Milestone approval versus product readiness
 
 R0/R1 approval means their foundation and kernel exit evidence passed. A future R2 exit
-will mean the offline-graph gate passed. Neither means that Geist can safely record a
+will mean the offline-graph gate passed. Neither means that Spectre can safely record a
 session, recover from a crash, host plugins, perform live, or ship to musicians.
 
 Likewise, R4's future “credible alpha” is a deliberately narrow one-track vertical

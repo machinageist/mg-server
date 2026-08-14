@@ -18,14 +18,14 @@ services are restored now, but segmentation has not started.
 
 The homelab is a three-node Proxmox cluster on hardware I own, with a router VM,
 a managed switch, and several guests. This website is one of those guests.
-Management traffic, cluster traffic, guests, and clients all shared the flat
-`10.0.1.0/24` network.
+Management traffic, cluster traffic, guests, and clients all shared one flat
+network.
 
-The eventual design has separate subnets for management, trusted clients,
-servers, admin/bastion, lab, and guest systems. Management will use
-`10.0.10.0/24`. For this first step I only wanted to move the existing flat
-network to that range. There would be no VLAN tags, new firewall zones, or
-inter-VLAN policy yet.
+The eventual design has a separate subnet per zone — management, trusted
+clients, servers, admin/bastion, lab, and guest — one `/24` each with the
+gateway at `.1`. For this first step I only wanted to move the existing flat
+network onto the management range. There would be no VLAN tags, new firewall
+zones, or inter-VLAN policy yet.
 
 I still think that order makes sense. It is easier to troubleshoot an address
 change before adding 802.1Q tagging, router-on-a-stick configuration, and more
@@ -65,9 +65,9 @@ and sends cluster traffic to the peers listed in its own configuration. Once the
 host addresses changed, those entries no longer described the network. The nodes
 stopped exchanging tokens and each behaved as an isolated member.
 
-Second, the Proxmox firewall allowed SSH and the web UI from `10.0.1.0/24`. My
-workstation had moved to the new subnet, so new connections no longer matched
-the allow rules.
+Second, the Proxmox firewall allowed SSH and the web UI only from the old
+subnet. My workstation had moved to the new one, so new connections no longer
+matched the allow rules.
 
 The firewall configuration also lives under `/etc/pve`, the Proxmox cluster
 filesystem. I had treated firewall policy and cluster state as separate parts of

@@ -1,8 +1,8 @@
 ---
-title: "Geist clean-room references"
+title: "Spectre clean-room references"
 date: 2026-08-06
-summary: "How Geist studies public DAW, synth, and modular workflows without cloning products or turning research gaps into promises."
-tags: [draft, geist, research, clean-room, daw, synthesis]
+summary: "How Spectre studies public DAW, synth, and modular workflows without cloning products or turning research gaps into promises."
+tags: [draft, spectre, research, clean-room, daw, synthesis]
 ---
 
 > **DRAFT / UNPUBLISHED.** This page is not routed or listed on the public site.
@@ -17,9 +17,9 @@ questions: how playback authority is communicated, how automation is overridden,
 modulation remains legible, how routing handles feedback, how a musician recovers from
 mistakes, and where a workflow loses context.
 
-Geist studies those questions to make original decisions. It does not use another
+Spectre studies those questions to make original decisions. It does not use another
 product as an architecture, skin, file-format template, or checklist for parity.
-Research informs candidates; accepted Geist requirements and architecture contracts
+Research informs candidates; accepted Spectre requirements and architecture contracts
 determine the product.
 
 ## Reference roles
@@ -34,7 +34,7 @@ The current research program gives different products bounded roles:
 | **Xfer Serum 2** | Bounded sound-design and CPU/workflow observations from exposed official material | Claims of complete coverage; the inspected public sources do not provide a complete manual |
 | **VCV Rack 2** | Modular patching, polyphony, signal conventions, commands, and performance questions | Copied source, panel art, module layouts, patch files, voltage conventions, or library assets |
 | **REAPER** | Editing, routing, actions/customization, backup, latency adjustment, and end-to-end workflow candidates | Claims that its candidate videos represent common use, or a REAPER-compatible action system |
-| **FL Studio, Logic Pro, Cubase, and others** | Additional evidence about composition, recording, editing, scoring, and production where the source and Geist relevance are explicit | A popularity vote, universal workflow, or permission to import proprietary behavior wholesale |
+| **FL Studio, Logic Pro, Cubase, and others** | Additional evidence about composition, recording, editing, scoring, and production where the source and Spectre relevance are explicit | A popularity vote, universal workflow, or permission to import proprietary behavior wholesale |
 
 The role of a product can narrow or change as source quality improves. A supported-host
 list, marketing page, or isolated tutorial does not establish a broad requirement.
@@ -45,15 +45,15 @@ Research uses publicly authorized sources. It excludes leaked or private manuals
 decompiled code, proprietary project files and schemas, copied screenshots, factory
 presets, samples, wavetables, artwork, names, and distinctive expression.
 
-Public behavior can still be studied, but observations and Geist decisions remain
+Public behavior can still be studied, but observations and Spectre decisions remain
 separate. If a manual says a feature exists, that establishes only the documented
 behavior within the inspected version and section. It does not reveal the algorithm,
-prove edge cases, or require Geist to implement it.
+prove edge cases, or require Spectre to implement it.
 
-Numeric limits are especially controlled. Geist does not inherit another product's
+Numeric limits are especially controlled. Spectre does not inherit another product's
 voice count, wavetable dimensions, time-signature envelope, modulation count, buffer
 size, or feedback rule merely because it is documented. Every adopted limit needs an
-original Geist rationale and acceptance evidence.
+original Spectre rationale and acceptance evidence.
 
 ## From source to requirement
 
@@ -62,9 +62,9 @@ Each claim belongs to one layer:
 1. **Observed:** a cited public source explicitly supports the behavior.
 2. **Source gap:** the inspected source is silent, ambiguous, inaccessible, or
    insufficiently versioned.
-3. **Geist candidate:** a possible product implication, without authority.
-4. **Geist requirement:** an adopted, stable requirement in the requirements ledger.
-5. **Implementation decision:** an original Geist design linked to an accepted
+3. **Spectre candidate:** a possible product implication, without authority.
+4. **Spectre requirement:** an adopted, stable requirement in the requirements ledger.
+5. **Implementation decision:** an original Spectre design linked to an accepted
    architecture contract or decision record.
 
 Skipping a layer creates false authority. A research dossier cannot make a product
@@ -96,13 +96,13 @@ claim.
 ## No parity or compatibility promises
 
 Cross-product convergence can justify investigating a design problem. It does not prove
-that Geist needs identical semantics, and it never proves implementation completeness.
-Geist's accepted product vision explicitly rejects a feature-parity race and project or
+that Spectre needs identical semantics, and it never proves implementation completeness.
+Spectre's accepted product vision explicitly rejects a feature-parity race and project or
 preset compatibility with other DAWs and synths.
 
 The intended result is an original open-source instrument shaped by evidence: linked
 lenses, visible modulation, an explicit typed signal model, realtime-safe Rust
-boundaries, and a calm keyboard-first interface. Those ideas still require Geist's own
+boundaries, and a calm keyboard-first interface. Those ideas still require Spectre's own
 requirements, contracts, tests, and musician review.
 
 ## Source pointers

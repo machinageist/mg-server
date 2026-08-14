@@ -226,6 +226,39 @@ security contract, not a style choice.
 
 ---
 
+## 6b. Sanitization — site-wide standard
+
+**Adopted 2026-08-14, enforced by `tests/content_lint.rs`.**
+
+Anything published that describes **real operated infrastructure** — `content/posts/` and
+`content/labs/` — must not carry the identifiers that locate it:
+
+- **No private address literals.** Name the zone (MGMT, LAB, SERVERS) or describe the
+  scheme ("one `/24` per zone, gateway at `.1`"). In commands, use a placeholder:
+  `<a management host>`, `<the lab gateway>`.
+- **No host names.** Name the role: "the firewall VM", "a lab guest", "the node hosting
+  it". `mg-server` is the one exception — it is the public name of this site and its
+  repository.
+- **No VM or device IDs.**
+
+VLAN numbers and zone names are *not* covered. They are a design choice rather than a
+locator, and removing them would make a segmentation plan unfollowable for no security
+gain.
+
+**`content/pages/` is deliberately exempt from the address rule.** The wiki teaches — it
+cannot explain RFC 1918 without naming `10.0.0.0/8`, and subnetting examples need real
+example addresses. The distinction the lint encodes is *describing a concept* versus
+*publishing your topology*.
+
+Two tests enforce this, and they deliberately match **shapes rather than listing the real
+values** — this repository is public, so a test enumerating the hostnames and subnets it
+protects would disclose exactly what it exists to keep off the site.
+
+When adapting a private runbook into a published lab procedure, the sanitization happens
+on the way out. The procedure stays followable; a reader applies it to their own lab.
+
+---
+
 ## 7. Verification
 
 Exactly what CI runs (`.github/workflows/`), in order:

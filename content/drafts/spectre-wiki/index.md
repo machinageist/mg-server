@@ -1,18 +1,18 @@
 ---
-title: "Geist DAW"
+title: "Spectre-Seq"
 date: 2026-08-06
-summary: "An honest introduction to Geist's electronic-music mission, linked-lens design, present boundary, and staged roadmap."
-tags: [draft, geist, daw, electronic-music, open-source]
+summary: "An honest introduction to Spectre's electronic-music mission, linked-lens design, present boundary, and staged roadmap."
+tags: [draft, spectre, daw, electronic-music, open-source]
 ---
 
 > **DRAFT / UNPUBLISHED.** This page is not routed or listed on the public site.
 >
 > **Last synchronized:** 2026-08-06. Current implementation statements reflect the
-> dated Geist status and traceability records; R2 is active and still in progress.
+> dated Spectre status and traceability records; R2 is active and still in progress.
 
-## What Geist is
+## What Spectre is
 
-Geist is an open-source digital audio workstation being designed for electronic
+Spectre is an open-source digital audio workstation being designed for electronic
 musicians who compose, shape sounds, and perform their own material. Its first concrete
 contexts are hypnotic techno, forest psytrance, deep dubstep, and modern
 synthesis-driven arrangement. Studio production and live performance both matter;
@@ -30,7 +30,7 @@ available today.
 
 ## One project, linked lenses
 
-Geist's central identity is **one project viewed through linked lenses**:
+Spectre's central identity is **one project viewed through linked lenses**:
 
 - a timeline for arrangement;
 - a performance grid for launching clips and scenes;
@@ -80,7 +80,7 @@ The dependency-ordered plan is intentionally incremental:
   transport, and bounce.
 - **R5–R10:** project safety, routing and mixer, recording and arrangement, VST3
   hosting, automation/modulation, and session/live performance.
-- **R11:** the original Geist modular and flagship-synth identity layer.
+- **R11:** the original Spectre modular and flagship-synth identity layer.
 - **R12:** release qualification, including performance, recovery, accessibility,
   packaging, and documentation.
 
@@ -88,10 +88,10 @@ Each milestone closes on demonstrated capability and named evidence, not compila
 screen presence alone. See the [roadmap](roadmap.md) and
 [quality model](quality-and-validation.md) for the distinctions.
 
-## What Geist does not claim
+## What Spectre does not claim
 
-Geist is not pursuing a feature-parity race. Studying mature tools can reveal useful
-behavior and hard questions, but it does not define completeness. Geist does not claim
+Spectre is not pursuing a feature-parity race. Studying mature tools can reveal useful
+behavior and hard questions, but it does not define completeness. Spectre does not claim
 preset or project compatibility with other DAWs or synths, and it does not copy their
 formats, numeric limits, assets, visual identity, or proprietary implementation.
 
@@ -102,7 +102,7 @@ readiness.
 
 ## Source pointers
 
-Product and current-state claims are grounded in the Geist repository's
+Product and current-state claims are grounded in the Spectre repository's
 `docs/00-product/vision.md`, `docs/06-plans/rebuild-roadmap.md`,
 `docs/06-plans/current-milestone.md`, `docs/status/STATUS.md`, `docs/status/NEXT.md`,
 `docs/01-requirements/traceability.md`, and `docs/03-architecture/`.

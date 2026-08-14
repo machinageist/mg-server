@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<article class="lab-page article-page">
+  <a class="back-link" href="/labs">Labs</a>
+
+  <header class="post-header">
+    <h1>{{ lab.name }}</h1>
+    <p class="lab-page-why">{{ lab.why }}</p>
+    <p class="post-meta">
+      <span class="lab-phase-tag">{{ lab.phase }}</span>
+      {% if let Some(blocker) = lab.blocked_by %}
+      <span class="lab-blocked">Blocked by {{ blocker }}</span>
+      {% endif %}
+    </p>
+  </header>
+
+  {# Sanitized on the way out of the private runbooks: zones are named, the
+     addressing scheme is described rather than enumerated, and no host name or
+     VM identifier appears. The procedure is the part worth publishing. #}
+  <div class="post-content">
+    {{ page.content_html|safe }}
+  </div>
+
+  <p class="lab-page-footnote">
+    Adapted from the runbook I work from
+    (<code>{{ lab.runbook }}</code>), with identifiers and addressing removed.
+    Nothing here has been executed yet &mdash; when it is, the writeup will say
+    what actually happened, including the parts that did not go to plan.
+  </p>
+</article>
+{% endblock %}

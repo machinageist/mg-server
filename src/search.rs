@@ -13,7 +13,9 @@
 //              the moment its file lands, with no restart.
 
 use crate::handlers::blog::POSTS_DIR;
+use crate::handlers::labs::LABS_DIR;
 use crate::handlers::wiki::{PAGES_DIR, sidebar_slugs};
+use crate::models::lab;
 use crate::models::page::Page;
 use crate::models::post::BlogPost;
 use chrono::NaiveDate;
@@ -46,6 +48,7 @@ const OVERVIEW_SLUG: &str = "index";
 pub enum DocKind {
     Post,
     Page,
+    Lab,
 }
 
 impl DocKind {
@@ -54,6 +57,7 @@ impl DocKind {
         match self {
             DocKind::Post => "Writing",
             DocKind::Page => "Learn",
+            DocKind::Lab => "Labs",
         }
     }
 
@@ -62,6 +66,7 @@ impl DocKind {
         match self {
             DocKind::Post => format!("/blog/{slug}"),
             DocKind::Page => format!("/learn/{slug}"),
+            DocKind::Lab => format!("/labs/{slug}"),
         }
     }
 }
@@ -123,6 +128,23 @@ impl SearchIndex {
                 docs.push(SearchDoc {
                     kind: DocKind::Page,
                     slug: slug.to_string(),
+                    title: page.title,
+                    summary: page.summary,
+                    tags: page.tags,
+                    category: None,
+                    date: page.date,
+                    body: page.content_text,
+                });
+            }
+        }
+
+        // Lab procedures: the allowlist is the model, exactly as the sidebar is
+        // the allowlist for pages
+        for entry in lab::all() {
+            if let Ok(page) = Page::find(Path::new(LABS_DIR), entry.slug) {
+                docs.push(SearchDoc {
+                    kind: DocKind::Lab,
+                    slug: entry.slug.to_string(),
                     title: page.title,
                     summary: page.summary,
                     tags: page.tags,
@@ -424,7 +446,9 @@ mod tests {
         // Every result URL must be a route the site actually serves
         for result in index.query("network") {
             assert!(
-                result.url.starts_with("/blog/") || result.url.starts_with("/learn/"),
+                result.url.starts_with("/blog/")
+                    || result.url.starts_with("/learn/")
+                    || result.url.starts_with("/labs/"),
                 "unroutable result: {}",
                 result.url
             );

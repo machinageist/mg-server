@@ -19,6 +19,7 @@ use std::path::{Path, PathBuf};
 
 const PAGES_DIR: &str = "content/pages";
 const POSTS_DIR: &str = "content/posts";
+const LABS_DIR: &str = "content/labs";
 const TEMPLATES_DIR: &str = "templates";
 
 // The overview page introduces the wiki rather than teaching a topic, so it is
@@ -141,7 +142,11 @@ fn tag_list(raw: &str) -> Vec<String> {
 // Every content file declares the full frontmatter schema, with a usable summary
 #[test]
 fn frontmatter_is_complete_and_within_budget() {
-    for file in load_dir(PAGES_DIR).into_iter().chain(load_dir(POSTS_DIR)) {
+    for file in load_dir(PAGES_DIR)
+        .into_iter()
+        .chain(load_dir(POSTS_DIR))
+        .chain(load_dir(LABS_DIR))
+    {
         for key in REQUIRED_FRONTMATTER_KEYS {
             assert!(
                 file.frontmatter.contains_key(*key),
@@ -176,7 +181,11 @@ fn frontmatter_is_complete_and_within_budget() {
 // Tags stay lowercase-kebab, and no certification slug returns as a tag
 #[test]
 fn tags_use_the_agreed_vocabulary() {
-    for file in load_dir(PAGES_DIR).into_iter().chain(load_dir(POSTS_DIR)) {
+    for file in load_dir(PAGES_DIR)
+        .into_iter()
+        .chain(load_dir(POSTS_DIR))
+        .chain(load_dir(LABS_DIR))
+    {
         let tags = tag_list(&file.frontmatter["tags"]);
         assert!(
             !tags.is_empty(),
@@ -291,7 +300,11 @@ fn site_copy_makes_no_forbidden_claim() {
     // surfaces that speak for the site in its own voice.
     let mut surfaces: Vec<(String, String)> = Vec::new();
 
-    for file in load_dir(PAGES_DIR).into_iter().chain(load_dir(POSTS_DIR)) {
+    for file in load_dir(PAGES_DIR)
+        .into_iter()
+        .chain(load_dir(POSTS_DIR))
+        .chain(load_dir(LABS_DIR))
+    {
         let front = file
             .frontmatter
             .values()
@@ -299,6 +312,13 @@ fn site_copy_makes_no_forbidden_claim() {
             .collect::<Vec<_>>()
             .join(" ");
         surfaces.push((file.path.display().to_string(), front));
+    }
+
+    // Lab procedures describe work on real infrastructure, so their bodies are
+    // the site speaking in its own voice — unlike /learn, which teaches and
+    // must stay free to name the things it explains
+    for file in load_dir(LABS_DIR) {
+        surfaces.push((file.path.display().to_string(), file.body));
     }
 
     for entry in fs::read_dir(TEMPLATES_DIR).expect("read templates") {
@@ -323,6 +343,97 @@ fn site_copy_makes_no_forbidden_claim() {
             );
         }
     }
+}
+
+// Directories that describe real operated infrastructure rather than teach a
+// concept. The distinction is the whole rule: /learn cannot explain RFC 1918
+// without naming 10.0.0.0/8, and a writeup about my own lab has no reason to
+// publish the address it actually uses.
+const INFRASTRUCTURE_DIRS: &[&str] = &[POSTS_DIR, LABS_DIR];
+
+// Site-wide sanitization standard, enforced rather than remembered.
+//
+// Nothing describing real infrastructure may publish the identifiers that
+// locate it: no private address literals, no lab hostnames, no VM IDs. Zones
+// are named (MGMT, LAB, SERVERS), roles are named ("the firewall VM"), and the
+// addressing scheme is described rather than enumerated. A reader can still
+// follow the procedure against their own lab — arguably more easily.
+//
+// The checks below deliberately match *shapes* rather than listing the real
+// values. This repository is public, so a test that enumerated the hostnames
+// and subnets it was protecting would disclose exactly what it exists to keep
+// off the site.
+#[test]
+fn infrastructure_writing_publishes_no_private_addressing() {
+    for dir in INFRASTRUCTURE_DIRS {
+        for file in load_dir(dir) {
+            for (line_no, line) in file.body.lines().enumerate() {
+                if let Some(found) = first_private_address(line) {
+                    panic!(
+                        "{}:{}: publishes the private address {found:?}. Describe the zone \
+                         or the scheme instead — see docs/agent-context/README.md \
+                         §Sanitization.",
+                        file.path.display(),
+                        line_no + 1
+                    );
+                }
+            }
+        }
+    }
+}
+
+// Lab hostnames and VM IDs locate a machine as precisely as an address does
+#[test]
+fn no_content_publishes_a_host_or_vm_identifier() {
+    for dir in [PAGES_DIR, POSTS_DIR, LABS_DIR] {
+        for file in load_dir(dir) {
+            for (line_no, line) in file.body.lines().enumerate() {
+                // `mg-server` is the public name of this site and its repository,
+                // so it is the one `mg-` name that is not an internal hostname
+                for word in line.split(|c: char| !(c.is_alphanumeric() || c == '-')) {
+                    assert!(
+                        !(word.starts_with("mg-") && word != "mg-server"),
+                        "{}:{}: publishes the host name {word:?}",
+                        file.path.display(),
+                        line_no + 1
+                    );
+                }
+                assert!(
+                    !line.contains("VM 1")
+                        && !line.contains("VM 2")
+                        && !line.contains("VM 3")
+                        && !line.contains("VMID"),
+                    "{}:{}: publishes a VM identifier — name the role instead",
+                    file.path.display(),
+                    line_no + 1
+                );
+            }
+        }
+    }
+}
+
+// Find the first RFC 1918 address literal in a line, if any
+fn first_private_address(line: &str) -> Option<String> {
+    for token in line.split(|c: char| !(c.is_ascii_digit() || c == '.' || c == '/')) {
+        let octets: Vec<&str> = token
+            .split('/')
+            .next()
+            .unwrap_or_default()
+            .split('.')
+            .collect();
+        if octets.len() != 4 || octets.iter().any(|o| o.parse::<u8>().is_err()) {
+            continue;
+        }
+        let first: u8 = octets[0].parse().unwrap_or(0);
+        let second: u8 = octets[1].parse().unwrap_or(0);
+        let private = first == 10
+            || (first == 192 && second == 168)
+            || (first == 172 && (16..=31).contains(&second));
+        if private {
+            return Some(token.to_string());
+        }
+    }
+    None
 }
 
 // Remove {# … #} Askama comments so decision records are not read as page copy

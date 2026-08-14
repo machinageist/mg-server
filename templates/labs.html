@@ -7,8 +7,8 @@
   <p class="labs-lede">
     What I plan to build next in the homelab &mdash; {{ self.total() }} items
     across network segmentation and the services that land on it, in the order
-    they have to happen. Each entry says what it involves, why it exists, and
-    what is blocking it.
+    they have to happen. Each links to a step-by-step plan: the procedure, how
+    to verify it worked, what should make you stop, and what counts as done.
   </p>
 
   {# Everything here waits on work that is not on this list. Saying so once, up
@@ -30,7 +30,7 @@
       {% for lab in group.labs %}
       <li class="lab lab-{{ lab.status_class() }}">
         <p class="lab-head">
-          <span class="lab-name">{{ lab.name }}</span>
+          <a class="lab-name" href="/labs/{{ lab.slug }}">{{ lab.name }}</a>
           {# Status is shown by exception. Everything is blocked, so printing
              "blocked" fourteen times said nothing — the per-entry blocker below
              is the part that differs. A lab that starts or finishes is the
@@ -39,23 +39,13 @@
           <span class="lab-status">{{ lab.status }}</span>
           {% endif %}
         </p>
-        {# The rationale leads. It is the reason the item is on the list and the
-           only part a skimming reader needs; the mechanics are one click away. #}
+        {# The index carries the reason only. The procedure — what to run, in
+           what order, and how to tell it worked — is the detail page. #}
         <p class="lab-why">{{ lab.why }}</p>
-        <details class="lab-detail">
-          <summary>What this involves</summary>
-          <p>{{ lab.entails }}</p>
-        </details>
         <p class="lab-meta">
           {% if let Some(blocker) = lab.blocked_by %}
           <span class="lab-blocked">Blocked by {{ blocker }}</span>
           {% endif %}
-          {# Provenance, not a link — the runbooks are a private repo. Naming the
-             document says this came from a written change plan rather than an
-             intention. #}
-          <span class="lab-runbook">{{ lab.runbook }}</span>
-          {# Present only once a lab is Done, which the model defines to require
-             a published writeup. Until then there is nothing to link to. #}
           {% if let Some(writeup) = lab.writeup_url %}
           <a class="lab-writeup" href="{{ writeup }}">Read the writeup &rarr;</a>
           {% endif %}

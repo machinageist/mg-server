@@ -38,6 +38,7 @@ pub fn build(state: AppState) -> Router {
         .route("/about", get(pages::about))
         .route("/portfolio", get(pages::portfolio))
         .route("/labs", get(labs::labs))
+        .route("/labs/:slug", get(labs::lab_page))
         .route("/blog", get(blog::list))
         .route("/search", get(search::search))
         .route("/learn", get(wiki::index))

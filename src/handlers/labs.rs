@@ -11,9 +11,17 @@
 //              new phase cannot be added to the model and silently fail to
 //              render.
 
+use crate::errors::SiteError;
 use crate::models::lab::{self, Lab, Phase};
+use crate::models::page::Page;
 use askama::Template;
 use askama_axum::IntoResponse;
+use axum::extract::Path as AxumPath;
+use std::path::PathBuf;
+
+// Procedures live as Markdown beside the wiki's, so they get the same renderer,
+// the same heading anchors, and code blocks that survive a narrow viewport
+pub(crate) const LABS_DIR: &str = "content/labs";
 
 // One phase and the labs inside it, in dependency order
 pub struct PhaseGroup {
@@ -89,6 +97,46 @@ pub async fn labs() -> impl IntoResponse {
     labs_view()
 }
 
+// -----------------------------------------------------------------------
+// Detail page — /labs/:slug
+// -----------------------------------------------------------------------
+
+#[derive(Template)]
+#[template(path = "lab_page.html")]
+pub struct LabPageTemplate {
+    pub lab: Lab,
+    // The step-by-step procedure, rendered from content/labs/<slug>.md
+    pub page: Page,
+}
+
+impl LabPageTemplate {
+    pub fn title(&self) -> String {
+        format!("{} — machinageist", self.lab.name)
+    }
+
+    pub fn description(&self) -> &str {
+        &self.page.summary
+    }
+
+    pub fn section(&self) -> &str {
+        "labs"
+    }
+}
+
+// Render one lab's procedure, selected by URL slug
+//
+// The slug is checked against the model rather than passed to the filesystem,
+// so an unknown slug is a 404 from the allowlist and never a path read — the
+// same shape /learn/:slug uses.
+pub async fn lab_page(AxumPath(slug): AxumPath<String>) -> Result<impl IntoResponse, SiteError> {
+    let lab = lab::all()
+        .into_iter()
+        .find(|entry| entry.slug == slug)
+        .ok_or_else(|| SiteError::PageNotFound(slug.clone()))?;
+    let page = Page::find(&PathBuf::from(LABS_DIR), lab.slug)?;
+    Ok(LabPageTemplate { lab, page })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -138,6 +186,38 @@ mod tests {
             rendered.contains("/blog/management-layer-first-network-migration"),
             "the precondition must link the post that covers it"
         );
+    }
+
+    // Same three-place registration the wiki has: a lab needs a model entry and
+    // a procedure file, and neither may exist without the other
+    #[test]
+    fn every_lab_has_a_procedure_and_every_procedure_has_a_lab() {
+        let dir = PathBuf::from(LABS_DIR);
+        let slugs: Vec<&str> = lab::all().iter().map(|entry| entry.slug).collect();
+
+        for slug in &slugs {
+            let path = dir.join(format!("{slug}.md"));
+            assert!(
+                path.exists(),
+                "{} is on the list with no procedure at {}",
+                slug,
+                path.display()
+            );
+            Page::find(&dir, slug).unwrap_or_else(|err| panic!("{slug} does not parse: {err:?}"));
+        }
+
+        for entry in std::fs::read_dir(&dir).expect("read content/labs") {
+            let path = entry.expect("dir entry").path();
+            if path.extension().and_then(|e| e.to_str()) != Some("md") {
+                continue;
+            }
+            let stem = path.file_stem().and_then(|s| s.to_str()).expect("utf-8");
+            assert!(
+                slugs.contains(&stem),
+                "orphaned procedure with no lab entry: {}",
+                path.display()
+            );
+        }
     }
 
     #[test]

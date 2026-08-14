@@ -1,16 +1,16 @@
-# Geist DAW wiki — unpublished draft set
+# Spectre-Seq wiki — unpublished draft set
 
 > **DRAFT / UNPUBLISHED.** These files are source material, not part of the public
 > education wiki. The server does not scan or route this directory.
 >
-> **Last synchronized:** 2026-08-06 against accepted Geist product, requirements,
+> **Last synchronized:** 2026-08-06 against accepted Spectre product, requirements,
 > architecture, roadmap, and status documents. R0 and R1 are exited; R2 remains the
 > active milestone and is described as in progress until its full workspace gate is
 > reviewed.
 
 ## Purpose
 
-This directory stages an educational wiki about Geist, an open-source digital audio
+This directory stages an educational wiki about Spectre, an open-source digital audio
 workstation in development. It is deliberately kept outside the site's publication
 surfaces while the product, evidence, and explanatory material mature.
 
@@ -35,7 +35,7 @@ templates, page lists, the sitemap, feeds, tests, or routing as a shortcut.
 
 ## Source and authority order
 
-Wiki claims follow the Geist repository's own authority order:
+Wiki claims follow the Spectre repository's own authority order:
 
 1. accepted product vision in `docs/00-product/`;
 2. accepted requirements and decisions in `docs/01-requirements/`;
@@ -48,7 +48,7 @@ Wiki claims follow the Geist repository's own authority order:
 
 Implementation can prove behavior, but it does not silently redefine accepted product
 requirements. Reference research can inform a candidate, but only the requirements
-ledger can turn it into a Geist requirement.
+ledger can turn it into a Spectre requirement.
 
 Primary synchronization pointers:
 
@@ -86,7 +86,7 @@ smoothly.
 
 A page may move toward publication only when all of the following are true:
 
-- [ ] Geist's owner approves the page and its public timing.
+- [ ] Spectre's owner approves the page and its public timing.
 - [ ] Every product and implementation claim follows the current authority order.
 - [ ] Current-state claims have a date and pass the cited evidence gate.
 - [ ] Planned, proposed, implemented, and verified behavior are visibly distinct.

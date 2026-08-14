@@ -1,8 +1,8 @@
 ---
-title: "Geist architecture"
+title: "Spectre architecture"
 date: 2026-08-06
-summary: "The current Geist crate map, graph compilation boundary, deterministic offline path, realtime rules, and known gaps."
-tags: [draft, geist, architecture, rust, audio, realtime]
+summary: "The current Spectre crate map, graph compilation boundary, deterministic offline path, realtime rules, and known gaps."
+tags: [draft, spectre, architecture, rust, audio, realtime]
 ---
 
 > **DRAFT / UNPUBLISHED.** This page is not routed or listed on the public site.
@@ -12,7 +12,7 @@ tags: [draft, geist, architecture, rust, audio, realtime]
 
 ## Architecture in one sentence
 
-Geist separates mutable application work from a validated, immutable process plan so
+Spectre separates mutable application work from a validated, immutable process plan so
 that editing can remain expressive without allowing UI state, file operations, or
 unbounded work onto the eventual audio callback.
 
@@ -21,12 +21,12 @@ narrower than the eventual DAW:
 
 | Crate | Current responsibility | Boundary |
 |---|---|---|
-| `geist-core` | Stable IDs, explicit time types, tempo and meter maps, transport, deterministic event order, parameter descriptors | Shared musical and identity primitives; not a DAW UI or audio backend |
-| `geist-dsp` | Planar-buffer device contract, bounded note events, deterministic source, Pulse instrument, Gain, Saturator | Native processing seeds; not the flagship synth/effect catalog |
-| `geist-graph` | App-thread editable graph, validation, compilation, immutable plan execution | Offline GRAPH-001 seam; live publication and feedback remain open |
-| `geist-project` | Versioned JSON envelope, semantic decode validation, atomic command transactions, bounded undo/redo | Codec/model seed; filesystem atomic save and recovery are later work |
-| `geist-offline` | Deterministic inspection and Pulse → Gain → Saturator rendering through a compiled plan | Evidence harness; not realtime device output |
-| `geist-app` | Native interaction prototype, backend-derived controls, owned parameter-snapshot and feedback seams | Prototype UI/model; Play changes model state but emits no sound |
+| `spectre-core` | Stable IDs, explicit time types, tempo and meter maps, transport, deterministic event order, parameter descriptors | Shared musical and identity primitives; not a DAW UI or audio backend |
+| `spectre-dsp` | Planar-buffer device contract, bounded note events, deterministic source, Pulse instrument, Gain, Saturator | Native processing seeds; not the flagship synth/effect catalog |
+| `spectre-graph` | App-thread editable graph, validation, compilation, immutable plan execution | Offline GRAPH-001 seam; live publication and feedback remain open |
+| `spectre-project` | Versioned JSON envelope, semantic decode validation, atomic command transactions, bounded undo/redo | Codec/model seed; filesystem atomic save and recovery are later work |
+| `spectre-offline` | Deterministic inspection and Pulse → Gain → Saturator rendering through a compiled plan | Evidence harness; not realtime device output |
+| `spectre-app` | Native interaction prototype, backend-derived controls, owned parameter-snapshot and feedback seams | Prototype UI/model; Play changes model state but emits no sound |
 
 ## Application thread and render-plan boundary
 
