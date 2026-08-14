@@ -55,6 +55,8 @@ claim should be supported by work I performed and can explain.
   broadcast delivery patterns.
 - [IPv4 addressing](/learn/ipv4-addressing) — binary octets, public and private
   ranges, subnet masks, CIDR, and variable length subnet masking.
+- [Subnetting, CIDR, and VLSM](/learn/subnetting) — counting hosts and networks,
+  the mask as a bitwise test, prefix notation, and sizing subnets to fit.
 - [IPv6 addressing](/learn/ipv6-addressing) — hextets and zero compression, the
   address types on a working interface, neighbor discovery, and coexistence with
   IPv4.

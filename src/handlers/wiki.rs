@@ -84,6 +84,10 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "IPv4 addressing",
             },
             SidebarEntry {
+                slug: "subnetting",
+                label: "Subnetting, CIDR, and VLSM",
+            },
+            SidebarEntry {
                 slug: "ipv6-addressing",
                 label: "IPv6 addressing",
             },

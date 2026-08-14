@@ -23,6 +23,7 @@ const WIKI_SLUGS: &[&str] = &[
     "network-protocols",
     "traffic-types",
     "ipv4-addressing",
+    "subnetting",
     "ipv6-addressing",
     "cloud-computing",
     "modern-network-environments",
