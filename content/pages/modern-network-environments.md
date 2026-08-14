@@ -277,7 +277,8 @@ observable on one machine with free software.
 
 ## Sources and further reading
 
-This page was edited from my networking notes and checked against:
+This page was edited from my own study notes, taken from Ian Neil's CompTIA
+Network+ certification guide, and checked against the primary sources:
 
 - [RFC 7348: Virtual eXtensible Local Area Network (VXLAN)](https://www.rfc-editor.org/rfc/rfc7348.txt)
   — the encapsulation format, the 24-bit VNI, and VTEP behavior.

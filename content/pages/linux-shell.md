@@ -291,7 +291,9 @@ Every step runs on any Linux machine as an ordinary user.
 
 ## Sources and further reading
 
-This page was edited from my Linux study notes and checked against:
+This page was edited from my own study notes, taken from Brian Ward's *How Linux
+Works: What Every Superuser Should Know* (No Starch Press), and checked against
+the primary documentation:
 
 - [`bash(1)`](https://man7.org/linux/man-pages/man1/bash.1.html) — the shell's
   own manual, including redirection and parameter expansion.

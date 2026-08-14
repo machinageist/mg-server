@@ -177,7 +177,9 @@ Everything here is inspectable on any Linux system, and none of it needs root.
 
 ## Sources and further reading
 
-This page was edited from my Linux study notes and checked against:
+This page was edited from my own study notes, taken from Brian Ward's *How Linux
+Works: What Every Superuser Should Know* (No Starch Press), and checked against
+the primary documentation:
 
 - [Filesystem Hierarchy Standard 3.0](https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html)
   — the specification each directory's purpose comes from.

@@ -214,7 +214,8 @@ IPv6, so I only have link-local" is a real and useful finding.
 
 ## Sources and further reading
 
-This page was edited from my networking notes and checked against:
+This page was edited from my own study notes, taken from Ian Neil's CompTIA
+Network+ certification guide, and checked against the primary sources:
 
 - [RFC 4291: IP Version 6 Addressing Architecture](https://www.rfc-editor.org/rfc/rfc4291.txt)
   — the address types, prefixes, and interface identifier format.

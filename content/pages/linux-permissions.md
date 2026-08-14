@@ -284,7 +284,9 @@ is reversible.
 
 ## Sources and further reading
 
-This page was edited from my Linux study notes and checked against:
+This page was edited from my own study notes, taken from Brian Ward's *How Linux
+Works: What Every Superuser Should Know* (No Starch Press), and checked against
+the primary documentation:
 
 - [`chmod(1)`](https://man7.org/linux/man-pages/man1/chmod.1.html) and
   [`chmod(2)`](https://man7.org/linux/man-pages/man2/chmod.2.html) — the

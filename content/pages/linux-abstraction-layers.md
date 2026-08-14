@@ -157,7 +157,9 @@ the system. Nothing here requires root or risks the host.
 
 ## Sources and further reading
 
-This page was edited from my Linux study notes and checked against:
+This page was edited from my own study notes, taken from Brian Ward's *How Linux
+Works: What Every Superuser Should Know* (No Starch Press), and checked against
+the primary documentation:
 
 - [`fork(2)`](https://man7.org/linux/man-pages/man2/fork.2.html) and
   [`execve(2)`](https://man7.org/linux/man-pages/man2/execve.2.html) — the exact
