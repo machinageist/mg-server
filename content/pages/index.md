@@ -55,16 +55,31 @@ claim should be supported by work I performed and can explain.
   broadcast delivery patterns.
 - [IPv4 addressing](/learn/ipv4-addressing) — binary octets, public and private
   ranges, subnet masks, CIDR, and variable length subnet masking.
+- [IPv6 addressing](/learn/ipv6-addressing) — hextets and zero compression, the
+  address types on a working interface, neighbor discovery, and coexistence with
+  IPv4.
 - [Cloud computing concepts](/learn/cloud-computing) — NFV, virtual private clouds,
   cloud traffic controls, and deployment and service models.
+- [Modern network environments](/learn/modern-network-environments) — SDN and
+  SD-WAN, VXLAN overlays, zero-trust architecture, SASE, and infrastructure as
+  code.
 
 ## Linux foundations
 
 - [Linux abstraction layers](/learn/linux-abstraction-layers) — hardware, kernel, and
   user space, and what the kernel does at the boundary between them.
+- [The Linux filesystem hierarchy](/learn/linux-filesystem-hierarchy) — one tree
+  from a single root, what each top-level directory holds, and how root access is
+  meant to be used.
+- [The shell and the command line](/learn/linux-shell) — reading a command, the
+  three standard streams, redirection and pipes, variables, and the manual pages
+  already on the machine.
+- [File permissions and links](/learn/linux-permissions) — the user/group/other
+  model, `chmod` in both notations, umask defaults, symbolic links, and archives
+  that preserve all of it.
 
-This is an intentionally small first release. It will expand as finished notes and
-completed labs move from my private study workspace into reviewed public editions.
+This wiki expands as finished notes and completed labs move from my private study
+workspace into reviewed public editions.
 
 ## Authorship and scope
 

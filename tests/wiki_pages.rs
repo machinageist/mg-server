@@ -23,8 +23,13 @@ const WIKI_SLUGS: &[&str] = &[
     "network-protocols",
     "traffic-types",
     "ipv4-addressing",
+    "ipv6-addressing",
     "cloud-computing",
+    "modern-network-environments",
     "linux-abstraction-layers",
+    "linux-filesystem-hierarchy",
+    "linux-shell",
+    "linux-permissions",
 ];
 
 #[test]

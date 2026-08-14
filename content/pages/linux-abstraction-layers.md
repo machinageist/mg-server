@@ -146,6 +146,12 @@ the system. Nothing here requires root or risks the host.
 
 ## Related pages
 
+- [The Linux filesystem hierarchy](/learn/linux-filesystem-hierarchy) — where
+  `/proc`, `/dev`, and the rest of the tree put these abstractions on disk.
+- [The shell and the command line](/learn/linux-shell) — the user-space program
+  that turns what you type into the `fork()` and `exec()` calls described above.
+- [File permissions and links](/learn/linux-permissions) — how the user and
+  group boundaries introduced here are enforced on individual files.
 - [The OSI model](/learn/osi-model) — another layered model, where each layer
   talks only to its neighbors and hides its internals from the rest.
 

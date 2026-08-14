@@ -257,6 +257,8 @@ most Linux systems. Nothing here needs root or changes any configuration.
 
 ## Related pages
 
+- [IPv6 addressing](/learn/ipv6-addressing) — the successor protocol, which
+  keeps prefix notation and drops nearly everything else on this page.
 - [The OSI model](/learn/osi-model) — where IP addressing sits at layer 3, and
   how it relates to the MAC addressing beneath it.
 - [Network traffic types](/learn/traffic-types) — unicast, broadcast, and the

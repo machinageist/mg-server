@@ -84,17 +84,39 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "IPv4 addressing",
             },
             SidebarEntry {
+                slug: "ipv6-addressing",
+                label: "IPv6 addressing",
+            },
+            SidebarEntry {
                 slug: "cloud-computing",
                 label: "Cloud computing concepts",
+            },
+            SidebarEntry {
+                slug: "modern-network-environments",
+                label: "Modern network environments",
             },
         ],
     },
     SidebarSection {
         heading: "Linux Foundations",
-        entries: &[SidebarEntry {
-            slug: "linux-abstraction-layers",
-            label: "Linux abstraction layers",
-        }],
+        entries: &[
+            SidebarEntry {
+                slug: "linux-abstraction-layers",
+                label: "Linux abstraction layers",
+            },
+            SidebarEntry {
+                slug: "linux-filesystem-hierarchy",
+                label: "Filesystem hierarchy",
+            },
+            SidebarEntry {
+                slug: "linux-shell",
+                label: "The shell and the command line",
+            },
+            SidebarEntry {
+                slug: "linux-permissions",
+                label: "File permissions and links",
+            },
+        ],
     },
 ];
 
