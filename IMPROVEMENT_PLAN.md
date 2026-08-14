@@ -1,50 +1,102 @@
 # mg-server Improvement Plan
 
-Copied into this repository from the `tech-skill-up` portfolio/curriculum planning context.
+> ## ⚠️ AMENDED 2026-08-14 — the certification spine and the pillar count
+>
+> Two claims in this document went stale. Both are corrected inline below; the amendment
+> is recorded here so the corrections are not silently reverted.
+>
+> - **The cert spine.** This plan used to call a four-CompTIA spine (Network+ → Security+ →
+>   Linux+ → Server+, targeted January 2027) the site's "visible through-line." The live
+>   spine, re-locked 2026-08-02 in `~/mg-coreforge/bootcamp/CERT_PLAN.md`, is
+>   **RHCSA (EX200) → CCNA (200-301) → Security+ (SY0-701)**, and **RHCSA is the only
+>   pre-employment exam** (targeted ~Nov–Dec 2026). Network+ was dropped, Linux+ was
+>   superseded by RHCSA, and Server+ was dropped.
+> - **The pillar count.** Pillar 5, the certification journey, was retired from the site
+>   2026-07-25 (`docs/public-portfolio-structure.md` header note). The site has **four**
+>   pillars, which is what `README.md` says. Do not rebuild a cert route or a cert card.
+>
+> **No voucher is booked for any exam.** `gauntlet-output/criteria.md` auto-fail rule 1
+> rejects any spec that introduces a certification claim without a booked voucher, and
+> criterion 1D scores stale cert copy 0. `README.md:14-16` records the 2026-07-25 removal
+> of cert claims from the site. Public wording rules live in
+> `~/mg-coreforge/bootcamp/career/PUBLIC_FACE.md` (loosened 2026-08-03): RHCSA may be named
+> as *actively studying*, provided the copy also says it is not earned and no date is
+> booked; CCNA and Security+ may be named only as planned or next; nothing may appear in a
+> format that implies possession.
+>
+> **Studying from a Network+ book is not a Network+ claim.** The `/learn` networking pages
+> cite Ian Neil's CompTIA Network+ certification guide as their source textbook, and they
+> should keep doing so — it is the book the networking notes are taken from, and
+> `CERT_PLAN.md` puts roughly 60% of that material inside CCNA, which is on the live spine.
+> Citing a textbook is not claiming a credential. What is forbidden is presenting Network+
+> as an exam Jeff is sitting, which he is not.
+>
+> **Path change:** `~/tech-skill-up/` no longer exists. The curriculum, labs, and evidence
+> system live at `~/mg-coreforge/bootcamp/`. Paths below have been updated.
+
+Copied into this repository from the `tech-skill-up` portfolio/curriculum planning context
+(now `~/mg-coreforge/bootcamp/`).
 
 Current status: development repository for the public `machinageist.dev` portfolio site.
 
 ## Corrected scope
 
-This repository is not the deployment server. Treat it as the source for a public-facing professional portfolio. The immediate work is site structure, homepage/about/portfolio copy, article taxonomy, and publishable artifact paths that showcase the skills being built in `~/tech-skill-up/`.
+This repository is not the deployment server. Treat it as the source for a public-facing professional portfolio. The immediate work is site structure, homepage/about/portfolio copy, article taxonomy, and publishable artifact paths that showcase the skills being built in `~/mg-coreforge/bootcamp/`.
 
 Operational/deployment writeups still matter, but only as public portfolio artifacts when they are written in a hiring-manager-readable way with evidence, limits, and claim-defense notes. Do not spend the first pass on private deployment-server runbooks unless they directly improve public structure or content.
 
 ## Purpose
 
-`mg-server` should become the professional public hub for the `~/tech-skill-up/` evidence system, organized around five pillars: a homelab & Proxmox operations lab, networking, Linux / SysAdmin, a small defensive-security section, and an honest certification journey. The homelab + networking writeups are the content engine; the four-CompTIA-cert spine (Network+ → Security+ → Linux+ → Server+, targeted January 2027) is the visible through-line, each cert anchored to a homelab project.
+`mg-server` should become the professional public hub for the `~/mg-coreforge/bootcamp/` evidence system, organized around four pillars: a homelab & Proxmox operations lab, networking, Linux / SysAdmin, and a small defensive-security section. The homelab + networking writeups are the content engine, and the visible through-line is the evidence itself — an operated system explained, broken, and verified — not a list of exams.
+
+The certification spine is real but internal. It is **RHCSA → CCNA → Security+** (re-locked 2026-08-02), with RHCSA the only pre-employment exam. It shapes *what gets studied and labbed*, which is why the ops writeups below still map to cert lanes; it does not get its own site pillar, route, or card, and no exam is named on the site while no voucher is booked.
 
 Do not position this repo as proof of advanced Rust backend engineering, production SRE maturity, high availability, enterprise cloud architecture, or DevOps seniority. The strongest honest story is:
 
-> Building and publishing evidence-backed SysAdmin/NOC portfolio artifacts: a Proxmox homelab, Linux service operations, DNS/HTTP/request-path troubleshooting, incident documentation, a small defensive-security section, and a certification journey where each cert leaves behind a real, defensible artifact.
+> Building and publishing evidence-backed Linux/infrastructure portfolio artifacts: a Proxmox homelab, Linux service operations, DNS/HTTP/request-path troubleshooting, incident documentation, and a small defensive-security section — each one leaving behind real commands, real output, and a defensible claim.
 
 ## Target role support
 
+Re-ranked 2026-07-25 and amended 2026-08-02 by the ~$117k comp floor — see
+`~/mg-coreforge/bootcamp/career/PUBLIC_FACE.md`. Remote-at-market is the only funnel that
+clears the floor, which is what moved the on-site operations roles down a tier.
+
 Primary:
 
-- Systems Administrator (junior Linux/Windows)
+- Remote Linux / Infrastructure Support Engineer at an all-remote or remote-first company
+- Infrastructure Technical Support / Escalation Engineer at an infrastructure or dev-tools vendor
+- Systems Administrator (Linux-leaning), remote preferred — local sysadmin pay mostly fails the comp floor
+
+Tier 2, kept warm:
+
+- Data Center Operations Technician
 - NOC Technician / Network Operations
-
-Fallback (only if the primary funnel stalls past the certs):
-
-- Data Center Technician / Operations
-- Remote Hands / Rack-and-Stack / Infra Delivery
-- Infrastructure-heavy IT Support
 
 Secondary later:
 
-- Security Product Support as the defensive section (headers, TLS, SSH hardening, log/auth detection) grows past Security+
+- Security Product Support as the defensive section (headers, TLS, SSH hardening, log/auth detection) matures — gated on capability and evidence, not on an exam
 - Systems-to-AI infrastructure learning only after Linux/networking/monitoring/virtualization evidence exists, and only after the first stable role
 
-## How the mg-server ops docs map to the certs and homelab projects
+## How the mg-server ops docs map to the study lanes and labs
 
-The operational writeups below are not generic "infrastructure-support" busywork; each one feeds a specific cert lane and one of the three homelab projects in `~/tech-skill-up/HOMELAB_PROJECTS.md`:
+The operational writeups below are not generic "infrastructure-support" busywork; each one
+feeds a study lane and one of the labs under `~/mg-coreforge/bootcamp/subjects/*/labs/`
+(the old single `HOMELAB_PROJECTS.md` was split into per-subject lab files). The whole
+mg-server series is itself tracked as
+`subjects/web-services/labs/mg-server-evidence-series.md`.
 
-- Architecture / request-path + DNS/HTTP triage (§1) → **Network+** and Homelab Project 1 (internal DNS + network map).
-- Security headers + TLS + SSH hardening + auth-log detection (§6) → **Security+** and Homelab Project 2 (harden & monitor).
-- systemd runbook, 502→`203/EXEC` incident, deployment/rollback, ops-gap and backup analysis (§2–§5, §7) → **Linux+ / Server+** and Homelab Project 3 (backup/restore + monitoring + incident log).
+- Architecture / request-path + DNS/HTTP triage (§1) → the **networking** lane, now aimed at **CCNA** rather than Network+, and `subjects/networking/labs/proxmox-network-foundation.md`.
+- Security headers + TLS + SSH hardening + auth-log detection (§6) → the **defensive-security** lane and **Security+** (employed-time, last on the spine), and `subjects/security-defensive/labs/hardening-and-monitoring.md`.
+- systemd runbook, 502→`203/EXEC` incident, deployment/rollback, ops-gap and backup analysis (§2–§5, §7) → the **Linux systems** lane and **RHCSA**, and `subjects/linux-systems/labs/fleet-backup-automation.md`.
 
-The mg-server artifacts are the narrow, already-underway slice; the fuller evidence for each cert comes from the homelab projects themselves.
+One honest limit on that last mapping: mg-server runs on Debian, so the systemd, journald,
+and service-operations work transfers conceptually to RHCSA but is not RHEL-toolchain
+practice. `CERT_PLAN.md` is explicit that the lab set does not yet cover SELinux, LVM,
+podman, or `dnf`, and that the RHCSA rep loop must be run separately on a scratch
+Rocky/AlmaLinux VM. Do not let mg-server writeups stand in for that.
+
+The mg-server artifacts are the narrow, already-underway slice; the fuller evidence for
+each lane comes from the homelab labs themselves.
 
 ## Claim posture
 
