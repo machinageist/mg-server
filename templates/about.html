@@ -29,6 +29,14 @@
     <a href="/blog">writeups</a> of work on the lab, including the outages.
   </p>
 
+  {# Rendered from models::surface::SURFACES, so this list cannot fall behind
+     the site the way it did when Labs and Search shipped unmentioned. #}
+  <ul class="about-list surface-list">
+    {% for surface in crate::models::surface::all() %}
+    <li><strong><a href="{{ surface.path }}">{{ surface.label }}</a></strong> &mdash; {{ surface.blurb }}</li>
+    {% endfor %}
+  </ul>
+
   {# Certifications section intentionally removed 2026-07-25. Do not restore a cert
      claim here until an exam voucher is actually booked, and then state only that one
      exam with its scheduled date. See mg-coreforge/PUBLIC_FACE.md.

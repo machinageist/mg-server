@@ -33,6 +33,9 @@ pub struct IndexTemplate {
     pub name: String,
     // Newest-first, capped at HOME_POST_COUNT — empty renders no section at all
     pub posts: Vec<BlogPost>,
+    // Derived from SIDEBAR, never typed here. The previous copy listed five
+    // topic names and was wrong within a week of the wiki growing.
+    pub learn_count: usize,
 }
 
 impl IndexTemplate {
@@ -59,7 +62,16 @@ pub async fn home() -> impl IntoResponse {
     IndexTemplate {
         name: "machinageist".to_string(),
         posts,
+        learn_count: learn_page_count(),
     }
+}
+
+// Count the published wiki topics, excluding the overview page
+fn learn_page_count() -> usize {
+    crate::handlers::wiki::sidebar_slugs()
+        .iter()
+        .filter(|slug| **slug != "index")
+        .count()
 }
 
 // -----------------------------------------------------------------------
@@ -150,6 +162,7 @@ mod tests {
         let html = IndexTemplate {
             name: "machinageist".to_string(),
             posts: Vec::new(),
+            learn_count: learn_page_count(),
         }
         .render()
         .expect("home template renders");
@@ -181,6 +194,7 @@ mod tests {
         let html = IndexTemplate {
             name: "machinageist".to_string(),
             posts: vec![teaser_post("network-migration", "Moving My Homelab")],
+            learn_count: learn_page_count(),
         }
         .render()
         .expect("home template renders");
@@ -198,6 +212,7 @@ mod tests {
         let html = IndexTemplate {
             name: "machinageist".to_string(),
             posts: Vec::new(),
+            learn_count: learn_page_count(),
         }
         .render()
         .expect("home template renders");

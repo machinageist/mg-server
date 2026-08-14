@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="glossary-index">
+  <a class="back-link" href="/glossary">Glossary</a>
+  <h1>Commands</h1>
+
+  <nav class="glossary-filter" aria-label="Filter by category">
+    <a href="/glossary/commands"{% if !self.filtered() %} class="is-active" aria-current="true"{% endif %}>All</a>
+    <a href="/glossary/commands?cat=networking"{% if let Some(active) = active %}{% if active.slug() == "networking" %} class="is-active" aria-current="true"{% endif %}{% endif %}>Networking</a>
+    <a href="/glossary/commands?cat=linux"{% if let Some(active) = active %}{% if active.slug() == "linux" %} class="is-active" aria-current="true"{% endif %}{% endif %}>Linux</a>
+  </nav>
+
+  <p class="glossary-count">
+    {{ entries.len() }} of {{ total }} commands
+  </p>
+
+  {% if entries.is_empty() %}
+  <p class="glossary-empty">
+    Nothing in that category yet. <a href="/glossary/commands">Show all commands</a>.
+  </p>
+  {% else %}
+  <dl class="glossary-list">
+    {% for entry in entries %}
+    <div class="glossary-entry" id="{{ entry.anchor() }}">
+      <dt>
+        <span class="glossary-term">{{ entry.name }}</span>
+        <span class="glossary-cat">{{ entry.category.label() }}</span>
+      </dt>
+      <dd>
+        <p class="glossary-synopsis"><code>{{ entry.synopsis }}</code></p>
+        <p class="glossary-definition">{{ entry.purpose }}</p>
+        <p class="glossary-context">{{ entry.context }}</p>
+        {% if let Some(example) = entry.example %}
+        <p class="glossary-example"><code>{{ example }}</code></p>
+        {% endif %}
+        {% if let Some(caution) = entry.caution %}
+        {# Labelled in words, so the warning survives a reader who cannot
+           distinguish the colour it is tinted with #}
+        <p class="glossary-caution"><strong>Careful:</strong> {{ caution }}</p>
+        {% endif %}
+        <p class="glossary-links">
+          {% for reference in entry.learn %}
+          <a href="{{ reference.href() }}">{{ reference.label }}</a>
+          {% endfor %}
+          {% for reference in entry.see_also %}
+          <a class="glossary-see-also" href="#{{ reference }}">see also: {{ reference }}</a>
+          {% endfor %}
+          {% if let Some(man) = entry.man %}
+          <a class="glossary-man" href="{{ man }}">man page</a>
+          {% endif %}
+        </p>
+      </dd>
+    </div>
+    {% endfor %}
+  </dl>
+  {% endif %}
+</section>
+{% endblock %}

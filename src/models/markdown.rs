@@ -170,7 +170,11 @@ fn unique_slug(text: &str, seen: &mut HashMap<String, usize>) -> String {
 }
 
 // Lowercase the text and reduce every run of non-alphanumerics to one separator
-fn slugify(text: &str) -> String {
+//
+// Public because anything generating an anchor has to agree with the anchors
+// this module puts on headings — a second implementation elsewhere is a
+// cross-link that resolves in one place and not the other.
+pub fn slugify(text: &str) -> String {
     let mut slug = String::with_capacity(text.len());
     let mut pending_separator = false;
 

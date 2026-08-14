@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="glossary-index">
+  <a class="back-link" href="/glossary">Glossary</a>
+  <h1>Terms</h1>
+
+  {# Filters are plain links, so they work with JS off, are bookmarkable, and
+     leave the back button meaning what it should. #}
+  <nav class="glossary-filter" aria-label="Filter by category">
+    <a href="/glossary/terms"{% if !self.filtered() %} class="is-active" aria-current="true"{% endif %}>All</a>
+    <a href="/glossary/terms?cat=networking"{% if let Some(active) = active %}{% if active.slug() == "networking" %} class="is-active" aria-current="true"{% endif %}{% endif %}>Networking</a>
+    <a href="/glossary/terms?cat=linux"{% if let Some(active) = active %}{% if active.slug() == "linux" %} class="is-active" aria-current="true"{% endif %}{% endif %}>Linux</a>
+  </nav>
+
+  <p class="glossary-count">
+    {{ entries.len() }} of {{ total }} terms
+  </p>
+
+  {% if entries.is_empty() %}
+  <p class="glossary-empty">
+    Nothing in that category yet. <a href="/glossary/terms">Show all terms</a>.
+  </p>
+  {% else %}
+  <dl class="glossary-list">
+    {% for entry in entries %}
+    <div class="glossary-entry" id="{{ entry.anchor() }}">
+      <dt>
+        <span class="glossary-term">{{ entry.term }}</span>
+        {% if !entry.aka.is_empty() %}
+        <span class="glossary-aka">{% for name in entry.aka %}{{ name }}{% if !loop.last %}, {% endif %}{% endfor %}</span>
+        {% endif %}
+        {# The domain is a word, never a colour alone #}
+        <span class="glossary-cat">{{ entry.category.label() }}</span>
+      </dt>
+      <dd>
+        <p class="glossary-definition">{{ entry.definition }}</p>
+        {% if !entry.learn.is_empty() || !entry.see_also.is_empty() %}
+        <p class="glossary-links">
+          {% for reference in entry.learn %}
+          <a href="{{ reference.href() }}">{{ reference.label }}</a>
+          {% endfor %}
+          {% for reference in entry.see_also %}
+          <a class="glossary-see-also" href="#{{ reference }}">see also: {{ reference }}</a>
+          {% endfor %}
+        </p>
+        {% endif %}
+      </dd>
+    </div>
+    {% endfor %}
+  </dl>
+  {% endif %}
+</section>
+{% endblock %}

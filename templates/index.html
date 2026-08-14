@@ -47,14 +47,22 @@
 
 <hr>
 
-<section aria-label="Learn">
-  <h2>Learn</h2>
-  <p>
-    I keep a public education wiki of the networking and systems material I&rsquo;m
-    working through &mdash; the OSI model, addressing and subnetting, transmission
-    media, protocols and ports, and the Linux filesystem, shell, and permission
-    model.
+<section aria-label="What is here">
+  <h2>What&rsquo;s here</h2>
+  {# Rendered from models::surface::SURFACES. A new part of the site appears
+     here by being registered, not by someone remembering to edit this page —
+     which is how Labs and Search shipped without a mention. #}
+  <ul class="about-list surface-list">
+    {% for surface in crate::models::surface::all() %}
+    <li>
+      <strong><a href="{{ surface.path }}">{{ surface.label }}</a></strong>
+      &mdash; {{ surface.blurb }}
+    </li>
+    {% endfor %}
+  </ul>
+  <p class="section-more">
+    The wiki is the largest part &mdash;
+    <a href="/learn">{{ learn_count }} pages</a> across networking and Linux.
   </p>
-  <p class="section-more"><a href="/learn">Education wiki &rarr;</a></p>
 </section>
 {% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="glossary-landing">
+  <h1>Glossary</h1>
+
+  <p class="glossary-lede">
+    Every term and command defined here comes out of the
+    <a href="/learn">education wiki</a>, and every entry links back to the
+    section that explains it properly. This is the index, not the teaching.
+  </p>
+
+  <ul class="about-list">
+    <li>
+      <strong><a href="/glossary/terms">Terms</a></strong> &mdash;
+      {{ term_count }} definitions across networking and Linux, in ordinary
+      language before jargon.
+    </li>
+    <li>
+      <strong><a href="/glossary/commands">Commands</a></strong> &mdash;
+      {{ command_count }} commands with what they do, when you would reach for
+      one, and what to be careful of.
+    </li>
+  </ul>
+</section>
+{% endblock %}
