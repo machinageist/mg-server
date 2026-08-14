@@ -32,6 +32,7 @@ const WIKI_SLUGS: &[&str] = &[
     "linux-shell",
     "linux-streams",
     "linux-permissions",
+    "linux-archives",
 ];
 
 #[test]

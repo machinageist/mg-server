@@ -79,8 +79,9 @@ claim should be supported by work I performed and can explain.
 - [Streams, redirection, and pipes](/learn/linux-streams) — the three streams
   every process gets, how the shell repoints them, and the `2>&1` ordering trap.
 - [File permissions and links](/learn/linux-permissions) — the user/group/other
-  model, `chmod` in both notations, umask defaults, symbolic links, and archives
-  that preserve all of it.
+  model, `chmod` in both notations, umask defaults, and symbolic links.
+- [Archives and compression](/learn/linux-archives) — why `tar` and `gzip` are
+  separate tools, and what metadata an archive preserves that `cp` does not.
 
 This wiki expands as finished notes and completed labs move from my private study
 workspace into reviewed public editions.

@@ -124,6 +124,10 @@ const SIDEBAR: &[SidebarSection] = &[
                 slug: "linux-permissions",
                 label: "File permissions and links",
             },
+            SidebarEntry {
+                slug: "linux-archives",
+                label: "Archives and compression",
+            },
         ],
     },
 ];

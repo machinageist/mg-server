@@ -1,7 +1,7 @@
 ---
 title: "File permissions and links"
 date: 2026-08-14
-summary: "Reading ls -l, the user/group/other model, chmod in both notations, what permissions mean on a directory, umask defaults, symbolic links, and archives that preserve all of it."
+summary: "Reading ls -l, the user/group/other model, chmod in both notations, what the same three bits mean on a directory, umask defaults, and symbolic links."
 tags: [education, linux, permissions, chmod, umask]
 ---
 
@@ -193,62 +193,12 @@ referenced `/bin/ls` still resolves. They are used throughout the system for
 exactly this: giving one thing several names, and giving a stable name to
 something that moves.
 
-## Archives and compression
+## Moving files with their permissions intact
 
-Permissions and ownership are properties of the filesystem, so copying files
-somewhere else often loses them. An archive is what carries them along.
-
-**gzip** compresses a single file, replacing it with a `.gz` version:
-
-```text
-$ gzip logfile.txt        # produces logfile.txt.gz, removes the original
-$ gunzip logfile.txt.gz   # restores it
-```
-
-It compresses; it does not bundle. Combining many files into one is a separate
-job, and `tar` does it:
-
-```text
-$ tar cvf archive.tar dir1 dir2 file.txt   # create
-$ tar tvf archive.tar                       # list contents, change nothing
-$ tar xvf archive.tar                       # extract
-```
-
-The flags are positional and old-fashioned: `c` create, `x` extract, `t` list,
-`v` verbose, and `f` naming the archive file, whose name must follow
-immediately. The habit worth building is running `tar tvf` before `tar xvf`, so
-you know whether an archive expands into a directory or scatters files into the
-one you are standing in.
-
-Because `tar` preserves modes, ownership, timestamps, and symbolic links, it is
-the right tool for moving a directory tree between machines intact — which is
-what connects it to the rest of this page.
-
-The two combine, and modern `tar` will do both in one step:
-
-```text
-$ tar czf archive.tar.gz dir/    # create and compress
-$ tar xzf archive.tar.gz         # decompress and extract
-```
-
-`z` selects gzip. `j` selects bzip2 and `J` selects xz, which compress harder
-and more slowly. Compressing an existing archive separately produces the same
-result:
-
-```text
-$ gzip archive.tar               # archive.tar.gz
-```
-
-To read a compressed archive without writing the decompressed copy to disk,
-`zcat` decompresses to standard output and `tar` reads the pipe:
-
-```text
-$ zcat archive.tar.gz | tar xvf -
-```
-
-The `-` is the archive filename, meaning "standard input." This is the same
-stream plumbing described in [the shell page](/learn/linux-shell), applied to a
-case where the intermediate file would be large and pointless.
+Modes, ownership, and timestamps are properties the filesystem holds about a
+file rather than content inside it, so copying a tree the naive way can lose all
+of them. [Archives and compression](/learn/linux-archives) covers `tar`, `gzip`,
+and what each one preserves.
 
 ## Suggested practice: break and repair access
 
@@ -269,14 +219,15 @@ is reversible.
 6. Create a symlink, verify it works, delete the target, and run `ls -l` and
    `cat` on the link. Then recreate the target and watch the link start working
    again.
-7. Set distinctive permissions on a few files, `tar czf` them, extract into a
-   fresh directory, and confirm the modes survived. Repeat with `cp` and see
-   what you lose.
+7. Give a file an unusual mode, copy it with `cp` and then with `cp -a`, and
+   compare `ls -l` on both. Only one of them preserved what you set.
 
 ## Related pages
 
-- [The shell and the command line](/learn/linux-shell) — reading error messages,
-  and the stream redirection the archive examples use.
+- [Archives and compression](/learn/linux-archives) — `tar` and `gzip`, and
+  which of these modes survive a copy between machines.
+- [The shell and the command line](/learn/linux-shell) — reading the
+  "Permission denied" errors this page produces.
 - [The Linux filesystem hierarchy](/learn/linux-filesystem-hierarchy) — where
   these files live, and why `/bin` is a symbolic link.
 - [Linux abstraction layers](/learn/linux-abstraction-layers) — users, groups,
@@ -295,9 +246,6 @@ the primary documentation:
   modes and how the mask is applied.
 - [`symlink(7)`](https://man7.org/linux/man-pages/man7/symlink.7.html) — symlink
   resolution, including why their permission bits are ignored.
-- [`tar(1)`](https://man7.org/linux/man-pages/man1/tar.1.html) and
-  [`gzip(1)`](https://man7.org/linux/man-pages/man1/gzip.1.html) — archive
-  flags and what metadata is preserved.
 - [`inode(7)`](https://man7.org/linux/man-pages/man7/inode.7.html) — the mode
   bits as the kernel stores them, including setuid, setgid, and sticky.
 
