@@ -1,7 +1,7 @@
 ---
 title: "Security Headers on machinageist.dev"
 date: 2026-07-09
-summary: "A defensive walkthrough of the HTTP response headers this site sets — what each one does, the real curl -I output, where they come from in the code, and the honest limits of header hardening on an owned personal site."
+summary: "The HTTP response headers this site sets — what each does, the real curl -I output, where they come from in the code, and the honest limits of header hardening on a personal site."
 category: "Security"
 tags: [security, defensive, http-headers, csp, hsts, owned-scope]
 ---

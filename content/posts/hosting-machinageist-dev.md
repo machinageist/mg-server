@@ -1,7 +1,7 @@
 ---
 title: "How machinageist.dev Is Hosted"
 date: 2026-07-08
-summary: "The request path for this site — DNS to Cloudflare to a Cloudflare Tunnel to Caddy to a systemd-managed Rust service on a Proxmox Debian VM — with real dig and curl output, and an honest list of what is not yet in place."
+summary: "The request path for this site — DNS, Cloudflare, a Tunnel, Caddy, and a systemd-managed Rust service on a Proxmox VM — with real dig and curl output and an honest list of what is missing."
 category: "Linux / SysAdmin"
 tags: [self-hosting, linux, systemd, caddy, cloudflare, dns, proxmox]
 ---

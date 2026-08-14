@@ -310,6 +310,103 @@ mod tests {
         assert!(lookup_sidebar_slug("does-not-exist").is_none());
     }
 
+    // Every slug the sidebar offers
+    fn sidebar_slugs() -> Vec<&'static str> {
+        SIDEBAR
+            .iter()
+            .flat_map(|section| section.entries.iter().map(|entry| entry.slug))
+            .collect()
+    }
+
+    // B5 gap G4. SIDEBAR and tests/wiki_pages.rs::WIKI_SLUGS are deliberately
+    // separate so the test crate stays decoupled from the bin, but until now each
+    // was only checked against disk — so the two copies could disagree with each
+    // other silently as long as both happened to name real files. This is the
+    // guard that makes the duplication honest (criteria 5A/5B).
+    #[test]
+    fn sidebar_and_the_test_crate_agree_on_the_page_list() {
+        let source = std::fs::read_to_string("tests/wiki_pages.rs")
+            .expect("the integration test file must exist");
+        let list = source
+            .split_once("const WIKI_SLUGS: &[&str] = &[")
+            .and_then(|(_, rest)| rest.split_once("];"))
+            .map(|(body, _)| body)
+            .expect("WIKI_SLUGS must still be declared as a slice literal");
+
+        let mut declared: Vec<String> = list
+            .split(',')
+            .map(|entry| entry.trim().trim_matches('"').to_string())
+            .filter(|entry| !entry.is_empty())
+            .collect();
+        let mut offered: Vec<String> = sidebar_slugs().iter().map(|s| s.to_string()).collect();
+        declared.sort();
+        offered.sort();
+
+        assert_eq!(
+            offered, declared,
+            "SIDEBAR and WIKI_SLUGS have drifted apart — every published page must appear \
+             in both"
+        );
+    }
+
+    // Cross-page links now address sections, so a renamed heading silently breaks
+    // a link that still resolves to a real page. Checked here rather than in the
+    // test crate because only this side can call the real renderer, and a second
+    // copy of the slug rules would be the drift it is meant to prevent.
+    #[test]
+    fn every_section_anchor_in_the_corpus_resolves() {
+        let pages_dir = PathBuf::from(PAGES_DIR);
+        let mut ids: std::collections::HashMap<String, Vec<String>> =
+            std::collections::HashMap::new();
+
+        for slug in sidebar_slugs() {
+            let html = Page::find(&pages_dir, slug)
+                .unwrap_or_else(|err| panic!("load {slug}: {err:?}"))
+                .content_html;
+            let found = html
+                .match_indices(" id=\"")
+                .map(|(index, marker)| {
+                    html[index + marker.len()..]
+                        .split('"')
+                        .next()
+                        .unwrap_or_default()
+                        .to_string()
+                })
+                .collect();
+            ids.insert(slug.to_string(), found);
+        }
+
+        let mut checked = 0;
+        for slug in sidebar_slugs() {
+            let raw = std::fs::read_to_string(pages_dir.join(format!("{slug}.md")))
+                .unwrap_or_else(|err| panic!("read {slug}: {err}"));
+            for (index, _) in raw.match_indices("/learn/") {
+                let tail: String = raw[index + "/learn/".len()..]
+                    .chars()
+                    .take_while(|c| {
+                        c.is_ascii_lowercase() || c.is_ascii_digit() || *c == '-' || *c == '#'
+                    })
+                    .collect();
+                let Some((target, fragment)) = tail.split_once('#') else {
+                    continue;
+                };
+                let known = ids
+                    .get(target)
+                    .unwrap_or_else(|| panic!("{slug}.md links to unknown page {target}"));
+                assert!(
+                    known.iter().any(|id| id == fragment),
+                    "{slug}.md links to /learn/{target}#{fragment}, but that page has no such \
+                     heading id. Available: {known:?}"
+                );
+                checked += 1;
+            }
+        }
+        assert!(
+            checked > 0,
+            "anchor checker matched nothing — it has broken"
+        );
+    }
+
     #[tokio::test]
     async fn legacy_wiki_root_redirects_to_learn() {
         let response = redirect_index().await.into_response();

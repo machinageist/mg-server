@@ -1,7 +1,7 @@
 ---
 title: "Moving My Homelab Management Network First"
 date: 2026-07-31
-summary: "I moved my homelab from one flat subnet to another before starting VLAN work. The addresses changed, but several systems still referred to the old network. These are my notes on the outage, recovery, and revised migration plan."
+summary: "Moving my homelab between flat subnets before starting VLAN work. The addresses changed; several systems still referred to the old ones. Notes on the outage, the recovery, and the revised plan."
 category: "Networking"
 tags: [networking, proxmox, homelab, corosync, dns, cloudflare-tunnel, incident, segmentation]
 ---
