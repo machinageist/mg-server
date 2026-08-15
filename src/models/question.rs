@@ -69,6 +69,13 @@ impl Question {
             .collect()
     }
 
+    // The correct option, rendered. A dedicated accessor because a template
+    // cannot pass self.answer into option_html without Askama taking it by
+    // reference.
+    pub fn answer_html(&self) -> String {
+        self.option_html(self.answer)
+    }
+
     pub fn option_html(&self, index: usize) -> String {
         self.options
             .get(index)

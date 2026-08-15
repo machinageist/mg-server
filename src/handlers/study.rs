@@ -14,10 +14,11 @@
 //              against.
 
 use crate::errors::SiteError;
-use crate::models::question::{self, GradedAnswer, QuestionSet, STUDY_DIR};
+use crate::models::question::{self, GradedAnswer, Question, QuestionSet, STUDY_DIR};
 use askama::Template;
 use askama_axum::IntoResponse;
-use axum::extract::{Form, Path as AxumPath};
+use axum::extract::{Form, Path as AxumPath, Query};
+use serde::Deserialize;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
@@ -147,6 +148,93 @@ pub async fn grade(
     })
 }
 
+// -----------------------------------------------------------------------
+// Flashcards — GET /study/cards/:slug
+// -----------------------------------------------------------------------
+
+// Which card, and whether its answer is showing. Both live in the URL so the
+// whole flow is navigable, bookmarkable, and survives the back button.
+#[derive(Debug, Deserialize)]
+pub struct CardPosition {
+    #[serde(default)]
+    pub i: Option<usize>,
+    #[serde(default)]
+    pub show: Option<u8>,
+}
+
+#[derive(Template)]
+#[template(path = "study_cards.html")]
+pub struct CardsTemplate {
+    pub set: QuestionSet,
+    pub index: usize,
+    pub revealed: bool,
+}
+
+impl CardsTemplate {
+    pub fn title(&self) -> String {
+        format!("{} flashcards — machinageist", self.set.topic)
+    }
+    pub fn description(&self) -> &str {
+        "Flashcards drawn from the education wiki."
+    }
+    pub fn section(&self) -> &str {
+        "study"
+    }
+
+    pub fn card(&self) -> &Question {
+        &self.set.questions[self.index]
+    }
+
+    pub fn total(&self) -> usize {
+        self.set.questions.len()
+    }
+
+    // 1-based for display; the URL stays 0-based to match the answer indices
+    pub fn position(&self) -> usize {
+        self.index + 1
+    }
+
+    pub fn has_previous(&self) -> bool {
+        self.index > 0
+    }
+
+    pub fn has_next(&self) -> bool {
+        self.index + 1 < self.total()
+    }
+
+    pub fn previous_index(&self) -> usize {
+        self.index.saturating_sub(1)
+    }
+
+    pub fn next_index(&self) -> usize {
+        self.index + 1
+    }
+}
+
+// Render one flashcard, prompt-side or answer-side
+//
+// A card is a question rendered without its distractors — the bank is shared
+// rather than duplicated, so a corrected explanation fixes both surfaces.
+pub async fn cards(
+    AxumPath(slug): AxumPath<String>,
+    Query(position): Query<CardPosition>,
+) -> Result<impl IntoResponse, SiteError> {
+    let set = question::load(&PathBuf::from(STUDY_DIR), &slug)?;
+    if set.questions.is_empty() {
+        return Err(SiteError::PageNotFound(slug));
+    }
+
+    // Clamp rather than 404 — a hand-edited or stale index should land on a
+    // real card, not an error page
+    let index = position.i.unwrap_or(0).min(set.questions.len() - 1);
+
+    Ok(CardsTemplate {
+        set,
+        index,
+        revealed: position.show.is_some_and(|show| show == 1),
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -250,6 +338,60 @@ mod tests {
                 question.stem
             );
         }
+    }
+
+    fn cards_view(set: QuestionSet, index: usize, revealed: bool) -> CardsTemplate {
+        CardsTemplate {
+            set,
+            index,
+            revealed,
+        }
+    }
+
+    #[test]
+    fn a_card_hides_its_answer_until_the_url_says_otherwise() {
+        let Some(set) = any_topic() else {
+            return;
+        };
+        let answer = set.questions[0].answer_html();
+
+        let hidden = cards_view(set.clone(), 0, false)
+            .render()
+            .expect("card renders");
+        assert!(
+            !hidden.contains(&answer),
+            "the answer must not be in the prompt-side HTML at all — hiding it \
+             with CSS would leak it to anyone reading the source"
+        );
+        assert!(
+            hidden.contains("show=1"),
+            "there must be a way to reveal it"
+        );
+
+        let shown = cards_view(set, 0, true).render().expect("card renders");
+        assert!(shown.contains(&answer));
+    }
+
+    #[test]
+    fn card_navigation_is_links_and_bounded_at_both_ends() {
+        let Some(set) = any_topic() else {
+            return;
+        };
+        let last = set.questions.len() - 1;
+
+        let first = cards_view(set.clone(), 0, false).render().expect("renders");
+        assert!(
+            !first.contains("Previous"),
+            "no previous before the first card"
+        );
+        assert!(first.contains("Next"));
+
+        let end = cards_view(set, last, false).render().expect("renders");
+        assert!(end.contains("Previous"));
+        assert!(
+            end.contains("Take the quiz"),
+            "the last card should offer somewhere to go"
+        );
     }
 
     #[test]

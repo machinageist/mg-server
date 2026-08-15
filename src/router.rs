@@ -40,6 +40,8 @@ pub fn build(state: AppState) -> Router {
         .route("/labs", get(labs::labs))
         .route("/labs/:slug", get(labs::lab_page))
         .route("/study", get(study::index))
+        // More specific first — /study/cards/:slug must not be shadowed
+        .route("/study/cards/:slug", get(study::cards))
         .route("/study/:slug", get(study::quiz).post(study::grade))
         .route("/glossary", get(glossary::landing))
         .route("/glossary/terms", get(glossary::terms))

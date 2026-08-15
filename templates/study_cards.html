@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="study-cards">
+  <a class="back-link" href="/study">Study</a>
+  <h1>{{ set.topic }}</h1>
+
+  <p class="card-position">Card {{ self.position() }} of {{ self.total() }}</p>
+
+  {# Position and reveal both live in the URL, so every state of this flow is a
+     real page: linkable, bookmarkable, and correct under the back button. No
+     JavaScript is involved in turning a card over. #}
+  <article class="card">
+    <p class="card-prompt">{{ self.card().stem_html()|safe }}</p>
+
+    {% if revealed %}
+    <div class="card-answer">
+      <p class="card-answer-label">Answer</p>
+      <p class="card-answer-text">{{ self.card().answer_html()|safe }}</p>
+      <p class="card-explanation">{{ self.card().explanation_html()|safe }}</p>
+      <p class="card-source">
+        <a href="{{ self.card().learn.href() }}">Where this is explained</a>
+      </p>
+    </div>
+    {% else %}
+    <p class="card-reveal">
+      <a href="/study/cards/{{ set.slug }}?i={{ index }}&amp;show=1">Show answer</a>
+    </p>
+    {% endif %}
+  </article>
+
+  <nav class="card-nav" aria-label="Card navigation">
+    {% if self.has_previous() %}
+    <a href="/study/cards/{{ set.slug }}?i={{ self.previous_index() }}">&larr; Previous</a>
+    {% endif %}
+    {% if self.has_next() %}
+    <a href="/study/cards/{{ set.slug }}?i={{ self.next_index() }}">Next &rarr;</a>
+    {% else %}
+    <a href="/study/{{ set.slug }}">Take the quiz &rarr;</a>
+    {% endif %}
+  </nav>
+</section>
+{% endblock %}
