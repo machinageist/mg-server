@@ -115,12 +115,12 @@ pub const SURFACES: &[Surface] = &[
     },
 ];
 
-// The surfaces that earn a slot in the horizontal bar
+// The surfaces that earn a slot in the horizontal bar, in bar order
 //
-// Test-scoped: the template renders every surface and lets CSS hide the
-// secondary ones above the breakpoint, so nothing at runtime needs this subset
-// — but the count it returns is exactly what the scannability guard is about.
-#[cfg(test)]
+// The template iterates this rather than filtering SURFACES inline, because the
+// position within it is what CSS hides by: Glossary sits between Study and
+// Search in the registry and is not in the bar, so counting the full list would
+// number Search 8 and leave it with no rule.
 pub fn nav() -> Vec<&'static Surface> {
     SURFACES.iter().filter(|surface| surface.in_nav).collect()
 }
@@ -225,6 +225,24 @@ mod tests {
                     surface.path
                 );
             }
+        }
+    }
+
+    // Every tab in the bar needs a width at which it steps aside. Without one it
+    // stays put and the header wraps to two rows, which is the bug the
+    // graduated breakpoints exist to prevent — and it only shows up at window
+    // sizes nobody happens to test at.
+    #[test]
+    fn every_nav_tab_has_a_width_it_gives_up_at() {
+        let css = std::fs::read_to_string("static/css/style.css").expect("stylesheet");
+
+        for rank in 1..=nav().len() {
+            assert!(
+                css.contains(&format!("[data-nav-rank=\"{rank}\"]")),
+                "nav tab {rank} ({}) has no breakpoint that hides it, so the bar \
+                 will overflow instead of shortening",
+                nav()[rank - 1].label
+            );
         }
     }
 

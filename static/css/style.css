@@ -638,6 +638,47 @@ a:hover { color: var(--accent-hover); }
 
 /* Opens over the page rather than pushing it down, so the header keeps its
    height and the pinned-bar measurements stay true whether it is open or shut */
+/* The bar gives up tabs one at a time instead of all at once at a single
+   breakpoint. Each threshold is the width that tab actually needs, measured:
+   350px of fixed chrome (header padding, brand, menu, theme toggle, gaps) plus
+   the cumulative width of the tabs to its left, plus ~30px so a tab goes before
+   it collides rather than after.
+
+   Highest rank drops first, so the bar shortens from the right edge next to the
+   menu. Nothing is lost when it does -- the menu carries every surface at every
+   width, which is what makes dropping tabs a layout decision rather than a
+   navigation one.
+
+   Adding an eighth nav surface without a rule here fails a test in
+   models::surface rather than silently overflowing the header. */
+@media (max-width: 919px) {
+    .nav-link[data-nav-rank="7"] { display: none; }
+}
+
+@media (max-width: 839px) {
+    .nav-link[data-nav-rank="6"] { display: none; }
+}
+
+@media (max-width: 759px) {
+    .nav-link[data-nav-rank="5"] { display: none; }
+}
+
+@media (max-width: 689px) {
+    .nav-link[data-nav-rank="4"] { display: none; }
+}
+
+@media (max-width: 599px) {
+    .nav-link[data-nav-rank="3"] { display: none; }
+}
+
+@media (max-width: 529px) {
+    .nav-link[data-nav-rank="2"] { display: none; }
+}
+
+@media (max-width: 419px) {
+    .nav-link[data-nav-rank="1"] { display: none; }
+}
+
 .nav-menu[open] > .nav-menu-panel {
     position:       absolute;
     right:          0;
@@ -2529,14 +2570,6 @@ pre {
     }
 
     .nav-right { gap: 1rem; }
-
-    /* The bar is what goes away down here, not the menu. Below this width its
-       entries wrapped to two rows and pushed the header tall enough that
-       everything measuring from --header-h had to follow; the menu beside it
-       already carries every one of them. */
-    .nav-links {
-        display: none;
-    }
 
     main { padding: 2.5rem 1.25rem 4rem; }
 
