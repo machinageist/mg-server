@@ -626,6 +626,14 @@ a:hover { color: var(--accent-hover); }
     content-visibility: visible;
 }
 
+/* Surfaces that do not earn a slot in the horizontal bar. They are in the
+   markup regardless, so the collapsed menu below the breakpoint can show every
+   destination the home page lists — a reader who opens a menu wants the whole
+   map, not the abridged one. */
+.nav-link.is-secondary {
+    display: none;
+}
+
 .nav-link {
     color:           var(--text-muted);
     font-size:       0.875rem;
@@ -2538,6 +2546,12 @@ pre {
     .nav-links {
         flex-direction: column;
         gap:            0.75rem;
+    }
+
+    /* No horizontal budget to compete for down here, so the menu carries every
+       surface rather than the subset the wide bar has room for */
+    .nav-link.is-secondary {
+        display: block;
     }
 
     main { padding: 2.5rem 1.25rem 4rem; }

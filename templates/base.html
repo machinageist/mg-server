@@ -26,12 +26,15 @@
         <details class="nav-menu">
           <summary aria-label="Menu"><span aria-hidden="true">☰</span> Menu</summary>
         <div class="nav-links">
-          {# Rendered from models::surface::SURFACES, so a new route added to
-             the registry appears here, on the home page, and on /about at
-             once. A route with no registry entry fails a test rather than
-             quietly going unlisted. #}
-          {% for surface in crate::models::surface::nav() %}
-          <a href="{{ surface.path }}" class="nav-link{% if self.section() == surface.section %} is-active{% endif %}">{{ surface.label }}</a>
+          {# Every surface is rendered here. in_nav decides only whether it
+             earns a slot in the *horizontal* bar — the collapsed menu has no
+             width constraint, so it carries the lot, and the secondary ones are
+             hidden by CSS above the breakpoint rather than left out of the
+             markup. A route with no registry entry fails a test rather than
+             quietly going unlisted anywhere. #}
+          {% for surface in crate::models::surface::all() %}
+          <a href="{{ surface.path }}"
+             class="nav-link{% if !surface.in_nav %} is-secondary{% endif %}{% if self.section() == surface.section %} is-active{% endif %}">{{ surface.label }}</a>
           {% endfor %}
         </div>
         </details>

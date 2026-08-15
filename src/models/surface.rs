@@ -115,7 +115,12 @@ pub const SURFACES: &[Surface] = &[
     },
 ];
 
-// The surfaces that appear in the header nav
+// The surfaces that earn a slot in the horizontal bar
+//
+// Test-scoped: the template renders every surface and lets CSS hide the
+// secondary ones above the breakpoint, so nothing at runtime needs this subset
+// — but the count it returns is exactly what the scannability guard is about.
+#[cfg(test)]
 pub fn nav() -> Vec<&'static Surface> {
     SURFACES.iter().filter(|surface| surface.in_nav).collect()
 }
