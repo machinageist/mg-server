@@ -1549,14 +1549,15 @@ hr {
     font-size:  0.92rem;
 }
 
+/* Tighter than an article's code block — these sit inside a definition list
+   entry rather than between paragraphs, so the article's vertical margins
+   would push the entries apart */
 .glossary-synopsis,
 .glossary-example {
-    margin-bottom: 0.4rem;
-    overflow-x:    auto;
-}
-
-.glossary-example {
-    margin-top: 0.4rem;
+    margin:    0.5rem 0;
+    padding:   0.6rem 0.8rem;
+    font-size: 0.85rem;
+    max-width: var(--measure);
 }
 
 /* The word "Careful:" carries the meaning; the rule and tint only reinforce it */
@@ -2014,12 +2015,17 @@ pre code {
 
 /* No measure cap — code keeps the full column and scrolls inside itself
    rather than wrapping at the prose line length */
-.post-content pre {
-    background: var(--surface);
-    border:     1px solid var(--border);
-    padding:    1.25rem;
-    overflow-x: auto;
-    margin:     var(--space-4) 0;
+/* Code blocks are framed site-wide, not only inside articles. A command reads
+   as a command when it has its own box and keeps its full width; the glossary's
+   synopsis and example lines are exactly that and were rendering as cramped
+   inline chips. */
+pre {
+    background:  var(--surface);
+    border:      1px solid var(--border);
+    padding:     1.25rem;
+    overflow-x:  auto;
+    margin:      var(--space-4) 0;
+    font-family: var(--font-mono);
 }
 
 .post-content pre code {

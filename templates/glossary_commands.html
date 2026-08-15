@@ -43,11 +43,11 @@
           <span class="glossary-cat">{{ entry.category.label() }}</span>
         </dt>
         <dd>
-          <p class="glossary-synopsis"><code>{{ entry.synopsis }}</code></p>
+          <pre class="glossary-synopsis"><code>{{ entry.synopsis }}</code></pre>
           <p class="glossary-definition">{{ entry.purpose_html()|safe }}</p>
           <p class="glossary-context">{{ entry.context_html()|safe }}</p>
           {% if let Some(example) = entry.example %}
-          <p class="glossary-example"><code>{{ example }}</code></p>
+          <pre class="glossary-example"><code>{{ example }}</code></pre>
           {% endif %}
           {% if let Some(caution) = entry.caution %}
           {# Labelled in words, so the warning survives a reader who cannot

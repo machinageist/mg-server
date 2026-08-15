@@ -262,6 +262,41 @@ thing the wiki exists to do.
 Neither replaces the other. The lint cannot tell whether an explanation is any
 good; the review cannot run on every commit.
 
+## Auto-fail rule 3, scoped for study tools
+
+**Added 2026-08-14, decided by Jeff.** Interactive study material raised a
+question the rule did not answer: an emulation cannot work with JavaScript
+disabled, so does building one violate rule 3?
+
+The rule is **scoped, not waived.** "Core function" means the study *material*
+— every question, answer, explanation, command reference, and scenario — is
+fully reachable server-rendered with JavaScript off. Everything shipped so far
+meets that by construction rather than by a fallback path: the quiz is a plain
+form with radio inputs graded server-side, the flashcards keep position and
+reveal state in the URL, and the scenarios are typed commands matched on the
+server.
+
+An interactive simulation, when one is built, is an **explicitly labelled
+enhancement with a written walkthrough at a real URL as its equivalent.** The
+walkthrough is the material; the simulator is the sharpening. A simulation
+without that walkthrough would violate the rule as written, and should.
+
+What this does not license: moving core function behind JavaScript anywhere
+else on the site, or treating "there is a fallback somewhere" as satisfying the
+rule. The fallback has to teach the same thing.
+
+## Study content provenance
+
+A question or scenario step ships only if it cites the `/learn` page and
+heading that teaches its answer. `models::question` and `models::scenario` each
+carry a test that resolves every citation against the heading ids the renderer
+actually generates — a question that cannot point at material on this site
+fails the build.
+
+This is the rule that separates the question bank from a generic one. A larger
+pool may be drafted from the whole subject matter; only what traces to the wiki
+is published.
+
 ---
 
 ## Scoring Summary

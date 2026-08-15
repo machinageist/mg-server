@@ -23,8 +23,8 @@ Status flow: `pending` → `spec-in-progress` → `spec-complete` →
 | B5 | learn | pass | `specs/B5-learn.md` | `scorecards/B5-learn-scorecard.md` | 2.83 | 1 |
 | B6 | releases | pass, **unpublished 2026-08-14** | `specs/B6-releases.md` | `scorecards/B6-releases-scorecard.md` | 2.88 | 1 |
 | C1 | search | spec-complete, **implemented** | `specs/C1-search.md` | — | — | 1 |
-| C2 | glossary | spec-complete | `specs/C2-glossary.md` | — | — | 1 |
-| C3 | study-tools | pending | — | — | — | 0 |
+| C2 | glossary | spec-complete, **implemented** | `specs/C2-glossary.md` | — | — | 1 |
+| C3 | study-tools | **implemented** (a, b, c-partial), unspec'd | — | — | — | 0 |
 | C4 | progress | pending | — | — | — | 0 |
 
 ## Run history
@@ -45,6 +45,13 @@ markers for three days. See the resolution note below.
 
 **2026-08-14.** Conflicts resolved by hand. Several outstanding correction items
 applied. C1 and C2 specs committed (they had been sitting untracked on disk).
+
+**2026-08-14, later still.** C2 glossary built to its spec. C3 study-tools built
+without one: `/study` quizzes (C3b), `/study/cards` flashcards (C3a), and
+`/study/pbq` scenarios — the server-rendered half of C3c. The WASM terminal
+simulator, C3c's other half, is deliberately not built; its contour is recorded
+in the session plan. Auto-fail rule 3 was **scoped rather than waived** for this
+surface — see criteria.md — and everything shipped meets it by construction.
 
 **2026-08-14, later.** The criteria gained an enforcement point for shipped
 output — `tests/content_lint.rs` in CI plus the `/review-page` command — and

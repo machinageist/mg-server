@@ -259,6 +259,36 @@ on the way out. The procedure stays followable; a reader applies it to their own
 
 ---
 
+## 6c. Study content — questions and scenarios
+
+**`content/study/<slug>.md`** — multiple-choice questions, one file per `/learn` topic.
+**`content/study/pbq/<slug>.md`** — performance-based scenarios, where the answer is a
+typed command. Both are frontmatter-only Markdown, the same shape as the glossary.
+
+**The provenance rule.** Every question and every scenario step cites the `/learn` page
+and heading that teaches its answer. `models::question` and `models::scenario` each carry
+a test resolving those citations against the heading ids the renderer actually generates —
+a question that cannot point at material on this site **fails the build**. This is what
+separates the bank from a generic one, so do not relax it. A larger pool may be drafted
+from the whole subject matter; only what traces to the wiki ships.
+
+**Answer matching for scenarios** is normalised, not exact: whitespace collapses, a copied
+`$`/`#` prompt is dropped, and letters inside a combined short flag are sorted so `-Rv`
+and `-vR` are equal. Long flags and argument order are preserved. Each step lists several
+accepted commands — there is usually more than one right answer.
+
+**Inline Markdown in structured content.** Askama escapes rather than renders, so a
+backtick in a YAML field reaches the page as a backtick. Anything carrying commands,
+flags, or addresses goes through `markdown::to_inline_html` and is rendered with `|safe`.
+Standalone commands use a `<pre><code>` block rather than an inline span — `code` and
+`pre` are both styled site-wide, not only under `.post-content`.
+
+**Skipped is not wrong.** Both graders track unanswered separately, and the result pages
+report it separately. A blank answer scored as incorrect tells a reader something untrue
+about what they know.
+
+---
+
 ## 7. Verification
 
 Exactly what CI runs (`.github/workflows/`), in order:
