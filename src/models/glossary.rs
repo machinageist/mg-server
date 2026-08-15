@@ -142,24 +142,26 @@ impl GlossaryCommand {
         markdown::to_inline_html(&self.context)
     }
 
-    // The synopsis as a code block body, one command per line, each carrying
-    // the `$` prompt the wiki's fenced blocks already use. The prompt is
-    // presentation, so it is added here rather than stored — the data stays a
-    // list of commands.
-    pub fn synopsis_block(&self) -> String {
-        self.synopsis
-            .iter()
-            .map(|command| format!("{PROMPT} {command}"))
-            .collect::<Vec<_>>()
-            .join("\n")
+    // The synopsis as rendered HTML, produced by the same Markdown renderer the
+    // wiki uses.
+    //
+    // This goes through markdown::to_html rather than being hand-built as a
+    // <pre> in the template, because that is the only way the two surfaces
+    // cannot drift. A template that assembles its own code block is a second
+    // implementation of something the site already does, and it diverged four
+    // times before this: bare commands, then a middot separator inside a block
+    // that reads as "paste this", then no prompt, then its own padding and
+    // font size. One pipeline, one result.
+    pub fn synopsis_html(&self) -> String {
+        markdown::to_html(&fenced(&self.synopsis))
     }
 
-    // The worked example, prompted the same way
-    pub fn example_block(&self) -> String {
-        self.example
-            .as_deref()
-            .map(|command| format!("{PROMPT} {command}"))
-            .unwrap_or_default()
+    // The worked example, through the same pipeline
+    pub fn example_html(&self) -> String {
+        match &self.example {
+            Some(command) => markdown::to_html(&fenced(std::slice::from_ref(command))),
+            None => String::new(),
+        }
     }
 
     pub fn caution_html(&self) -> String {
@@ -168,6 +170,20 @@ impl GlossaryCommand {
             .map(markdown::to_inline_html)
             .unwrap_or_default()
     }
+}
+
+// Build a fenced Markdown code block from a list of commands
+//
+// The prompt is added here rather than stored: a command is a command, and the
+// scenario matcher already strips a leading prompt precisely because people
+// copy them along with the command.
+fn fenced(commands: &[String]) -> String {
+    let body = commands
+        .iter()
+        .map(|command| format!("{PROMPT} {command}"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    format!("```text\n{body}\n```")
 }
 
 // -----------------------------------------------------------------------
@@ -274,10 +290,11 @@ mod tests {
     #[test]
     fn command_blocks_carry_a_prompt_that_is_not_stored_in_the_data() {
         for entry in load_commands(&dir()).expect("commands parse") {
-            for line in entry.synopsis_block().lines() {
+            let rendered = entry.synopsis_html();
+            for command in &entry.synopsis {
                 assert!(
-                    line.starts_with("$ "),
-                    "{}: synopsis line {line:?} has no prompt",
+                    rendered.contains(&format!("$ {command}")),
+                    "{}: {command:?} is not prompted in the rendered block",
                     entry.name
                 );
             }
@@ -288,14 +305,43 @@ mod tests {
                     entry.name
                 );
             }
-            if entry.example.is_some() {
+            if let Some(example) = &entry.example {
                 assert!(
-                    entry.example_block().starts_with("$ "),
-                    "{}: the example has no prompt",
+                    entry.example_html().contains(&format!("$ {example}")),
+                    "{}: the example is not prompted",
                     entry.name
                 );
             }
         }
+    }
+
+    // The reason this surface kept diverging from the wiki was that the
+    // template assembled its own <pre>. This pins the glossary's command block
+    // to what the wiki's Markdown pipeline produces for the same content, so a
+    // hand-built block cannot creep back in without failing here.
+    #[test]
+    fn a_command_block_is_byte_identical_to_the_wiki_pipeline() {
+        let entry = load_commands(&dir())
+            .expect("commands parse")
+            .into_iter()
+            .next()
+            .expect("at least one command");
+
+        let through_the_wiki_renderer = markdown::to_html(&format!(
+            "```text\n{}\n```",
+            entry
+                .synopsis
+                .iter()
+                .map(|c| format!("$ {c}"))
+                .collect::<Vec<_>>()
+                .join("\n")
+        ));
+
+        assert_eq!(
+            entry.synopsis_html(),
+            through_the_wiki_renderer,
+            "the glossary must render commands through the same pipeline as /learn"
+        );
     }
 
     #[test]
