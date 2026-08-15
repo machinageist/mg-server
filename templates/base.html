@@ -8,9 +8,9 @@
   <meta property="og:description" content="{{ self.description() }}">
   <meta property="og:type" content="website">
   <title>{{ self.title() }}</title>
-  <link rel="icon" href="/static/img/favicon.svg?v=20260719-spectrum" type="image/svg+xml">
-  <script src="/static/js/theme-init.js?v=20260719-spectrum"></script>
-  <link rel="stylesheet" href="/static/css/style.css?v=20260719-spectrum">
+  <link rel="icon" href="/static/img/favicon.svg?v={{ crate::assets::version() }}" type="image/svg+xml">
+  <script src="/static/js/theme-init.js?v={{ crate::assets::version() }}"></script>
+  <link rel="stylesheet" href="/static/css/style.css?v={{ crate::assets::version() }}">
   {% block head_extra %}{% endblock %}
 </head>
 <body>
@@ -108,7 +108,7 @@
     {% include "vitals_strip.html" %}
   </footer>
 
-  <script src="/static/js/main.js?v=20260719-spectrum"></script>
+  <script src="/static/js/main.js?v={{ crate::assets::version() }}"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

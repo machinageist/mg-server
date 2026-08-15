@@ -13,6 +13,7 @@
 //              MG_BIND_ADDR can override loopback for an explicit deployment need.
 
 // Declare modules — tells Rust each file exists as part of this crate
+mod assets;
 mod errors;
 mod handlers;
 mod middleware;
