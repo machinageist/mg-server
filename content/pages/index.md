@@ -31,6 +31,16 @@ Topics are developed as flexible learning clusters:
 Not every topic needs all three parts. A foundational page may stand alone; an applied
 claim should be supported by work I performed and can explain.
 
+## Practice what is here
+
+Reading is half of it. Two surfaces work directly off these pages:
+
+- [Glossary](/glossary) — every term and command defined here, each linked back
+  to the section that explains it properly.
+- [Study](/study) — practice questions and command scenarios. Every answer
+  carries an explanation of why the other options are wrong, and a link to the
+  page it came from.
+
 ## Networking foundations
 
 - [OSI model](/learn/osi-model) — a seven-layer reference model for connecting

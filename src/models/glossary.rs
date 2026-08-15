@@ -103,7 +103,10 @@ impl GlossaryTerm {
 #[derive(Debug, Clone, Deserialize)]
 pub struct GlossaryCommand {
     pub name: String,
-    pub synopsis: String,
+    // One runnable command per entry. A list rather than a joined string
+    // because a code block reads as "paste this" — two commands sharing a line
+    // with a separator between them is not something anyone can paste.
+    pub synopsis: Vec<String>,
     pub category: Category,
     pub purpose: String,
     pub context: String,
@@ -132,6 +135,11 @@ impl GlossaryCommand {
 
     pub fn context_html(&self) -> String {
         markdown::to_inline_html(&self.context)
+    }
+
+    // The synopsis as a code block body, one command per line
+    pub fn synopsis_block(&self) -> String {
+        self.synopsis.join("\n")
     }
 
     pub fn caution_html(&self) -> String {
@@ -211,6 +219,33 @@ mod tests {
         let names: Vec<&str> = terms.iter().map(|e| e.term.as_str()).collect();
         let expected: Vec<&str> = sorted.iter().map(|e| e.term.as_str()).collect();
         assert_eq!(names, expected);
+    }
+
+    // A code block is an instruction to paste. Every line in one has to be a
+    // command on its own, which is why the synopsis is a list and why a
+    // display separator must never creep back into it.
+    #[test]
+    fn every_synopsis_line_is_a_single_runnable_command() {
+        for entry in load_commands(&dir()).expect("commands parse") {
+            assert!(!entry.synopsis.is_empty(), "{}: no synopsis", entry.name);
+            for line in &entry.synopsis {
+                assert!(
+                    !line.contains('·') && !line.contains(" | ") || line.contains('|'),
+                    "{}: synopsis line {line:?} joins commands with a separator",
+                    entry.name
+                );
+                assert!(
+                    !line.trim().is_empty(),
+                    "{}: an empty synopsis line",
+                    entry.name
+                );
+                assert!(
+                    line.trim() == line,
+                    "{}: synopsis line {line:?} has stray whitespace",
+                    entry.name
+                );
+            }
+        }
     }
 
     #[test]

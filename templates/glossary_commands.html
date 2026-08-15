@@ -39,11 +39,11 @@
       {% for entry in group.entries %}
       <div class="glossary-entry" id="{{ entry.anchor() }}">
         <dt>
-          <a class="glossary-term" href="#{{ entry.anchor() }}">{{ entry.name }}</a>
+          <a class="glossary-term is-command" href="#{{ entry.anchor() }}">{{ entry.name }}</a>
           <span class="glossary-cat">{{ entry.category.label() }}</span>
         </dt>
         <dd>
-          <pre class="glossary-synopsis"><code>{{ entry.synopsis }}</code></pre>
+          <pre class="glossary-synopsis"><code>{{ entry.synopsis_block() }}</code></pre>
           <p class="glossary-definition">{{ entry.purpose_html()|safe }}</p>
           <p class="glossary-context">{{ entry.context_html()|safe }}</p>
           {% if let Some(example) = entry.example %}

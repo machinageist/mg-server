@@ -21,6 +21,18 @@
           </ul>
         </section>
         {% endfor %}
+
+        {# Not part of SIDEBAR — its entries are /learn pages, guarded by the
+           slug-agreement and orphan tests. These are sibling surfaces a reader
+           of the wiki wants next, so they belong in this column even though
+           they are not pages of it. #}
+        <section class="wiki-section">
+          <h2>Practice</h2>
+          <ul>
+            <li><a href="/glossary">Glossary</a></li>
+            <li><a href="/study">Study</a></li>
+          </ul>
+        </section>
       </nav>
     </details>
   </aside>

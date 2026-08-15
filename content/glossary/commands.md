@@ -1,7 +1,9 @@
 ---
 entries:
   - name: "chmod"
-    synopsis: "chmod 644 file  ·  chmod g+r file"
+    synopsis:
+      - "chmod 644 file"
+      - "chmod g+r file"
     category: linux
     purpose: "Change a file's permission bits."
     context: >
@@ -17,7 +19,8 @@ entries:
     man: "https://man7.org/linux/man-pages/man1/chmod.1.html"
 
   - name: "curl"
-    synopsis: "curl -sSI https://example.com"
+    synopsis:
+      - "curl -sSI https://example.com"
     category: networking
     purpose: "Make an HTTP request and show what comes back."
     context: >
@@ -31,7 +34,8 @@ entries:
     man: "https://man7.org/linux/man-pages/man1/curl.1.html"
 
   - name: "dig"
-    synopsis: "dig +short example.com"
+    synopsis:
+      - "dig +short example.com"
     category: networking
     purpose: "Query DNS and show the answer."
     context: >
@@ -45,7 +49,8 @@ entries:
     man: "https://man7.org/linux/man-pages/man1/dig.1.html"
 
   - name: "free"
-    synopsis: "free -h"
+    synopsis:
+      - "free -h"
     category: linux
     purpose: "Show physical memory and swap use."
     context: >
@@ -58,7 +63,8 @@ entries:
     man: "https://man7.org/linux/man-pages/man1/free.1.html"
 
   - name: "grep"
-    synopsis: "grep -r pattern path"
+    synopsis:
+      - "grep -r pattern path"
     category: linux
     purpose: "Find lines matching a pattern."
     context: >
@@ -72,7 +78,9 @@ entries:
     man: "https://man7.org/linux/man-pages/man1/grep.1.html"
 
   - name: "ip"
-    synopsis: "ip -br address  ·  ip route"
+    synopsis:
+      - "ip -br address"
+      - "ip route"
     category: networking
     purpose: "Show and configure addresses, routes, and interfaces."
     context: >
@@ -88,7 +96,8 @@ entries:
     man: "https://man7.org/linux/man-pages/man8/ip.8.html"
 
   - name: "ln"
-    synopsis: "ln -s target linkname"
+    synopsis:
+      - "ln -s target linkname"
     category: linux
     purpose: "Create a link to a file or directory."
     context: >
@@ -101,7 +110,9 @@ entries:
     man: "https://man7.org/linux/man-pages/man1/ln.1.html"
 
   - name: "ls"
-    synopsis: "ls -l  ·  ls -la"
+    synopsis:
+      - "ls -l"
+      - "ls -la"
     category: linux
     purpose: "List directory contents."
     context: >
@@ -115,7 +126,9 @@ entries:
     man: "https://man7.org/linux/man-pages/man1/ls.1.html"
 
   - name: "man"
-    synopsis: "man 5 passwd  ·  man -k \"disk space\""
+    synopsis:
+      - "man 5 passwd"
+      - 'man -k "disk space"'
     category: linux
     purpose: "Read the manual page for a command, file format, or system call."
     context: >
@@ -129,7 +142,8 @@ entries:
     man: "https://man7.org/linux/man-pages/man1/man.1.html"
 
   - name: "ping"
-    synopsis: "ping -c2 host"
+    synopsis:
+      - "ping -c2 host"
     category: networking
     purpose: "Send ICMP echo requests to test reachability."
     context: >
@@ -143,7 +157,9 @@ entries:
     man: "https://man7.org/linux/man-pages/man8/ping.8.html"
 
   - name: "ps"
-    synopsis: "ps -ef  ·  ps -ef --forest"
+    synopsis:
+      - "ps -ef"
+      - "ps -ef --forest"
     category: linux
     purpose: "List running processes."
     context: >
@@ -157,7 +173,8 @@ entries:
     man: "https://man7.org/linux/man-pages/man1/ps.1.html"
 
   - name: "ss"
-    synopsis: "ss -tln"
+    synopsis:
+      - "ss -tln"
     category: networking
     purpose: "Show sockets — what is listening, and what is connected."
     context: >
@@ -172,7 +189,9 @@ entries:
     man: "https://man7.org/linux/man-pages/man8/ss.8.html"
 
   - name: "tar"
-    synopsis: "tar czf archive.tar.gz dir/  ·  tar tvf archive.tar.gz"
+    synopsis:
+      - "tar czf archive.tar.gz dir/"
+      - "tar tvf archive.tar.gz"
     category: linux
     purpose: "Bundle many files into one archive, optionally compressed."
     context: >
@@ -188,7 +207,8 @@ entries:
     man: "https://man7.org/linux/man-pages/man1/tar.1.html"
 
   - name: "tcpdump"
-    synopsis: "tcpdump -i eth0 udp port 4789"
+    synopsis:
+      - "tcpdump -i eth0 udp port 4789"
     category: networking
     purpose: "Capture and print packets crossing an interface."
     context: >
@@ -202,7 +222,9 @@ entries:
     man: "https://man7.org/linux/man-pages/man8/tcpdump.8.html"
 
   - name: "umask"
-    synopsis: "umask 022  ·  umask 077"
+    synopsis:
+      - "umask 022"
+      - "umask 077"
     category: linux
     purpose: "Set the permission bits removed from newly created files."
     context: >

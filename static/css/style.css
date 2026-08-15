@@ -1527,6 +1527,19 @@ hr {
     text-decoration: underline;
 }
 
+/* A command name is a command, not a bold English word. It gets the same
+   treatment as inline code so `chmod` reads the same in the heading as it does
+   in the prose two lines below it — the shared .glossary-term class is right
+   for terms like "Encapsulation" and wrong here. */
+.glossary-term.is-command {
+    background:   var(--surface);
+    border:       1px solid var(--border);
+    color:        var(--code);
+    font-family:  var(--font-mono);
+    font-weight:  600;
+    padding:      0.1em 0.45em;
+}
+
 .glossary-aka,
 .glossary-cat {
     color:     var(--text-faint);
