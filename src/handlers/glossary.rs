@@ -17,6 +17,37 @@ use axum::extract::Query;
 use serde::Deserialize;
 use std::path::PathBuf;
 
+// A run of entries sharing a first letter, so a long index can be jumped
+// through rather than scrolled. Generic because terms and commands differ in
+// shape but not in how they are navigated.
+pub struct LetterGroup<T> {
+    pub letter: String,
+    pub entries: Vec<T>,
+}
+
+// Bucket sorted entries by their first letter, preserving order within each
+fn group_by_letter<T, F>(entries: Vec<T>, key: F) -> Vec<LetterGroup<T>>
+where
+    F: Fn(&T) -> String,
+{
+    let mut groups: Vec<LetterGroup<T>> = Vec::new();
+    for entry in entries {
+        let letter = key(&entry)
+            .chars()
+            .next()
+            .map(|c| c.to_uppercase().to_string())
+            .unwrap_or_else(|| "#".to_string());
+        match groups.last_mut() {
+            Some(group) if group.letter == letter => group.entries.push(entry),
+            _ => groups.push(LetterGroup {
+                letter,
+                entries: vec![entry],
+            }),
+        }
+    }
+    groups
+}
+
 // Optional ?cat= filter; an unknown or absent value renders the full index
 #[derive(Debug, Deserialize)]
 pub struct CategoryFilter {
@@ -74,9 +105,10 @@ pub async fn landing() -> Result<impl IntoResponse, SiteError> {
 #[derive(Template)]
 #[template(path = "glossary_terms.html")]
 pub struct TermsTemplate {
-    pub entries: Vec<GlossaryTerm>,
+    pub groups: Vec<LetterGroup<GlossaryTerm>>,
     pub active: Option<Category>,
     pub total: usize,
+    pub shown: usize,
 }
 
 impl TermsTemplate {
@@ -95,6 +127,11 @@ impl TermsTemplate {
     pub fn filtered(&self) -> bool {
         self.active.is_some()
     }
+
+    // The letters that actually have entries, for the jump bar
+    pub fn letters(&self) -> Vec<&str> {
+        self.groups.iter().map(|g| g.letter.as_str()).collect()
+    }
 }
 
 // Render the term index, optionally filtered by category
@@ -109,10 +146,12 @@ pub async fn terms(Query(filter): Query<CategoryFilter>) -> Result<impl IntoResp
             .collect(),
         None => all,
     };
+    let shown = entries.len();
     Ok(TermsTemplate {
-        entries,
+        groups: group_by_letter(entries, |entry| entry.term.clone()),
         active,
         total,
+        shown,
     })
 }
 
@@ -123,9 +162,10 @@ pub async fn terms(Query(filter): Query<CategoryFilter>) -> Result<impl IntoResp
 #[derive(Template)]
 #[template(path = "glossary_commands.html")]
 pub struct CommandsTemplate {
-    pub entries: Vec<GlossaryCommand>,
+    pub groups: Vec<LetterGroup<GlossaryCommand>>,
     pub active: Option<Category>,
     pub total: usize,
+    pub shown: usize,
 }
 
 impl CommandsTemplate {
@@ -141,6 +181,10 @@ impl CommandsTemplate {
 
     pub fn filtered(&self) -> bool {
         self.active.is_some()
+    }
+
+    pub fn letters(&self) -> Vec<&str> {
+        self.groups.iter().map(|g| g.letter.as_str()).collect()
     }
 }
 
@@ -158,10 +202,12 @@ pub async fn commands(
             .collect(),
         None => all,
     };
+    let shown = entries.len();
     Ok(CommandsTemplate {
-        entries,
+        groups: group_by_letter(entries, |entry| entry.name.clone()),
         active,
         total,
+        shown,
     })
 }
 
@@ -183,10 +229,12 @@ mod tests {
                 .collect(),
             None => all,
         };
+        let shown = entries.len();
         TermsTemplate {
-            entries,
+            groups: group_by_letter(entries, |entry| entry.term.clone()),
             active,
             total,
+            shown,
         }
         .render()
         .expect("terms template renders")
@@ -217,6 +265,40 @@ mod tests {
         let nonsense = render_terms(Some("bananas"));
         assert!(nonsense.contains("Kernel"));
         assert!(nonsense.contains("Anycast"));
+    }
+
+    // The jump bar is the index's navigation. Every letter it offers must land
+    // on a heading that exists, and every group must be reachable from it.
+    #[test]
+    fn the_jump_bar_covers_every_group_and_lands_somewhere() {
+        let html = render_terms(None);
+        let entries =
+            glossary::load_terms(&PathBuf::from(glossary::GLOSSARY_DIR)).expect("terms load");
+
+        let mut letters: Vec<String> = entries
+            .iter()
+            .map(|entry| {
+                entry
+                    .term
+                    .chars()
+                    .next()
+                    .map(|c| c.to_uppercase().to_string())
+                    .unwrap_or_default()
+            })
+            .collect();
+        letters.sort();
+        letters.dedup();
+
+        for letter in letters {
+            assert!(
+                html.contains(&format!("href=\"#letter-{letter}\"")),
+                "the jump bar is missing {letter}"
+            );
+            assert!(
+                html.contains(&format!("id=\"letter-{letter}\"")),
+                "jump target letter-{letter} does not exist"
+            );
+        }
     }
 
     #[test]

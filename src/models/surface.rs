@@ -86,6 +86,13 @@ pub const SURFACES: &[Surface] = &[
         in_nav: true,
     },
     Surface {
+        path: "/study",
+        label: "Study",
+        blurb: "Practice questions drawn from the wiki, with an explanation and a link to the page behind every answer.",
+        section: "study",
+        in_nav: false,
+    },
+    Surface {
         path: "/glossary",
         label: "Glossary",
         blurb: "Terms and commands from the wiki, each linked back to the page that explains it.",

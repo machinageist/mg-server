@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="study-quiz">
+  <a class="back-link" href="/study">Study</a>
+  <h1>{{ set.topic }}</h1>
+
+  <p class="study-lede">
+    {{ set.questions.len() }} questions. Nothing is recorded &mdash; answers are
+    graded and shown, not stored.
+  </p>
+
+  {# A plain form. No JavaScript submits it, grades it, or renders the result;
+     criteria.md auto-fail rule 3 is met by construction rather than by a
+     fallback path. #}
+  <form class="study-form" method="post" action="/study/{{ set.slug }}">
+    <ol class="study-questions">
+      {% for (index, question) in set.questions.iter().enumerate() %}
+      <li class="study-question">
+        {# A fieldset groups the radios so assistive tech announces the stem as
+           the question these options answer, rather than reading four
+           unattached labels. #}
+        <fieldset>
+          <legend class="study-stem">{{ question.stem_html()|safe }}</legend>
+          <ul class="study-options">
+            {% for option in question.options_html() %}
+            <li>
+              <label>
+                <input type="radio" name="q{{ index }}" value="{{ loop.index0 }}">
+                <span>{{ option|safe }}</span>
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </fieldset>
+      </li>
+      {% endfor %}
+    </ol>
+
+    <div class="study-actions">
+      <button type="submit">Check answers</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

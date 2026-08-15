@@ -70,6 +70,27 @@ pub fn to_html(markdown: &str) -> String {
     html_output
 }
 
+// Render a short Markdown fragment as inline HTML, without a wrapping <p>
+//
+// Structured content — a glossary definition, a question stem, an option — is
+// authored with inline code spans for commands, flags, and addresses, and those
+// have to become <code> rather than arriving as literal backticks. The fragment
+// is destined for the inside of an element that already exists, so the <p>
+// pulldown-cmark wraps a lone paragraph in would nest invalidly.
+pub fn to_inline_html(markdown: &str) -> String {
+    let rendered = to_html(markdown.trim());
+    let trimmed = rendered.trim();
+    // Only unwrap when the whole fragment is one paragraph; anything richer
+    // keeps its structure
+    match trimmed
+        .strip_prefix("<p>")
+        .and_then(|rest| rest.strip_suffix("</p>"))
+    {
+        Some(inner) if !inner.contains("<p>") => inner.to_string(),
+        _ => trimmed.to_string(),
+    }
+}
+
 // One heading in a document's outline, for building an on-page contents list
 #[derive(Debug, Clone)]
 pub struct Heading {
@@ -317,6 +338,29 @@ mod tests {
     fn an_explicit_heading_id_is_used_by_the_outline_too() {
         let outline = outline("## Redirection and pipes {#pipes}\n");
         assert_eq!(outline[0].id, "pipes");
+    }
+
+    #[test]
+    fn inline_rendering_turns_backticks_into_code_without_wrapping() {
+        let html = to_inline_html("Set it with `export`, then check `echo $PATH`.");
+        assert!(html.contains("<code>export</code>"));
+        assert!(
+            !html.contains('`'),
+            "a literal backtick means the fragment was never rendered: {html}"
+        );
+        assert!(
+            !html.starts_with("<p>"),
+            "an inline fragment must not carry a block wrapper: {html}"
+        );
+    }
+
+    #[test]
+    fn inline_rendering_keeps_structure_when_there_is_more_than_a_sentence() {
+        let html = to_inline_html("First paragraph.\n\nSecond paragraph.");
+        assert!(
+            html.matches("<p>").count() == 2,
+            "multi-paragraph fragments keep their paragraphs: {html}"
+        );
     }
 
     #[test]

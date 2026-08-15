@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="study-result">
+  <a class="back-link" href="/study/{{ slug }}">{{ topic }}</a>
+  <h1>Results</h1>
+
+  {# Skipped is reported separately from wrong. Conflating them would tell the
+     reader something untrue about what they know. #}
+  <p class="study-score">
+    {{ correct }} of {{ total }} correct{% if self.skipped() > 0 %},
+    {{ self.skipped() }} skipped{% endif %}.
+  </p>
+
+  <ol class="study-answers">
+    {% for answer in answers %}
+    <li class="study-answer {{ answer.verdict_class() }}">
+      {# The verdict is a word first. The class only tints it — criteria 3B. #}
+      <p class="study-verdict">{{ answer.verdict() }}</p>
+      <p class="study-stem">{{ answer.question.stem_html()|safe }}</p>
+
+      {% if answer.unanswered() %}
+      <p class="study-chosen">You did not answer this one.</p>
+      {% else %}
+      <p class="study-chosen">
+        You chose: <span>{{ answer.chosen_option_html()|safe }}</span>
+      </p>
+      {% endif %}
+
+      {% if !answer.correct() %}
+      <p class="study-correct">
+        The answer is: <span>{{ answer.correct_option_html()|safe }}</span>
+      </p>
+      {% endif %}
+
+      <p class="study-explanation">{{ answer.question.explanation_html()|safe }}</p>
+      <p class="study-source">
+        <a href="{{ answer.question.learn.href() }}">Where this is explained</a>
+      </p>
+    </li>
+    {% endfor %}
+  </ol>
+
+  <p class="study-actions">
+    <a href="/study/{{ slug }}">Try again</a>
+    <a href="/study">Other topics</a>
+  </p>
+</section>
+{% endblock %}

@@ -612,6 +612,20 @@ a:hover { color: var(--accent-hover); }
     gap:     2rem;
 }
 
+/* The nav collapses behind a toggle on narrow screens using a native
+   <details> — the same no-JS disclosure the wiki sidebar and the lab contents
+   use. On wide screens the summary is hidden and the links sit inline, so the
+   markup is one shape and only the breakpoint decides how it reads. */
+.nav-menu > summary {
+    display: none;
+}
+
+/* Chromium hides closed <details> content via ::details-content, which would
+   swallow the always-open wide layout */
+.nav-menu::details-content {
+    content-visibility: visible;
+}
+
 .nav-link {
     color:           var(--text-muted);
     font-size:       0.875rem;
@@ -982,6 +996,29 @@ hr {
 
 .about-list strong {
     color: var(--text);
+}
+
+/* Label-and-blurb rows, rendered from models::surface on the home page and on
+   /about. A surface blurb is a whole sentence rather than the short fragment
+   the plain list carries, so at 380px two rows run together without more air
+   between them. */
+.surface-list li {
+    padding:     var(--space-2) 0;
+    line-height: 1.7;
+    max-width:   var(--measure);
+}
+
+/* The label is already bold and accented against a muted blurb, which is
+   signal enough for a row that is nothing but a link and its description. The
+   underline comes back on hover and focus so a pointer still gets confirmation
+   before the click. */
+.surface-list strong a {
+    text-decoration: none;
+}
+
+.surface-list strong a:hover,
+.surface-list strong a:focus-visible {
+    text-decoration: underline;
 }
 
 /* -----------------------------------------------------------------------
@@ -1360,6 +1397,363 @@ hr {
 }
 
 /* -----------------------------------------------------------------------
+   Glossary — /glossary, /glossary/terms, /glossary/commands
+   ----------------------------------------------------------------------- */
+
+.glossary-lede,
+.glossary-empty {
+    color:       var(--text-muted);
+    max-width:   var(--measure);
+    line-height: 1.75;
+    margin-top:  var(--space-2);
+}
+
+/* Two control rows: what is shown, and where to jump. Separated because they
+   answer different questions and running them together made both harder to
+   scan. */
+.glossary-controls {
+    display:        flex;
+    flex-direction: column;
+    gap:            0.6rem;
+    margin:         var(--space-4) 0 var(--space-2);
+    padding-bottom: var(--space-3);
+    border-bottom:  1px solid var(--border);
+}
+
+.glossary-filter,
+.glossary-jump {
+    display:   flex;
+    flex-wrap: wrap;
+    gap:       0.3rem 0.5rem;
+}
+
+.glossary-filter a,
+.glossary-jump a {
+    color:           var(--text-muted);
+    text-decoration: none;
+    border:          1px solid var(--border);
+    padding:         0.15rem 0.6rem;
+    font-size:       0.8rem;
+    line-height:     1.6;
+}
+
+/* The jump bar is single characters, so each target needs padding to stay a
+   comfortable tap size on a phone rather than a 10px letter */
+.glossary-jump a {
+    min-width:  2.1rem;
+    text-align: center;
+    padding:    0.15rem 0.4rem;
+}
+
+.glossary-filter a:hover,
+.glossary-jump a:hover,
+.glossary-filter a:focus-visible,
+.glossary-jump a:focus-visible {
+    color:        var(--accent);
+    border-color: var(--accent);
+}
+
+/* The active filter is marked by weight and a filled border as well as colour,
+   so the state survives a reader who cannot distinguish the accent */
+.glossary-filter a.is-active {
+    color:        var(--accent);
+    border-color: var(--accent);
+    font-weight:  600;
+}
+
+.glossary-count {
+    color:     var(--text-faint);
+    font-size: 0.8rem;
+}
+
+/* Letter headings are the landmarks the jump bar lands on */
+.glossary-letter {
+    display:           flex;
+    align-items:       baseline;
+    gap:               0.75rem;
+    margin:            var(--space-6) 0 var(--space-2);
+    padding-bottom:    0.3rem;
+    border-bottom:     1px solid var(--border-subtle);
+    color:             var(--accent);
+    font-size:         var(--text-lg);
+    scroll-margin-top: calc(var(--header-h) + var(--space-2));
+}
+
+.glossary-top {
+    color:           var(--text-faint);
+    font-size:       0.7rem;
+    text-transform:  uppercase;
+    letter-spacing:  0.08em;
+    text-decoration: none;
+}
+
+.glossary-top:hover {
+    color: var(--accent);
+}
+
+.glossary-list {
+    margin: 0;
+}
+
+.glossary-entry {
+    padding:           var(--space-3) 0;
+    border-bottom:     1px solid var(--border-subtle);
+    max-width:         var(--measure);
+    scroll-margin-top: calc(var(--header-h) + var(--space-2));
+}
+
+.glossary-entry dt {
+    display:     flex;
+    align-items: baseline;
+    flex-wrap:   wrap;
+    gap:         0.6rem;
+}
+
+.glossary-entry dd {
+    margin-left: 0;
+    margin-top:  0.4rem;
+}
+
+/* Reads as a term, not as a link — the self-link affordance appears on hover */
+.glossary-term {
+    color:           var(--text);
+    font-weight:     600;
+    font-size:       1.02rem;
+    text-decoration: none;
+}
+
+.glossary-term:hover,
+.glossary-term:focus-visible {
+    text-decoration: underline;
+}
+
+.glossary-aka,
+.glossary-cat {
+    color:     var(--text-faint);
+    font-size: 0.75rem;
+}
+
+.glossary-cat {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.glossary-definition,
+.glossary-context {
+    color:       var(--text-muted);
+    line-height: 1.7;
+}
+
+.glossary-context {
+    margin-top: 0.4rem;
+    font-size:  0.92rem;
+}
+
+.glossary-synopsis,
+.glossary-example {
+    margin-bottom: 0.4rem;
+    overflow-x:    auto;
+}
+
+.glossary-example {
+    margin-top: 0.4rem;
+}
+
+/* The word "Careful:" carries the meaning; the rule and tint only reinforce it */
+.glossary-caution {
+    margin-top:   0.5rem;
+    padding-left: var(--space-2);
+    border-left:  2px solid var(--accent);
+    color:        var(--text-muted);
+    font-size:    0.9rem;
+    line-height:  1.7;
+}
+
+/* Three kinds of link, told apart by a marker rather than by colour */
+.glossary-links {
+    display:    flex;
+    flex-wrap:  wrap;
+    gap:        0.3rem 1rem;
+    margin-top: 0.6rem;
+    font-size:  0.8rem;
+}
+
+/* A marker per link kind — where it goes is legible without reading the label
+   and without depending on colour. inline-block so the trailing space is not
+   collapsed against the text. */
+.glossary-learn::before,
+.glossary-see-also::before,
+.glossary-man::before {
+    display:      inline-block;
+    margin-right: 0.35em;
+    opacity:      0.8;
+}
+
+.glossary-learn::before    { content: "\2192"; }   /* → into the wiki      */
+.glossary-see-also::before { content: "\21C4"; }   /* ⇄ across the glossary */
+.glossary-man::before      { content: "\2197"; }   /* ↗ off-site            */
+
+.glossary-see-also,
+.glossary-man {
+    color: var(--text-faint);
+}
+
+/* -----------------------------------------------------------------------
+   Study — /study
+   ----------------------------------------------------------------------- */
+
+.study-lede,
+.study-empty {
+    color:       var(--text-muted);
+    max-width:   var(--measure);
+    line-height: 1.75;
+    margin-top:  var(--space-2);
+}
+
+.study-questions,
+.study-answers {
+    list-style: none;
+    padding:    0;
+    margin:     var(--space-4) 0 0;
+    counter-reset: question;
+}
+
+.study-question,
+.study-answer {
+    padding:       var(--space-4) 0;
+    border-top:    1px solid var(--border);
+    max-width:     var(--measure);
+}
+
+.study-question fieldset {
+    border:  0;
+    padding: 0;
+    margin:  0;
+}
+
+.study-stem {
+    color:       var(--text);
+    font-weight: 600;
+    line-height: 1.6;
+    padding:     0;
+}
+
+.study-options {
+    list-style: none;
+    padding:    0;
+    margin:     var(--space-2) 0 0;
+}
+
+.study-options li {
+    margin-bottom: 0.4rem;
+}
+
+/* The whole row is the target, so a mis-tap next to the radio still selects */
+.study-options label {
+    display:      flex;
+    gap:          0.6rem;
+    align-items:  baseline;
+    padding:      0.35rem 0.5rem;
+    cursor:       pointer;
+    line-height:  1.6;
+    color:        var(--text-muted);
+}
+
+.study-options label:hover {
+    background: var(--surface);
+}
+
+.study-options input[type="radio"] {
+    flex-shrink:  0;
+    accent-color: var(--accent);
+}
+
+.study-actions {
+    display:   flex;
+    gap:       1rem;
+    flex-wrap: wrap;
+    margin:    var(--space-5) 0 0;
+}
+
+.study-form button {
+    background:  var(--surface);
+    border:      1px solid var(--border);
+    color:       var(--text);
+    font:        inherit;
+    padding:     0.5rem 1.2rem;
+    cursor:      pointer;
+}
+
+.study-form button:hover {
+    border-color: var(--accent);
+    color:        var(--accent);
+}
+
+.study-score {
+    color:       var(--text);
+    font-size:   var(--text-lg);
+    font-weight: 600;
+    margin-top:  var(--space-2);
+}
+
+/* The verdict is a word. The border is a second channel, not the only one. */
+.study-verdict {
+    font-size:      0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color:          var(--text-faint);
+    margin-bottom:  0.3rem;
+}
+
+.study-answer {
+    padding-left: var(--space-3);
+    border-left:  2px solid var(--border);
+}
+
+.study-answer.is-correct {
+    border-left-color: var(--accent);
+}
+
+.study-answer.is-correct .study-verdict {
+    color: var(--accent);
+}
+
+.study-answer.is-wrong {
+    border-left-style: double;
+    border-left-width: 4px;
+}
+
+.study-answer.is-skipped {
+    border-left-style: dotted;
+}
+
+.study-chosen,
+.study-correct,
+.study-explanation,
+.study-source {
+    color:       var(--text-muted);
+    line-height: 1.7;
+    margin-top:  0.4rem;
+}
+
+.study-chosen span,
+.study-correct span {
+    color:       var(--text);
+    font-weight: 600;
+}
+
+.study-explanation {
+    padding-left: var(--space-3);
+    border-left:  1px solid var(--border);
+    color:        var(--text-faint);
+    font-size:    0.92rem;
+}
+
+.study-source {
+    font-size: 0.8rem;
+}
+
+/* -----------------------------------------------------------------------
    Search — /search
    ----------------------------------------------------------------------- */
 
@@ -1530,12 +1924,25 @@ mark {
 
 .post-content a { color: var(--accent); }
 
-.post-content code {
-    background: var(--surface);
-    border:     1px solid var(--border);
-    padding:    0.1em 0.4em;
-    font-size:  0.9em;
-    color:      var(--code);
+/* Inline code is styled site-wide rather than only inside articles. Commands,
+   flags, and addresses appear in glossary definitions, question stems, and
+   answer options too, and monospace is what makes `ff00::/8` readable as one
+   token instead of prose. The .post-content ancestor was doing nothing but
+   restricting where that worked. */
+code {
+    background:  var(--surface);
+    border:      1px solid var(--border);
+    padding:     0.1em 0.4em;
+    font-family: var(--font-mono);
+    font-size:   0.9em;
+    color:       var(--code);
+}
+
+/* Inside a <pre> the block already carries the frame */
+pre code {
+    background: none;
+    border:     0;
+    padding:    0;
 }
 
 /* No measure cap — code keeps the full column and scrolls inside itself
@@ -2007,9 +2414,44 @@ mark {
 
     .nav-right { gap: 1rem; }
 
+    /* Below this width the six nav entries wrapped to two rows and pushed the
+       header tall enough that everything measuring from --header-h had to
+       follow. Behind a toggle they cost one row instead. */
+    .nav-menu {
+        position: relative;
+    }
+
+    .nav-menu > summary {
+        display:     block;
+        cursor:      pointer;
+        color:       var(--accent);
+        font-size:   0.85rem;
+        list-style:  none;
+        white-space: nowrap;
+    }
+
+    .nav-menu > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    /* Opens over the page rather than pushing it down, so the header keeps its
+       height and the pinned-bar measurements stay true whether it is open or
+       shut */
+    .nav-menu[open] > .nav-links {
+        position:   absolute;
+        right:      0;
+        top:        calc(100% + 0.5rem);
+        z-index:    60;
+        background: var(--surface);
+        border:     1px solid var(--border);
+        padding:    0.75rem 1rem;
+        box-shadow: var(--shadow);
+        min-width:  9rem;
+    }
+
     .nav-links {
-        flex-wrap: wrap;
-        gap:       0.75rem 1rem;
+        flex-direction: column;
+        gap:            0.75rem;
     }
 
     main { padding: 2.5rem 1.25rem 4rem; }

@@ -91,6 +91,12 @@ impl GlossaryTerm {
     pub fn anchor(&self) -> String {
         markdown::slugify(&self.term)
     }
+
+    // Definitions are authored with inline code spans for commands, flags, and
+    // addresses. Rendered, or the backticks reach the reader as backticks.
+    pub fn definition_html(&self) -> String {
+        markdown::to_inline_html(&self.definition)
+    }
 }
 
 // One command — what it does, and when you would reach for it
@@ -118,6 +124,21 @@ pub struct GlossaryCommand {
 impl GlossaryCommand {
     pub fn anchor(&self) -> String {
         markdown::slugify(&self.name)
+    }
+
+    pub fn purpose_html(&self) -> String {
+        markdown::to_inline_html(&self.purpose)
+    }
+
+    pub fn context_html(&self) -> String {
+        markdown::to_inline_html(&self.context)
+    }
+
+    pub fn caution_html(&self) -> String {
+        self.caution
+            .as_deref()
+            .map(markdown::to_inline_html)
+            .unwrap_or_default()
     }
 }
 

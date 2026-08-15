@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="study-index">
+  <h1>Study</h1>
+
+  <p class="study-lede">
+    Practice questions drawn from the <a href="/learn">education wiki</a>. Every
+    answer links back to the section that explains it, and every explanation
+    says why the other options are wrong &mdash; which is the part worth
+    reading.
+  </p>
+
+  {% if sets.is_empty() %}
+  <p class="study-empty">
+    No question sets yet. The <a href="/learn">wiki</a> and the
+    <a href="/glossary">glossary</a> are the material they will be drawn from.
+  </p>
+  {% else %}
+  <ul class="about-list study-list">
+    {% for set in sets %}
+    <li>
+      <strong><a href="/study/{{ set.slug }}">{{ set.topic }}</a></strong>
+      &mdash; {{ set.questions.len() }} questions.
+      <a class="study-cards-link" href="/study/cards/{{ set.slug }}">flashcards</a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+{% endblock %}
