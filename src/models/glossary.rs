@@ -22,6 +22,11 @@ use std::path::Path;
 
 pub const GLOSSARY_DIR: &str = "content/glossary";
 
+// The shell prompt shown before a command, matching the convention the wiki's
+// fenced blocks use. An unprivileged prompt — nothing in the reference needs
+// root, and a `#` would be a claim about the command rather than decoration.
+const PROMPT: &str = "$";
+
 // -----------------------------------------------------------------------
 // Data types
 // -----------------------------------------------------------------------
@@ -137,9 +142,24 @@ impl GlossaryCommand {
         markdown::to_inline_html(&self.context)
     }
 
-    // The synopsis as a code block body, one command per line
+    // The synopsis as a code block body, one command per line, each carrying
+    // the `$` prompt the wiki's fenced blocks already use. The prompt is
+    // presentation, so it is added here rather than stored — the data stays a
+    // list of commands.
     pub fn synopsis_block(&self) -> String {
-        self.synopsis.join("\n")
+        self.synopsis
+            .iter()
+            .map(|command| format!("{PROMPT} {command}"))
+            .collect::<Vec<_>>()
+            .join("\n")
+    }
+
+    // The worked example, prompted the same way
+    pub fn example_block(&self) -> String {
+        self.example
+            .as_deref()
+            .map(|command| format!("{PROMPT} {command}"))
+            .unwrap_or_default()
     }
 
     pub fn caution_html(&self) -> String {
@@ -242,6 +262,36 @@ mod tests {
                 assert!(
                     line.trim() == line,
                     "{}: synopsis line {line:?} has stray whitespace",
+                    entry.name
+                );
+            }
+        }
+    }
+
+    // Commands are shown the way the wiki shows them — prompted — so a reader
+    // moving between the two surfaces sees one convention. The prompt is added
+    // at render time, so it must never also live in the data.
+    #[test]
+    fn command_blocks_carry_a_prompt_that_is_not_stored_in_the_data() {
+        for entry in load_commands(&dir()).expect("commands parse") {
+            for line in entry.synopsis_block().lines() {
+                assert!(
+                    line.starts_with("$ "),
+                    "{}: synopsis line {line:?} has no prompt",
+                    entry.name
+                );
+            }
+            for stored in &entry.synopsis {
+                assert!(
+                    !stored.starts_with('$') && !stored.starts_with('#'),
+                    "{}: {stored:?} stores the prompt — it belongs to rendering",
+                    entry.name
+                );
+            }
+            if entry.example.is_some() {
+                assert!(
+                    entry.example_block().starts_with("$ "),
+                    "{}: the example has no prompt",
                     entry.name
                 );
             }
