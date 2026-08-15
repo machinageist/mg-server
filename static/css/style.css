@@ -612,26 +612,45 @@ a:hover { color: var(--accent-hover); }
     gap:     2rem;
 }
 
-/* The nav collapses behind a toggle on narrow screens using a native
-   <details> — the same no-JS disclosure the wiki sidebar and the lab contents
-   use. On wide screens the summary is hidden and the links sit inline, so the
-   markup is one shape and only the breakpoint decides how it reads. */
+/* The menu is present at every width, not only where the bar runs out of room.
+   It carries every surface, so the two the bar has no slot for stay one click
+   from anywhere on the site.
+
+   A native <details>: it opens with no JavaScript, closes on Escape, and needs
+   no state of its own. Nothing here overrides how a closed one hides its
+   content — the panel is the menu and nothing else, so the browser's own
+   behaviour is exactly right. */
+.nav-menu {
+    position: relative;
+}
+
 .nav-menu > summary {
+    cursor:      pointer;
+    color:       var(--accent);
+    font-size:   0.85rem;
+    list-style:  none;
+    white-space: nowrap;
+}
+
+.nav-menu > summary::-webkit-details-marker {
     display: none;
 }
 
-/* Chromium hides closed <details> content via ::details-content, which would
-   swallow the always-open wide layout */
-.nav-menu::details-content {
-    content-visibility: visible;
-}
-
-/* Surfaces that do not earn a slot in the horizontal bar. They are in the
-   markup regardless, so the collapsed menu below the breakpoint can show every
-   destination the home page lists — a reader who opens a menu wants the whole
-   map, not the abridged one. */
-.nav-link.is-secondary {
-    display: none;
+/* Opens over the page rather than pushing it down, so the header keeps its
+   height and the pinned-bar measurements stay true whether it is open or shut */
+.nav-menu[open] > .nav-menu-panel {
+    position:       absolute;
+    right:          0;
+    top:            calc(100% + 0.5rem);
+    z-index:        60;
+    display:        flex;
+    flex-direction: column;
+    gap:            0.75rem;
+    background:     var(--surface);
+    border:         1px solid var(--border);
+    padding:        0.75rem 1rem;
+    box-shadow:     var(--shadow);
+    min-width:      9rem;
 }
 
 .nav-link {
@@ -2046,7 +2065,7 @@ pre code {
 pre {
     background:  var(--surface);
     border:      1px solid var(--border);
-    padding:     1.25rem;
+    padding:     0.85rem 1rem;
     overflow-x:  auto;
     margin:      var(--space-4) 0;
     font-family: var(--font-mono);
@@ -2511,65 +2530,12 @@ pre {
 
     .nav-right { gap: 1rem; }
 
-    /* Below this width the six nav entries wrapped to two rows and pushed the
-       header tall enough that everything measuring from --header-h had to
-       follow. Behind a toggle they cost one row instead. */
-    .nav-menu {
-        position: relative;
-    }
-
-    .nav-menu > summary {
-        display:     block;
-        cursor:      pointer;
-        color:       var(--accent);
-        font-size:   0.85rem;
-        list-style:  none;
-        white-space: nowrap;
-    }
-
-    .nav-menu > summary::-webkit-details-marker {
-        display: none;
-    }
-
-    /* Closed means closed, in both engines. The wide layout needs a closed
-       <details> to show its content — the summary is hidden up there and the
-       links sit inline — and the two rules that buy it, `.nav-links` carrying a
-       display and the ::details-content override above, are global. Below the
-       breakpoint they leaked: the toggle appeared, and the menu under it was
-       already open. Undone here rather than by scoping the originals, because
-       the wide layout is the one that wants the exception. */
-    .nav-menu:not([open]) > .nav-links {
-        display: none;
-    }
-
-    .nav-menu:not([open])::details-content {
-        content-visibility: hidden;
-    }
-
-    /* Opens over the page rather than pushing it down, so the header keeps its
-       height and the pinned-bar measurements stay true whether it is open or
-       shut */
-    .nav-menu[open] > .nav-links {
-        position:   absolute;
-        right:      0;
-        top:        calc(100% + 0.5rem);
-        z-index:    60;
-        background: var(--surface);
-        border:     1px solid var(--border);
-        padding:    0.75rem 1rem;
-        box-shadow: var(--shadow);
-        min-width:  9rem;
-    }
-
+    /* The bar is what goes away down here, not the menu. Below this width its
+       entries wrapped to two rows and pushed the header tall enough that
+       everything measuring from --header-h had to follow; the menu beside it
+       already carries every one of them. */
     .nav-links {
-        flex-direction: column;
-        gap:            0.75rem;
-    }
-
-    /* No horizontal budget to compete for down here, so the menu carries every
-       surface rather than the subset the wide bar has room for */
-    .nav-link.is-secondary {
-        display: block;
+        display: none;
     }
 
     main { padding: 2.5rem 1.25rem 4rem; }
