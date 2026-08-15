@@ -2534,3 +2534,38 @@ pre code {
         gap:            0.4rem;
     }
 }
+
+/* Performance-based scenarios — /study/pbq/:slug */
+
+/* Terminal output, so it keeps its columns and scrolls rather than wrapping */
+.pbq-given {
+    margin:     var(--space-2) 0;
+    max-width:  var(--measure);
+    overflow-x: auto;
+}
+
+.pbq-input {
+    display:     flex;
+    gap:         0.6rem;
+    align-items: baseline;
+    flex-wrap:   wrap;
+    margin-top:  var(--space-2);
+}
+
+.pbq-input label {
+    color:          var(--text-faint);
+    font-size:      0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* Monospace, because what goes in it is a command */
+.pbq-input input {
+    flex:        1 1 22rem;
+    background:  var(--surface);
+    border:      1px solid var(--border);
+    color:       var(--text);
+    font-family: var(--font-mono);
+    font-size:   0.9rem;
+    padding:     0.45rem 0.6rem;
+}

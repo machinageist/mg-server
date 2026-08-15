@@ -15,6 +15,7 @@
 
 use crate::errors::SiteError;
 use crate::models::question::{self, GradedAnswer, Question, QuestionSet, STUDY_DIR};
+use crate::models::scenario::{self, GradedStep, PBQ_DIR, Scenario};
 use askama::Template;
 use askama_axum::IntoResponse;
 use axum::extract::{Form, Path as AxumPath, Query};
@@ -30,6 +31,7 @@ use std::path::PathBuf;
 #[template(path = "study_index.html")]
 pub struct StudyIndexTemplate {
     pub sets: Vec<QuestionSet>,
+    pub scenarios: Vec<Scenario>,
 }
 
 impl StudyIndexTemplate {
@@ -48,6 +50,7 @@ impl StudyIndexTemplate {
 pub async fn index() -> impl IntoResponse {
     StudyIndexTemplate {
         sets: question::all(&PathBuf::from(STUDY_DIR)),
+        scenarios: scenario::all(&PathBuf::from(PBQ_DIR)),
     }
 }
 
@@ -232,6 +235,94 @@ pub async fn cards(
         set,
         index,
         revealed: position.show.is_some_and(|show| show == 1),
+    })
+}
+
+// -----------------------------------------------------------------------
+// Performance-based scenarios — /study/pbq/:slug
+// -----------------------------------------------------------------------
+
+#[derive(Template)]
+#[template(path = "study_pbq.html")]
+pub struct ScenarioTemplate {
+    pub scenario: Scenario,
+}
+
+impl ScenarioTemplate {
+    pub fn title(&self) -> String {
+        format!("{} — machinageist", self.scenario.title)
+    }
+    pub fn description(&self) -> &str {
+        "A performance-based scenario worked one command at a time."
+    }
+    pub fn section(&self) -> &str {
+        "study"
+    }
+}
+
+// Render a scenario's steps as a single form
+pub async fn scenario_page(
+    AxumPath(slug): AxumPath<String>,
+) -> Result<impl IntoResponse, SiteError> {
+    let scenario = scenario::load(&PathBuf::from(PBQ_DIR), &slug)?;
+    Ok(ScenarioTemplate { scenario })
+}
+
+#[derive(Template)]
+#[template(path = "study_pbq_result.html")]
+pub struct ScenarioResultTemplate {
+    pub title: String,
+    pub slug: String,
+    pub steps: Vec<GradedStep>,
+    pub correct: usize,
+    pub total: usize,
+}
+
+impl ScenarioResultTemplate {
+    pub fn title(&self) -> String {
+        format!("{} results — machinageist", self.title)
+    }
+    pub fn description(&self) -> &str {
+        "Scenario results, with the accepted command and an explanation for every step."
+    }
+    pub fn section(&self) -> &str {
+        "study"
+    }
+
+    pub fn skipped(&self) -> usize {
+        self.steps.iter().filter(|s| s.unanswered()).count()
+    }
+}
+
+// Grade a submitted scenario
+pub async fn grade_scenario(
+    AxumPath(slug): AxumPath<String>,
+    Form(submitted): Form<HashMap<String, String>>,
+) -> Result<impl IntoResponse, SiteError> {
+    let scenario = scenario::load(&PathBuf::from(PBQ_DIR), &slug)?;
+
+    let steps: Vec<GradedStep> = scenario
+        .steps
+        .iter()
+        .enumerate()
+        .map(|(index, step)| GradedStep {
+            step: step.clone(),
+            typed: submitted
+                .get(&format!("s{index}"))
+                .cloned()
+                .unwrap_or_default(),
+        })
+        .collect();
+
+    let correct = steps.iter().filter(|s| s.correct()).count();
+    let total = steps.len();
+
+    Ok(ScenarioResultTemplate {
+        title: scenario.title,
+        slug,
+        steps,
+        correct,
+        total,
     })
 }
 

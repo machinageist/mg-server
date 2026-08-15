@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="study-quiz">
+  <a class="back-link" href="/study">Study</a>
+  <h1>{{ scenario.title }}</h1>
+
+  <p class="study-lede">{{ scenario.situation_html()|safe }}</p>
+
+  <form class="study-form" method="post" action="/study/pbq/{{ scenario.slug }}">
+    <ol class="study-questions">
+      {% for (index, step) in scenario.steps.iter().enumerate() %}
+      <li class="study-question">
+        <p class="study-stem">{{ step.prompt_html()|safe }}</p>
+
+        {% if let Some(given) = step.given %}
+        {# Fixed-width, because it is terminal output and its columns carry
+           meaning. Scrolls inside itself rather than wrapping. #}
+        <pre class="pbq-given"><code>{{ given }}</code></pre>
+        {% endif %}
+
+        <p class="pbq-input">
+          <label for="s{{ index }}">Command</label>
+          <input type="text" id="s{{ index }}" name="s{{ index }}"
+                 autocomplete="off" autocapitalize="off" spellcheck="false"
+                 autocorrect="off">
+        </p>
+      </li>
+      {% endfor %}
+    </ol>
+
+    <div class="study-actions">
+      <button type="submit">Check answers</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

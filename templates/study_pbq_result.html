@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="study-result">
+  <a class="back-link" href="/study/pbq/{{ slug }}">{{ title }}</a>
+  <h1>Results</h1>
+
+  <p class="study-score">
+    {{ correct }} of {{ total }} correct{% if self.skipped() > 0 %},
+    {{ self.skipped() }} skipped{% endif %}.
+  </p>
+
+  <ol class="study-answers">
+    {% for graded in steps %}
+    <li class="study-answer {{ graded.verdict_class() }}">
+      <p class="study-verdict">{{ graded.verdict() }}</p>
+      <p class="study-stem">{{ graded.step.prompt_html()|safe }}</p>
+
+      {% if graded.unanswered() %}
+      <p class="study-chosen">You did not answer this one.</p>
+      {% else %}
+      <p class="study-chosen">You typed: <code>{{ graded.typed }}</code></p>
+      {% endif %}
+
+      {% if !graded.correct() %}
+      <p class="study-correct">
+        One accepted answer: <code>{{ graded.step.canonical() }}</code>
+      </p>
+      {% endif %}
+
+      <p class="study-explanation">{{ graded.step.explanation_html()|safe }}</p>
+      <p class="study-source">
+        <a href="{{ graded.step.learn_href() }}">Where this is explained</a>
+      </p>
+    </li>
+    {% endfor %}
+  </ol>
+
+  <p class="study-actions">
+    <a href="/study/pbq/{{ slug }}">Try again</a>
+    <a href="/study">Other topics</a>
+  </p>
+</section>
+{% endblock %}

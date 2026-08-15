@@ -5,4 +5,5 @@ pub mod page;
 pub mod post;
 pub mod project;
 pub mod question;
+pub mod scenario;
 pub mod surface;

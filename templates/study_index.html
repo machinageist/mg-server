@@ -27,5 +27,23 @@
     {% endfor %}
   </ul>
   {% endif %}
+
+  {% if !scenarios.is_empty() %}
+  <h2>Scenarios</h2>
+  <p class="study-lede">
+    Multi-step problems where the answer is a command you type rather than an
+    option you pick. Several forms of each command are accepted &mdash; there is
+    usually more than one right way, and insisting on a favourite is not
+    assessment.
+  </p>
+  <ul class="about-list study-list">
+    {% for scenario in scenarios %}
+    <li>
+      <strong><a href="/study/pbq/{{ scenario.slug }}">{{ scenario.title }}</a></strong>
+      &mdash; {{ scenario.steps.len() }} steps.
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
 </section>
 {% endblock %}
