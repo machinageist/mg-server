@@ -1570,15 +1570,18 @@ hr {
     font-size:  0.92rem;
 }
 
-/* Tighter than an article's code block — these sit inside a definition list
-   entry rather than between paragraphs, so the article's vertical margins
-   would push the entries apart */
+/* No padding, size, or border of their own — these wrap a <pre> the shared
+   Markdown renderer produced, and it should look exactly like the same block
+   on a /learn page. Only the vertical rhythm is tightened, because these sit
+   inside a definition entry rather than between article paragraphs. */
 .glossary-synopsis,
 .glossary-example {
-    margin:    0.5rem 0;
-    padding:   0.6rem 0.8rem;
-    font-size: 0.85rem;
     max-width: var(--measure);
+}
+
+.glossary-synopsis > pre,
+.glossary-example > pre {
+    margin: 0.5rem 0;
 }
 
 /* The word "Careful:" carries the meaning; the rule and tint only reinforce it */
@@ -2526,6 +2529,21 @@ pre {
 
     .nav-menu > summary::-webkit-details-marker {
         display: none;
+    }
+
+    /* Closed means closed, in both engines. The wide layout needs a closed
+       <details> to show its content — the summary is hidden up there and the
+       links sit inline — and the two rules that buy it, `.nav-links` carrying a
+       display and the ::details-content override above, are global. Below the
+       breakpoint they leaked: the toggle appeared, and the menu under it was
+       already open. Undone here rather than by scoping the originals, because
+       the wide layout is the one that wants the exception. */
+    .nav-menu:not([open]) > .nav-links {
+        display: none;
+    }
+
+    .nav-menu:not([open])::details-content {
+        content-visibility: hidden;
     }
 
     /* Opens over the page rather than pushing it down, so the header keeps its
