@@ -13,10 +13,17 @@ Reviewable classification for the wiki prune (Phase 4 of the site reorg). Every
 locked decision, is: keep only the pages that correspond to the *still-active,
 safe-core* parts of `~/geistscope/`; archive/remove the rest.
 
-The source of truth for "active vs aspirational" is GeistScope's own pruning
-inventory: `~/geistscope/PRUNING_INVENTORY.md` (dated 2026-07-02) and
-`~/geistscope/PRUNING_PLAN.md`. That inventory labels each crate one of
-`Keep now`, `Keep later`, `Needs ownership walkthrough`, `Archive`, `Unsafe`.
+The current source of truth for "reviewed vs experimental" is GeistScope's root
+`README.md` plus `docs/gauntlet/manifest.md`, `docs/gauntlet/summary.md`, and
+`docs/gauntlet/decisions-needed.md`. The older pruning classifications below are
+retained only as historical page-triage evidence; their former root inventory
+files are no longer present in the repository.
+
+As of 2026-08-20, the terminal-root symlink fix is landed, but GS-4.1 result
+promotion remains blocked after descriptor-chain atomic slice 2 exhausted blind
+review on a pathname-source restoration race. Its rejected production diff was
+reverted. This does not clear the public publication gate above, so the site
+continues to publish no live GeistScope capability page.
 
 ## KEEP set (the small archive)
 
