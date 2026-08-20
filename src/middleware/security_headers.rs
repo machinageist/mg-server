@@ -11,8 +11,8 @@
 //              path so it sees every response regardless of which handler produced it.
 //
 //              Header purposes (blue team / red team):
-//                CSP            — restricts script/style sources; defeats XSS injection
-//                                 even if an attacker finds an injection vector
+//                CSP            — restricts resource, form, base, and framing
+//                                 behavior to reduce the impact of HTML injection
 //                HSTS           — forces HTTPS in the browser; defeats SSL stripping
 //                nosniff        — prevents MIME sniffing; closes file-upload-as-script vector
 //                X-Frame-Options — prevents iframe embedding; defeats clickjacking
@@ -44,6 +44,9 @@ pub async fn add_security_headers(request: Request<Body>, next: Next) -> Respons
          img-src 'self' data:; \
          font-src 'self'; \
          connect-src 'self'; \
+         base-uri 'none'; \
+         form-action 'self'; \
+         object-src 'none'; \
          frame-ancestors 'none'"
             .parse()
             .unwrap(),
@@ -101,4 +104,34 @@ pub async fn add_security_headers(request: Request<Body>, next: Next) -> Respons
     headers.remove("server");
 
     response
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum::Router;
+    use axum::middleware;
+    use axum::routing::get;
+    use tower::ServiceExt;
+
+    #[tokio::test]
+    async fn csp_closes_navigation_and_plugin_injection_paths() {
+        let app = Router::new()
+            .route("/", get(|| async { "ok" }))
+            .layer(middleware::from_fn(add_security_headers));
+        let response = app
+            .oneshot(Request::get("/").body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        let policy = response
+            .headers()
+            .get("content-security-policy")
+            .unwrap()
+            .to_str()
+            .unwrap();
+
+        for directive in ["base-uri 'none'", "form-action 'self'", "object-src 'none'"] {
+            assert!(policy.contains(directive), "CSP is missing {directive:?}");
+        }
+    }
 }
