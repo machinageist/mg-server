@@ -1,14 +1,8 @@
 // Author:      machinageist
 // Date:        2026-07-12
 // Description: Handlers for the /status page and /status.json endpoint. Both
-//              render the same Status snapshot from state.rs — the page for
-//              humans, the JSON for machines (the /tty terminal consumes it).
-//              Values are read at request time; this is a stamp, not a feed.
-//
-// Notes:       The snapshot deliberately exposes only uptime, request count,
-//              RSS, version, build timestamp, and bind mode — no hostname, no
-//              addresses, no paths. Anything added here ships to the public
-//              internet, so the Status struct is the allowlist.
+//              render the same coarse availability value from state.rs. Process
+//              counters, memory, build metadata, and bind details stay private.
 
 use crate::state::Status;
 use askama::Template;
@@ -35,7 +29,7 @@ impl StatusTemplate {
         "Status — machinageist"
     }
     pub fn description(&self) -> &str {
-        "Live process vitals for machinageist.dev — uptime, request count, memory, and build metadata from the Rust process serving this page."
+        "A minimal availability check for machinageist.dev."
     }
     pub fn section(&self) -> &str {
         "status"
@@ -89,15 +83,16 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn status_page_renders_vitals() {
+    async fn status_page_reports_availability_without_process_vitals() {
         let (code, body) = get_body("/status").await;
         assert_eq!(code, StatusCode::OK);
-        assert!(body.contains("UP"), "status page must show uptime");
-        assert!(body.contains("REQ"), "status page must show request count");
-        // privacy allowlist — nothing internal leaks
-        assert!(!body.contains("0.0.0.0"));
-        assert!(!body.contains("/Users/"));
-        assert!(!body.contains("/home/"));
+        assert!(body.contains("available"));
+        for private_label in ["UP", "REQ", "MEM", "VER", "BUILT", "BIND"] {
+            assert!(
+                !body.contains(private_label),
+                "status page leaks {private_label}"
+            );
+        }
     }
 
     #[tokio::test]
@@ -105,19 +100,31 @@ mod tests {
         let (code, body) = get_body("/status.json").await;
         assert_eq!(code, StatusCode::OK);
         let parsed: serde_json::Value = serde_json::from_str(&body).expect("valid JSON");
-        assert!(parsed["uptime_secs"].is_u64());
-        assert!(parsed["requests"].is_u64());
-        assert_eq!(parsed["version"], env!("CARGO_PKG_VERSION"));
+        assert_eq!(parsed["status"], "available");
+        for private_field in [
+            "uptime_secs",
+            "uptime",
+            "requests",
+            "rss_mib",
+            "version",
+            "build",
+            "bind",
+        ] {
+            assert!(
+                parsed.get(private_field).is_none(),
+                "public status JSON leaks {private_field}"
+            );
+        }
     }
 
     #[tokio::test]
-    async fn vitals_strip_appears_on_pages() {
+    async fn process_vitals_do_not_appear_on_pages() {
         for path in ["/", "/blog"] {
             let (code, body) = get_body(path).await;
             assert_eq!(code, StatusCode::OK, "{path} must be 200");
             assert!(
-                body.contains("vitals-strip"),
-                "{path} must include the footer vitals strip"
+                !body.contains("vitals-strip"),
+                "{path} leaks process vitals"
             );
         }
     }
@@ -132,32 +139,5 @@ mod tests {
                 "{path} must carry Cache-Control: no-store"
             );
         }
-    }
-
-    // The one test allowed to publish to the process-global OnceLock —
-    // init_global is idempotent only for clones of the same runtime, so a
-    // second test claiming it with its own state would fail the first claim
-    #[tokio::test]
-    async fn status_json_reflects_requests_counted_through_the_router() {
-        let state = AppState::new();
-        crate::state::init_global(state.clone()).expect("test publishes the router state");
-        let app = router::build(state.clone());
-
-        // Three page views through the real middleware stack
-        for _ in 0..3 {
-            get(app.clone(), "/").await;
-        }
-
-        // The snapshot must read the same Arcs the middleware wrote through:
-        // 3 page views plus the /status.json request itself
-        let response = get(app, "/status.json").await;
-        let parsed: serde_json::Value =
-            serde_json::from_str(&body_string(response).await).expect("valid JSON");
-        assert_eq!(parsed["requests"], 4, "snapshot must see middleware writes");
-        assert_eq!(
-            parsed["requests"].as_u64().unwrap(),
-            state.requests_total(),
-            "global snapshot and local clone must share state"
-        );
     }
 }

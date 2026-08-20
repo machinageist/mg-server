@@ -5,44 +5,17 @@
   <h1>Status</h1>
 
   <p class="status-intro">
-    This page is rendered by the same Rust process that serves the rest of the
-    site — a single Axum binary on a homelab box, reached through a Cloudflare
-    Tunnel and a Caddy reverse proxy. The numbers below are read from the live
-    process at the moment you requested this page. There is no dashboard
-    service behind them and no JavaScript in front of them; refresh and they
-    move.
+    This request reached the application serving machinageist.dev. The public
+    check stays intentionally small; operational telemetry is kept private.
   </p>
 
   <dl class="status-readout">
-    <dt>UP</dt>
-    <dd>{{ status.uptime }} <span class="status-note">dd:hh:mm since process start</span></dd>
-
-    <dt>REQ</dt>
-    <dd>{{ status.requests }} <span class="status-note">requests served this process lifetime</span></dd>
-
-    {% match status.rss_mib %}
-    {% when Some with (mem) %}
-    <dt>MEM</dt>
-    <dd>{{ mem }} MiB <span class="status-note">resident set size, from /proc/self/status</span></dd>
-    {% when None %}
-    <dt>MEM</dt>
-    <dd>not available <span class="status-note">RSS readout requires Linux</span></dd>
-    {% endmatch %}
-
-    <dt>VER</dt>
-    <dd>v{{ status.version }} <span class="status-note">crate version</span></dd>
-
-    <dt>BUILT</dt>
-    <dd>{{ status.build }} <span class="status-note">compile-time stamp from build.rs</span></dd>
-
-    <dt>BIND</dt>
-    <dd>{{ status.bind }} <span class="status-note">resolved listener exposure; custom addresses stay private</span></dd>
+    <dt>STATUS</dt>
+    <dd>{{ status.status }}</dd>
   </dl>
 
   <p class="status-outro">
     Machine-readable version at <a href="/status.json">/status.json</a>.
-    No per-visitor data is retained to produce this page — the counters
-    are process-wide totals, not a record of who visited.
   </p>
 </section>
 {% endblock %}
