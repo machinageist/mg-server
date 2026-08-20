@@ -71,8 +71,12 @@ images, fonts, connections, and framing. I added three explicit directives:
 - `object-src 'none'` disables plugin and object content the site does not use.
 
 This is defense in depth. CSP can reduce the damage from some injected markup;
-it cannot make an injection bug safe. Repository-controlled Markdown can still
-contain raw HTML, so the content repository remains a trusted-author boundary.
+it cannot make an injection bug safe.
+
+The Markdown renderer also stopped treating author-supplied HTML as active
+markup. Raw HTML events are converted back to text and escaped before the result
+enters a template. Application-generated heading links remain active; a content
+commit cannot add a live script or form by dropping HTML into a post.
 
 ## The public writing needed an OPSEC edit
 

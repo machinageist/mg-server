@@ -61,6 +61,12 @@ pub fn to_html(markdown: &str) -> String {
                 heading_text.push_str(text);
                 events.push(event);
             }
+            // Repository Markdown is content, not a template extension point.
+            // Feeding source HTML back as text makes pulldown-cmark escape it;
+            // trusted anchors generated above remain active Event::Html values.
+            Event::Html(source) | Event::InlineHtml(source) => {
+                events.push(Event::Text(source));
+            }
             _ => events.push(event),
         }
     }
@@ -309,6 +315,20 @@ mod tests {
         let html = to_html("Some **bold** text and a [link](/learn/osi-model).\n");
         assert!(html.contains("<strong>bold</strong>"));
         assert!(html.contains(r#"href="/learn/osi-model""#));
+    }
+
+    #[test]
+    fn source_html_is_rendered_as_text_instead_of_active_markup() {
+        let html = to_html(
+            "Before <script>alert('xss')</script> <form action=\"https://example.com\"></form> after.\n",
+        );
+
+        assert!(!html.contains("<script>"), "script markup survived: {html}");
+        assert!(!html.contains("<form"), "form markup survived: {html}");
+        assert!(
+            html.contains("&lt;script&gt;"),
+            "the author should still see escaped source HTML: {html}"
+        );
     }
 
     #[test]
