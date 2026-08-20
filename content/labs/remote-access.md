@@ -7,6 +7,9 @@ tags: [labs, networking, vpn, wireguard, remote-access]
 
 ## Read this before installing anything
 
+This is a sanitized decision framework, not a statement of the remote-access
+tools or placement currently in use.
+
 **These two options overlap.** A coordinated mesh service like Tailscale *is*
 WireGuard, with a coordination server, key distribution, and NAT traversal
 layered on top. Running both gives you two remote-access paths, two policy
@@ -27,9 +30,8 @@ port for independence, the other trades a third-party dependency for reachabilit
 
 ## The claim this decision commits you to
 
-The public web service on this network uses an **outbound** tunnel with no
-inbound HTTP exposure. That property is stated publicly, and it is worth
-keeping.
+Assume the reference public service uses an outbound connector with no inbound
+HTTP listener. A remote-access choice should not silently broaden that claim.
 
 Self-hosted WireGuard requires an inbound UDP port forward. That does not make
 WireGuard the wrong choice — it makes the *claim* need scoping. If you run it,
@@ -46,11 +48,10 @@ cold is worse than no claim.
 ## Placement, and why it matters
 
 Whichever you pick terminates remote access, which means everything a remote
-peer can reach, it reaches *through* this host. Putting it in the admin zone is
-what places it under the policy matrix:
+peer can reach, it reaches *through* this host. Putting it behind a narrow administrative policy is what constrains it:
 
-> Admin gets management administration, SSH to approved server and lab hosts,
-> approved internal services, and internet as required. Everything else denied.
+> Remote peers get only the approved administrative destinations and required
+> supporting services. Everything else is denied.
 
 The failure to avoid: a VPN peer that lands in a zone with full internal reach
 has undone the segmentation for anyone who obtains a key. Authentication proved

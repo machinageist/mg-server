@@ -20,7 +20,7 @@ Live capture (Cloudflare's own reporting headers trimmed):
 $ curl -sSI https://machinageist.dev
 HTTP/2 200
 content-type: text/html; charset=utf-8
-content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'
+content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'
 strict-transport-security: max-age=63072000; includeSubDomains; preload
 x-content-type-options: nosniff
 x-frame-options: DENY
@@ -29,7 +29,7 @@ permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
 server: cloudflare
 ```
 
-(Captured 2026-07-09. Run it yourself — the point of a header audit is that it is
+(Header set reviewed 2026-08-20. Run it yourself; a header audit should be
 reproducible.)
 
 ## What each header does
@@ -37,8 +37,9 @@ reproducible.)
 - **Content-Security-Policy** — restricts where the browser may load resources
   from. `default-src 'self'` means only this origin; there are no inline scripts
   and no third-party CDNs. Even if an injection vector existed, the browser would
-  refuse to load an off-origin `<script>`. `frame-ancestors 'none'` blocks framing
-  at the CSP level.
+  refuse to load an off-origin `<script>`. `base-uri`, `form-action`, and
+  `object-src` close other HTML-injection paths. `frame-ancestors 'none'` blocks
+  framing at the CSP level.
 - **Strict-Transport-Security** — tells the browser to use HTTPS for two years
   (`max-age=63072000`), including subdomains, and marks the site preload-eligible.
   After the first visit the browser upgrades to HTTPS on its own, which closes the
@@ -66,6 +67,7 @@ headers.insert(
     "content-security-policy",
     "default-src 'self'; script-src 'self'; style-src 'self'; \
      img-src 'self' data:; font-src 'self'; connect-src 'self'; \
+     base-uri 'none'; form-action 'self'; object-src 'none'; \
      frame-ancestors 'none'".parse().unwrap(),
 );
 headers.insert(
@@ -86,13 +88,12 @@ header the code sets.
   bug; CSP mitigates the impact of injection, it does not remove the vector.
 - **TLS terminates at Cloudflare's edge**, not on my VM, so HSTS protects the
   browser-to-edge leg. That tradeoff is worth stating rather than glossing.
-- This is an owned personal site with no user input, no auth, and no database, so
-  the header set is deliberately strict and easy — a real application would need
-  a looser, carefully-reasoned CSP.
+- This is an owned personal site with no accounts, write API, or database.
+  Search queries and study forms are still attacker-controlled input, so they
+  are bounded, parsed, and escaped rather than dismissed as "no user input."
 - **Safe claim:** reviewed and documented the HTTP security headers for an owned
   web service, with reproducible `curl` evidence. **Not** a claim to have "secured
   the application."
 
-This is the first note in the site's defensive-security pillar. It is intended to
-grow — SSH hardening, TLS configuration, and auth-log detection are planned next,
-on owned scope only.
+This is one layer in the site's defensive-security work. The source and tests are
+public; private infrastructure procedures and control gaps are not.

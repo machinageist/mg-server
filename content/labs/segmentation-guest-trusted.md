@@ -1,11 +1,14 @@
 ---
-title: "S3 — GUEST and TRUSTED"
+title: "S3 — Untrusted and approved clients"
 date: 2026-08-14
 summary: "The two zones the household actually lives on, gated on whether the access point does real per-SSID VLAN tagging — and the one property GUEST must never lose."
 tags: [labs, networking, segmentation, wireless, firewall]
 ---
 
 ## This stage is gated on a hardware capability
+
+This is a sanitized wireless-segmentation pattern. It does not publish the
+deployed zone names, management allowances, or probe targets.
 
 Which zone you deploy first is not a preference. It depends on one question you
 have to answer from the access point's own configuration:
@@ -46,11 +49,11 @@ sitting on another VLAN, you have punched a hole straight through your own deny
 rule and the ping tests above will still pass. Confirm which is actually
 configured.
 
-## TRUSTED has the broadest allowances, and the most risk
+## Approved clients have broader allowances, and more risk
 
-Per the policy matrix, TRUSTED reaches management administration ports, admin
-SSH and VPN administration, approved server services, and the internet.
-Default-deny everything else internal.
+Approved clients should receive only the services their role requires. Do not
+turn the label "trusted" into unrestricted east-west access; default-deny
+everything not named in the private policy matrix.
 
 This is your admin workstation's home, which makes it the zone whose
 misconfiguration locks you out of everything else. Before moving your own
@@ -76,8 +79,7 @@ default VLAN and design for that.
 ## Verification
 
 - [ ] GUEST client: internet yes, DNS yes, **every** private destination denied
-- [ ] TRUSTED client: management ports reachable, approved server services
-      reachable, lab zone denied
+- [ ] Approved client: required services reachable and unrelated zones denied
 - [ ] Cross-check from the other direction — a host in the servers zone must not
       be able to initiate a connection to TRUSTED
 - [ ] AP capability documented honestly: real per-SSID tagging, or single-VLAN

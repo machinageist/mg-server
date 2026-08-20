@@ -412,6 +412,38 @@ fn no_content_publishes_a_host_or_vm_identifier() {
     }
 }
 
+// Public technical writing should teach the method without doubling as a
+// current-state reconnaissance brief. These phrases previously exposed exact
+// topology, service identifiers, or missing controls with little teaching value.
+#[test]
+fn public_copy_avoids_high_value_operational_recon() {
+    const BANNED_DISCLOSURES: &[&str] = &[
+        "mg-server.service",
+        "three-node Proxmox cluster",
+        "No automated monitoring or alerting",
+        "No tested backup/restore",
+        "The network is still flat",
+        "transcribed from the runbooks I actually work from",
+    ];
+
+    let mut public_text = String::new();
+    for dir in INFRASTRUCTURE_DIRS {
+        for file in load_dir(dir) {
+            public_text.push_str(&file.body);
+            public_text.push('\n');
+        }
+    }
+    public_text
+        .push_str(&std::fs::read_to_string("templates/labs.html").expect("read labs template"));
+
+    for disclosure in BANNED_DISCLOSURES {
+        assert!(
+            !public_text.contains(disclosure),
+            "public copy still contains high-value operational detail {disclosure:?}"
+        );
+    }
+}
+
 // Find the first RFC 1918 address literal in a line, if any
 fn first_private_address(line: &str) -> Option<String> {
     for token in line.split(|c: char| !(c.is_ascii_digit() || c == '.' || c == '/')) {

@@ -16,9 +16,12 @@ and without them it is a jump box with extra steps:
 
 ## The honest question to answer before building it
 
-The policy matrix currently allows the trusted zone to reach management
-administration ports **directly**. If that stays, then management is reachable
-without the bastion, and the bastion is not the only path into anything.
+This is a generic hardening pattern. The examples do not describe current
+management reachability or a deployed bastion.
+
+If a policy matrix allows clients to reach management directly, then management
+is reachable without the bastion and the bastion is not the only path into
+anything.
 
 That is a perfectly legitimate design. But then say what it actually is: the
 landing point for remote administration, not an internal segmentation control.

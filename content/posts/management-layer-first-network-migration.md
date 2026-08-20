@@ -1,7 +1,7 @@
 ---
 title: "Moving My Homelab Management Network First"
 date: 2026-07-31
-summary: "Moving my homelab between flat subnets before starting VLAN work. The addresses changed; several systems still referred to the old ones. Notes on the outage, the recovery, and the revised plan."
+summary: "A management-network change exposed stale dependencies across cluster, access-control, and DNS layers. What failed, how I narrowed it down, and how the change process improved."
 category: "Networking"
 tags: [networking, proxmox, homelab, corosync, dns, cloudflare-tunnel, incident, segmentation]
 ---
@@ -10,22 +10,19 @@ My plan was to move the homelab management layer onto a clean subnet, verify it,
 and then start adding VLANs. I expected the flat-network move to be the simple
 part.
 
-It took about eight hours across two days. I broke the Proxmox cluster, lost
-remote access to every management interface, and took this site offline. The
-services are restored now, but segmentation has not started.
+The change caused a long management-plane outage and interrupted this site. This
+post keeps the failure analysis and verification method public while leaving the
+current topology and recovery procedures in private notes.
 
 ## The intended change
 
-The homelab is a three-node Proxmox cluster on hardware I own, with a router VM,
-a managed switch, and several guests. This website is one of those guests.
-Management traffic, cluster traffic, guests, and clients all shared one flat
-network.
+The affected environment is a small virtualization lab on hardware I own. At the
+time of the incident, management, cluster, guest, and client traffic shared a
+single change domain.
 
-The eventual design has a separate subnet per zone — management, trusted
-clients, servers, admin/bastion, lab, and guest — one `/24` each with the
-gateway at `.1`. For this first step I only wanted to move the existing flat
-network onto the management range. There would be no VLAN tags, new firewall
-zones, or inter-VLAN policy yet.
+The long-term design separates systems by role and trust. This first change was
+only an address migration; it deliberately did not combine new tagging and
+firewall policy with the move.
 
 I still think that order makes sense. It is easier to troubleshoot an address
 change before adding 802.1Q tagging, router-on-a-stick configuration, and more
@@ -38,24 +35,21 @@ change that could interrupt every management path at once.
 
 ## The addresses had more dependencies than I listed
 
-An IP address is copied into more places than the interface that owns it. In this
-case the old subnet appeared in:
+An IP address is copied into more places than the interface that owns it. In this case, stale references existed across several categories:
 
-- each node's host network configuration
-- the Corosync transport configuration
-- hypervisor firewall source rules
-- `/etc/hosts` files that did not all agree
-- guest resolver configuration
-- backup and audit scripts with hardcoded addresses
+- host networking;
+- cluster transport configuration;
+- management access rules;
+- local name resolution and resolver settings; and
+- automation with embedded addresses.
 
 I began with the host interfaces. The other references did not follow the new
 addresses, and I found them during recovery.
 
-After moving the router, switch, and hosts to the new subnet, the expected brief
-loss of connectivity became a longer outage. Cluster quorum broke, and I lost
-both SSH and the Proxmox web UI on all three nodes. The hosts and guests were
-still running, but I had no remote management route. Physical console access
-made recovery possible without rebuilding anything.
+The expected brief loss of connectivity became a longer outage. Cluster
+membership broke and the existing remote management paths no longer matched the
+new source network. An independent console path made recovery possible without
+rebuilding the hosts.
 
 There were two main management failures.
 
@@ -65,14 +59,10 @@ and sends cluster traffic to the peers listed in its own configuration. Once the
 host addresses changed, those entries no longer described the network. The nodes
 stopped exchanging tokens and each behaved as an isolated member.
 
-Second, the Proxmox firewall allowed SSH and the web UI only from the old
-subnet. My workstation had moved to the new one, so new connections no longer
-matched the allow rules.
-
-The firewall configuration also lives under `/etc/pve`, the Proxmox cluster
-filesystem. I had treated firewall policy and cluster state as separate parts of
-the change, but the storage and distribution of that policy depend on the
-cluster.
+Second, management access rules still matched the old source network. New
+connections therefore failed even where the hosts were otherwise reachable.
+The incident also exposed that policy distribution and cluster health were not
+independent in this design.
 
 ## Starting again from the bottom
 
@@ -91,10 +81,9 @@ specific commands and, more importantly, with collecting evidence before making
 more changes. I am still learning some of the Proxmox and Corosync internals, so
 I have tried not to claim more than I verified here.
 
-Before the next repair attempt, I collected read-only state from all three nodes:
-network and cluster configuration, service status, cluster database files,
-recent logs, and checksums of the collected files. That gave me a record of the
-broken state before I changed it again.
+Before the next repair attempt, I collected read-only network and cluster state,
+service status, recent logs, and checksums. That preserved evidence of the broken
+state before I changed it again.
 
 The recovery pattern I want to keep:
 
@@ -107,24 +96,9 @@ cluster status command, I watched for cluster traffic between the nodes. The
 status output showed what the service believed; the capture showed whether
 packets were actually crossing the network.
 
-## Corosync, quorum, and `/etc/pve`
+## Membership, quorum, and shared state
 
-Changing the Corosync addresses required restarting the daemon because it binds
-its sockets at startup.
-
-Under normal conditions, Proxmox keeps the authoritative Corosync configuration
-in the cluster filesystem. A change there gets distributed to each node. That
-path was unavailable without a working cluster, so recovery required updating
-the local configuration on each node and restarting the service on each one.
-
-After that, two nodes exchanged traffic and formed quorum while the third was
-still unresolved. In a three-node cluster, two votes are a majority. The pair
-can remain authoritative while the isolated node cannot write divergent cluster
-state. This is the quorum mechanism working as designed, not a complete cluster
-recovery.
-
-The isolated node's `/etc/pve` was read-only and not syncing because it did not
-have majority membership. That produced three distinct checks:
+The recovery reinforced that cluster health has several separate layers:
 
 | Layer | What it is | Question |
 |---|---|---|
@@ -132,41 +106,22 @@ have majority membership. That produced three distinct checks:
 | Quorum | Votes counted over that membership | Is there an authoritative majority? |
 | Cluster filesystem | Configuration replicated among members | Is shared state present and in sync? |
 
-Quorum is required before the cluster filesystem accepts writes, but quorum does
-not prove that every node has joined and synchronized its database. I saw the
-service running and a quorate pair while shared configuration was still missing
-on the remaining node.
-
-There is a circular dependency to account for during recovery. The authoritative
-transport configuration lives in the cluster filesystem, then gets copied to the
-local file Corosync reads at startup. If the filesystem cannot mount and sync,
-that copy does not occur. A quorate status was therefore one recovery check, not
-the final one.
-
-The guests kept running during this. A running VM is a process on its host with
-its own memory and disks. `/etc/pve` contains the configuration needed to start,
-stop, migrate, or edit it, but an already-running guest does not consult cluster
-membership to continue executing.
-
-My cluster does not use HA fencing. If it did, an isolated node could trip its
-watchdog and reboot, taking its guests down to protect cluster consistency. The
-guests remained up because of my configuration, not because management-plane
-failures are always harmless to guests.
+Quorum is a prerequisite for authoritative writes, but it does not prove that
+every member has rejoined or that shared state has synchronized. I now verify
+membership, authority, and replicated state separately. The product-specific
+commands and recovery order remain in the private incident record.
 
 ## The website outage was a DNS problem
 
-The cluster began recovering, but this site was still unavailable. The web VM
-was running on the new subnet. It could reach the internet by IP, and the
-application worked locally. The Cloudflare Tunnel could not connect.
+The management plane began recovering, but the public service was still
+unavailable. The application worked locally and could reach internet addresses,
+while its outbound connector could not establish a session.
 
-The guest's `/etc/resolv.conf` still used the old gateway address as its DNS
-resolver. That address no longer existed, so queries timed out.
+The guest still referred to a resolver on the old network, so queries timed out.
 
-Public DNS for the domain continued to work. Cloudflare hosts the zone, and its
-anycast addresses remained in the public records. My home address is not
-published there. The failed lookup happened in the other direction: the tunnel
-client needed to resolve Cloudflare's edge hostname before opening its outbound
-connection. With no working resolver, it had no edge address to contact.
+Public DNS for the domain continued to work. The failed lookup happened in the
+other direction: the connector needed working outbound name resolution before
+it could contact the edge.
 
 | Layer | State |
 |---|---|
@@ -176,21 +131,18 @@ connection. With no working resolver, it had no edge address to contact.
 | Local application | Working locally |
 | Public reachability | Broken because the tunnel could not resolve its edge |
 
-Correcting the resolver restored DNS. The tunnel reconnected and registered, the
-local origin check passed, and the site became reachable again.
-
-This also clarified that the site did not depend on cluster membership for its
-service path. It needed the host to stay up, a network path out, DNS, and the
-Cloudflare Tunnel. The cluster is how I administer the VM, but it is not in the
-request path.
+Correcting the resolver restored DNS. The connector re-established its session,
+the local origin check passed, and the site became reachable again. The useful
+lesson is dependency ordering: raw IP reachability does not prove DNS, and a
+healthy local application does not prove its public edge path.
 
 The simultaneous symptoms came from separate stale references:
 
 | Stale reference | What broke | Effect |
 |---|---|---|
-| Corosync peer addresses | Membership and quorum | No working cluster management plane |
-| Firewall source subnet | SSH and Proxmox web access | No remote host access |
-| Guest resolver address | DNS and then the tunnel | Public site unavailable |
+| Cluster peer references | Membership and quorum | No working cluster management plane |
+| Management source policy | Administrative access | No remote host access |
+| Guest resolver reference | DNS and then the connector | Public service unavailable |
 
 They shared the same change but failed independently. Asking what each service
 actually depended on made them easier to separate.
@@ -213,19 +165,10 @@ reviewable. Connection tracking can also preserve an established SSH session
 after a rule change blocks new sessions. Testing only through an existing
 connection can therefore hide a lockout.
 
-## Current state and next steps
+## Revised change plan
 
-The current state is:
-
-- The public service is restored. The tunnel is registered and the site is
-  reachable.
-- All three Proxmox nodes are present and quorate, with peers connected.
-- The firewall allows the new management subnet and is running.
-- The network is still flat. Segmentation has not started.
-
-This is the same basic network architecture on a different address range. Before
-adding VLANs, I want to observe normal operation, test a reboot, and confirm that
-the flat baseline stays stable.
+The live state and next maintenance window are intentionally not published. The
+revised method is still useful to share:
 
 The original runbook moved the router, switch, hosts, and guests into the final
 segmented design in one cutover. I have replaced it with a staged plan:
@@ -233,14 +176,13 @@ segmented design in one cutover. I have replaced it with a staged plan:
 1. Verify the recovered flat network.
 2. Find and reconcile stale addressing, DNS, firewall, host-file, and automation
    references in one inventory.
-3. Add one trust zone at a time, beginning with the lab zone because it has the
-   smallest blast radius.
+3. Add one trust zone at a time, beginning with the lowest-blast-radius case.
 4. Deliberately test a bad VLAN assignment and firewall rule, then practice the
    rollback while the scope is small.
 
-Before the first VLAN change, I also want fresh configuration backups that I
-have proved I can restore, confirmed console access to each device, and a tested
-rollback path for every layer involved.
+Before any future network change, the private change record must include tested
+configuration restore evidence, an independent access path, and a rollback for
+every layer involved.
 
 ## Notes for the next migration
 

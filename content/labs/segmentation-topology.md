@@ -7,6 +7,9 @@ tags: [labs, networking, segmentation, vlan, documentation]
 
 ## Why this comes first
 
+This is a sanitized planning template. Keep the completed port map, addresses,
+and device identifiers in the private change record.
+
 This stage changes nothing. It only records — and it is still the stage most
 worth doing carefully, because every stage after it acts on what it produces.
 
@@ -46,26 +49,25 @@ Work through the switch first, then the hypervisors, then the guests.
 
 **Per cutover, not in general**
 
-- [ ] Which workstation and which switch port provide out-of-band management
-      *during that specific change*. "I can get to the console" is not a plan;
-      "port 6 on the switch is untagged MGMT and my laptop is on it" is.
+- [ ] Which controlled client and switch port provide an independent recovery
+      path *during that specific change*. "I can get to the console" is not a
+      plan; the private record needs the exact port and access method.
 
 ## The design this feeds
 
-One `/24` per zone, routed gateway at `.1`, VLAN ID matching the zone:
+An example design separates systems by role:
 
-| VLAN | Zone | Holds |
-|---:|---|---|
-| 10 | MGMT | Hypervisor management, cluster traffic, switch management |
-| 20 | TRUSTED | Admin workstation, known laptops and phones |
-| 30 | SERVERS | Public and internal service guests |
-| 40 | ADMIN | Bastion and remote-access endpoint |
-| 50 | LAB | Disposable and rebuild-often machines |
-| 60 | GUEST | Untrusted client internet access |
+| Role | Holds |
+|---|---|
+| Management | Hypervisor, cluster, and switch management |
+| User | Approved workstations and personal devices |
+| Service | Public and internal application guests |
+| Administration | Narrow remote-administration entry points |
+| Test | Disposable and rebuild-often machines |
+| Untrusted | Internet-only client access |
 
-Pick your own ranges. The property that matters is that the zone is legible
-from the address, so a packet capture tells you which zone something came from
-without a lookup.
+Choose identifiers and ranges privately. The property that matters is that roles
+are legible during troubleshooting without publishing the deployed mapping.
 
 ## WAN transit is a separate decision
 

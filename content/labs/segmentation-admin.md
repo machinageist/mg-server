@@ -1,11 +1,13 @@
 ---
-title: "S4 — ADMIN"
+title: "S4 — Administrative access"
 date: 2026-08-14
 summary: "Moving the bastion and the remote-access endpoint onto the admin zone, one at a time, and testing the policy from genuinely outside rather than from the sofa."
 tags: [labs, networking, segmentation, bastion, vpn]
 ---
 
 ## Scope
+
+This is a sanitized reference sequence, not the deployed access matrix.
 
 Move the bastion and the remote-access endpoint onto the admin zone — **one at
 a time**. The service-level setup for each has its own page:
@@ -22,23 +24,16 @@ becomes a flat "trusted once you're in" network, you have rebuilt the flat
 network you are in the middle of segmenting — just with a login on the front of
 it.
 
-Per the policy matrix, admin gets: management administration, SSH to
-**approved** server and lab hosts, approved internal services, and internet as
-required. Everything else denied.
+The reference policy grants only named administrative destinations and required
+supporting services. Everything else is denied.
 
 ## Validate from both directions
 
 This has to be tested from two vantage points, and the second is the one people
 fake.
 
-**1. From the local trusted zone** — the normal admin path:
-
-```bash
-ssh <the bastion>                       # reachable from TRUSTED
-ssh <a management host>                 # bastion → MGMT: allowed
-ssh <an approved lab host>              # bastion → LAB: allowed
-curl -sS --max-time 5 https://<a servers host>   # only if approved
-```
+**1. From an approved local client** — prove the entry point, allowed
+destinations, and denies using targets recorded privately.
 
 **2. From a genuinely external client** — not from inside the house.
 
@@ -47,13 +42,8 @@ running. It does not prove the external path, NAT traversal, DNS inside the
 tunnel, or the firewall rules that apply to a remote peer. Test from cellular or
 another network.
 
-```bash
-# From outside, over the VPN
-ip route                        # confirm tunnel routes; watch for a full-tunnel surprise
-ssh <the bastion>
-ssh <a management host>         # should follow the SAME policy as local admin
-ping -c2 <the guest gateway>    # GUEST — must be denied
-```
+From outside, inspect the resulting routes and repeat the same allow and deny
+probes. Watch for an unintended full-tunnel route.
 
 ## What makes a bastion a bastion
 

@@ -1,52 +1,44 @@
 ---
 title: "How machinageist.dev Is Hosted"
 date: 2026-07-08
-summary: "The request path for this site — DNS, Cloudflare, a Tunnel, Caddy, and a systemd-managed Rust service on a Proxmox VM — with real dig and curl output and an honest list of what is missing."
+summary: "How this small Rust site moves from an edge proxy to a private origin, how I verify the public boundary, and why the operational details stop there."
 category: "Linux / SysAdmin"
 tags: [self-hosting, linux, systemd, caddy, cloudflare, dns, proxmox]
 ---
 
-This site runs on hardware I own: a Proxmox mini-PC server at home. There is no
-cloud provider, no managed platform, and no database. This post traces exactly
-how a request reaches the page you are reading, with real command output, and it
-is honest about what is missing. It is a small self-hosting artifact, not a
-production platform.
+This site runs on hardware I own. There is no managed application platform and
+no database. The useful public facts are simple: traffic reaches an edge proxy,
+crosses a private connector, and lands on a small Rust service. The exact host,
+service names, recovery paths, and internal topology stay in private runbooks.
 
 ## The request path
 
 ```text
 Browser
   -> DNS (Cloudflare authoritative)
-  -> Cloudflare edge (TLS terminates here)
-  -> Cloudflare Tunnel (outbound connection from my VM)
-  -> Caddy (reverse proxy on the VM)
-  -> systemd service (mg-server.service)
-  -> mg-server (Rust/Axum app)
+  -> Cloudflare edge
+  -> outbound private connector
+  -> local reverse proxy
+  -> mg-server (Rust/Axum)
 ```
 
-Two things are worth calling out. First, **TLS terminates at Cloudflare's edge**,
-not on my VM. Second, the connection from home to Cloudflare is an **outbound**
-tunnel — my VM dials out to Cloudflare and Cloudflare routes public traffic back
-down that connection. Nothing inbound is opened on my home network, and my home
-IP is never exposed. No port-forwarding on the router.
+The connector is outbound, so the application origin does not need a public
+listener. Cloudflare terminates browser-facing TLS. Those are architectural
+properties worth documenting; the origin's location and administrative path are
+not.
 
 ## DNS: where the name points
 
-`machinageist.dev` is a Cloudflare-hosted zone. A live lookup:
+`machinageist.dev` is a Cloudflare-hosted zone. Anyone can verify the public DNS
+boundary without needing a copied snapshot from this post:
 
 ```console
 $ dig +short machinageist.dev A
-104.21.60.62
-172.67.192.181
-
 $ dig +short machinageist.dev NS
-maeve.ns.cloudflare.com.
-rick.ns.cloudflare.com.
 ```
 
-The A records are Cloudflare anycast addresses, not my home IP — that is the
-proxy layer doing its job. The nameservers confirm the zone is delegated to
-Cloudflare. (Captured 2026-07-08.)
+The returned addresses belong to the public edge rather than the origin. The
+nameserver query confirms where the public zone is delegated.
 
 ## The edge response
 
@@ -57,7 +49,7 @@ readability):
 $ curl -sSI https://machinageist.dev
 HTTP/2 200
 content-type: text/html; charset=utf-8
-content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'
+content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'
 strict-transport-security: max-age=63072000; includeSubDomains; preload
 x-content-type-options: nosniff
 x-frame-options: DENY
@@ -71,23 +63,21 @@ own Rust service removes its `Server` header rather than advertising a version.
 The security headers are stamped by mg-server itself — I cover them in a separate
 [security-headers post](/blog/security-headers-on-machinageist-dev).
 
-## Caddy and the systemd service
+## The origin service
 
-On the VM, Caddy is the reverse proxy in front of the app, and the app runs as a
-`systemd` unit so it starts on boot and restarts if it dies. The operational
-commands I use are the ordinary ones:
+The local reverse proxy hands requests to a service manager, which starts the
+app on boot and restarts it after failure. The ordinary verification pattern is
+more useful than my exact unit name:
 
 ```console
-$ systemctl status mg-server.service
-$ journalctl -u mg-server.service -n 50 --no-pager
-$ systemctl restart mg-server.service
+$ systemctl status <service>
+$ journalctl -u <service> --since today
 ```
 
-An earlier incident on this service was a `203/EXEC` failure — systemd could not
-execute the binary because the `ExecStart` path did not match where the binary
-actually lived. The fix was aligning the unit's `ExecStart` with the deployed
-binary path. I am writing that up separately as a proper incident report; I am
-not going to reconstruct log timestamps from memory here.
+One deployment failed because the service manager's executable path did not
+match the deployed binary. The general lesson was to validate the unit, binary,
+permissions, and startup behavior together before replacing the known-good
+release. The exact unit and recovery sequence belong in the private runbook.
 
 ## Why no database
 
@@ -98,16 +88,9 @@ admin panel, no login form. That is partly an architecture preference and partly
 a security property: a smaller surface has fewer things to get wrong. It is not a
 claim that the site is "secure" — only that there is less of it to attack.
 
-## What is honestly not here yet
+## Scope without publishing a weakness inventory
 
-- **No automated monitoring or alerting.** If the service goes down, I find out by
-  looking. A homelab monitoring stack is planned for a later cert phase.
-- **No tested backup/restore of the VM.** Proxmox backup/restore with real RPO/RTO
-  notes is one of my planned homelab projects, not something I have validated yet.
-- **No CI/CD.** Deployment is manual. There is no automatic rollback if a new
-  binary is wrong — which is exactly how the `203/EXEC` incident happened.
-- **TLS boundary caveat.** Because TLS terminates at Cloudflare, the edge sees
-  plaintext. That is an accepted tradeoff of this setup, worth stating plainly.
-
-Those gaps are the honest edge of this artifact, and several of them are the next
-things I am building toward.
+This is a personal service, not a production platform. That boundary is enough
+for a public portfolio claim. Backup evidence, monitoring coverage, rollback
+procedures, and known gaps are tracked privately, where they can guide the work
+without becoming a checklist for strangers.

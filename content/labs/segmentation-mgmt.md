@@ -1,5 +1,5 @@
 ---
-title: "S6 — MGMT explicitly tagged, last"
+title: "S6 — Management plane last"
 date: 2026-08-14
 summary: "The stage that looks cosmetic and is the most dangerous — re-tagging the network that carries cluster traffic and your own access to fix whatever you break."
 tags: [labs, networking, segmentation, cluster, console]
@@ -7,19 +7,18 @@ tags: [labs, networking, segmentation, cluster, console]
 
 ## Why this is last, and why it is the most dangerous
 
-The management network already uses zone-shaped addressing, but it is untagged
-and has never been proven tagged. So this stage looks cosmetic — the addresses
-do not even change — and it is the one most likely to take the whole cluster
-down.
+This sanitized reference stage moves a cluster's management plane after every
+lower-risk zone has proved the pattern. It does not describe the current live
+topology.
 
-You are changing the transport that carries:
+The change can affect:
 
 - hypervisor management, both SSH and the web UI;
 - **cluster membership traffic**; and
 - your own access to fix whatever you break.
 
-Get it wrong on one node and you lose a node. Get it wrong on two and you lose
-quorum.
+A tagging mismatch can isolate a node or cost the cluster quorum. Exact cluster
+membership and recovery paths belong in the private change record.
 
 ## Console access, per node, non-negotiable
 
@@ -33,15 +32,11 @@ is the network.
 
 1. **Keep a direct console on the node being changed.**
 2. **Convert one host path and one switch port at a time.**
-3. **Verify cluster peer connectivity and quorum after each node:**
+3. **Verify cluster peer connectivity and quorum after each node** using the
+   platform's documented health checks.
 
-   ```bash
-   corosync-cfgtool -s
-   pvecm status | grep -E 'Nodes|Quorate|Expected'
-   ```
-
-4. **Verify SSH, the web UI, and the switch and firewall interfaces** from both
-   the trusted and admin zones.
+4. **Verify authorized management paths and explicit denies** from controlled
+   test clients.
 5. Only then move to the next node.
 
 ## The specific hazard: tagging and cluster traffic together
@@ -79,8 +74,7 @@ Revert from the console. Diagnose with two healthy nodes, not one.
 - [ ] Switch configuration re-exported — it changed, so the earlier export is
       now stale
 - [ ] Firewall configuration re-exported
-- [ ] Management reachable from trusted and admin, and **not** from guest,
-      servers, or lab
+- [ ] Management reachable only from the approved administrative path
 - [ ] Topology document updated to record management as tagged, with the date
 
 ## This completes the segmentation project
@@ -100,6 +94,6 @@ at this point:
       network engineering
 
 That last line is a claim-discipline requirement rather than a modesty gesture.
-Six zones on one managed switch and a three-node cluster is real, defensible
-work. Describing it as enterprise network engineering turns a strong claim into
-one that collapses under a single follow-up question.
+A small managed network and virtualization cluster can be real, defensible work.
+Describing it as enterprise network engineering turns a strong claim into one
+that collapses under a single follow-up question.

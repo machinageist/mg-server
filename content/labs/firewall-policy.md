@@ -1,15 +1,15 @@
 ---
 title: "Firewall and router configuration"
 date: 2026-08-14
-summary: "Prove what the firewall VM actually is before designing around it, name the single point of failure it introduces, and build the policy matrix on aliases rather than literal addresses."
+summary: "Prove which device owns the gateway before designing around it, name virtualization dependencies, and build policy on aliases rather than literal addresses."
 tags: [labs, networking, firewall, policy, opnsense]
 ---
 
 ## Settle one question before anything else
 
-The firewall VM exists and has an installer image attached. The gateway address
-routes traffic and answers DNS. What is **not** proven is that those are the
-same thing.
+This is a sanitized verification pattern, not a description of the deployed
+gateway or its current state. Before using a virtual firewall design, prove
+which device actually owns the gateway address.
 
 Two possibilities, and they lead to different projects:
 
@@ -36,9 +36,9 @@ minutes to resolve.
 
 ## The single point of failure nobody named
 
-The firewall is a virtual machine on one hypervisor node. If that node is down,
-the router is down — which means every zone loses its gateway, including
-management, at exactly the moment you are trying to fix that node.
+A firewall virtual machine on one hypervisor creates a node dependency. If that
+node is down, routed zones lose their gateway at the same moment the operator is
+trying to repair the host.
 
 State this plainly rather than discovering it during an outage. The options,
 none of them free:
@@ -54,12 +54,11 @@ happened.
 
 ## Interface plan
 
-Create one interface per zone, prepared **disabled** during the preparation
-stage and enabled one stage at a time. Each holds its zone's gateway address —
-the `.1` of its `/24`.
+Create one interface per role, prepared **disabled** during the preparation
+stage and enabled one stage at a time. Addressing stays in the private plan.
 
-The zones are management, trusted, servers, admin, lab, and guest. The
-[preparation stage](/labs/segmentation-prepare) covers creating them inert.
+The [preparation stage](/labs/segmentation-prepare) covers creating interfaces
+inert before any client moves.
 
 ## Rules: aliases, not literals
 
@@ -101,7 +100,7 @@ matter for its zone, and those are the tests worth recording.
 ## Done when
 
 - [ ] Gateway ownership proven and recorded
-- [ ] Internal interface and zone configuration documented — currently a blank
+- [ ] Internal interface and zone configuration documented privately
 - [ ] Config exported, stored privately, and a restore tested
 - [ ] Aliases defined before rules
 - [ ] The single-node dependency explicitly acknowledged in the topology

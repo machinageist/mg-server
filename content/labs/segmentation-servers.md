@@ -1,5 +1,5 @@
 ---
-title: "S5 — SERVERS, this site last"
+title: "S5 — Public services last"
 date: 2026-08-14
 summary: "The only publicly visible cutover. Prove the pattern on a service nobody watches, keep the outbound-tunnel model, and verify the public path from genuinely outside."
 tags: [labs, networking, segmentation, servers, cloudflare-tunnel]
@@ -7,9 +7,9 @@ tags: [labs, networking, segmentation, servers, cloudflare-tunnel]
 
 ## The one publicly visible stage
 
-This site is the guest whose downtime anyone else would notice. That is exactly
-why it moves **last**, behind a lower-risk service that proves the pattern
-first.
+In this reference plan, a public service moves **last**, behind a lower-risk
+service that proves the pattern first. The examples are sanitized and do not
+describe the current production topology.
 
 ## Order
 
@@ -17,7 +17,7 @@ first.
    watching. Prove egress and the internal denies with something whose failure
    costs nothing.
 2. Prove the policy matrix from the new zone.
-3. **Prepare everything for this site before touching its tag** — target
+3. **Prepare everything for the public service before touching its tag** — target
    address, DNS, firewall aliases, rollback. All of it, in advance.
 4. Move it, and update its address consistently everywhere it is referenced.
 5. Verify local origin, resolver behaviour, tunnel registration, and public HTTP
@@ -25,39 +25,27 @@ first.
 
 ## Keep the outbound-tunnel model
 
-The public path is an outbound tunnel to the CDN edge reaching a local origin.
-Inbound WAN stays closed. **Do not add an inbound port-forward.**
+The reference public path uses an outbound connector to an edge proxy. Do not
+silently add a second ingress path during a migration.
 
-That property is a real security posture *and* a claim published on this site.
-Adding a port-forward to solve a routing problem mid-stage would quietly falsify
-something already stated in public, which is worse than the outage it was meant
-to avoid.
+Changing the ingress model to solve a routing problem adds a new attack surface
+and invalidates the design being tested.
 
 If the tunnel breaks after the move, fix the tunnel. Do not route around it.
 
 ## The denies are the interesting half
 
-Per the matrix, the servers zone gets DNS, NTP, package and update endpoints,
-tunnel egress, and explicitly required dependencies. It **denies management,
-trusted, admin, and lab**.
+Per the reference matrix, a public-service zone gets only name resolution,
+time synchronization, update access, connector egress, and explicit
+dependencies. Administrative and unrelated internal networks are denied.
 
-That last part is the whole point: a compromised public-facing service should
-not be able to reach the hypervisor management plane. Test it.
+That last part is the point: a compromised public-facing service should not be
+able to reach the management plane. Test the deny policy with representative
+fixtures from your own authorized environment rather than publishing targets.
 
-```bash
-# From the moved service — these MUST fail
-ssh <a management host>
-curl -sS --max-time 5 https://<a management host>:8006
-ping -c2 <the trusted gateway>
-ping -c2 <an admin host>
-ping -c2 <a lab host>
-
-# These MUST succeed
-getent hosts example.com
-curl -sSI https://example.com | head -1
-systemctl is-active cloudflared
-curl -fsS http://127.0.0.1/ >/dev/null && echo origin-ok
-```
+Record both allowed and denied probes in the private change record. The public
+writeup should state the policy and result without listing real management
+targets or service units.
 
 ## Verify the public path from outside
 
@@ -96,9 +84,9 @@ the host's local address means:
 ## Done when
 
 - [ ] Lower-risk service moved, egress proven, internal denies proven
-- [ ] This site on its authoritative address in the servers zone
-- [ ] All servers-zone denies verified — management, trusted, admin, lab
+- [ ] Public service on its authoritative address in the service zone
+- [ ] Service-zone deny policy verified against administrative and unrelated zones
 - [ ] Local origin, resolver, and tunnel registration verified
 - [ ] Public HTTP verified from outside the home network
 - [ ] No inbound WAN port-forward exists — confirmed, not assumed
-- [ ] The network topology document updated with the new address
+- [ ] The private topology document updated with the new address
