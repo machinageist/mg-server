@@ -76,10 +76,29 @@ impl Page {
     }
 
     pub fn find(dir: &Path, slug: &str) -> Result<Self, SiteError> {
+        if !crate::models::slug::is_safe(slug) {
+            return Err(SiteError::PageNotFound(slug.to_string()));
+        }
         let path = dir.join(format!("{}.md", slug));
         if !path.exists() {
             return Err(SiteError::PageNotFound(slug.to_string()));
         }
         Page::from_file(&path)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn find_rejects_a_path_like_slug() {
+        let error = Page::find(
+            Path::new("content/pages"),
+            "../posts/hosting-machinageist-dev",
+        )
+        .expect_err("a path-like slug must not leave the page directory");
+
+        assert!(matches!(error, SiteError::PageNotFound(_)));
     }
 }

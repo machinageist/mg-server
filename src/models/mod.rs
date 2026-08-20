@@ -6,4 +6,5 @@ pub mod post;
 pub mod project;
 pub mod question;
 pub mod scenario;
+pub mod slug;
 pub mod surface;

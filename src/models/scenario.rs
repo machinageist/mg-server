@@ -111,6 +111,9 @@ impl Scenario {
 
 // Load one scenario by slug
 pub fn load(dir: &Path, slug: &str) -> Result<Scenario, SiteError> {
+    if !crate::models::slug::is_safe(slug) {
+        return Err(SiteError::PageNotFound(slug.to_string()));
+    }
     let path = dir.join(format!("{slug}.md"));
     if !path.exists() {
         return Err(SiteError::PageNotFound(slug.to_string()));
@@ -187,6 +190,14 @@ mod tests {
 
     fn dir() -> PathBuf {
         PathBuf::from(PBQ_DIR)
+    }
+
+    #[test]
+    fn traversal_slug_is_rejected_before_any_file_is_read() {
+        let error = load(&dir(), "../../posts/hosting-machinageist-dev")
+            .expect_err("a path-like slug must not reach an out-of-directory Markdown file");
+
+        assert!(matches!(error, SiteError::PageNotFound(_)));
     }
 
     fn step(accept: &[&str]) -> Step {

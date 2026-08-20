@@ -144,11 +144,27 @@ impl BlogPost {
 
     // Build expected file path from slug, return 404 error if file absent
     pub fn find(dir: &Path, slug: &str) -> Result<Self, SiteError> {
+        if !crate::models::slug::is_safe(slug) {
+            return Err(SiteError::PostNotFound(slug.to_string()));
+        }
         let path = dir.join(format!("{}.md", slug));
         // Return typed 404 error rather than letting fs::read fail with a generic io::Error
         if !path.exists() {
             return Err(SiteError::PostNotFound(slug.to_string()));
         }
         BlogPost::from_file(&path)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn find_rejects_a_path_like_slug() {
+        let error = BlogPost::find(Path::new("content/posts"), "../pages/osi-model")
+            .expect_err("a path-like slug must not leave the post directory");
+
+        assert!(matches!(error, SiteError::PostNotFound(_)));
     }
 }

@@ -145,14 +145,9 @@ impl BlogPostTemplate {
 // Extract slug from URL, validate, load matching post file, render page
 // Path(slug) — Axum extracts the :slug segment and binds it to `slug`
 pub async fn post(Path(slug): Path<String>) -> Result<impl IntoResponse, SiteError> {
-    // Reject slugs that could escape the posts directory
-    // Prevents: GET /blog/../../etc/passwd → reading arbitrary files
-    if slug.contains('/') || slug.contains('\\') || slug.contains("..") {
-        return Err(SiteError::PostNotFound(slug));
-    }
-
     let posts_dir = PathBuf::from(POSTS_DIR);
-    // ? returns 404 via SiteError::PostNotFound if file doesn't exist
+    // BlogPost::find applies the same central slug allowlist as every other
+    // Markdown-backed route before constructing a path.
     let post = BlogPost::find(&posts_dir, &slug)?;
     Ok(BlogPostTemplate { post })
 }
