@@ -31,3 +31,4 @@ resume-commands
 # Project-specific gauntlet output is transient and can retain stale source
 # excerpts or operational detail. Keep the reusable pipeline, ignore its output.
 /gauntlet-output/
+gauntlet-universal/
