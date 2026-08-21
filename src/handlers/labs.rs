@@ -261,7 +261,6 @@ mod tests {
         assert_eq!(labels.len(), count, "a phase was split across two groups");
     }
 
-
     // Same three-place registration the wiki has: a lab needs a model entry and
     // a procedure file, and neither may exist without the other
     #[test]
@@ -314,7 +313,10 @@ mod tests {
             .expect("layout always renders a <main>");
 
         assert!(body.contains("reusable planning exercises"));
-        assert!(body.contains("deployment"));
+        assert!(body.contains("procedure"));
+        assert!(body.contains("verification"));
+        assert!(body.contains("conditions"));
+        assert!(body.contains("evidence"));
         assert!(body.contains("inventory"));
         assert!(!body.contains("Blocked by"));
         assert!(!body.contains("recovery exit gate"));

@@ -456,6 +456,7 @@ fn public_copy_uses_show_dont_tell_opsec() {
         "tracked privately",
         "operational telemetry is kept private",
         "intentionally omits live",
+        "deliberately omitted",
         "sanitized planning template",
         "sanitized reference",
         "sanitized wireless-segmentation pattern",
@@ -481,6 +482,7 @@ fn public_copy_uses_show_dont_tell_opsec() {
         "templates/index.html",
         "templates/status.html",
         "templates/lab_page.html",
+        "templates/labs.html",
     ] {
         let raw = std::fs::read_to_string(template).expect("read public template");
         public_text.push_str(&strip_template_comments(&raw));
