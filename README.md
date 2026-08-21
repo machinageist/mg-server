@@ -126,9 +126,8 @@ The public deployment follows a conventional private-origin pattern:
 Browser → managed edge → outbound private connector → reverse proxy → application
 ```
 
-This separates the browser-facing boundary from the application origin. The public
-walkthrough focuses on the reusable architecture and verification method rather
-than hostnames, unit names, recovery paths, or internal topology:
+This separates the browser-facing boundary from the application origin. The
+architecture and verification method are demonstrated in
 ["How machinageist.dev Is Hosted"](https://machinageist.dev/blog/hosting-machinageist-dev).
 
 ---
