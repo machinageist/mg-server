@@ -215,7 +215,7 @@ entries:
       The instrument for questions no status command answers — what is actually
       on the wire, and whether an encapsulated frame really carries what you
       think. Needs root, and a filter expression, or it will drown you.
-    caution: "Captures contain real traffic. Never publish one without sanitising it first."
+    caution: "Captures may contain credentials and payload data. Use purpose-built fixtures for examples you intend to share."
     see_also: ["ip", "ss"]
     learn:
       - { slug: "software-defined-networking", anchor: "suggested-practice-build-an-overlay-you-can-inspect", label: "Software-defined networking" }

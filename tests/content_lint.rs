@@ -469,6 +469,11 @@ fn public_copy_uses_show_dont_tell_opsec() {
         "live state and next maintenance window are intentionally not published",
         "origin's location and administrative path are not",
         "public; private infrastructure procedures",
+        "reporting headers trimmed",
+        "a shortened example",
+        "without sanitising it first",
+        "private-origin web hosting",
+        "behind a private origin path",
     ];
 
     let mut public_text = String::new();
@@ -483,6 +488,9 @@ fn public_copy_uses_show_dont_tell_opsec() {
         "templates/status.html",
         "templates/lab_page.html",
         "templates/labs.html",
+        "templates/about.html",
+        "content/glossary/commands.md",
+        "src/models/project.rs",
     ] {
         let raw = std::fs::read_to_string(template).expect("read public template");
         public_text.push_str(&strip_template_comments(&raw));

@@ -14,7 +14,7 @@ personal site, not a claim that the application is "secured."
 
 ## The headers on the wire
 
-Live capture (Cloudflare's own reporting headers trimmed):
+Security headers returned by a live request:
 
 ```console
 $ curl -sSI https://machinageist.dev
@@ -59,7 +59,7 @@ reproducible.)
 ## Where they come from
 
 These are set in one response middleware applied at the router level so it runs
-on every response. A shortened example:
+on every response. The relevant policy operations are:
 
 ```rust
 headers.insert(
@@ -73,9 +73,10 @@ headers.insert(
     "strict-transport-security",
     "max-age=63072000; includeSubDomains; preload".parse().unwrap(),
 );
-// ...
-headers.remove("server");
 ```
+
+The complete implementation is in the
+[router-wide response middleware](https://github.com/machinageist/mg-server/blob/main/src/middleware/security_headers.rs).
 
 A useful verification point: the live `curl -I` output and the source config
 agree — same CSP, same two-year HSTS. The header the browser receives is the

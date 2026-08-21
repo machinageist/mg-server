@@ -78,7 +78,7 @@ pub fn all() -> Vec<Project> {
         name: "mg-server",
         description: "The Rust/Axum app that serves this site: routes, Askama templates, flat-file Markdown, \
                       request tracing, defensive response headers, and rate limiting, deployed as a managed \
-                      Linux service behind a private origin path.",
+                      Linux service.",
         tags: &["rust", "axum", "linux-service", "self-hosting", "headers"],
         url: Some("https://github.com/machinageist/mg-server"),
         status: ProjectStatus::Active,

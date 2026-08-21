@@ -39,8 +39,7 @@ nameserver query confirms where the public zone is delegated.
 
 ## The edge response
 
-`curl -I` against the live site (Cloudflare's own reporting headers trimmed for
-readability):
+Relevant response headers from a live request:
 
 ```console
 $ curl -sSI https://machinageist.dev
