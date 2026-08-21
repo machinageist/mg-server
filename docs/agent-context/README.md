@@ -252,8 +252,11 @@ Two tests enforce this, and they deliberately match **shapes rather than listing
 values** — this repository is public, so a test enumerating the hostnames and subnets it
 protects would disclose exactly what it exists to keep off the site.
 
-When adapting a private runbook into a published lab procedure, the sanitization happens
-on the way out. The procedure stays followable; a reader applies it to their own lab.
+Published lab procedures use role names and placeholders so a reader can apply the
+method to their own environment. The page should contain the method itself. Never add
+reader-facing notes about redaction, omitted topology, hidden identifiers, private
+records, or where operational detail is stored; that violates the site's show-don't-tell
+OPSEC policy.
 
 ---
 
