@@ -56,17 +56,9 @@
       </nav>
     </details>
 
-    {# Sanitized on the way out of the private runbooks: zones are named, the
-       addressing scheme is described rather than enumerated, and no host name
-       or VM identifier appears. The procedure is the part worth publishing. #}
     <div class="post-content">
       {{ page.content_html|safe }}
     </div>
-
-    <p class="lab-page-footnote">
-      This page is a reusable educational pattern. It intentionally omits live
-      identifiers, addressing, implementation status, and private recovery records.
-    </p>
   </article>
 </div>
 {% endblock %}

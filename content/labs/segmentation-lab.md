@@ -7,8 +7,6 @@ tags: [labs, networking, segmentation, vlan, firewall]
 
 ## Why LAB goes first
 
-This is a generic cutover pattern, not a record of current VLAN identifiers.
-
 Lowest blast radius. The machines in this zone are disposable — if the stage
 goes wrong, nothing publicly visible breaks and nothing you depend on stops.
 
@@ -64,7 +62,8 @@ Verify an address, default route, name resolution, and permitted update access.
 **Negative** — all of these must **fail**, and failing is the pass condition:
 
 Verify representative management, service, and user destinations are denied.
-Keep the real targets and probe transcript in the private evidence record.
+Record the representative targets and the result of each probe in the evidence
+record.
 
 Record both sets. A stage with only positive tests has proven the VLAN carries
 traffic, not that it *contains* it — and containment is the entire point of

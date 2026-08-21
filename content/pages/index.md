@@ -98,8 +98,8 @@ Reading is half of it. Two surfaces work directly off these pages:
 - [Archives and compression](/learn/linux-archives) — why `tar` and `gzip` are
   separate tools, and what metadata an archive preserves that `cp` does not.
 
-This wiki expands as finished notes and completed labs move from my private study
-workspace into reviewed public editions.
+This wiki expands with finished notes and completed labs reviewed as standalone
+lessons.
 
 ## Authorship and scope
 

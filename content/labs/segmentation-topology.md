@@ -7,9 +7,6 @@ tags: [labs, networking, segmentation, vlan, documentation]
 
 ## Why this comes first
 
-This is a sanitized planning template. Keep the completed port map, addresses,
-and device identifiers in the private change record.
-
 This stage changes nothing. It only records — and it is still the stage most
 worth doing carefully, because every stage after it acts on what it produces.
 
@@ -25,7 +22,8 @@ Work through the switch first, then the hypervisors, then the guests.
 **The switch**
 
 - [ ] Model and firmware version
-- [ ] Exported configuration, stored somewhere private — not in a public repo
+- [ ] Exported configuration, restore-tested and stored in an encrypted backup
+      location outside the repository
 - [ ] Physical port → device → NIC mapping, for every port in use
 - [ ] Current PVID and VLAN membership for every port in use
 
@@ -51,7 +49,7 @@ Work through the switch first, then the hypervisors, then the guests.
 
 - [ ] Which controlled client and switch port provide an independent recovery
       path *during that specific change*. "I can get to the console" is not a
-      plan; the private record needs the exact port and access method.
+      plan; the change record needs the exact port and access method.
 
 ## The design this feeds
 
@@ -66,8 +64,8 @@ An example design separates systems by role:
 | Test | Disposable and rebuild-often machines |
 | Untrusted | Internet-only client access |
 
-Choose identifiers and ranges privately. The property that matters is that roles
-are legible during troubleshooting without publishing the deployed mapping.
+Choose identifiers and ranges consistently so roles remain legible across the
+firewall, switch, hypervisors, and troubleshooting notes.
 
 ## WAN transit is a separate decision
 

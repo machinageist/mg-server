@@ -8,8 +8,7 @@ tags: [labs, networking, segmentation, servers, cloudflare-tunnel]
 ## The one publicly visible stage
 
 In this reference plan, a public service moves **last**, behind a lower-risk
-service that proves the pattern first. The examples are sanitized and do not
-describe the current production topology.
+service that proves the pattern first.
 
 ## Order
 
@@ -41,11 +40,10 @@ dependencies. Administrative and unrelated internal networks are denied.
 
 That last part is the point: a compromised public-facing service should not be
 able to reach the management plane. Test the deny policy with representative
-fixtures from your own authorized environment rather than publishing targets.
+fixtures from your own authorized environment.
 
-Record both allowed and denied probes in the private change record. The public
-writeup should state the policy and result without listing real management
-targets or service units.
+Record both allowed and denied probes, including the policy under test, result,
+and time of verification.
 
 ## Verify the public path from outside
 
@@ -89,4 +87,4 @@ the host's local address means:
 - [ ] Local origin, resolver, and tunnel registration verified
 - [ ] Public HTTP verified from outside the home network
 - [ ] No inbound WAN port-forward exists — confirmed, not assumed
-- [ ] The private topology document updated with the new address
+- [ ] The topology document updated with the new address

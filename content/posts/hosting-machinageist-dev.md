@@ -1,15 +1,14 @@
 ---
 title: "How machinageist.dev Is Hosted"
 date: 2026-07-08
-summary: "How this small Rust site moves from an edge proxy to a private origin, how I verify the public boundary, and why the operational details stop there."
+summary: "How this small Rust site moves from an edge proxy to a private origin, and how I verify DNS, HTTP, and service health across the request path."
 category: "Linux / SysAdmin"
 tags: [self-hosting, linux, systemd, caddy, cloudflare, dns, proxmox]
 ---
 
 This site runs on hardware I own. There is no managed application platform and
-no database. The useful public facts are simple: traffic reaches an edge proxy,
-crosses a private connector, and lands on a small Rust service. The exact host,
-service names, recovery paths, and internal topology stay in private runbooks.
+no database. Traffic reaches an edge proxy, crosses an outbound connector, passes
+through a local reverse proxy, and lands on a small Rust service.
 
 ## The request path
 
@@ -23,9 +22,7 @@ Browser
 ```
 
 The connector is outbound, so the application origin does not need a public
-listener. Cloudflare terminates browser-facing TLS. Those are architectural
-properties worth documenting; the origin's location and administrative path are
-not.
+listener. Cloudflare terminates browser-facing TLS.
 
 ## DNS: where the name points
 
@@ -66,8 +63,7 @@ The security headers are stamped by mg-server itself — I cover them in a separ
 ## The origin service
 
 The local reverse proxy hands requests to a service manager, which starts the
-app on boot and restarts it after failure. The ordinary verification pattern is
-more useful than my exact unit name:
+app on boot and restarts it after failure. I verify the service with:
 
 ```console
 $ systemctl status <service>
@@ -77,7 +73,8 @@ $ journalctl -u <service> --since today
 One deployment failed because the service manager's executable path did not
 match the deployed binary. The general lesson was to validate the unit, binary,
 permissions, and startup behavior together before replacing the known-good
-release. The exact unit and recovery sequence belong in the private runbook.
+release. The deployment check now covers the unit configuration, binary path,
+permissions, and a fresh-process startup before cutover.
 
 ## Why no database
 
@@ -88,9 +85,8 @@ admin panel, no login form. That is partly an architecture preference and partly
 a security property: a smaller surface has fewer things to get wrong. It is not a
 claim that the site is "secure" — only that there is less of it to attack.
 
-## Scope without publishing a weakness inventory
+## Operational scope
 
-This is a personal service, not a production platform. That boundary is enough
-for a public portfolio claim. Backup evidence, monitoring coverage, rollback
-procedures, and known gaps are tracked privately, where they can guide the work
-without becoming a checklist for strangers.
+This is a personal service, not a production platform. The demonstrated scope is
+narrow: run, diagnose, and verify a small Linux-hosted Rust service across its
+public request path.

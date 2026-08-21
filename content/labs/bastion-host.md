@@ -16,9 +16,6 @@ and without them it is a jump box with extra steps:
 
 ## The honest question to answer before building it
 
-This is a generic hardening pattern. The examples do not describe current
-management reachability or a deployed bastion.
-
 If a policy matrix allows clients to reach management directly, then management
 is reachable without the bastion and the bastion is not the only path into
 anything.

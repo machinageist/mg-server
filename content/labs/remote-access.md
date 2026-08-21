@@ -7,9 +7,6 @@ tags: [labs, networking, vpn, wireguard, remote-access]
 
 ## Read this before installing anything
 
-This is a sanitized decision framework, not a statement of the remote-access
-tools or placement currently in use.
-
 **These two options overlap.** A coordinated mesh service like Tailscale *is*
 WireGuard, with a coordination server, key distribution, and NAT traversal
 layered on top. Running both gives you two remote-access paths, two policy

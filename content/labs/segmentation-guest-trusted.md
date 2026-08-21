@@ -7,9 +7,6 @@ tags: [labs, networking, segmentation, wireless, firewall]
 
 ## This stage is gated on a hardware capability
 
-This is a sanitized wireless-segmentation pattern. It does not publish the
-deployed zone names, management allowances, or probe targets.
-
 Which zone you deploy first is not a preference. It depends on one question you
 have to answer from the access point's own configuration:
 
@@ -53,7 +50,7 @@ configured.
 
 Approved clients should receive only the services their role requires. Do not
 turn the label "trusted" into unrestricted east-west access; default-deny
-everything not named in the private policy matrix.
+everything not named in the approved policy matrix.
 
 This is your admin workstation's home, which makes it the zone whose
 misconfiguration locks you out of everything else. Before moving your own

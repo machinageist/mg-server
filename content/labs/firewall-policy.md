@@ -7,9 +7,8 @@ tags: [labs, networking, firewall, policy, opnsense]
 
 ## Settle one question before anything else
 
-This is a sanitized verification pattern, not a description of the deployed
-gateway or its current state. Before using a virtual firewall design, prove
-which device actually owns the gateway address.
+Before using a virtual firewall design, prove which device actually owns the
+gateway address.
 
 Two possibilities, and they lead to different projects:
 
@@ -55,7 +54,8 @@ modes than it removes.
 ## Interface plan
 
 Create one interface per role, prepared **disabled** during the preparation
-stage and enabled one stage at a time. Addressing stays in the private plan.
+stage and enabled one stage at a time. Record the addressing plan before
+activation.
 
 The [preparation stage](/labs/segmentation-prepare) covers creating interfaces
 inert before any client moves.
@@ -75,8 +75,8 @@ failure modes look identical from the far side.
 
 - [ ] Export after **every accepted change**, not on a schedule
 - [ ] Store the export outside the firewall itself
-- [ ] **Never commit an unsanitized export.** It contains rules, keys, and your
-      full internal topology.
+- [ ] Store exports encrypted and outside the repository; they contain rules,
+      keys, and the complete interface map
 - [ ] Practise a **restore**, not just an export. Untested backups are hope.
 
 ## Verification
@@ -100,8 +100,8 @@ matter for its zone, and those are the tests worth recording.
 ## Done when
 
 - [ ] Gateway ownership proven and recorded
-- [ ] Internal interface and zone configuration documented privately
-- [ ] Config exported, stored privately, and a restore tested
+- [ ] Internal interface and zone configuration documented
+- [ ] Config exported, stored securely, and a restore tested
 - [ ] Aliases defined before rules
 - [ ] The single-node dependency explicitly acknowledged in the topology
       document, with the chosen mitigation named

@@ -11,8 +11,8 @@ and then start adding VLANs. I expected the flat-network move to be the simple
 part.
 
 The change caused a long management-plane outage and interrupted this site. This
-post keeps the failure analysis and verification method public while leaving the
-current topology and recovery procedures in private notes.
+post traces the failure across cluster, access-control, and DNS layers and records
+the verification method I used to recover.
 
 ## The intended change
 
@@ -107,8 +107,8 @@ The recovery reinforced that cluster health has several separate layers:
 
 Quorum is a prerequisite for authoritative writes, but it does not prove that
 every member has rejoined or that shared state has synchronized. I now verify
-membership, authority, and replicated state separately. The product-specific
-commands and recovery order remain in the private incident record.
+membership, authority, and replicated state separately before considering the
+cluster recovered.
 
 ## The website outage was a DNS problem
 
@@ -166,9 +166,6 @@ connection can therefore hide a lockout.
 
 ## Revised change plan
 
-The live state and next maintenance window are intentionally not published. The
-revised method is still useful to share:
-
 The original runbook moved the router, switch, hosts, and guests into the final
 segmented design in one cutover. I have replaced it with a staged plan:
 
@@ -179,9 +176,8 @@ segmented design in one cutover. I have replaced it with a staged plan:
 4. Deliberately test a bad VLAN assignment and firewall rule, then practice the
    rollback while the scope is small.
 
-Before any future network change, the private change record must include tested
-configuration restore evidence, an independent access path, and a rollback for
-every layer involved.
+Before any future network change, I require tested configuration-restore evidence,
+an independent access path, and a rollback for every layer involved.
 
 ## Notes for the next migration
 

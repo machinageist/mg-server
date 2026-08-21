@@ -7,8 +7,6 @@ tags: [labs, networking, segmentation, bastion, vpn]
 
 ## Scope
 
-This is a sanitized reference sequence, not the deployed access matrix.
-
 Move the bastion and the remote-access endpoint onto the admin zone — **one at
 a time**. The service-level setup for each has its own page:
 [bastion host](/labs/bastion-host) and [remote access](/labs/remote-access).
@@ -33,7 +31,7 @@ This has to be tested from two vantage points, and the second is the one people
 fake.
 
 **1. From an approved local client** — prove the entry point, allowed
-destinations, and denies using targets recorded privately.
+destinations, and denies using targets selected before the change window.
 
 **2. From a genuinely external client** — not from inside the house.
 

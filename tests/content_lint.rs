@@ -443,6 +443,59 @@ fn public_copy_avoids_high_value_operational_recon() {
     }
 }
 
+// The site should simply present safe, useful material. Explaining which live
+// details were sanitized, omitted, or moved to private records advertises the
+// boundary instead of showing the work.
+#[test]
+fn public_copy_uses_show_dont_tell_opsec() {
+    const META_DISCLOSURES: &[&str] = &[
+        "private runbook",
+        "private notes",
+        "private incident record",
+        "private change record",
+        "tracked privately",
+        "operational telemetry is kept private",
+        "intentionally omits live",
+        "sanitized planning template",
+        "sanitized reference",
+        "sanitized wireless-segmentation pattern",
+        "examples are sanitized",
+        "do not describe the current",
+        "not the deployed access matrix",
+        "rather than publishing targets",
+        "public writeup should state",
+        "private study workspace into reviewed public editions",
+        "live state and next maintenance window are intentionally not published",
+        "origin's location and administrative path are not",
+        "public; private infrastructure procedures",
+    ];
+
+    let mut public_text = String::new();
+    for dir in [PAGES_DIR, POSTS_DIR, LABS_DIR] {
+        for file in load_dir(dir) {
+            public_text.push_str(&file.body);
+            public_text.push('\n');
+        }
+    }
+    for template in [
+        "templates/index.html",
+        "templates/status.html",
+        "templates/lab_page.html",
+    ] {
+        let raw = std::fs::read_to_string(template).expect("read public template");
+        public_text.push_str(&strip_template_comments(&raw));
+        public_text.push('\n');
+    }
+
+    let haystack = public_text.to_lowercase();
+    for disclosure in META_DISCLOSURES {
+        assert!(
+            !haystack.contains(&disclosure.to_lowercase()),
+            "public copy narrates its OPSEC boundary with {disclosure:?}"
+        );
+    }
+}
+
 // Find the first RFC 1918 address literal in a line, if any
 fn first_private_address(line: &str) -> Option<String> {
     for token in line.split(|c: char| !(c.is_ascii_digit() || c == '.' || c == '/')) {

@@ -7,9 +7,8 @@ tags: [labs, networking, segmentation, cluster, console]
 
 ## Why this is last, and why it is the most dangerous
 
-This sanitized reference stage moves a cluster's management plane after every
-lower-risk zone has proved the pattern. It does not describe the current live
-topology.
+Move a cluster's management plane only after every lower-risk zone has proved the
+cutover and rollback pattern.
 
 The change can affect:
 
@@ -17,8 +16,8 @@ The change can affect:
 - **cluster membership traffic**; and
 - your own access to fix whatever you break.
 
-A tagging mismatch can isolate a node or cost the cluster quorum. Exact cluster
-membership and recovery paths belong in the private change record.
+A tagging mismatch can isolate a node or cost the cluster quorum. Record exact
+cluster membership and a tested recovery path for each node before cutover.
 
 ## Console access, per node, non-negotiable
 
@@ -89,7 +88,7 @@ at this point:
       merely exported. An export you have never restored is a file.
 - [ ] Stale references to the pre-migration addressing absent from active
       scripts, or explicitly marked historical
-- [ ] Evidence sanitized and separated from secrets and raw captures
+- [ ] Evidence records each test, result, and rollback confirmation
 - [ ] The writeup distinguishes a homelab validation from production-scale
       network engineering
 

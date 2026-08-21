@@ -94,5 +94,4 @@ header the code sets.
   web service, with reproducible `curl` evidence. **Not** a claim to have "secured
   the application."
 
-This is one layer in the site's defensive-security work. The source and tests are
-public; private infrastructure procedures and control gaps are not.
+The source and tests for this defensive layer are available in the repository.

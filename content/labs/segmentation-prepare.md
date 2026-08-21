@@ -88,8 +88,8 @@ been. Find it before continuing.
 
 ## Done when
 
-- [ ] Current hypervisor, firewall, and switch configs exported and stored
-      privately
+- [ ] Current hypervisor, firewall, and switch configs exported, restore-tested,
+      and stored outside the devices they protect
 - [ ] All six VLANs defined on the firewall as disabled objects, with aliases
 - [ ] All six VLAN IDs defined on the switch with no port membership changes
 - [ ] Per-node bridge config written using each node's verified interface name
