@@ -1,4 +1,6 @@
-Grade shipped output against `gauntlet-output/criteria.md`.
+Review shipped output against the content contract in
+`docs/agent-context/README.md` and the mechanical rules in
+`tests/content_lint.rs`.
 
 This is the judgment half of the output gate. `tests/content_lint.rs` already
 enforces what is mechanically checkable — frontmatter, tag vocabulary, section
@@ -18,8 +20,8 @@ pedagogy, claim integrity, restraint, and whether the page is actually good.
 
 ## Before grading
 
-1. Read `gauntlet-output/criteria.md` in full. It is the standard; nothing here
-   restates it.
+1. Read `docs/agent-context/README.md` §5–6 for claim integrity and the
+   page-authoring contract.
 2. Read the target page in full.
 3. Read `docs/agent-context/README.md` §6 for the page-authoring contract.
 4. Run `cargo test --all-targets`. If the lint is already failing, say so and
@@ -28,19 +30,18 @@ pedagogy, claim integrity, restraint, and whether the page is actually good.
 ## Grade these criteria only
 
 Shipped content cannot violate most of the architecture-facing criteria, so
-grading them produces noise. Score 0–3 on exactly these, using `criteria.md`'s
-own definitions:
+grading them produces noise. Score 0–3 on exactly these lenses:
 
 | Lens | Criteria | What you are actually looking for on a page |
 |---|---|---|
-| 1. Claim integrity | 1A, 1B, 1C, 1D, 1E, 1F | Every capability claimed is backed by published evidence; planned work never reads as done; no stale cert or role framing |
-| 2. Design & craft | 2B, 2C, 2D, 2E | **2C is the one that matters most here.** Concept before jargon, built from the ground up, connected to the larger system, practice on hardware the reader owns. Bullet-dumping a source note scores ≤ 1 |
-| 3. Accessibility | 3B, 3D, 3F | Heading outline is real; tables and code blocks survive a narrow viewport; nothing depends on colour alone |
-| 4. Competitive depth | 4A, 4C | Does this teach, or restate? Would a working engineer respect the explanation? |
-| 5. Accuracy | 5E | If the page changes shipped behaviour, does it say which long-lived document must change with it |
+| Claim integrity | Evidence and scope | Every capability claimed is backed by published evidence; planned work never reads as done; no stale cert or role framing |
+| Design & craft | Explanation quality | Concept before jargon, built from the ground up, connected to the larger system, practice on hardware the reader owns. Bullet-dumping a source note scores ≤ 1 |
+| Accessibility | Structure and narrow screens | Heading outline is real; tables and code blocks survive a narrow viewport; nothing depends on colour alone |
+| Competitive depth | Original teaching | Does this teach, or restate? Would a working engineer respect the explanation? |
+| Accuracy | Durable documentation | If the page changes shipped behaviour, does it say which long-lived document must change with it |
 
-Apply all three auto-fail rules. Rule 1 (unearned claims) is the one that fires
-on content.
+Treat unsupported capability claims, factual errors, and secret or private
+operational disclosure as blocking failures.
 
 ## Verify before you score
 
@@ -60,20 +61,20 @@ contradiction was one click away. Look for that shape.
 
 ## Output
 
-Follow `gauntlet-universal/SCORECARD-TEMPLATE.md` so the result is comparable
-with the gauntlet's own scorecards. Per criterion: the score, the evidence
+Follow `gauntlet-universal/SCORECARD-TEMPLATE.md` so the result remains
+consistent. Per criterion: the score, the evidence
 (quote the page, cite `file:line`), and — where the score is below 3 — a
 remediation note specific enough for someone else to act on without rereading
 the page.
 
 Then:
 
-- **Verdict:** PASS / FAIL against `criteria.md`'s pass threshold.
+- **Verdict:** PASS / FAIL, with any claim-integrity or factual error blocking.
 - **Priority 1** — auto-fail violations and factual errors. These block.
 - **Priority 2** — pedagogy and craft gaps worth fixing.
 - **Priority 3** — polish.
 
-Write the scorecard to `gauntlet-output/scorecards/page-<slug>-scorecard.md`
+Write the scorecard to `docs/reviews/page-<slug>-scorecard.md`
 only if asked; otherwise report inline.
 
 ## Rules

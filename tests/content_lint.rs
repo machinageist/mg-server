@@ -2,8 +2,7 @@
 // Date:        2026-08-14
 // Description: Mechanical quality floor for everything under content/. Enforces
 //              the frontmatter schema, the tag vocabulary, the page-authoring
-//              contract, internal link resolution, and the claim boundaries that
-//              gauntlet-output/criteria.md grades by hand.
+//              contract, internal link resolution, and public claim boundaries.
 // Notes:       This is the automated half of the output gate. It checks that the
 //              scaffolding is present and the links resolve — deliberately not
 //              whether the prose is any good, which is the /review-page command's
@@ -114,10 +113,10 @@ fn parse(path: &Path) -> ContentFile {
     // parser would be a dependency bought for nothing
     let mut frontmatter = BTreeMap::new();
     for line in front.lines() {
-        if let Some((key, value)) = line.split_once(':')
-            && !key.starts_with(char::is_whitespace)
-        {
-            frontmatter.insert(key.trim().to_string(), value.trim().to_string());
+        if let Some((key, value)) = line.split_once(':') {
+            if !key.starts_with(char::is_whitespace) {
+                frontmatter.insert(key.trim().to_string(), value.trim().to_string());
+            }
         }
     }
 

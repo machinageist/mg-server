@@ -2,7 +2,7 @@
 
 **Route:** `GET /search?q=`
 **Shipped:** 2026-08-14
-**Spec:** `gauntlet-output/specs/C1-search.md`
+**Implementation:** `src/search.rs` and `src/handlers/search.rs`
 
 Server-rendered search over the site's published writing and education wiki. No
 JavaScript, no index file, no search dependency, no database.

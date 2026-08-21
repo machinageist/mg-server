@@ -21,8 +21,8 @@ classification. KEEP = the 10-page safe core (`Keep now` + `Keep later`).
 
 **Phase 1 — identity & copy.** Hero, About, Start Here, and page `description()`
 strings now lead with "Systems Administrator / NOC Technician (in training)", the
-five pillars, and the Network+ → Server+ cert spine. Location normalized to
-"Portland, OR." Nav label "Reference" → "Archive."
+five pillars, and the Network+ → Server+ cert spine. Location metadata was
+normalized. Nav label "Reference" → "Archive."
 Pinned-copy tests updated; anti-overclaim guards kept.
 
 **Phase 2 — portfolio.** `project.rs::all()` reordered to lead with the three

@@ -18,11 +18,10 @@ directory's `README.md`.
 
 ## Homelab project 1 — internal DNS + network map
 
-- description: An internal DNS resolver (Pi-hole/dnsmasq) for the Proxmox
-  lab, a subnet/VLAN and service map now spanning a three-node cluster over a
-  shared managed switch, and a dig/nslookup/ss name-resolution writeup
+- description: A small internal DNS service, a role-based network and service
+  map, and a reproducible name-resolution troubleshooting writeup
   captured before and after breaking a record. Anchored to Network+.
-- tags: homelab, networking, dns, proxmox, network+
+- tags: homelab, networking, dns, network+
 - url: none
 - status: in progress
 
@@ -36,13 +35,13 @@ directory's `README.md`.
 - url: none
 - status: in progress
 
-## Homelab project 3 — Proxmox cluster ops: backup/restore, monitoring, HA
+## Homelab project 3 — virtualized cluster operations
 
-- description: The three-node Proxmox cluster's operations: a baseline and
-  asset inventory, a validated VM backup and restore with RPO/RTO notes, a
+- description: Virtualized cluster operations: a baseline and asset inventory,
+  a validated guest backup and restore with RPO/RTO notes, a
   monitoring stack, structured incident write-ups, and high availability as
   the capstone. Anchored to Server+ and Linux+.
-- tags: homelab, proxmox, backup, monitoring, server+
+- tags: homelab, virtualization, backup, monitoring, server+
 - url: none
 - status: in progress
 

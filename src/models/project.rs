@@ -77,8 +77,8 @@ pub fn all() -> Vec<Project> {
     vec![Project {
         name: "mg-server",
         description: "The Rust/Axum app that serves this site: routes, Askama templates, flat-file Markdown, \
-                      request tracing, defensive response headers, and rate limiting, on a Proxmox Debian VM \
-                      behind Caddy and a Cloudflare Tunnel.",
+                      request tracing, defensive response headers, and rate limiting, deployed as a managed \
+                      Linux service behind a private origin path.",
         tags: &["rust", "axum", "linux-service", "self-hosting", "headers"],
         url: Some("https://github.com/machinageist/mg-server"),
         status: ProjectStatus::Active,

@@ -15,9 +15,9 @@
 >   2026-07-25 (`docs/public-portfolio-structure.md` header note). The site has **four**
 >   pillars, which is what `README.md` says. Do not rebuild a cert route or a cert card.
 >
-> **No voucher is booked for any exam.** `gauntlet-output/criteria.md` auto-fail rule 1
-> rejects any spec that introduces a certification claim without a booked voucher, and
-> criterion 1D scores stale cert copy 0. `README.md:14-16` records the 2026-07-25 removal
+> **No voucher is booked for any exam.** The repository's claim-integrity rule rejects
+> any copy that introduces a certification claim without evidence. `README.md:14-16`
+> records the 2026-07-25 removal
 > of cert claims from the site. Public wording rules live in
 > `~/mg-coreforge/bootcamp/career/PUBLIC_FACE.md` (loosened 2026-08-03): RHCSA may be named
 > as *actively studying*, provided the copy also says it is not earned and no date is

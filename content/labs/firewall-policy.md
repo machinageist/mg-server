@@ -48,9 +48,9 @@ none of them free:
   redundancy, real complexity.
 - **Physical router hardware.** Removes the dependency, costs money and a NIC.
 
-Do not solve it by adding high availability to a cluster that has not finished
-recovering. Complexity added to an unproven base is how the original outage
-happened.
+Do not add high availability until the base design and its recovery path have
+been proved. Complexity added to an unproven base usually creates more failure
+modes than it removes.
 
 ## Interface plan
 

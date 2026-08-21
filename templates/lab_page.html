@@ -34,9 +34,6 @@
       <p class="lab-page-why">{{ lab.why }}</p>
       <p class="post-meta">
         <span class="lab-phase-tag">{{ lab.phase }}</span>
-        {% if let Some(blocker) = lab.blocked_by %}
-        <span class="lab-blocked">Blocked by {{ blocker }}</span>
-        {% endif %}
       </p>
     </header>
 
@@ -67,10 +64,8 @@
     </div>
 
     <p class="lab-page-footnote">
-      Adapted from the runbook I work from
-      (<code>{{ lab.runbook }}</code>), with identifiers and addressing removed.
-      Nothing here has been executed yet &mdash; when it is, the writeup will
-      say what actually happened, including the parts that did not go to plan.
+      This page is a reusable educational pattern. It intentionally omits live
+      identifiers, addressing, implementation status, and private recovery records.
     </p>
   </article>
 </div>

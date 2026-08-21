@@ -65,7 +65,7 @@ This list is not advisory:
 - any quorum change; or
 - unexpected firewall drops.
 
-Revert from the console. Diagnose with two healthy nodes, not one.
+Revert from the console. Diagnose only after cluster health is restored.
 
 ## Done when
 

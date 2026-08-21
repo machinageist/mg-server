@@ -43,8 +43,7 @@ It is deliberately small. It is not a platform.
 | `README.md` | Public-facing description, stack table, deployment request path, headers |
 | `IMPROVEMENT_PLAN.md` | Claim posture, safe/dangerous claims, the ops-writeup backlog. Carries an amendment block at the top — read it |
 | `docs/public-portfolio-structure.md` | Audience, pillars, evidence standard, claim discipline. Carries its own 2026-07-25 amendment header |
-| `gauntlet-output/criteria.md` | The five quality lenses and the three auto-fail rules any new work is graded against |
-| `gauntlet-output/feature-tree.md` | Every feature of the site, with current state (implemented / absent / model-only) |
+| `tests/content_lint.rs` | Mechanical content and claim-integrity checks that run in CI |
 | `src/router.rs` | The single source of truth for routes |
 | `~/mg-coreforge/bootcamp/CERT_PLAN.md` | The live certification spine. Internal only — nothing from it goes on the site without checking §5 below |
 | `~/mg-coreforge/bootcamp/career/PUBLIC_FACE.md` | Wording rules for anything public |
@@ -89,7 +88,6 @@ content/pages/            # the /learn wiki
 content/drafts/           # unrouted, never served
 docs/                     # planning docs, theme generator, solarcore brand spec
 gauntlet-universal/       # the portable spec pipeline
-gauntlet-output/          # this project's criteria, feature tree, specs, scorecards
 tests/wiki_pages.rs       # drift guard for the /learn wiki
 tests/content_lint.rs     # the content quality floor — frontmatter, tags, links, claims
 ```
@@ -119,8 +117,8 @@ source of truth for the CSS token blocks, the JS `MODES` array and icon map, and
 
 ## 4. Claim discipline — the part that actually matters
 
-The site's core asset is that everything on it is true and defensible in an interview
-(`gauntlet-output/criteria.md`, Lens 1). A single overclaim costs more than a hundred design
+The site's core asset is that everything on it is true and defensible in an interview.
+A single overclaim costs more than a hundred design
 nits. Four boundaries:
 
 1. **No unearned certification claims.** No cert claim without a booked exam voucher. None is
@@ -310,20 +308,17 @@ service needed. `MG_BIND_ADDR` overrides the bind address.
 
 ## 8. The gauntlet
 
-Two directories, different jobs:
-
 - **`gauntlet-universal/`** — the portable pipeline itself. `GAUNTLET.md` is the procedure:
   Phase 0 discovers the project and interviews the user to build quality criteria, then spec
   agents write one document per feature, blind verification agents grade them against the
   criteria, and failures loop through up to three remediation passes. Plus three templates.
   Nothing in here is mg-server-specific. Invoked via the `gauntlet` skill or by reading
   `gauntlet-universal/GAUNTLET.md`.
-- **`gauntlet-output/`** — this project's instance. `criteria.md` (five weighted lenses, three
-  auto-fail rules), `feature-tree.md` (13 features, A/B/C tiers), `manifest.md` (per-feature
-  status and score), `specs/`, `scorecards/`, `gap-reports/`.
 
-A scorecard passing does not mean its Priority 1 items were applied — the manifest tracks
-"Applied" and "Outstanding" separately, and several features still carry outstanding items.
+Project-specific generated gauntlet output is intentionally not tracked. It can
+retain stale source excerpts and operational detail long after the shipped site
+changes. Keep durable review conclusions in ordinary project documentation and
+regenerate transient scorecards only when needed.
 
 ---
 
@@ -346,24 +341,6 @@ Do not trust these blindly.
   (theme polarity, the CRT/scanline ban, the split wordmark, `--sc-*` token names, the magenta
   role). Resolved direction, Jeff 2026-08-07: **the shipped site wins**, and the spec's job is
   to be rewritten to match. See `criteria.md` 2A.
-
-**Live conflicts, unresolved**
-
-- **`src/models/lab.rs` is tracked by git but never declared in `src/models/mod.rs`.** It does
-  not compile and its three tests — including the anti-overclaim guard — never run. The
-  feature tree calls `C4 progress` "model only, unwired"; this is the concrete shape of that.
-  Anyone wiring up a `/labs` route inherits the test suite the moment they add `pub mod lab;`.
-- **`gauntlet-output/manifest.md` currently contains unresolved git conflict markers**
-  (`<<<<<<< HEAD` / `=======` / `>>>>>>>`) in both the status table and the correction-pass
-  table. Read the lower half (the `fc3da33…` side) as current.
-- **Open decision, `manifest.md` §"Open decision for Jeff":** may the home page name RHCSA?
-  `criteria.md` auto-fail rule 1 says no cert claim without a voucher; `PUBLIC_FACE.md:15-23`
-  was loosened 2026-08-03 to allow naming RHCSA *with its status attached*. The B1 spec took
-  the conservative path (name no exam on `/`). Overrulable, nothing blocked on it.
-- **Outstanding scorecard Priority 1 items** for A2 (site-shell), A3 (ops), and B3
-  (portfolio). Citations in those scorecards are known-stale and have been re-verified
-  against source in `gauntlet-output/REMEDIATION-BRIEF.md` — read that rather than the
-  scorecards' own line numbers. B5 (learn) is closed.
 
 **Recently closed** — listed because older docs and scorecards still describe them as open:
 

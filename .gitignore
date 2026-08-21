@@ -28,9 +28,6 @@ mg-server.tar.gz
 
 resume-commands
 
-# The gauntlet trees are deliberately tracked. Two lines here previously read
-# "gauntlet-output gauntlet-universal" — space-separated, which git reads as one
-# literal path that does not exist, so they never ignored anything and the
-# directories were committed anyway. Removed rather than corrected: criteria.md,
-# the feature tree, the specs, and the scorecards are project artifacts that
-# other documents cite by path, and REMEDIATION-BRIEF.md is worked from directly.
+# Project-specific gauntlet output is transient and can retain stale source
+# excerpts or operational detail. Keep the reusable pipeline, ignore its output.
+/gauntlet-output/

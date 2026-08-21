@@ -3,7 +3,7 @@ title: "Moving My Homelab Management Network First"
 date: 2026-07-31
 summary: "A management-network change exposed stale dependencies across cluster, access-control, and DNS layers. What failed, how I narrowed it down, and how the change process improved."
 category: "Networking"
-tags: [networking, proxmox, homelab, corosync, dns, cloudflare-tunnel, incident, segmentation]
+tags: [networking, homelab, clustering, dns, incident, segmentation]
 ---
 
 My plan was to move the homelab management layer onto a clean subnet, verify it,
@@ -53,11 +53,10 @@ rebuilding the hosts.
 
 There were two main management failures.
 
-First, Corosync still named each node by its old address. It does not discover
-peers from the host interface configuration. It binds to configured addresses
-and sends cluster traffic to the peers listed in its own configuration. Once the
-host addresses changed, those entries no longer described the network. The nodes
-stopped exchanging tokens and each behaved as an isolated member.
+First, the cluster transport still named each member by its old address. It did
+not discover peers from the host interface configuration; it used its own static
+peer configuration. Once the host addresses changed, those entries no longer
+described the network and each member behaved as an isolated system.
 
 Second, management access rules still matched the old source network. New
 connections therefore failed even where the hosts were otherwise reachable.
@@ -78,8 +77,8 @@ but it replaced a broad outage with smaller questions I could answer.
 About four hours in, I also used an AI agent for hands-on help. The bottom-up
 sequence was already the approach I wanted to take. The agent helped with
 specific commands and, more importantly, with collecting evidence before making
-more changes. I am still learning some of the Proxmox and Corosync internals, so
-I have tried not to claim more than I verified here.
+more changes. I was still learning parts of the cluster stack, so I have tried
+not to claim more than I verified here.
 
 Before the next repair attempt, I collected read-only network and cluster state,
 service status, recent logs, and checksums. That preserved evidence of the broken

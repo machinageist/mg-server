@@ -1,12 +1,8 @@
 // Author:      machinageist
 // Date:        2026-08-14
-// Description: Handler for /labs — the homelab progress surface. Groups the
-//              lab list from models::lab by phase and renders it in dependency
-//              order.
-// Notes:       This is a PROGRESS page, not a portfolio page. criteria.md 1C
-//              permits work in progress to appear here and forbids it implying
-//              portfolio status, so the template leads with status and the
-//              model refuses to call anything Done without a published writeup.
+// Description: Handler for /labs — reusable infrastructure planning and
+//              verification exercises grouped by subject.
+// Notes:       This is a public educational surface, not a deployment tracker.
 //              Grouping is derived from the list rather than hardcoded, so a
 //              new phase cannot be added to the model and silently fail to
 //              render.
@@ -43,7 +39,7 @@ impl LabsTemplate {
     }
 
     pub fn description(&self) -> &str {
-        "The homelab work in progress — recovery, network segmentation, and services, in the order it has to happen."
+        "Reusable network and service-design exercises with verification and stop conditions."
     }
 
     pub fn section(&self) -> &str {
@@ -59,13 +55,11 @@ impl LabsTemplate {
 // Describe what each phase is for, so a group heading is not just a label
 fn blurb(phase: Phase) -> &'static str {
     match phase {
-        Phase::Segmentation => {
-            "Divide the flat network into VLANs, one change domain at a time, lowest-risk zone \
-             first and the management network last."
+        Phase::NetworkDesign => {
+            "Plan segmentation as a sequence of independently testable changes, beginning with the lowest-risk case."
         }
-        Phase::Services => {
-            "Put each service on its target zone and prove its configuration, rather than \
-             assuming the VM that exists is the VM that was intended."
+        Phase::ServiceDesign => {
+            "Define each service boundary and prove both intended access and intended denial."
         }
     }
 }
@@ -93,7 +87,7 @@ fn labs_view() -> LabsTemplate {
     LabsTemplate { groups: grouped() }
 }
 
-// Render the homelab progress page
+// Render the public lab-reference page
 pub async fn labs() -> impl IntoResponse {
     labs_view()
 }
@@ -111,10 +105,7 @@ pub struct LabPageTemplate {
     // Derived from the document rather than maintained by hand, so a renamed
     // section cannot leave a contents entry pointing at nothing
     pub outline: Vec<Heading>,
-    // The whole program, grouped the same way the index groups it — the
-    // sidebar /learn/:slug carries, applied to a chain where knowing what comes
-    // before an entry is most of the point. Reuses grouped() so the two
-    // surfaces cannot disagree about which phase a lab is in.
+    // The complete reference set, grouped the same way as the index.
     pub groups: Vec<PhaseGroup>,
 }
 
@@ -172,10 +163,8 @@ mod tests {
             .expect("lab page template renders")
     }
 
-    // The detail page carries the whole program, the way /learn/:slug carries
-    // the wiki. A reader who lands mid-chain from a search result can see what
-    // has to happen before this lab and what it unblocks, without going back
-    // to the index — and the entry they are reading is the one marked.
+    // The detail page carries the complete reference set, the way /learn/:slug
+    // carries the wiki, and marks the entry being read.
     #[test]
     fn the_detail_sidebar_lists_every_lab_and_marks_exactly_one_active() {
         let slug = "segmentation-lab";
@@ -272,20 +261,6 @@ mod tests {
         assert_eq!(labels.len(), count, "a phase was split across two groups");
     }
 
-    // The page must name the off-list precondition, or every entry reads as
-    // blocked for no stated reason
-    #[test]
-    fn the_page_states_the_precondition_and_links_its_writeup() {
-        let rendered = render();
-        assert!(
-            rendered.contains(lab::RECOVERY_GATE),
-            "the page must say what everything is waiting on"
-        );
-        assert!(
-            rendered.contains("/blog/management-layer-first-network-migration"),
-            "the precondition must link the post that covers it"
-        );
-    }
 
     // Same three-place registration the wiki has: a lab needs a model entry and
     // a procedure file, and neither may exist without the other
@@ -330,28 +305,22 @@ mod tests {
         }
     }
 
-    // criteria.md 1C: a progress surface may show work in progress and may not
-    // imply portfolio status. The page must say what these are, not let a
-    // reader assume they are finished work.
     #[test]
-    fn the_page_reads_as_progress_not_portfolio() {
+    fn the_page_reads_as_reference_material_not_live_status() {
         let rendered = render();
         let body = rendered
             .split_once("<main")
             .map(|(_, rest)| rest)
             .expect("layout always renders a <main>");
 
-        // Status is stated in words, never carried by colour alone
-        assert!(
-            body.contains("blocked"),
-            "blocked status must be spelled out"
-        );
-        assert!(body.contains("next"), "the next action must be labelled");
-        // Nothing here is a portfolio claim
+        assert!(body.contains("reusable planning exercises"));
+        assert!(body.contains("deployment"));
+        assert!(body.contains("inventory"));
+        assert!(!body.contains("Blocked by"));
+        assert!(!body.contains("recovery exit gate"));
+        assert!(!body.contains("runbooks/"));
         assert!(!body.contains("Completed project"));
         assert!(!body.contains("case study"));
-        // The anti-overclaim vocabulary the model bans must not arrive via the
-        // template's own copy either
         for banned in [
             "penetration test",
             "red team",

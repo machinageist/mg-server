@@ -58,9 +58,8 @@ reproducible.)
 
 ## Where they come from
 
-These are set in one place, an Axum middleware applied at the router level so it
-runs on every response: `src/middleware/security_headers.rs`. A couple of the
-inserts:
+These are set in one response middleware applied at the router level so it runs
+on every response. A shortened example:
 
 ```rust
 headers.insert(

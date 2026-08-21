@@ -41,7 +41,7 @@ impl IndexTemplate {
         "machinageist"
     }
     pub fn description(&self) -> &str {
-        "Homelab, networking, and Linux notes from machinageist — a Proxmox lab, a public education wiki, and the projects that come out of it."
+        "Homelab, networking, and Linux notes from machinageist — practical educational material and the projects that come out of it."
     }
     pub fn section(&self) -> &str {
         "home"
@@ -78,7 +78,7 @@ impl AboutTemplate {
         "About — machinageist"
     }
     pub fn description(&self) -> &str {
-        "About Jeff Cincoski — a Proxmox homelab, networking and Linux operations, small automation tools, and a public education wiki."
+        "About Jeff Cincoski — homelab, networking and Linux operations, small automation tools, and a public education wiki."
     }
     pub fn section(&self) -> &str {
         "about"
@@ -163,9 +163,12 @@ mod tests {
             .map(|(_, rest)| rest)
             .expect("about/home layout always renders a <main>");
         assert!(body.contains("homelab"));
-        assert!(body.contains("Proxmox"));
-        assert!(body.contains("cluster"));
-        assert!(body.contains("Cloudflare Tunnel"));
+        assert!(body.contains("virtualized systems"));
+        assert!(body.contains("DNS"));
+        assert!(body.contains("self-hosted Rust application"));
+        // The landing page should not inventory the live hosting stack.
+        assert!(!body.contains("Proxmox"));
+        assert!(!body.contains("Cloudflare Tunnel"));
         // Quiet confidence: no self-describing strategy meta-copy
         assert!(!html.contains("infrastructure-support"));
         assert!(!html.contains("in training"));

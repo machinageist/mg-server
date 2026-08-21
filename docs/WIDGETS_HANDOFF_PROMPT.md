@@ -38,8 +38,8 @@ next. Each phase ends with a working build, passing tests, and a clean `cargo au
   resolves `system | light | dark` from localStorage, sets `data-theme` on `<html>`; a menu
   button lives in `base.html`; CSS variables live under `:root` / `:root[data-theme="light"]`
   in `static/css/style.css`. **Extend it — do not rebuild it.**
-- **Deployment:** Internet → Cloudflare Tunnel → Caddy (TLS) → Axum on localhost. Cloudflare
-  request headers (`CF-Ray`, `CF-IPCountry`, `CF-Connecting-IP`) are available to handlers.
+- **Deployment:** Internet → managed edge → private connector → reverse proxy → application.
+  Treat forwarded client identity as trusted only on the authenticated proxy path.
 
 ## Working agreement (non-negotiable)
 

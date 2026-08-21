@@ -120,20 +120,16 @@ cargo test    # includes a drift guard checking wiki SIDEBAR slugs against conte
 
 ## Deployment
 
-The application is hosted on a **Proxmox** host inside a dedicated **Debian VM**.
-
-Request path:
+The public deployment follows a conventional private-origin pattern:
 
 ```text
-Browser → DNS (Cloudflare) → Cloudflare edge (TLS terminates) → Cloudflare Tunnel
-       → Caddy → systemd (mg-server.service) → mg-server (Axum)
+Browser → managed edge → outbound private connector → reverse proxy → application
 ```
 
-This makes the site publicly reachable without exposing the home network or public
-IP address and without opening inbound ports; TLS terminates at the Cloudflare
-edge. The full walkthrough, with real `dig` and `curl -I` output, is the
-["How machinageist.dev Is Hosted"](https://machinageist.dev/blog/hosting-machinageist-dev)
-post.
+This separates the browser-facing boundary from the application origin. The public
+walkthrough focuses on the reusable architecture and verification method rather
+than hostnames, unit names, recovery paths, or internal topology:
+["How machinageist.dev Is Hosted"](https://machinageist.dev/blog/hosting-machinageist-dev).
 
 ---
 
