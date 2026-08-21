@@ -3,7 +3,7 @@
 // script would be blocked). Stored mode is one of MODES; unset or unknown means
 // system. 'system' resolves to the OS preference; every other mode is itself.
 (function () {
-    var MODES = ["system", "lunarcore", "solarcore", "dark", "light", "crt", "amber", "paper", "dawn", "cloud", "gameboy", "c64", "teletext", "nes", "matrix", "solarized", "nord", "gruvbox", "synthwave", "vaporwave", "cyberpunk", "tron", "blueprint", "sepia"];
+    var MODES = ["system", "lunarcore", "solarcore", "ayu", "dark", "gruvbox", "material", "monokai", "nord", "one-dark", "one-light", "solarized", "tomorrow-night", "zenburn", "catppuccin-frappe", "catppuccin-latte", "catppuccin-macchiato", "catppuccin-mocha", "everforest", "kanagawa", "rose-pine", "tokyo-night", "amber", "crt", "matrix", "teletext", "nes", "c64", "gameboy", "cyberpunk", "synthwave", "tron", "vaporwave", "blueprint", "cloud", "dawn", "light", "paper", "sepia"];
     try {
         var mode = localStorage.getItem("theme");
         if (MODES.indexOf(mode) < 0) mode = "system";

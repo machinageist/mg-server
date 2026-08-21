@@ -9,8 +9,8 @@
     if (!wrap || !btn || !menu) return;
 
     var mql = matchMedia("(prefers-color-scheme: light)");
-    var MODES = ["system", "lunarcore", "solarcore", "dark", "light", "crt", "amber", "paper", "dawn", "cloud", "gameboy", "c64", "teletext", "nes", "matrix", "solarized", "nord", "gruvbox", "synthwave", "vaporwave", "cyberpunk", "tron", "blueprint", "sepia"];
-    var ICON = { system: "◐", lunarcore: "⏾", solarcore: "✸", dark: "✦", light: "☀", crt: "▦", amber: "◈", paper: "¶", dawn: "◒", cloud: "☁", gameboy: "▣", c64: "▩", teletext: "⌗", nes: "✜", matrix: "⌁", solarized: "◉", nord: "❄", gruvbox: "◆", synthwave: "▹", vaporwave: "▧", cyberpunk: "⌖", tron: "⊞", blueprint: "⊟", sepia: "⚙" };
+    var MODES = ["system", "lunarcore", "solarcore", "ayu", "dark", "gruvbox", "material", "monokai", "nord", "one-dark", "one-light", "solarized", "tomorrow-night", "zenburn", "catppuccin-frappe", "catppuccin-latte", "catppuccin-macchiato", "catppuccin-mocha", "everforest", "kanagawa", "rose-pine", "tokyo-night", "amber", "crt", "matrix", "teletext", "nes", "c64", "gameboy", "cyberpunk", "synthwave", "tron", "vaporwave", "blueprint", "cloud", "dawn", "light", "paper", "sepia"];
+    var ICON = { "system": "◐", "lunarcore": "⏾", "solarcore": "✸", "ayu": "⟡", "dark": "✦", "gruvbox": "◆", "material": "⬗", "monokai": "✱", "nord": "❄", "one-dark": "⬢", "one-light": "⬡", "solarized": "◉", "tomorrow-night": "✧", "zenburn": "⌾", "catppuccin-frappe": "◑", "catppuccin-latte": "○", "catppuccin-macchiato": "◕", "catppuccin-mocha": "●", "everforest": "❦", "kanagawa": "◭", "rose-pine": "✿", "tokyo-night": "✺", "amber": "◈", "crt": "▦", "matrix": "⌁", "teletext": "⌗", "nes": "✜", "c64": "▩", "gameboy": "▣", "cyberpunk": "⌖", "synthwave": "▹", "tron": "⊞", "vaporwave": "▧", "blueprint": "⊟", "cloud": "☁", "dawn": "◒", "light": "☀", "paper": "¶", "sepia": "⚙" };
     var items = menu.querySelectorAll("[data-mode]");
 
     // Read the stored mode (defaults to system)

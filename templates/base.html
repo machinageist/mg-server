@@ -57,6 +57,7 @@
              Roving focus in main.js reads [data-mode] in document order, so the
              group wrappers change arrow-key order but need no JS change. #}
           <div class="theme-menu" id="theme-menu" role="menu" aria-label="Theme" hidden>
+{# BEGIN GENERATED THEME MENU -- gen-themes.py, do not edit by hand #}
             <div class="theme-group" role="group" aria-label="Core">
               <span class="theme-group-label" aria-hidden="true">Core</span>
               <button type="button" role="menuitemradio" data-mode="system" aria-checked="false"><span aria-hidden="true">◐</span> System</button>
@@ -65,40 +66,65 @@
             </div>
             <div class="theme-group" role="group" aria-label="Editor">
               <span class="theme-group-label" aria-hidden="true">Editor</span>
+              <button type="button" role="menuitemradio" data-mode="ayu" aria-checked="false"><span aria-hidden="true">⟡</span> Ayu</button>
               <button type="button" role="menuitemradio" data-mode="dark" aria-checked="false"><span aria-hidden="true">✦</span> Dracula</button>
-              <button type="button" role="menuitemradio" data-mode="solarized" aria-checked="false"><span aria-hidden="true">◉</span> Solarized</button>
-              <button type="button" role="menuitemradio" data-mode="nord" aria-checked="false"><span aria-hidden="true">❄</span> Nord</button>
               <button type="button" role="menuitemradio" data-mode="gruvbox" aria-checked="false"><span aria-hidden="true">◆</span> Gruvbox</button>
+              <button type="button" role="menuitemradio" data-mode="material" aria-checked="false"><span aria-hidden="true">⬗</span> Material</button>
+              <button type="button" role="menuitemradio" data-mode="monokai" aria-checked="false"><span aria-hidden="true">✱</span> Monokai</button>
+              <button type="button" role="menuitemradio" data-mode="nord" aria-checked="false"><span aria-hidden="true">❄</span> Nord</button>
+              <button type="button" role="menuitemradio" data-mode="one-dark" aria-checked="false"><span aria-hidden="true">⬢</span> One Dark</button>
+              <button type="button" role="menuitemradio" data-mode="one-light" aria-checked="false"><span aria-hidden="true">⬡</span> One Light</button>
+              <button type="button" role="menuitemradio" data-mode="solarized" aria-checked="false"><span aria-hidden="true">◉</span> Solarized</button>
+              <button type="button" role="menuitemradio" data-mode="tomorrow-night" aria-checked="false"><span aria-hidden="true">✧</span> Tomorrow Night</button>
+              <button type="button" role="menuitemradio" data-mode="zenburn" aria-checked="false"><span aria-hidden="true">⌾</span> Zenburn</button>
+            </div>
+            <div class="theme-group" role="group" aria-label="Modern">
+              <span class="theme-group-label" aria-hidden="true">Modern</span>
+              <button type="button" role="menuitemradio" data-mode="catppuccin-frappe" aria-checked="false"><span aria-hidden="true">◑</span> Catppuccin Frappé</button>
+              <button type="button" role="menuitemradio" data-mode="catppuccin-latte" aria-checked="false"><span aria-hidden="true">○</span> Catppuccin Latte</button>
+              <button type="button" role="menuitemradio" data-mode="catppuccin-macchiato" aria-checked="false"><span aria-hidden="true">◕</span> Catppuccin Macchiato</button>
+              <button type="button" role="menuitemradio" data-mode="catppuccin-mocha" aria-checked="false"><span aria-hidden="true">●</span> Catppuccin Mocha</button>
+              <button type="button" role="menuitemradio" data-mode="everforest" aria-checked="false"><span aria-hidden="true">❦</span> Everforest</button>
+              <button type="button" role="menuitemradio" data-mode="kanagawa" aria-checked="false"><span aria-hidden="true">◭</span> Kanagawa</button>
+              <button type="button" role="menuitemradio" data-mode="rose-pine" aria-checked="false"><span aria-hidden="true">✿</span> Rosé Pine</button>
+              <button type="button" role="menuitemradio" data-mode="tokyo-night" aria-checked="false"><span aria-hidden="true">✺</span> Tokyo Night</button>
             </div>
             <div class="theme-group" role="group" aria-label="Terminal">
               <span class="theme-group-label" aria-hidden="true">Terminal</span>
-              <button type="button" role="menuitemradio" data-mode="crt" aria-checked="false"><span aria-hidden="true">▦</span> CRT</button>
               <button type="button" role="menuitemradio" data-mode="amber" aria-checked="false"><span aria-hidden="true">◈</span> Amber</button>
+              <button type="button" role="menuitemradio" data-mode="crt" aria-checked="false"><span aria-hidden="true">▦</span> CRT</button>
               <button type="button" role="menuitemradio" data-mode="matrix" aria-checked="false"><span aria-hidden="true">⌁</span> Matrix</button>
               <button type="button" role="menuitemradio" data-mode="teletext" aria-checked="false"><span aria-hidden="true">⌗</span> Teletext</button>
             </div>
             <div class="theme-group" role="group" aria-label="Retro">
               <span class="theme-group-label" aria-hidden="true">Retro</span>
-              <button type="button" role="menuitemradio" data-mode="gameboy" aria-checked="false"><span aria-hidden="true">▣</span> Game Boy</button>
-              <button type="button" role="menuitemradio" data-mode="c64" aria-checked="false"><span aria-hidden="true">▩</span> Commodore</button>
               <button type="button" role="menuitemradio" data-mode="nes" aria-checked="false"><span aria-hidden="true">✜</span> 8-Bit</button>
+              <button type="button" role="menuitemradio" data-mode="c64" aria-checked="false"><span aria-hidden="true">▩</span> Commodore</button>
+              <button type="button" role="menuitemradio" data-mode="gameboy" aria-checked="false"><span aria-hidden="true">▣</span> Game Boy</button>
             </div>
             <div class="theme-group" role="group" aria-label="Neon">
               <span class="theme-group-label" aria-hidden="true">Neon</span>
-              <button type="button" role="menuitemradio" data-mode="synthwave" aria-checked="false"><span aria-hidden="true">▹</span> Synthwave</button>
-              <button type="button" role="menuitemradio" data-mode="vaporwave" aria-checked="false"><span aria-hidden="true">▧</span> Vaporwave</button>
               <button type="button" role="menuitemradio" data-mode="cyberpunk" aria-checked="false"><span aria-hidden="true">⌖</span> Cyberpunk</button>
+              <button type="button" role="menuitemradio" data-mode="synthwave" aria-checked="false"><span aria-hidden="true">▹</span> Synthwave</button>
               <button type="button" role="menuitemradio" data-mode="tron" aria-checked="false"><span aria-hidden="true">⊞</span> Tron</button>
+              <button type="button" role="menuitemradio" data-mode="vaporwave" aria-checked="false"><span aria-hidden="true">▧</span> Vaporwave</button>
             </div>
-            <div class="theme-group" role="group" aria-label="Light and print">
+            <div class="theme-group" role="group" aria-label="Light & print">
               <span class="theme-group-label" aria-hidden="true">Light &amp; print</span>
+              <button type="button" role="menuitemradio" data-mode="blueprint" aria-checked="false"><span aria-hidden="true">⊟</span> Blueprint</button>
+              <button type="button" role="menuitemradio" data-mode="cloud" aria-checked="false"><span aria-hidden="true">☁</span> Cloud</button>
+              <button type="button" role="menuitemradio" data-mode="dawn" aria-checked="false"><span aria-hidden="true">◒</span> Dawn</button>
               <button type="button" role="menuitemradio" data-mode="light" aria-checked="false"><span aria-hidden="true">☀</span> Light</button>
               <button type="button" role="menuitemradio" data-mode="paper" aria-checked="false"><span aria-hidden="true">¶</span> Paper</button>
-              <button type="button" role="menuitemradio" data-mode="dawn" aria-checked="false"><span aria-hidden="true">◒</span> Dawn</button>
-              <button type="button" role="menuitemradio" data-mode="cloud" aria-checked="false"><span aria-hidden="true">☁</span> Cloud</button>
-              <button type="button" role="menuitemradio" data-mode="blueprint" aria-checked="false"><span aria-hidden="true">⊟</span> Blueprint</button>
               <button type="button" role="menuitemradio" data-mode="sepia" aria-checked="false"><span aria-hidden="true">⚙</span> Steampunk</button>
             </div>
+            {# END GENERATED THEME MENU #}
+
+
+
+
+
+
           </div>
         </div>
       </div>
