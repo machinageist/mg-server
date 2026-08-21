@@ -113,10 +113,10 @@ fn parse(path: &Path) -> ContentFile {
     // parser would be a dependency bought for nothing
     let mut frontmatter = BTreeMap::new();
     for line in front.lines() {
-        if let Some((key, value)) = line.split_once(':') {
-            if !key.starts_with(char::is_whitespace) {
-                frontmatter.insert(key.trim().to_string(), value.trim().to_string());
-            }
+        if let Some((key, value)) = line.split_once(':')
+            && !key.starts_with(char::is_whitespace)
+        {
+            frontmatter.insert(key.trim().to_string(), value.trim().to_string());
         }
     }
 
