@@ -108,6 +108,10 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "Software-defined networking",
             },
             SidebarEntry {
+                slug: "routing-technologies",
+                label: "Routing technologies and route selection",
+            },
+            SidebarEntry {
                 slug: "zero-trust-architecture",
                 label: "Zero-trust architecture",
             },

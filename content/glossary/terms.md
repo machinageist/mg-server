@@ -1,5 +1,125 @@
 ---
 entries:
+  - term: "Administrative distance"
+    aka: ["AD"]
+    category: networking
+    definition: >
+      A local trust ranking a router assigns to routes learned from different
+      sources. When the same prefix is available from multiple protocols, the
+      lower administrative distance is preferred; it does not measure link speed.
+    see_also: ["cidr", "subnet-mask"]
+    learn:
+      - { slug: "routing-technologies", anchor: "how-a-router-selects-a-route", label: "Routing technologies and route selection" }
+
+  - term: "Autonomous system"
+    aka: ["AS"]
+    category: networking
+    definition: >
+      A network or group of networks operated under one administrative routing
+      policy and identified by an autonomous system number. BGP exchanges routes
+      between autonomous systems.
+    see_also: ["autonomous-system"]
+    learn:
+      - { slug: "routing-technologies", anchor: "bgp", label: "Routing technologies and route selection" }
+
+  - term: "Autonomous system number"
+    aka: ["ASN"]
+    category: networking
+    definition: >
+      The number identifying an autonomous system for routing policy and BGP
+      path exchange.
+    see_also: ["autonomous-system"]
+    learn:
+      - { slug: "routing-technologies", anchor: "bgp", label: "Routing technologies and route selection" }
+
+  - term: "Border Gateway Protocol"
+    aka: ["BGP"]
+    category: networking
+    definition: >
+      The inter-domain routing protocol that exchanges reachability between
+      autonomous systems and selects paths using policy and path attributes.
+    see_also: ["autonomous-system"]
+    learn:
+      - { slug: "routing-technologies", anchor: "bgp", label: "Routing technologies and route selection" }
+
+  - term: "Dynamic routing"
+    category: networking
+    definition: >
+      Routing in which routers exchange reachability information and recalculate
+      paths as the topology changes, using a routing protocol.
+    see_also: ["static-routing"]
+    learn:
+      - { slug: "routing-technologies", anchor: "static-and-dynamic-routing", label: "Routing technologies and route selection" }
+
+  - term: "Enhanced Interior Gateway Routing Protocol"
+    aka: ["EIGRP"]
+    category: networking
+    definition: >
+      An interior gateway protocol that uses a composite metric and DUAL to
+      calculate loop-free paths within an organization.
+    see_also: ["dynamic-routing"]
+    learn:
+      - { slug: "routing-technologies", anchor: "eigrp", label: "Routing technologies and route selection" }
+
+  - term: "First-hop redundancy protocol"
+    aka: ["FHRP"]
+    category: networking
+    definition: >
+      A protocol that lets multiple gateways present a shared virtual IP so a
+      standby router can take over when the active gateway fails.
+    see_also: ["virtual-ip"]
+    learn:
+      - { slug: "routing-technologies", anchor: "first-hop-redundancy-and-virtual-ips", label: "Routing technologies and route selection" }
+
+  - term: "Network address translation"
+    aka: ["NAT"]
+    category: networking
+    definition: >
+      Translating an address between private and public address spaces. Port
+      address translation extends the idea by distinguishing sessions with ports.
+    see_also: ["port-address-translation"]
+    learn:
+      - { slug: "routing-technologies", anchor: "address-translation", label: "Routing technologies and route selection" }
+
+  - term: "Open Shortest Path First"
+    aka: ["OSPF"]
+    category: networking
+    definition: >
+      A link-state interior gateway protocol that builds a topology view and
+      selects paths using a cost metric.
+    see_also: ["dynamic-routing"]
+    learn:
+      - { slug: "routing-technologies", anchor: "ospf", label: "Routing technologies and route selection" }
+
+  - term: "Port address translation"
+    aka: ["PAT"]
+    category: networking
+    definition: >
+      A form of address translation that lets many private hosts share one public
+      address by mapping their sessions to distinct port numbers.
+    see_also: ["network-address-translation"]
+    learn:
+      - { slug: "routing-technologies", anchor: "address-translation", label: "Routing technologies and route selection" }
+
+  - term: "Static routing"
+    category: networking
+    definition: >
+      Routing in which an administrator explicitly configures a route rather than
+      learning it through a routing protocol.
+    see_also: ["dynamic-routing"]
+    learn:
+      - { slug: "routing-technologies", anchor: "static-and-dynamic-routing", label: "Routing technologies and route selection" }
+
+  - term: "Virtual IP"
+    aka: ["VIP"]
+    category: networking
+    definition: >
+      An address presented by a service or group of devices rather than belonging
+      to one physical interface, commonly used for failover or load distribution.
+    see_also: ["first-hop-redundancy-protocol"]
+    learn:
+      - { slug: "routing-technologies", anchor: "first-hop-redundancy-and-virtual-ips", label: "Routing technologies and route selection" }
+
   - term: "Anycast"
     category: networking
     definition: >

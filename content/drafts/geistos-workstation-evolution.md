@@ -1,0 +1,46 @@
+---
+title: "Geistos: a workstation that can explain itself"
+date: 2026-09-14
+summary: "An in-progress engineering note about building a local-first Arch workstation around Hyprland, Quickshell, and a small suite of inspectable tools."
+tags: [geistos, arch-linux, quickshell, hyprland, local-first, systems]
+---
+
+Geistos is becoming the name for the workstation layer around the Geist application suite. It is not a finished distribution and it is not an attempt to hide an entire home directory behind a theme. The current repository is a working Hyprland and Quickshell configuration with a PostgreSQL helper, service units, shell adapters, and packaging notes.
+
+The problem is friction. A desktop should make daily state visible without turning every pixel into a control panel. It should also make the next level of detail easy to reach, and keep a terminal path when the preferred interface is unavailable.
+
+## Quiet surfaces, deep controls
+
+The shell follows a three-level model:
+
+1. pills for persistent, high-value state;
+2. cards for inspection and common actions;
+3. CLI/TUI tools for deep workflows and recovery.
+
+Quickshell is therefore a client, not the owner of calendar, reminder, vault, or database truth. The desktop consumes stable command output and IPC contracts. The applications remain separate Rust repositories with their own storage and tests.
+
+## Why Hyprland and Quickshell
+
+Hyprland provides a composable Wayland window manager with a declarative configuration boundary. Quickshell provides a resident QML surface that can replace several small desktop utilities without forcing their domain logic into QML. The bar, launcher, notifications, cards, theme selector, and session menu can share interaction primitives while still calling normal commands underneath.
+
+That choice creates obligations. A shell that looks coherent but cannot be restarted, inspected, or operated from a terminal is only a screenshot. The repository keeps lifecycle actions explicit, gives bindings descriptions so they can be browsed, and keeps the database helper separate from the visual layer.
+
+## The wallpaper as an event
+
+The wallpaper is more than decoration in the current design. One service owns the active path. Applying a wallpaper updates Hyprpaper, persists the choice, feeds the automatic palette, and updates the stable link Hyprlock reads when the lock screen starts. Theme-client synchronization then exports the resolved colors to other tools.
+
+This is deliberately narrower than a universal theme framework. The useful boundary is a single state transition with several consumers, not a second watcher for each application.
+
+## What is working and what is not
+
+The repository already contains the bar, launcher, notifications, calendar and reminder cards, operations surfaces, local AI panel, wallpaper/theme services, PostgreSQL resolution, and an end-to-end suite projection test. The window-movement and wallpaper-recovery bindings added in this pass are small extensions of those existing seams.
+
+The installer, clean-machine packaging, a richer provider-based launcher, and a shared calculator engine remain work in progress. The public description should say that plainly. The interesting engineering work is not pretending the workstation is complete; it is making each next slice reusable, testable, and reversible.
+
+## Lessons so far
+
+- A visual card is not evidence that its data source is correct.
+- A projection needs freshness semantics separate from the source record's timestamp.
+- A shared service boundary is more valuable than a clever UI abstraction.
+- Recovery actions deserve first-class keyboard paths.
+- Public documentation should follow repository state, not the other way around.
