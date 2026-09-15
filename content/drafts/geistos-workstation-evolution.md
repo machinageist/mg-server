@@ -1,11 +1,11 @@
 ---
 title: "Geistos: a workstation that can explain itself"
-date: 2026-09-14
+date: 2026-09-15
 summary: "An in-progress engineering note about building a local-first Arch workstation around Hyprland, Quickshell, and a small suite of inspectable tools."
 tags: [geistos, arch-linux, quickshell, hyprland, local-first, systems]
 ---
 
-Geistos is becoming the name for the workstation layer around the Geist application suite. It is not a finished distribution and it is not an attempt to hide an entire home directory behind a theme. The current repository is a working Hyprland and Quickshell configuration with a PostgreSQL helper, service units, shell adapters, and packaging notes.
+Geistos is becoming the name for the workstation layer around the Geist application suite. It is not a finished distribution and it is not an attempt to hide an entire home directory behind a theme. The verified production source is currently `/home/mgeist/dotfiles` on the `quickshell-shell` branch: a working Hyprland and Quickshell configuration with service units, shell adapters, theme and wallpaper synchronization, and inspectable desktop surfaces. The older `/home/mgeist/geistos` package tree is divergent and is not a mirror of that production source.
 
 The problem is friction. A desktop should make daily state visible without turning every pixel into a control panel. It should also make the next level of detail easy to reach, and keep a terminal path when the preferred interface is unavailable.
 
@@ -33,9 +33,9 @@ This is deliberately narrower than a universal theme framework. The useful bound
 
 ## What is working and what is not
 
-The repository already contains the bar, launcher, notifications, calendar and reminder cards, operations surfaces, local AI panel, wallpaper/theme services, PostgreSQL resolution, and an end-to-end suite projection test. The window-movement and wallpaper-recovery bindings added in this pass are small extensions of those existing seams.
+The active dotfiles source now has a shared launcher provider/result boundary, application and action search, calculator and unit-conversion providers, and a Rust-backed `mg-calcr` JSON contract used by the launcher and dedicated calculator. The dedicated calculator's standard/scientific keypads, graph mode, range controls, and larger display are implemented, while UI density and broader packaging remain follow-up work. A dictionary/thesaurus provider exists as an optional network path and reports failure safely when the environment cannot reach its API; no offline dictionary is being claimed.
 
-The installer, clean-machine packaging, a richer provider-based launcher, and a shared calculator engine remain work in progress. The public description should say that plainly. The interesting engineering work is not pretending the workstation is complete; it is making each next slice reusable, testable, and reversible.
+The same source also contains the bar, launcher, notifications, calendar and reminder cards, operations surfaces, local AI panel, wallpaper/theme services, PostgreSQL resolution, persistent system HUD, and an end-to-end suite projection test. These are verified slices of the workstation, not evidence that Geistos is a finished distribution. The installer has been smoke-tested in a disposable home, but clean-machine setup, package pinning, and reproducible installation documentation are still unfinished. The separate `~/geistos` package tree remains divergent and must not be described as synchronized with `~/dotfiles`.
 
 ## Lessons so far
 
