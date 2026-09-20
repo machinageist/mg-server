@@ -14,10 +14,12 @@
 
 use crate::handlers::blog::POSTS_DIR;
 use crate::handlers::labs::LABS_DIR;
+use crate::handlers::pages::PROJECTS_DIR;
 use crate::handlers::wiki::{PAGES_DIR, sidebar_slugs};
 use crate::models::lab;
 use crate::models::page::Page;
 use crate::models::post::BlogPost;
+use crate::models::project;
 use chrono::NaiveDate;
 use std::path::Path;
 
@@ -49,6 +51,7 @@ pub enum DocKind {
     Post,
     Page,
     Lab,
+    Project,
 }
 
 impl DocKind {
@@ -58,6 +61,7 @@ impl DocKind {
             DocKind::Post => "Writing",
             DocKind::Page => "Learn",
             DocKind::Lab => "Labs",
+            DocKind::Project => "Portfolio",
         }
     }
 
@@ -67,6 +71,7 @@ impl DocKind {
             DocKind::Post => format!("/blog/{slug}"),
             DocKind::Page => format!("/learn/{slug}"),
             DocKind::Lab => format!("/labs/{slug}"),
+            DocKind::Project => format!("/portfolio/{slug}"),
         }
     }
 }
@@ -144,6 +149,23 @@ impl SearchIndex {
             if let Ok(page) = Page::find(Path::new(LABS_DIR), entry.slug) {
                 docs.push(SearchDoc {
                     kind: DocKind::Lab,
+                    slug: entry.slug.to_string(),
+                    title: page.title,
+                    summary: page.summary,
+                    tags: page.tags,
+                    category: None,
+                    date: page.date,
+                    body: page.content_text,
+                });
+            }
+        }
+
+        // Project documents: the allowlist is the project list, and only
+        // entries claiming a document are routable
+        for entry in project::all().iter().filter(|entry| entry.doc) {
+            if let Ok(page) = Page::find(Path::new(PROJECTS_DIR), entry.slug) {
+                docs.push(SearchDoc {
+                    kind: DocKind::Project,
                     slug: entry.slug.to_string(),
                     title: page.title,
                     summary: page.summary,
@@ -448,9 +470,20 @@ mod tests {
             assert!(
                 result.url.starts_with("/blog/")
                     || result.url.starts_with("/learn/")
-                    || result.url.starts_with("/labs/"),
+                    || result.url.starts_with("/labs/")
+                    || result.url.starts_with("/portfolio/"),
                 "unroutable result: {}",
                 result.url
+            );
+        }
+
+        // Each surface is actually represented. Without this the corpus could
+        // quietly lose a whole collection and still pass everything above,
+        // which is how /labs shipped unsearchable the first time.
+        for kind in [DocKind::Post, DocKind::Page, DocKind::Lab, DocKind::Project] {
+            assert!(
+                index.docs.iter().any(|doc| doc.kind == kind),
+                "{kind:?} is missing from the corpus entirely"
             );
         }
 

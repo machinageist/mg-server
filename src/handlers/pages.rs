@@ -13,12 +13,19 @@
 //              title() is called by {{ self.title() }} in base.html to set
 //              the per-page <title> tag without repeating the base layout.
 
+use crate::errors::SiteError;
 use crate::handlers::blog::POSTS_DIR;
+use crate::models::markdown::Heading;
+use crate::models::page::Page;
 use crate::models::post::BlogPost;
 use crate::models::project::{self, Project};
 use askama::Template;
 use askama_axum::IntoResponse;
+use axum::extract::Path as AxumPath;
 use std::path::PathBuf;
+
+// Project documents live beside the other content collections
+pub(crate) const PROJECTS_DIR: &str = "content/projects";
 
 // -----------------------------------------------------------------------
 // Home page — index.html
@@ -126,10 +133,140 @@ pub async fn portfolio() -> impl IntoResponse {
     }
 }
 
+// -----------------------------------------------------------------------
+// Project document — /portfolio/:slug
+// -----------------------------------------------------------------------
+
+#[derive(Template)]
+#[template(path = "project_page.html")]
+pub struct ProjectPageTemplate {
+    pub project: Project,
+    // The document itself, rendered from content/projects/<slug>.md
+    pub page: Page,
+    // Derived from the document rather than maintained by hand, so a renamed
+    // section cannot leave a contents entry pointing at nothing
+    pub outline: Vec<Heading>,
+}
+
+impl ProjectPageTemplate {
+    pub fn title(&self) -> String {
+        format!("{} — machinageist", self.project.name)
+    }
+
+    pub fn description(&self) -> &str {
+        &self.page.summary
+    }
+
+    pub fn section(&self) -> &str {
+        "portfolio"
+    }
+}
+
+// Build one project's document view
+//
+// The slug is resolved against the model rather than passed to the filesystem,
+// so an unknown slug is a 404 from the allowlist and never a path read — the
+// same shape /labs/:slug and /learn/:slug use. A project carrying no document
+// is a 404 too: the card for it renders without a link, so arriving here means
+// the URL was guessed.
+fn project_page_view(slug: &str) -> Result<ProjectPageTemplate, SiteError> {
+    let project = project::all()
+        .into_iter()
+        .find(|entry| entry.slug == slug && entry.doc)
+        .ok_or_else(|| SiteError::PageNotFound(slug.to_string()))?;
+    let page = Page::find(&PathBuf::from(PROJECTS_DIR), project.slug)?;
+    let outline = page.outline.clone();
+    Ok(ProjectPageTemplate {
+        project,
+        page,
+        outline,
+    })
+}
+
+// Render one project's document, selected by URL slug
+pub async fn project_page(
+    AxumPath(slug): AxumPath<String>,
+) -> Result<impl IntoResponse, SiteError> {
+    project_page_view(&slug)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use askama::Template;
+
+    // Every project claiming a document has one, and every document has a
+    // project. Both directions, because each failure is invisible from the
+    // other side: a `doc: true` with no file is a card linking to a 404, and a
+    // file with no entry is writing nothing links to.
+    #[test]
+    fn project_documents_and_entries_match_in_both_directions() {
+        let projects = project::all();
+
+        for entry in projects.iter().filter(|entry| entry.doc) {
+            assert!(
+                project_page_view(entry.slug).is_ok(),
+                "{}: doc is true but content/projects/{}.md does not load",
+                entry.name,
+                entry.slug
+            );
+        }
+
+        let dir = PathBuf::from(PROJECTS_DIR);
+        for file in std::fs::read_dir(&dir).expect("read content/projects") {
+            let path = file.expect("dir entry").path();
+            if path.extension().and_then(|ext| ext.to_str()) != Some("md") {
+                continue;
+            }
+            let slug = path
+                .file_stem()
+                .and_then(|stem| stem.to_str())
+                .expect("utf-8 file stem");
+            assert!(
+                projects.iter().any(|entry| entry.slug == slug && entry.doc),
+                "content/projects/{slug}.md has no project entry with doc: true, \
+                 so nothing on the site links to it"
+            );
+        }
+    }
+
+    // An unknown slug must come back through the allowlist, never reach the
+    // filesystem. Same guard /labs/:slug carries.
+    #[test]
+    fn an_unknown_project_slug_is_not_a_path_read() {
+        assert!(project_page_view("../../etc/passwd").is_err());
+        assert!(project_page_view("nonexistent").is_err());
+        // A project with no document is a 404 too, not a blank page
+        assert!(project_page_view("mg-server").is_err());
+    }
+
+    // The card links to the document when there is one, and the page renders
+    // the contents a reader came for.
+    #[test]
+    fn a_project_card_links_to_its_document() {
+        let html = PortfolioTemplate {
+            projects: project::all(),
+        }
+        .render()
+        .expect("portfolio renders");
+
+        for entry in project::all().iter().filter(|entry| entry.doc) {
+            assert!(
+                html.contains(&format!("href=\"/portfolio/{}\"", entry.slug)),
+                "the portfolio does not link to {}",
+                entry.slug
+            );
+        }
+    }
+
+    #[test]
+    fn a_project_page_renders_its_document_and_outline() {
+        let view = project_page_view("geistos").expect("geistos document loads");
+        assert!(!view.outline.is_empty(), "no outline was derived");
+        let html = view.render().expect("project page renders");
+        assert!(html.contains("<h1>geistos</h1>"));
+        assert!(html.contains("Contents"));
+    }
 
     // Build a minimal post carrying only the fields the home page teaser renders
     fn teaser_post(slug: &str, title: &str) -> BlogPost {

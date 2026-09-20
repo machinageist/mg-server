@@ -12,8 +12,14 @@
     {% for project in projects %}
       <li class="project-card">
         <div class="project-header">
+          {# The name points at whichever evidence exists. A written-up project
+             leads to its document, because that is where the reasoning and the
+             honest limits are; one without a document falls back to its
+             repository; one with neither is plain text. #}
           <span class="project-name">
-            {% if let Some(url) = project.url %}
+            {% if project.doc %}
+              <a href="/portfolio/{{ project.slug }}">{{ project.name }}</a>
+            {% else if let Some(url) = project.url %}
               <a href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ project.name }}</a>
             {% else %}
               {{ project.name }}

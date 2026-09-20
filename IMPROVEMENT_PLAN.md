@@ -1,5 +1,34 @@
 # mg-server Improvement Plan
 
+> ## ⚠️ AMENDED 2026-09-20 — what the Rust prohibitions actually scope
+>
+> This plan says **"do not position this repo as proof of advanced Rust backend
+> engineering"** (§Corrected scope) and **"do not turn this into a generic Rust backend
+> portfolio"** (§Guardrails). Both stand. What they prohibit is a *claim of seniority* —
+> presenting Rust work as professional depth that has not been earned.
+>
+> They do **not** prohibit publishing hobby projects that happen to be written in Rust,
+> provided the page says what they are. `/portfolio/geistos` and `/portfolio/mg-suite`
+> are published under a disclosure rule: every project document carries a section headed
+> **"What I built, what I directed, and what I still don't understand"**, naming three
+> registers — what Jeff can explain end to end, what he directed an agent to write and
+> reviewed, and what he does not understand yet. `tests/content_lint.rs`
+> (`every_project_document_discloses_its_authorship`) fails the build without it.
+>
+> This is a tightening, not a loosening. A page that says "AI wrote most of this and here
+> is specifically what I cannot yet explain" makes a *weaker* claim than a portfolio entry
+> that stays silent and lets a reader assume authorship. The site's claim-integrity rule
+> asks that every claim be defensible; naming the limit is how these become defensible.
+>
+> **The four pillars are unchanged.** No tooling or software pillar was added, `PILLARS`
+> in `src/handlers/blog.rs` is untouched, and both project posts file under an existing
+> pillar. The homepage and About positioning are unchanged.
+>
+> **What is still forbidden:** presenting this work as professional Rust experience,
+> as production systems, or as evidence of engineering seniority; and publishing a project
+> document that omits the disclosure section.
+
+
 > ## ⚠️ AMENDED 2026-08-14 — the certification spine and the pillar count
 >
 > Two claims in this document went stale. Both are corrected inline below; the amendment

@@ -63,7 +63,7 @@ src/
   errors.rs               # SiteError + the themed 404/500 fallbacks
   search.rs               # search corpus, ranking, snippet escaping — see docs/design/SEARCH.md
   handlers/
-    pages.rs              # home, about, portfolio
+    pages.rs              # home, about, portfolio + /portfolio/:slug project docs
     blog.rs               # /blog list (grouped by pillar) + /blog/:slug
     wiki.rs               # /learn index + pages; hardcoded SIDEBAR lives here
     search.rs             # /search — form, ranking call, results
@@ -85,6 +85,7 @@ static/css/style.css      # the whole stylesheet
 static/js/                # ~80 lines total: theme selector only
 content/posts/            # published blog posts
 content/pages/            # the /learn wiki
+content/projects/         # project documents served at /portfolio/:slug — see §6d
 content/drafts/           # unrouted, never served
 docs/                     # planning docs, theme generator, solarcore brand spec
 gauntlet-universal/       # the portable spec pipeline
@@ -96,7 +97,7 @@ tests/content_lint.rs     # the content quality floor — frontmatter, tags, lin
 
 `src/router.rs` is the authority. As of this writing:
 
-`/` · `/about` · `/portfolio` · `/blog` · `/blog/:slug` · `/learn` · `/learn/:slug` ·
+`/` · `/about` · `/portfolio` · `/portfolio/:slug` · `/blog` · `/blog/:slug` · `/learn` · `/learn/:slug` ·
 `/search` ·
 `/wiki` and `/wiki/:slug` (permanent redirects to `/learn`, kept so old links work) ·
 `/releases` · `/status` · `/status.json` · `/.well-known/security.txt` · `/security.txt` ·
@@ -137,7 +138,8 @@ pass:
 
 | Test | File | What it pins |
 |---|---|---|
-| `portfolio_only_carries_entries_with_verifiable_status_and_evidence` | `src/models/project.rs` | `all().len() == 1`; rejects "Homelab", "GeistScope", "Certification track", "bug-bounty", "red-team", "offensive security" |
+| `portfolio_only_carries_entries_with_verifiable_status_and_evidence` | `src/models/project.rs` | Every entry has a public repo or a project document; rejects "Homelab", "GeistScope", "Certification track", "bug-bounty", "red-team", "offensive security" |
+| `every_project_document_discloses_its_authorship` | `tests/content_lint.rs` | The AI-assistance disclosure section and its three registers — see §6d |
 | `home_page_shows_concrete_work_without_strategy_narration` | `src/handlers/pages.rs` | Rejects "infrastructure-support", "in training", "evidence-first", "security engineer", "offensive security", "red-team" |
 | `about_page_describes_work_plainly_without_disclaimers` | `src/handlers/pages.rs` | Rejects a "What I am not claiming yet" section and the same identity strings |
 | `labs_never_claim_offensive_or_unearned_identity` | `src/models/lab.rs` | Rejects "SOC analyst", "penetration test", "red team", "HackerOne", "bug bounty", "Hack The Box", "HTB" — **but see §9, this file is not compiled** |
@@ -257,6 +259,53 @@ method to their own environment. The page should contain the method itself. Neve
 reader-facing notes about redaction, omitted topology, hidden identifiers, private
 records, or where operational detail is stored; that violates the site's show-don't-tell
 OPSEC policy.
+
+---
+
+## 6d. Project documents — `/portfolio/:slug`
+
+**Added 2026-09-20.** `content/projects/<slug>.md`, rendered at `/portfolio/<slug>`.
+
+**Dual registration, like the labs.** A document needs an entry in `project::all()`
+(`src/models/project.rs`) carrying `slug` and `doc: true`, and a file at
+`content/projects/<slug>.md`. `project_documents_and_entries_match_in_both_directions`
+in `src/handlers/pages.rs` fails the build on either half alone — a `doc: true` with no
+file is a card linking to a 404, and a file with no entry is writing nothing links to.
+
+An unknown slug is resolved against the model, never the filesystem, so it 404s from the
+allowlist. A project with `doc: false` 404s too: its card renders without a link, so
+arriving at the URL means it was guessed.
+
+**Required sections**, enforced by `every_project_document_discloses_its_authorship` in
+`tests/content_lint.rs`:
+
+- `## What this is` — what the thing is, in ordinary language, before anything else.
+- `## What I built, what I directed, and what I still don't understand` — **verbatim**,
+  containing all three registers: *What I can explain end to end*, *What I directed
+  rather than wrote*, *What I do not understand yet*.
+- `## Status` — an unfinished project says so on its own page, not only in a status pill.
+
+**Why the disclosure section is mandatory.** These projects are AI-assisted, heavily.
+The site's claim posture survives that only if the pages say so in a fixed, findable
+place rather than leaving a reader to infer authorship from tone. The third register is
+the load-bearing one: naming what was built and directed is comfortable, and naming what
+is still not understood is what makes the other two worth believing. It is also the part
+that would quietly erode first, which is why a test holds it. See the 2026-09-20
+amendment at the top of `IMPROVEMENT_PLAN.md` for how this scopes against that
+document's Rust prohibitions.
+
+**Sanitization.** `content/projects/` is in `INFRASTRUCTURE_DIRS` — these describe real
+operated systems, so the §6b address, hostname, and VM-ID rules apply in full, and
+`content/pages/`'s teaching exemption does **not**.
+
+**Public `mg-` names.** The hostname guard rejects anything starting `mg-` as an internal
+hostname. Published project and binary names are the exception and are listed one by one
+in `PUBLIC_MG_NAMES` (`tests/content_lint.rs`). Adding a name there is a deliberate act;
+a prefix rule would defeat the guard.
+
+**Search.** Project documents are in the corpus as `DocKind::Project`, labelled
+"Portfolio". The allowlist is the project list, same as the sidebar is for `/learn` and
+the model is for `/labs`.
 
 ---
 

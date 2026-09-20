@@ -20,6 +20,8 @@
 
 #[derive(Debug, Clone)]
 pub struct Project {
+    // URL slug, and the file stem of the project document when one exists
+    pub slug: &'static str,
     pub name: &'static str,
     pub description: &'static str,
     // Fixed-size slice of static string slices — zero allocation
@@ -27,6 +29,11 @@ pub struct Project {
     // None = not yet published or no public repo
     pub url: Option<&'static str>,
     pub status: ProjectStatus,
+    // Whether content/projects/<slug>.md exists. A card links to the document
+    // only when this is true, and the drift guard in handlers::pages checks the
+    // claim in both directions — a true with no file, or a file with no entry,
+    // fails the build rather than shipping a dead link.
+    pub doc: bool,
 }
 
 impl Project {
@@ -38,7 +45,6 @@ impl Project {
 #[derive(Debug, Clone, PartialEq)]
 pub enum ProjectStatus {
     Active,
-    #[allow(dead_code)]
     InProgress,
     #[allow(dead_code)]
     Complete,
@@ -74,15 +80,47 @@ impl std::fmt::Display for ProjectStatus {
 // long-form rewrite (see content/drafts/portfolio-entries.md) — this list
 // only carries entries with verifiable status and evidence.
 pub fn all() -> Vec<Project> {
-    vec![Project {
-        name: "mg-server",
-        description: "The Rust/Axum app that serves this site: routes, Askama templates, flat-file Markdown, \
-                      request tracing, defensive response headers, and rate limiting, deployed as a managed \
-                      Linux service.",
-        tags: &["rust", "axum", "linux-service", "self-hosting", "headers"],
-        url: Some("https://github.com/machinageist/mg-server"),
-        status: ProjectStatus::Active,
-    }]
+    vec![
+        Project {
+            slug: "mg-server",
+            name: "mg-server",
+            description: "The Rust/Axum app that serves this site: routes, Askama templates, flat-file Markdown, \
+                          request tracing, defensive response headers, and rate limiting, deployed as a managed \
+                          Linux service.",
+            tags: &["rust", "axum", "linux-service", "self-hosting", "headers"],
+            url: Some("https://github.com/machinageist/mg-server"),
+            status: ProjectStatus::Active,
+            doc: false,
+        },
+        Project {
+            slug: "geistos",
+            name: "geistos",
+            description: "A local-first Linux workstation: a Quickshell desktop replacing the usual bar, launcher \
+                          and notification daemon, a generated palette system shared with this site, and the \
+                          systemd user units the whole thing starts from.",
+            tags: &["linux", "wayland", "hyprland", "quickshell", "systemd"],
+            url: None,
+            status: ProjectStatus::InProgress,
+            doc: true,
+        },
+        Project {
+            slug: "mg-suite",
+            name: "mg-suite",
+            description: "An AI-assisted study in application architecture: a set of small local-first tools, each \
+                          owning its own data, wired together through explicit boundaries rather than a shared \
+                          database. Several are usable; several are not.",
+            tags: &[
+                "rust",
+                "sqlite",
+                "postgresql",
+                "architecture",
+                "local-first",
+            ],
+            url: None,
+            status: ProjectStatus::InProgress,
+            doc: true,
+        },
+    ]
 }
 
 #[cfg(test)]
@@ -93,12 +131,36 @@ mod tests {
     fn portfolio_only_carries_entries_with_verifiable_status_and_evidence() {
         let projects = all();
 
+        // Every entry leaves a reader somewhere to check: a public repository,
+        // a project document on this site, or both. An entry that offers
+        // neither is a claim with nothing behind it, which is the exact shape
+        // this list exists to prevent.
+        for project in &projects {
+            assert!(
+                project.url.is_some() || project.doc,
+                "{}: no repository and no document — nothing a reader can check",
+                project.name
+            );
+            assert!(!project.slug.is_empty(), "{}: no slug", project.name);
+            assert!(
+                project
+                    .slug
+                    .chars()
+                    .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '-'),
+                "{}: slug {:?} is not url-safe",
+                project.name,
+                project.slug
+            );
+        }
+
         // Homelab, cert-track, and GeistScope entries are archived pending a
-        // rewrite — only mg-server, an Active entry with a real URL, remains.
-        assert_eq!(projects.len(), 1);
-        assert_eq!(projects[0].name, "mg-server");
-        assert_eq!(projects[0].status, ProjectStatus::Active);
-        assert!(projects[0].url.is_some());
+        // rewrite. mg-server remains the one Active entry with a public URL.
+        let server = projects
+            .iter()
+            .find(|project| project.name == "mg-server")
+            .expect("mg-server is the anchor entry");
+        assert_eq!(server.status, ProjectStatus::Active);
+        assert!(server.url.is_some());
 
         let combined = projects
             .iter()

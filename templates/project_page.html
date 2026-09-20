@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<article class="project-page article-page">
+  <a class="back-link" href="/portfolio">Portfolio</a>
+
+  <header class="post-header">
+    <h1>{{ project.name }}</h1>
+    <p class="lab-page-why">{{ project.description }}</p>
+    <p class="post-meta">
+      <span class="project-status status-{{ project.status_class() }}">{{ project.status }}</span>
+      {# A repository link only when there is a public one. The card and this
+         page read the same Option, so neither can offer a link the other does
+         not — and a private project simply renders without one. #}
+      {% if let Some(url) = project.url %}
+        <a href="{{ url }}" target="_blank" rel="noopener noreferrer">Repository</a>
+      {% endif %}
+    </p>
+    <div class="project-tags">
+      {% for tag in project.tags %}
+        <span class="tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+  </header>
+
+  {# Derived from the parse that generates the heading ids, so a renamed
+     section cannot leave an entry here pointing at nothing. Same shape the
+     lab pages use. #}
+  <details class="lab-contents" open>
+    <summary>Contents</summary>
+    <nav aria-label="Contents">
+      <ol>
+        {% for heading in outline %}
+        <li class="toc-h{{ heading.level }}">
+          <a href="#{{ heading.id }}">{{ heading.text }}</a>
+        </li>
+        {% endfor %}
+      </ol>
+    </nav>
+  </details>
+
+  <div class="post-content">
+    {{ page.content_html|safe }}
+  </div>
+</article>
+{% endblock %}

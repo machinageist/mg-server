@@ -19,6 +19,7 @@ use std::path::{Path, PathBuf};
 const PAGES_DIR: &str = "content/pages";
 const POSTS_DIR: &str = "content/posts";
 const LABS_DIR: &str = "content/labs";
+const PROJECTS_DIR: &str = "content/projects";
 const TEMPLATES_DIR: &str = "templates";
 
 // The overview page introduces the wiki rather than teaching a topic, so it is
@@ -145,6 +146,7 @@ fn frontmatter_is_complete_and_within_budget() {
         .into_iter()
         .chain(load_dir(POSTS_DIR))
         .chain(load_dir(LABS_DIR))
+        .chain(load_dir(PROJECTS_DIR))
     {
         for key in REQUIRED_FRONTMATTER_KEYS {
             assert!(
@@ -184,6 +186,7 @@ fn tags_use_the_agreed_vocabulary() {
         .into_iter()
         .chain(load_dir(POSTS_DIR))
         .chain(load_dir(LABS_DIR))
+        .chain(load_dir(PROJECTS_DIR))
     {
         let tags = tag_list(&file.frontmatter["tags"]);
         assert!(
@@ -303,6 +306,7 @@ fn site_copy_makes_no_forbidden_claim() {
         .into_iter()
         .chain(load_dir(POSTS_DIR))
         .chain(load_dir(LABS_DIR))
+        .chain(load_dir(PROJECTS_DIR))
     {
         let front = file
             .frontmatter
@@ -348,7 +352,7 @@ fn site_copy_makes_no_forbidden_claim() {
 // concept. The distinction is the whole rule: /learn cannot explain RFC 1918
 // without naming 10.0.0.0/8, and a writeup about my own lab has no reason to
 // publish the address it actually uses.
-const INFRASTRUCTURE_DIRS: &[&str] = &[POSTS_DIR, LABS_DIR];
+const INFRASTRUCTURE_DIRS: &[&str] = &[POSTS_DIR, LABS_DIR, PROJECTS_DIR];
 
 // Site-wide sanitization standard, enforced rather than remembered.
 //
@@ -381,18 +385,43 @@ fn infrastructure_writing_publishes_no_private_addressing() {
     }
 }
 
+// Published project and binary names. Everything else beginning `mg-` is
+// treated as an internal hostname and rejected.
+//
+// `mg-server` is this site. The rest are the Geist suite: the umbrella, and the
+// binaries its applications install. A binary name a reader can type is public
+// by definition — the thing this guard protects is which machine runs what, and
+// none of these say anything about that.
+const PUBLIC_MG_NAMES: &[&str] = &[
+    "mg-server",
+    "mg-suite",
+    "mg-brief",
+    "mg-calcr",
+    "mg-calr",
+    "mg-contacts",
+    "mg-plan",
+    "mg-remindr",
+    "mg-vault",
+];
+
 // Lab hostnames and VM IDs locate a machine as precisely as an address does
 #[test]
 fn no_content_publishes_a_host_or_vm_identifier() {
-    for dir in [PAGES_DIR, POSTS_DIR, LABS_DIR] {
+    for dir in [PAGES_DIR, POSTS_DIR, LABS_DIR, PROJECTS_DIR] {
         for file in load_dir(dir) {
             for (line_no, line) in file.body.lines().enumerate() {
-                // `mg-server` is the public name of this site and its repository,
-                // so it is the one `mg-` name that is not an internal hostname
+                // Most `mg-` names are internal hostnames and must not ship.
+                // The exceptions are published project and binary names, which
+                // are the opposite of a locator: they identify software anyone
+                // can go and read, not a machine on a network. Listed one by
+                // one rather than matched by a prefix rule, so adding a name
+                // here stays a deliberate act.
                 for word in line.split(|c: char| !(c.is_alphanumeric() || c == '-')) {
                     assert!(
-                        !(word.starts_with("mg-") && word != "mg-server"),
-                        "{}:{}: publishes the host name {word:?}",
+                        !(word.starts_with("mg-") && !PUBLIC_MG_NAMES.contains(&word)),
+                        "{}:{}: publishes the host name {word:?}. If this is a \
+                         published project rather than a machine, add it to \
+                         PUBLIC_MG_NAMES",
                         file.path.display(),
                         line_no + 1
                     );
@@ -477,7 +506,7 @@ fn public_copy_uses_show_dont_tell_opsec() {
     ];
 
     let mut public_text = String::new();
-    for dir in [PAGES_DIR, POSTS_DIR, LABS_DIR] {
+    for dir in [PAGES_DIR, POSTS_DIR, LABS_DIR, PROJECTS_DIR] {
         for file in load_dir(dir) {
             public_text.push_str(&file.body);
             public_text.push('\n');
@@ -543,4 +572,68 @@ fn strip_template_comments(raw: &str) -> String {
     }
     out.push_str(rest);
     out
+}
+
+// The disclosure section every project document carries.
+//
+// These projects are built with heavy AI assistance, and the site's claim
+// posture only survives that if the pages say so in a fixed, findable place
+// rather than leaving a reader to infer authorship from tone. The heading is
+// checked literally so the section cannot be softened into something vaguer
+// while still passing — "Notes on process" would tell a reader nothing.
+//
+// The three registers are the point. Naming what was built and what was
+// directed is comfortable; naming what is still not understood is the part
+// that makes the other two worth believing, and it is the part that would
+// quietly disappear first without a test holding it in place.
+const PROJECT_DISCLOSURE_HEADING: &str =
+    "## What I built, what I directed, and what I still don't understand";
+
+const PROJECT_DISCLOSURE_REGISTERS: &[&str] = &[
+    "What I can explain end to end",
+    "What I directed rather than wrote",
+    "What I do not understand yet",
+];
+
+#[test]
+fn every_project_document_discloses_its_authorship() {
+    for file in load_dir(PROJECTS_DIR) {
+        assert!(
+            file.body.contains("## What this is"),
+            "{}: no `## What this is` — a project page opens by saying what the \
+             thing is, in ordinary language, before anything else",
+            file.path.display()
+        );
+
+        assert!(
+            file.body.contains(PROJECT_DISCLOSURE_HEADING),
+            "{}: missing `{PROJECT_DISCLOSURE_HEADING}`. Every project document \
+             carries it verbatim — these projects are AI-assisted, and the page \
+             says where the line falls rather than letting a reader guess",
+            file.path.display()
+        );
+
+        let disclosure = file
+            .body
+            .split(PROJECT_DISCLOSURE_HEADING)
+            .nth(1)
+            .expect("heading presence already asserted");
+
+        for register in PROJECT_DISCLOSURE_REGISTERS {
+            assert!(
+                disclosure.contains(register),
+                "{}: the disclosure section does not name {register:?}. All three \
+                 registers are required — the one a reader needs most is the one \
+                 about what is still not understood",
+                file.path.display()
+            );
+        }
+
+        assert!(
+            file.body.contains("## Status"),
+            "{}: no `## Status` — an unfinished project says so on its own page, \
+             not only in a card's status pill",
+            file.path.display()
+        );
+    }
 }
