@@ -153,6 +153,7 @@ repository, which is its own small lesson about writing the README first.
 
 ## Source
 
-The desktop configuration — Hyprland, Quickshell, and the palettes — is the
-public part. The application suite it launches is
+[github.com/machinageist/geistos](https://github.com/machinageist/geistos) —
+the Hyprland configuration, the Quickshell codebase, and the palette roster.
+The application suite it launches is
 [documented separately](/portfolio/mg-suite).

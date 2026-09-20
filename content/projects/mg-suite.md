@@ -132,6 +132,10 @@ they are finished enough that I would be comfortable defending what is in them.
 
 ## Source
 
-- [Suite documentation](/portfolio/mg-suite) — this page.
-- The desktop that launches these tools is
-  [documented separately](/portfolio/geistos).
+[github.com/machinageist/mg-suite](https://github.com/machinageist/mg-suite) —
+the umbrella repository. What is there is documentation: the architecture, the
+scope fence, and the boundary reasoning. The application repositories are
+gitignored from it and remain private.
+
+The desktop that launches these tools is
+[documented separately](/portfolio/geistos).

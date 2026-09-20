@@ -96,10 +96,10 @@ pub fn all() -> Vec<Project> {
             slug: "geistos",
             name: "geistos",
             description: "A local-first Linux workstation: a Quickshell desktop replacing the usual bar, launcher \
-                          and notification daemon, a generated palette system shared with this site, and the \
-                          systemd user units the whole thing starts from.",
-            tags: &["linux", "wayland", "hyprland", "quickshell", "systemd"],
-            url: None,
+                          and notification daemon, a palette roster shared with this site, and Hyprland \
+                          configured in Lua, one file per concern.",
+            tags: &["linux", "wayland", "hyprland", "quickshell", "theming"],
+            url: Some("https://github.com/machinageist/geistos"),
             status: ProjectStatus::InProgress,
             doc: true,
         },
@@ -116,7 +116,7 @@ pub fn all() -> Vec<Project> {
                 "architecture",
                 "local-first",
             ],
-            url: None,
+            url: Some("https://github.com/machinageist/mg-suite"),
             status: ProjectStatus::InProgress,
             doc: true,
         },
