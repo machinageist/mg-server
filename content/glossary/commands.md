@@ -1,5 +1,24 @@
 ---
 entries:
+
+  - name: "cat"
+    synopsis:
+      - "cat file"
+      - "cat -n file"
+    category: linux
+    purpose: "Write files to standard output."
+    context: >
+      Named for concatenate — `cat a b` joins two files onto one stream, which
+      is the job it was built for. Most of its daily use is reading one short
+      file, where it is really a way of putting a file onto stdout so
+      something else can have it. `-n` numbers the lines.
+    example: "cat /etc/os-release"
+    see_also: ["grep", "ls", "gzip"]
+    learn:
+      - { slug: "linux-streams", anchor: "the-three-standard-streams", label: "Streams, redirection, and pipes" }
+      - { slug: "linux-filesystem-hierarchy", anchor: "suggested-practice-read-the-tree-on-your-own-machine", label: "The Linux filesystem hierarchy" }
+    man: "https://man7.org/linux/man-pages/man1/cat.1.html"
+
   - name: "chmod"
     synopsis:
       - "chmod 644 file"
@@ -17,6 +36,24 @@ entries:
     learn:
       - { slug: "linux-permissions", anchor: "changing-permissions-with-chmod", label: "File permissions and links" }
     man: "https://man7.org/linux/man-pages/man1/chmod.1.html"
+
+  - name: "cp"
+    synopsis:
+      - "cp file copy"
+      - "cp -a source/ destination/"
+    category: linux
+    purpose: "Copy files and directories."
+    context: >
+      Plain `cp` copies content and discards most of what the filesystem knows
+      about a file. `-a` preserves ownership, permissions, timestamps, and
+      symbolic links, which is what makes the difference between a copy and a
+      duplicate.
+    example: "cp -a /etc/skel/. ~/"
+    caution: "Without `-a`, ownership and timestamps are rewritten to the copying user and the current time."
+    see_also: ["ln", "tar", "chmod"]
+    learn:
+      - { slug: "linux-archives", anchor: "what-survives-and-what-does-not", label: "Archives and compression" }
+    man: "https://man7.org/linux/man-pages/man1/cp.1.html"
 
   - name: "curl"
     synopsis:
@@ -48,6 +85,26 @@ entries:
       - { slug: "network-protocols", anchor: "common-application-protocols", label: "Network protocols and ports" }
     man: "https://man7.org/linux/man-pages/man1/dig.1.html"
 
+  - name: "ethtool"
+    synopsis:
+      - "ethtool eth0"
+      - "ethtool -m eth0"
+    category: networking
+    purpose: "Read and set an interface's link settings."
+    context: >
+      The layer-1 instrument. It reports negotiated speed and duplex, which is
+      how you catch a duplex mismatch pretending to be a failing cable. `-m`
+      dumps a pluggable module's EEPROM — vendor, part number, wavelength,
+      rated reach — where the driver supports it.
+    example: "ethtool eth0 | grep -E 'Speed|Duplex'"
+    caution: "Setting speed or duplex by hand is how most mismatches are created. Read first, and change only when you control both ends."
+    see_also: ["ip", "tcpdump"]
+    learn:
+      - { slug: "wired-media", anchor: "suggested-practice-read-the-media-in-your-own-links", label: "Wired media" }
+      - { slug: "transceivers", anchor: "suggested-practice-identify-what-is-plugged-into-your-own-gear", label: "Transceivers and connectors" }
+      - { slug: "switching-technologies", anchor: "speed-and-duplex", label: "Switching technologies" }
+    man: "https://man7.org/linux/man-pages/man8/ethtool.8.html"
+
   - name: "free"
     synopsis:
       - "free -h"
@@ -77,6 +134,23 @@ entries:
       - { slug: "linux-streams", anchor: "pipes", label: "Streams, redirection, and pipes" }
     man: "https://man7.org/linux/man-pages/man1/grep.1.html"
 
+  - name: "gzip"
+    synopsis:
+      - "gzip logfile.txt"
+      - "gunzip logfile.txt.gz"
+    category: linux
+    purpose: "Compress or decompress a single file."
+    context: >
+      It compresses one stream of bytes; it does not bundle, so running it on
+      a directory does nothing useful — that is `tar`'s job. `-k` keeps the
+      source, and `-l` reports the ratio without decompressing.
+    example: "gzip -k logfile.txt"
+    caution: "It replaces the original rather than sitting alongside it. That surprises people exactly once."
+    see_also: ["tar", "cat"]
+    learn:
+      - { slug: "linux-archives", anchor: "gzip-compresses-one-file", label: "Archives and compression" }
+    man: "https://man7.org/linux/man-pages/man1/gzip.1.html"
+
   - name: "ip"
     synopsis:
       - "ip -br address"
@@ -94,6 +168,39 @@ entries:
       - { slug: "ipv4-addressing", anchor: "suggested-practice-read-and-verify-your-own-network", label: "IPv4 addressing" }
       - { slug: "ipv6-addressing", anchor: "suggested-practice-read-your-own-ipv6-configuration", label: "IPv6 addressing" }
     man: "https://man7.org/linux/man-pages/man8/ip.8.html"
+
+  - name: "ipcalc"
+    synopsis:
+      - "ipcalc 192.0.2.0/26"
+    category: networking
+    purpose: "Calculate the network, broadcast, and host range for a prefix."
+    context: >
+      The check on subnetting done by hand. Work the boundaries out yourself
+      first, then confirm them here — using it in production is not cheating,
+      and using it instead of ever learning the arithmetic is.
+    example: "ipcalc 198.51.100.0/27"
+    see_also: ["ip"]
+    learn:
+      - { slug: "subnetting", anchor: "suggested-practice-verify-a-subnet-by-hand-then-check-yourself", label: "Subnetting, CIDR, and VLSM" }
+    man: "https://man7.org/linux/man-pages/man1/ipcalc.1.html"
+
+  - name: "iw"
+    synopsis:
+      - "iw dev"
+      - "iw dev wlan0 scan"
+    category: networking
+    purpose: "Inspect wireless interfaces, and scan for networks."
+    context: >
+      `iw dev` reports the band, channel, and channel width actually in use,
+      which is usually a different story from the Wi-Fi generation on the box.
+      Scanning and counting how many networks share your channel explains most
+      slow links.
+    example: "iw dev wlan0 link"
+    caution: "Scanning briefly interrupts the interface's association on some drivers."
+    see_also: ["ip", "ethtool"]
+    learn:
+      - { slug: "wireless-media", anchor: "suggested-practice-watch-a-wireless-link-negotiate", label: "Wireless media" }
+    man: "https://man7.org/linux/man-pages/man8/iw.8.html"
 
   - name: "ln"
     synopsis:
@@ -220,6 +327,42 @@ entries:
     learn:
       - { slug: "software-defined-networking", anchor: "suggested-practice-build-an-overlay-you-can-inspect", label: "Software-defined networking" }
     man: "https://man7.org/linux/man-pages/man8/tcpdump.8.html"
+
+  - name: "traceroute"
+    synopsis:
+      - "traceroute example.com"
+      - "tracepath example.com"
+    category: networking
+    purpose: "Show the routers along the path to a destination."
+    context: >
+      It varies the TTL to make each successive router report itself.
+      `tracepath` needs no root and also discovers the path MTU. A hop that
+      does not reply is a router declining to send ICMP, not proof that
+      forwarding stopped there.
+    example: "tracepath example.com"
+    see_also: ["ping", "ip"]
+    learn:
+      - { slug: "network-functions", anchor: "suggested-practice-observe-packet-lifetime", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
+      - { slug: "routing-technologies", anchor: "suggested-practice-explain-your-own-routing-table", label: "Routing technologies and route selection" }
+      - { slug: "network-topologies", anchor: "suggested-practice-map-both-topologies-of-a-network-you-own", label: "Network topologies" }
+    man: "https://man7.org/linux/man-pages/man8/traceroute.8.html"
+
+  - name: "type"
+    synopsis:
+      - "type ls"
+      - "type -a python"
+    category: linux
+    purpose: "Say what the shell will actually run for a name."
+    context: >
+      The answer to "which one is it": a binary on `PATH`, a shell builtin, a
+      function, or an alias. `-a` lists every match in order, which is how you
+      find the copy earlier on `PATH` that is shadowing the one you meant.
+    example: "type -a ls"
+    see_also: ["man", "ls"]
+    learn:
+      - { slug: "linux-shell", anchor: "suggested-practice-find-out-what-your-shell-is-doing", label: "The shell and the command line" }
+      - { slug: "linux-shell", anchor: "path", label: "The shell and the command line" }
+    man: "https://man7.org/linux/man-pages/man1/type.1p.html"
 
   - name: "umask"
     synopsis:
