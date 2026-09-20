@@ -29,6 +29,7 @@ const WIKI_SLUGS: &[&str] = &[
     "ipv6-addressing",
     "cloud-computing",
     "software-defined-networking",
+    "switching-technologies",
     "routing-technologies",
     "zero-trust-architecture",
     "linux-abstraction-layers",

@@ -78,6 +78,11 @@ Reading is half of it. Two surfaces work directly off these pages:
   cloud traffic controls, and deployment and service models.
 - [Software-defined networking](/learn/software-defined-networking) — separating
   the control and data planes, SD-WAN, VXLAN overlays, and infrastructure as code.
+- [Switching technologies](/learn/switching-technologies) — VLANs and trunks, the
+  802.1Q tag, link aggregation, spanning tree, and what bounds the size of a frame.
+- [Routing technologies and route selection](/learn/routing-technologies) — static
+  and dynamic routing, BGP, EIGRP, and OSPF, how a router breaks a tie between two
+  matching routes, NAT, and first-hop redundancy.
 - [Zero-trust architecture](/learn/zero-trust-architecture) — verifying every
   request rather than trusting a location, the NIST policy model, and SASE.
 

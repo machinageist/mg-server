@@ -108,6 +108,10 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "Software-defined networking",
             },
             SidebarEntry {
+                slug: "switching-technologies",
+                label: "Switching technologies",
+            },
+            SidebarEntry {
                 slug: "routing-technologies",
                 label: "Routing technologies and route selection",
             },
