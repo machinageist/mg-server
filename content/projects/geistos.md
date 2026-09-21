@@ -141,10 +141,15 @@ lines of QML.
 ## Status
 
 In progress, and honestly so. It runs as my daily desktop, which is the only
-real test it gets. There is no installer: the README in the repository describes
-one, along with a `bin/geist-db` helper and a `systemd/` directory, and none of
-those currently exist in the tree. The repository documentation is ahead of the
-repository, which is its own small lesson about writing the README first.
+real test it gets. There is no installer yet — the repository says so itself,
+and the packaging notes record the open questions rather than pretending they
+are settled.
+
+The documentation has a habit of running ahead of the tree. A helper that got
+retired kept its README entry for a while after nothing called it any more, and
+the theme count in the README is a number from several palettes ago. Neither is
+serious on its own; together they are a reminder that a README is a claim like
+any other, and that the tree is what a reader can actually check.
 
 ## Related writing
 

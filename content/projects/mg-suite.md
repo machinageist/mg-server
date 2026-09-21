@@ -2,7 +2,7 @@
 title: "mg-suite"
 date: 2026-09-20
 summary: "A set of small local-first tools, each owning its own data and talking through explicit boundaries rather than a shared database. An architecture study more than a product."
-tags: [rust, architecture, local-first, sqlite, postgresql, data-ownership]
+tags: [rust, architecture, local-first, sqlite, data-ownership]
 ---
 
 ## What this is
@@ -14,7 +14,7 @@ that are deliberately forbidden from reaching into each other's storage.
 It started as a way to get exposure to systems-shaped problems by building
 something with enough parts to have real boundaries. A single program teaches
 you very little about ownership, staleness, or what happens when two components
-disagree. Seven of them, with a rule that none may read another's database,
+disagree. Six of them, with a rule that none may read another's database,
 teaches you a great deal.
 
 That framing is the honest one. This is a hobby project and a study, built with
@@ -54,21 +54,30 @@ pretending the design was clean.
 
 ## What owns what
 
+These are the tools that actually work — the ones with their scoped behaviour
+implemented and their quality gates passing. The repository contains other work
+that is not finished, and I would rather describe six things honestly than
+fourteen aspirationally.
+
 | Tool | Owns | Storage |
 |---|---|---|
 | `mg-vault` | Notes, concepts, claims, citations, revisions | Markdown files; disposable SQLite index |
 | `mg-plan` | Plans, work items, dependencies, acceptance criteria, verification records | SQLite |
 | `mg-brief` | Registered sources, fetched artifacts, CVE records, provenance | SQLite |
-| `mg-calr` | Calendars, events, time blocks, recurrence, availability | PostgreSQL |
-| `mg-remindr` | Todos, projects, tags, lifecycle transitions | PostgreSQL |
+| `mg-calr` | Calendars, events, time blocks, recurrence, availability | SQLite |
+| `mg-remindr` | Todos, projects, tags, lifecycle transitions | SQLite |
 | `mg-contacts` | Contact identity, encrypted fields, audit history | Encrypted local store |
-| `mg-calcr` | Expression evaluation and graph sampling | Stateless |
 
-The storage column is not uniform, and that is on purpose. Notes are files
-because a notes system whose data you cannot read without its own software has
-failed at the one job. Calendars are PostgreSQL because recurrence and
-availability queries are genuinely relational. The calculator stores nothing
-because it has nothing worth keeping.
+The storage column used to be more varied. Two of these ran on PostgreSQL, which
+meant a local-first suite that needed a database server provisioned and
+supervised before it could open a calendar. That was the wrong trade for
+software meant to run on one person's machine, and they were moved onto SQLite.
+
+What is left is deliberate rather than uniform. Notes are files, because a notes
+system whose data you cannot read without its own software has failed at the one
+job it had. Everything relational is a SQLite file under `$XDG_DATA_HOME` with
+no server to install. Contacts are encrypted at rest because that content
+deserves it.
 
 ## Where it actually stands
 
@@ -77,9 +86,9 @@ point at rather than my own summary. As it records: `mg-vault`, `mg-plan`,
 `mg-brief`, and `mg-contacts` have their scoped MVP behaviour and quality gates
 implemented; `mg-calr` has its scoped behaviour with persistence verification.
 
-Several other tools in the tree are early — some are a single file and one
-commit. The repository holds more directories than it holds finished software,
-and I would rather say that here than let a directory listing imply otherwise.
+The tools above are what this page describes. Work that has not reached that bar
+is not documented here — not hidden, just not written up as though it were
+finished. It can have a page when it earns one.
 
 The suite rule for "done" is worth repeating because it is a low bar
 deliberately set: a tool is MVP-complete when you can do its core job from the
@@ -100,15 +109,15 @@ and why the bar is set where it is.
 
 **What I directed rather than wrote.** Nearly all of the Rust. I specified
 behaviour, boundaries, and failure cases; agents wrote the implementations; I
-reviewed, tested, and sent work back. Roughly fifty thousand lines exist in this
-tree and I did not type most of them.
+reviewed, tested, and sent work back. These six tools are tens of thousands of
+lines and I did not type most of them.
 
 **What I do not understand yet.** Substantial parts of the implementation in
 detail — I could not sit down and reproduce `mg-calr`'s recurrence handling from
 memory. Async Rust beyond using it: lifetimes and ownership in async contexts
-are still something I work through rather than know. The SQLite and PostgreSQL
-behaviour underneath the query layer — transaction isolation in particular is
-something I have read about and not yet had to reason about under pressure.
+are still something I work through rather than know. SQLite's behaviour
+underneath the query layer — transaction isolation and WAL in particular are
+things I have read about and not yet had to reason about under pressure.
 Cryptographic review of `mg-contacts`: it encrypts fields, and I am not
 qualified to tell you the scheme is sound.
 
@@ -119,11 +128,15 @@ it did not teach me Rust.
 
 ## Status
 
-In progress. Some tools are usable daily; most are not finished; the
-cross-application projections are barely started. The umbrella repository is
-public for its documentation — the architecture, the scope fence, and the
-boundary reasoning. The individual application repositories stay private until
-they are finished enough that I would be comfortable defending what is in them.
+In progress. The six tools above work and some of them I use daily; the
+cross-application projections between them are barely started. Other work in the
+repository has not reached the bar this page describes, so it is not described
+here.
+
+The umbrella repository is public for its documentation — the architecture, the
+scope fence, and the boundary reasoning. The individual application repositories
+stay private until they are finished enough that I would be comfortable
+defending what is in them.
 
 ## Related writing
 
