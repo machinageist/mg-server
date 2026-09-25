@@ -6,13 +6,13 @@ situation: >
   sure the same mistake does not repeat for files you create later.
 steps:
   - prompt: >
-      First, look at the key and its directory so you can see the modes rather
-      than guess at them. What do you run?
+      First, look at the key and its directory so you can see the modes instead
+      of guessing at them. What do you run?
     accept:
       - "ls -l ~/.ssh"
       - "ls -la ~/.ssh"
     explanation: >
-      `ls -l` prints the mode as ten characters — one type character and three
+      `ls -l` prints the mode as ten characters: one type character and three
       groups of three. You need to see the key itself and the directory holding
       it, because SSH checks both. Reading the modes before changing anything is
       the difference between a fix and a guess.
@@ -32,8 +32,8 @@ steps:
       - "chmod go-rwx ~/.ssh/id_ed25519"
     explanation: >
       `600` is read and write for the owner and nothing for anyone else. The
-      public key can stay world-readable — that is what public means — so only
-      the private key needs changing. Numeric notation sets all nine bits at
+      public key can stay world-readable, since that is what public means, so
+      only the private key needs changing. Numeric notation sets all nine bits at
       once, which is what you want when you know the end state you are after.
     learn_slug: "linux-permissions"
     learn_anchor: "numeric-notation"
@@ -60,10 +60,10 @@ steps:
       - "umask 077"
     explanation: >
       The umask subtracts from a base of 666 for files and 777 for directories,
-      so `077` yields 600 and 700 — exactly the modes you just set by hand. It
+      so `077` gives 600 and 700, the same modes you just set by hand. It
       applies to the shell that runs it, so making it stick means putting it in
-      a startup file. Note that new files never get execute permission from the
-      umask no matter what you set, which is a deliberate safety property.
+      a startup file. New files never get execute permission from the umask,
+      whatever you set. That is intended as a safety measure.
     learn_slug: "linux-permissions"
     learn_anchor: "default-permissions-and-umask"
 ---

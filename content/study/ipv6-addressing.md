@@ -9,10 +9,10 @@ questions:
       - "fc00::/7"
     answer: 1
     explanation: >
-      Multicast is `ff00::/8` — the whole first byte is `ff`, and the bits that
-      follow encode flags and scope rather than narrowing the prefix. Writing
-      it as /16 is a natural slip because multicast addresses are usually met
-      as `ff02::1` and `ff02::2`, which makes the first two bytes look fixed;
+      Multicast is `ff00::/8`. The whole first byte is `ff`, and the bits that
+      follow encode flags and scope instead of narrowing the prefix. Writing it
+      as /16 is a natural slip because multicast addresses are usually met as
+      `ff02::1` and `ff02::2`, which makes the first two bytes look fixed.
       `ff02::/16` is in fact the link-local multicast range, a subset. The other
       two prefixes are real and belong elsewhere: `fe80::/10` is link-local
       unicast and `fc00::/7` is unique local.
@@ -26,14 +26,15 @@ questions:
       - "`::` is a wildcard matching any address in a rule, and `::1` is loopback"
     answer: 2
     explanation: >
-      One character apart and entirely different jobs. The unspecified address
-      appears as a source when a host has not yet committed to an address —
-      duplicate address detection is the standard case. Loopback is `::1`, the
+      They are one character apart and do completely different jobs. The
+      unspecified address appears as a source when a host has not yet
+      committed to an address. Duplicate address detection is the standard
+      case. Loopback is `::1`, the
       IPv6 equivalent of 127.0.0.1. Swapping them is a common note-taking
       error. They are not the same address: `::` is 128 zero bits and `::1` has
       the last bit set, and zero compression does not erase a significant 1.
-      The wildcard reading comes from firewall syntax, where `::/0` rather than
-      `::/128` is the match-anything prefix.
+      The wildcard reading comes from firewall syntax, where `::/0`, not
+      `::/128`, is the match-anything prefix.
     learn: { slug: "ipv6-addressing", anchor: "address-types" }
 
   - stem: "Why may `::` appear only once in an IPv6 address?"
@@ -44,13 +45,13 @@ questions:
       - "Because a second `::` is reserved to mark the boundary between the network and interface portions"
     answer: 0
     explanation: >
-      The compression works by subtraction — the reader counts the hextets that
+      The compression works by subtraction. The reader counts the hextets that
       are written and infers that the rest are zero. With two gaps there is no
       way to divide the missing hextets between them, so the address becomes
-      ambiguous. Length is not the issue; a compressed address is shorter, not
-      longer. Compression is not restricted to a leading run — it can shorten a
+      ambiguous. Length is not the issue. A compressed address is shorter, not
+      longer. Compression is not limited to a leading run. It can shorten a
       run anywhere, and the convention is to shorten the longest one. And
-      nothing in the notation marks the network/interface boundary; that is
+      nothing in the notation marks the network/interface boundary. That is
       what the prefix length is for.
     learn: { slug: "ipv6-addressing", anchor: "the-shape-of-an-address" }
 
@@ -66,10 +67,10 @@ questions:
       the longest run of all-zero hextets collapses to `::`. Lowercase hex is
       part of the recommendation, which rules out the uppercase form. The first
       option drops leading zeros but leaves the zero run written out, and the
-      third does the reverse — compressing the run while keeping `0db8` and
-      `0042` padded. All four denote the same address; the point of the rule is
-      that one address gets written the same way in a log, a config file, and a
-      firewall rule, so a search for it finds it.
+      third does the reverse, compressing the run while keeping `0db8` and
+      `0042` padded. All four mean the same address. The rule exists so that
+      one address gets written the same way in a log, a config file, and a
+      firewall rule, and a search for it finds it.
     learn: { slug: "ipv6-addressing", anchor: "the-shape-of-an-address" }
 
   - stem: "A site is given a /48 and assigns a /64 to each subnet. How many subnets does that allow?"
@@ -81,9 +82,8 @@ questions:
     answer: 2
     explanation: >
       The 16 bits between the /48 and the /64 are the subnet ID, giving 2^16 =
-      65,536 subnets. The point being made is that subnetting in IPv6 is an
-      organizational question rather than a conservation one — a single site
-      has more subnets than it can find uses for. The very large figure is 2^64,
+      65,536 subnets. So subnetting in IPv6 is about organization, not saving
+      addresses. A single site has more subnets than it can find uses for. The very large figure is 2^64,
       which counts interfaces within one subnet, not subnets. The smaller
       figures would correspond to 8 and 12 subnet bits, which is not how the
       /48-to-/64 allocation divides.
@@ -97,12 +97,12 @@ questions:
       - "No — it is an arbitrary default that can be changed on a LAN with no consequences"
     answer: 1
     explanation: >
-      The address format itself does not mandate the split; prefix lengths are
+      The address format itself does not require the split. Prefix lengths are
       as flexible as they are in CIDR. What makes /64 effectively binding is
       everything built on top of it, starting with stateless address
       autoconfiguration, which needs 64 bits to generate an interface
       identifier into. Calling it a format property overstates it. Making it
-      conditional on address type is not the distinction — link-local addresses
+      conditional on address type is not the distinction. Link-local addresses
       use the same 64-bit interface identifier. And treating it as freely
       changeable understates the consequences: a narrower prefix on a normal
       LAN breaks autoconfiguration and confuses tooling.
@@ -120,11 +120,11 @@ questions:
       lower half of its address is a stable device fingerprint visible to every
       server it contacts. Current systems generate identifiers that are stable
       per network but not derived from hardware, and add temporary addresses
-      that rotate for outbound connections — which is why one interface
-      commonly holds several IPv6 addresses at once. Collisions were not the
-      problem; a MAC address is globally unique, which is what made it
-      attractive in the first place. It works with autoconfiguration — it was
-      the original mechanism for it. And EUI-64 is built from a 48-bit MAC by
+      that rotate for outbound connections. That is why one interface often
+      holds several IPv6 addresses at once. Collisions were not the problem. A
+      MAC address is globally unique, which is what made it attractive in the
+      first place. It works with autoconfiguration. It was the original
+      mechanism for it. And EUI-64 is built from a 48-bit MAC by
       inserting `fffe` in the middle, so no 64-bit hardware address is needed.
     learn: { slug: "ipv6-addressing", anchor: "the-interface-identifier" }
 
@@ -139,7 +139,7 @@ questions:
       Every interface configures a link-local address from the same prefix, so
       a host with three interfaces has three networks that look alike. The
       address is unambiguous only once you say which link it is on, and the
-      zone index does that. It is not a prefix length — that is written after a
+      zone index does that. It is not a prefix length. That is written after a
       slash and is a separate thing. Duplicates on one segment are prevented by
       duplicate address detection, so uniqueness within a link is not the
       problem. And link-local traffic never leaves the link, so no off-link
@@ -154,11 +154,11 @@ questions:
       - "It sends a neighbor solicitation to `ff02::1`, the all-nodes group"
     answer: 1
     explanation: >
-      Neighbor Discovery replaces ARP, and its refinement is that the question
+      Neighbor Discovery replaces ARP, and the difference is that the question
       is not asked of everybody. Each unicast address has a solicited-node
-      group derived from its last 24 bits, so only the handful of interfaces
-      sharing those bits have to process the request — a structural improvement
-      over ARP, which every host on the segment must inspect. There is no ARP
+      group derived from its last 24 bits, so only the few interfaces sharing
+      those bits have to process the request. With ARP, every host on the
+      segment has to inspect it. There is no ARP
       in IPv6 at all. No router holds a registry of link addresses. And sending
       to the all-nodes group would work but would throw away the whole benefit,
       making it as noisy as the broadcast it replaced.
@@ -172,13 +172,13 @@ questions:
       - "The all-nodes multicast address `ff02::1`"
     answer: 2
     explanation: >
-      Using the tentative address as a source would assert ownership of the
-      very thing being checked, which is what the exercise is trying to avoid.
+      Using the tentative address as a source would claim ownership of the
+      thing being checked, which is what the check is trying to avoid.
       The unspecified address says plainly that the sender has no address yet.
       The link-local answer is tempting but has the same problem in the general
-      case — duplicate address detection also runs for the link-local address
+      case. Duplicate address detection also runs for the link-local address
       itself, before there is anything else to use. And `ff02::1` is a
-      destination group; a multicast address is never valid as a source.
+      destination group. A multicast address is never valid as a source.
     learn: { slug: "ipv6-addressing", anchor: "neighbor-discovery" }
 
   - stem: "Can an IPv6-only host reach an IPv4-only server without help?"
@@ -209,13 +209,12 @@ questions:
     explanation: >
       Unique local addresses are the site-scoped range, and the usable half
       requires a randomly generated 40-bit global ID so that two networks
-      merged later are unlikely to collide — a deliberate improvement on
-      everyone picking the same private range. Link-local is scoped to a single
+      merged later are unlikely to collide. That is an improvement on everyone
+      picking the same private range. Link-local is scoped to a single
       link, not a site, so it cannot serve as a routable internal range.
       `2000::/3` is global unicast and filtering it at the boundary is a policy
       rather than an address property. And `::/128` is the unspecified address,
-      a single value rather than a range. Worth noting that unique local
-      addresses are not a security boundary — they are simply not routed
-      off-site.
+      a single value, not a range. Also note that unique local addresses are
+      not a security boundary. They are just not routed off-site.
     learn: { slug: "ipv6-addressing", anchor: "address-types" }
 ---
