@@ -1,7 +1,7 @@
 ---
 title: "Moving My Homelab Management Network First"
 date: 2026-07-31
-summary: "A management-network change exposed stale dependencies across cluster, access-control, and DNS layers. What failed, how I narrowed it down, and how the change process improved."
+summary: "I moved my homelab management network before starting VLAN work. The addresses changed, but several systems still pointed at the old network. What failed and how I recovered."
 category: "Networking"
 tags: [networking, homelab, clustering, dns, incident, segmentation]
 ---
@@ -10,19 +10,18 @@ My plan was to move the homelab management layer onto a clean subnet, verify it,
 and then start adding VLANs. I expected the flat-network move to be the simple
 part.
 
-The change caused a long management-plane outage and interrupted this site. This
-post traces the failure across cluster, access-control, and DNS layers and records
-the verification method I used to recover.
+It took about eight hours across two days. I lost remote access to every
+management interface, and this site went offline. This post goes through what
+failed in the cluster, the access rules, and DNS, and how I checked each one
+during recovery.
 
 ## The intended change
 
-The affected environment is a small virtualization lab on hardware I own. At the
-time of the incident, management, cluster, guest, and client traffic shared a
-single change domain.
+The lab is a small virtualization cluster on hardware I own. At the time,
+management, cluster, guest, and client traffic all shared one network.
 
-The long-term design separates systems by role and trust. This first change was
-only an address migration; it deliberately did not combine new tagging and
-firewall policy with the move.
+The long-term plan separates systems by role and trust. This first step was only
+an address change. New VLAN tagging and firewall policy would come later.
 
 I still think that order makes sense. It is easier to troubleshoot an address
 change before adding 802.1Q tagging, router-on-a-stick configuration, and more
@@ -35,33 +34,37 @@ change that could interrupt every management path at once.
 
 ## The addresses had more dependencies than I listed
 
-An IP address is copied into more places than the interface that owns it. In this case, stale references existed across several categories:
+An IP address is copied into more places than the interface that owns it. In
+this case the old addresses were still in:
 
-- host networking;
-- cluster transport configuration;
-- management access rules;
-- local name resolution and resolver settings; and
-- automation with embedded addresses.
+- host networking
+- the cluster transport configuration
+- management access rules
+- local name resolution and resolver settings
+- automation scripts with addresses written into them
 
 I began with the host interfaces. The other references did not follow the new
 addresses, and I found them during recovery.
 
-The expected brief loss of connectivity became a longer outage. Cluster
-membership broke and the existing remote management paths no longer matched the
-new source network. An independent console path made recovery possible without
-rebuilding the hosts.
+I expected a brief loss of connectivity. It became a long outage. Cluster
+membership broke, and my remote management access no longer matched the new
+network. The hosts and guests were still running, and physical console access
+let me recover without rebuilding anything.
 
 There were two main management failures.
 
-First, the cluster transport still named each member by its old address. It did
-not discover peers from the host interface configuration; it used its own static
-peer configuration. Once the host addresses changed, those entries no longer
-described the network and each member behaved as an isolated system.
+First, the cluster transport still named each node by its old address. It does
+not discover peers from the host's interface settings. It uses its own static
+list of peers. Once the host addresses changed, that list no longer matched the
+network, and each node acted as if it were alone.
 
-Second, management access rules still matched the old source network. New
-connections therefore failed even where the hosts were otherwise reachable.
-The incident also exposed that policy distribution and cluster health were not
-independent in this design.
+Second, the management access rules still only allowed the old network. My
+workstation had moved to the new one, so new connections failed even though the
+hosts were reachable.
+
+I had also treated the access rules and the cluster as separate parts of the
+change. They were not. The rules are distributed by the cluster, so they
+depended on it being healthy.
 
 ## Starting again from the bottom
 
@@ -81,7 +84,7 @@ more changes. I was still learning parts of the cluster stack, so I have tried
 not to claim more than I verified here.
 
 Before the next repair attempt, I collected read-only network and cluster state,
-service status, recent logs, and checksums. That preserved evidence of the broken
+service status, recent logs, and checksums. That gave me a record of the broken
 state before I changed it again.
 
 The recovery pattern I want to keep:
@@ -97,7 +100,7 @@ packets were actually crossing the network.
 
 ## Membership, quorum, and shared state
 
-The recovery reinforced that cluster health has several separate layers:
+Recovery made it clear that cluster health has several separate layers:
 
 | Layer | What it is | Question |
 |---|---|---|
@@ -105,16 +108,16 @@ The recovery reinforced that cluster health has several separate layers:
 | Quorum | Votes counted over that membership | Is there an authoritative majority? |
 | Cluster filesystem | Configuration replicated among members | Is shared state present and in sync? |
 
-Quorum is a prerequisite for authoritative writes, but it does not prove that
-every member has rejoined or that shared state has synchronized. I now verify
-membership, authority, and replicated state separately before considering the
+The cluster needs quorum before it accepts writes, but quorum does not prove that
+every node has rejoined or that the shared configuration is in sync. Now I check
+membership, quorum, and the shared filesystem separately before I call the
 cluster recovered.
 
 ## The website outage was a DNS problem
 
-The management plane began recovering, but the public service was still
-unavailable. The application worked locally and could reach internet addresses,
-while its outbound connector could not establish a session.
+The cluster was coming back, but the site was still down. The application worked
+locally and could reach internet addresses, but its outbound connector could not
+start a session.
 
 The guest still referred to a resolver on the old network, so queries timed out.
 
@@ -131,9 +134,9 @@ it could contact the edge.
 | Public reachability | Broken because the tunnel could not resolve its edge |
 
 Correcting the resolver restored DNS. The connector re-established its session,
-the local origin check passed, and the site became reachable again. The useful
-lesson is dependency ordering: raw IP reachability does not prove DNS, and a
-healthy local application does not prove its public edge path.
+the local origin check passed, and the site came back. The lesson was about
+order. Reaching an IP address does not prove DNS works, and an application that
+works locally has not proven its public path.
 
 The simultaneous symptoms came from separate stale references:
 
@@ -172,12 +175,12 @@ segmented design in one cutover. I have replaced it with a staged plan:
 1. Verify the recovered flat network.
 2. Find and reconcile stale addressing, DNS, firewall, host-file, and automation
    references in one inventory.
-3. Add one trust zone at a time, beginning with the lowest-blast-radius case.
-4. Deliberately test a bad VLAN assignment and firewall rule, then practice the
-   rollback while the scope is small.
+3. Add one trust zone at a time, starting with the one that can break the least.
+4. Test a bad VLAN assignment and a bad firewall rule on purpose, then practice
+   the rollback while the scope is small.
 
-Before any future network change, I require tested configuration-restore evidence,
-an independent access path, and a rollback for every layer involved.
+Before any future network change, I want a tested configuration restore, a
+second way in, and a rollback for every layer involved.
 
 ## Notes for the next migration
 

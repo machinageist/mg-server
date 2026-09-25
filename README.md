@@ -6,28 +6,26 @@ Personal website and web server for **machinageist.dev**, built in Rust.
 
 ## Overview
 
-`mg-server` powers **machinageist.dev**, an evidence-first portfolio for an
-**infrastructure technician — Linux, networking, and virtualization**. The site is
-organized around four pillars — a Proxmox homelab, networking, Linux / SysAdmin, and a
-small defensive-security section — each anchored to a homelab project with real evidence.
+`mg-server` is the Rust application behind **machinageist.dev**, my portfolio site for
+infrastructure work in Linux, networking, and virtualization. The site covers four
+areas: a Proxmox homelab, networking, Linux administration, and a small defensive
+security section. Each one is tied to homelab work with evidence behind it.
 
 <!-- Cert claims removed 2026-07-25 by request: no public cert claims until an exam
      voucher is booked. When one is, state only that single exam with its scheduled
      date. See mg-coreforge/PUBLIC_FACE.md for the wording rules. -->
 
-It is also, honestly, a **learning platform** for Rust and the backend ecosystem:
-the app itself is a small, deliberately narrow self-hosting artifact, not a
-production platform. It serves two purposes:
+It is also how I am learning Rust and backend development. The app is small and only
+does what this site needs:
 
-- A public portfolio hub for the homelab/networking/Linux evidence built in
-  `~/tech-skill-up/`.
-- Publishing technical writeups that document the work with real commands and
-  verification.
+- It hosts the portfolio, with the homelab, networking, and Linux work and the
+  evidence for each.
+- It publishes technical writeups with the commands I ran and how I checked the
+  result.
 
-The server is **self-hosted** on owned hardware (a Proxmox Debian VM behind Caddy
-and a Cloudflare Tunnel), which is itself one of the portfolio artifacts. Scope is
-kept honest: no production-grade, SRE, high-availability, or "secured the app"
-claims — see `IMPROVEMENT_PLAN.md` for the claim-defense discipline.
+The server is self-hosted on hardware I own (a Proxmox Debian VM behind Caddy and a
+Cloudflare Tunnel), and running it is part of the portfolio. `IMPROVEMENT_PLAN.md`
+covers which claims the site makes and which it does not.
 
 ---
 
@@ -107,8 +105,8 @@ cd mg-server
 RUST_LOG=info cargo run
 ```
 
-Binds to `127.0.0.1:3000` by default — visit `http://127.0.0.1:3000`. No database or
-external service is required; content is read from `content/` at startup. Set
+Binds to `127.0.0.1:3000` by default, so visit `http://127.0.0.1:3000`. No database or
+external service is required. Content is read from `content/` on each request. Set
 `MG_BIND_ADDR` to override the bind address (e.g. `0.0.0.0` for LAN testing) and
 `RUST_LOG` to control log verbosity (`RUST_LOG=debug` for full `tower` internals).
 
@@ -126,8 +124,8 @@ The public deployment follows a conventional private-origin pattern:
 Browser → managed edge → outbound private connector → reverse proxy → application
 ```
 
-This separates the browser-facing boundary from the application origin. The
-architecture and verification method are demonstrated in
+This keeps the application origin separate from the browser-facing edge. The
+architecture, and how I verified it, are in
 ["How machinageist.dev Is Hosted"](https://machinageist.dev/blog/hosting-machinageist-dev).
 
 ---
@@ -147,7 +145,7 @@ The app stamps several defensive HTTP response headers on every response (see
 - **X-Content-Type-Options: nosniff** — the browser trusts the declared type.
 - **X-Frame-Options: DENY** — blocks framing (clickjacking).
 
-These are a browser-enforced baseline for an owned personal site — **not** a claim
-that the application is "secured." The defensive walkthrough with live evidence is
-the ["Security Headers on machinageist.dev"](https://machinageist.dev/blog/security-headers-on-machinageist-dev)
+These are a browser-side baseline for a personal site. They do not make the
+application secure on their own. The walkthrough, with live evidence, is in the
+["Security Headers on machinageist.dev"](https://machinageist.dev/blog/security-headers-on-machinageist-dev)
 post.

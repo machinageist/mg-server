@@ -53,14 +53,14 @@ pub const SURFACES: &[Surface] = &[
     Surface {
         path: "/about",
         label: "About",
-        blurb: "Who I am, what I actually operate, and what each claim is backed by.",
+        blurb: "Who I am, what I run, and what each claim is backed by.",
         section: "about",
         in_nav: true,
     },
     Surface {
         path: "/portfolio",
         label: "Portfolio",
-        blurb: "Finished work, with evidence. Deliberately short.",
+        blurb: "Finished work, with the evidence behind it.",
         section: "portfolio",
         in_nav: true,
     },

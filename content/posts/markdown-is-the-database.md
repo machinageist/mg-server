@@ -1,69 +1,69 @@
 ---
 title: "Markdown Is the Database"
 date: 2026-09-20
-summary: "A notes tool where files are authoritative and the SQLite index is disposable. What that rule costs to actually mean, and the failure modes it forces you to name out loud."
+summary: "A notes tool where the Markdown files are authoritative and the SQLite index can be thrown away. What that rule costs, and the failure states it made me name."
 category: "Linux / SysAdmin"
 tags: [sqlite, local-first, data-ownership, architecture, markdown]
 ---
 
-I have lost notes to a notes application before. Not to a disk failure — to a
-database the application could no longer open, holding content I could not get
-at without the application that had broken.
+I have lost notes to a notes application before. The disk was fine. The
+application's database could no longer be opened, and the notes were stuck
+inside it.
 
 So when I built a notes tool for my own use, the first rule was that the
-Markdown files are the truth and anything else is a cache. This post is about
-what it costs to mean that, because saying it is easy and the rule breaks the
-moment you want search to be fast.
+Markdown files are the truth and everything else is a cache. Saying that is
+easy. Keeping it true gets harder once you want search to be fast, and this post
+is about what that took.
 
 ## The rule
 
 Markdown files in a directory are authoritative. There is a SQLite index for
-search. Deleting the index and rebuilding it from unchanged sources must produce
-equivalent, identically ordered results.
+search. Deleting the index and rebuilding it from unchanged files must give the
+same results, in the same order.
 
-That last clause is what turns a slogan into something testable. "The index is
-disposable" is a claim about behaviour, and if `rm index.db && rebuild` gives
-you different search results, the claim is false and your files were quietly not
-the source of truth after all.
+That last part is what makes the rule testable. If `rm index.db && rebuild`
+gives different search results, the index was holding something the files were
+not, and the files were not really the source of truth.
 
 ## Why the obvious design fails
 
-The natural way to build this is: index on write. The tool edits a note, so it
-updates the file and the index in the same operation. They stay in sync because
-nothing changes one without the other.
+The obvious way to build this is to update the index on every write. The tool
+edits a note, so it updates the file and the index together. They stay in sync
+because nothing changes one without the other.
 
-This works until something changes a file without going through the tool, which
-is immediately and constantly. The entire point of files-as-truth is that I can
-open them in Neovim, or `sed` across them, or restore one from a backup, or sync
-the directory between machines. Every one of those edits a note without telling
-the index.
+That lasts until something changes a file without going through the tool, which
+happens all the time. The reason to keep notes as files is so I can open them in
+Neovim, run `sed` across them, restore one from a backup, or sync the directory
+between machines. Every one of those changes a note without telling the index.
 
-So the index cannot assume it is current. It has to be able to find out.
+So the index cannot assume it is current. It has to be able to check.
 
 ## Fingerprints and generations
 
-Two mechanisms carry most of the weight.
+Two mechanisms do most of the work.
 
-**Source fingerprints.** Every note has a SHA-256 of its content recorded when
-it was read. To replace a note you must supply the fingerprint you read, and the
-write is rejected if the file has changed since. This is optimistic concurrency,
-and it turns the dangerous case — two things editing the same note, last write
-silently winning — into a visible error.
+**Source fingerprints.** Every note has a SHA-256 of its content, recorded when
+it was read. To replace a note you have to supply the fingerprint you read, and
+the write is rejected if the file has changed since. This is optimistic
+concurrency. When two things edit the same note, the second write fails with an
+error instead of silently overwriting the first.
 
-**Index generations.** The index is written as atomic generations with explicit
-schema and parser versions, rather than mutated row by row. A rebuild produces a
-new generation; readers see the old one until the new one is complete. A crashed
-rebuild leaves the previous generation intact, because a half-built index that
-looks complete is worse than an obviously stale one.
+**Index generations.** The index is written as complete generations, each with
+an explicit schema version and parser version, instead of being changed row by
+row. A rebuild produces a new generation, and readers keep seeing the old one
+until the new one is finished. If a rebuild crashes, the previous generation is
+still intact. I would rather have an index that is obviously out of date than a
+half-built one that looks complete.
 
-The schema and parser versions matter more than they look. When the parser
-changes, every row it produced is suspect — not wrong necessarily, but produced
-by different code. Recording the version means the tool can notice and rebuild
-rather than serving rows from a parser that no longer exists.
+The version numbers are there for when the parser changes. Rows from the old
+parser might still be right, but different code produced them. Because the
+version is recorded, the tool can notice the change and rebuild instead of
+serving rows from a parser that no longer exists.
 
 ## Four kinds of not-current
 
-The part that changed how I think about caches: "stale" is not one state.
+I used to think of a cache as either current or stale. This project needed four
+states:
 
 | State | Meaning |
 |---|---|
@@ -72,76 +72,72 @@ The part that changed how I think about caches: "stale" is not one state.
 | `stale` | Sources have changed since the index was built |
 | `degraded` | The index exists but a scan did not complete |
 
-`degraded` is the one I would not have thought to include. It covers a scan that
-started, failed partway, and left an index that is neither the old complete
-state nor a new complete one. Collapsing that into `stale` would be a lie by
-omission — stale implies the index is internally consistent and merely behind.
-Degraded means you cannot trust it to be either.
+I would not have thought to include `degraded`. It covers a scan that started,
+failed partway through, and left an index that is neither the old complete state
+nor a new complete one. Calling that `stale` would hide something. A stale index
+is consistent and just behind. A degraded one might not be consistent at all.
 
-Naming four states is not pedantry. Each one has a different correct response,
-and a tool that reports one word for all of them cannot tell you which.
+Each state needs a different response, which is why each needs its own name. A
+tool that reports one word for all four cannot tell you what to do next.
 
 ## Observe before trusting
 
-The rule that costs the most performance: `status` and `search` perform a fresh,
-confined observation of the source files before treating a persisted generation
-as current.
+The rule that costs the most performance is that `status` and `search` look at
+the source files again, inside the vault, before treating a saved generation as
+current.
 
-The cheap version would trust the stored generation and report `current`. That
-is fast and wrong, because the whole premise is that files change without the
-tool's involvement.
+The cheaper option would be to trust the saved generation and report `current`.
+That would be fast, and it would be wrong every time a file changed outside the
+tool, which is the case this design exists for.
 
-And the related rule: observed drift never silently publishes candidate rows or
-advances the generation. When the tool notices sources have moved, it reports
-that. It does not quietly index what it found and tell you everything is fine.
-A cache that repairs itself invisibly is indistinguishable from a cache that is
-lying, and the point of this design was to never be in that position.
+A related rule: when the tool notices the files have changed, it reports that.
+It does not index the changes in the background, publish the new rows, and say
+everything is fine. From the outside, a cache that fixes itself without saying
+so looks the same as one that is wrong.
 
-The cost is real. Every status check walks the vault. For my note count that is
-not noticeable; at a much larger scale it would be, and the answer would be a
-watcher daemon with a dirty queue — which the scope document explicitly defers
-rather than pretending the current design scales.
+The cost is real. Every status check walks the whole vault. With the number of
+notes I have, I do not notice it. At a much larger scale I would, and the fix
+would be a watcher daemon with a queue of changed files. The scope document puts
+that off for later.
 
 ## Confinement
 
-Separate from the truth question, and worth stating because it is the part with
-security consequences: the vault is a directory, and operations are confined to
-it. Path traversal is rejected. Symlinks that escape the vault are rejected.
-Application-internal paths like `.obsidian` are protected from mutation.
+This is separate from the source-of-truth question, and it is the part with
+security consequences. The vault is a directory, and every operation is confined
+to it. Path traversal is rejected. Symlinks that point outside the vault are
+rejected. Application paths like `.obsidian` cannot be modified.
 
 A notes tool takes paths from user input and writes files. Without confinement,
-a crafted note path is a write primitive anywhere the process can reach. This
-needed to be a tested boundary rather than a careful habit.
+a crafted note path could write anywhere the process can reach. So confinement
+is enforced in code and covered by tests.
 
 ## What I would tell myself at the start
 
-- **Decide what is authoritative, then check whether your code agrees.** Writing
-  "files are the source of truth" in a README is free. `rm index.db`, rebuild,
-  and diff the results is the version that means something.
-- **A cache must be able to discover it is wrong.** If the only way the index
-  learns about a change is being told by the code that made it, it will be wrong
-  the first time anything else touches a file.
-- **Enumerate the failure states.** `empty`, `stale`, and `degraded` are
-  different situations with different responses. One catch-all word throws away
-  the information the user needs.
-- **Never repair silently.** Report the drift. A self-healing cache and a lying
-  cache look identical from outside.
-- **Rebuild atomically.** Partial state that presents as complete is the worst
-  outcome available.
+- **Decide what is authoritative, then check that the code agrees.** Writing
+  "files are the source of truth" in a README costs nothing. Deleting the index,
+  rebuilding, and diffing the results is how you find out whether it is true.
+- **A cache has to be able to find out it is wrong.** If the index only learns
+  about a change from the code that made it, it will be wrong the first time
+  anything else touches a file.
+- **List the failure states.** `empty`, `stale`, and `degraded` are different
+  situations with different responses. One word for all of them loses the
+  information the user needs.
+- **Report drift instead of repairing it silently.**
+- **Rebuild atomically.** A partial index that looks complete is the worst result.
 
-## Honest limits
+## Limits
 
 This is a hobby project built with heavy AI assistance. I specified these rules,
-reviewed the implementations, and can explain why each mechanism is there — that
-is the part I will defend. I did not write most of the Rust, and there are
-corners of it I could not reproduce from memory.
+reviewed the implementations, and can explain why each mechanism is there. I did
+not write most of the Rust, and there are parts of it I could not reproduce from
+memory.
 
-I also have not tested this at a scale where the observe-before-trusting cost
-bites, so I know the design has a ceiling without knowing where it is. And the
-invariant I am most confident about is the one I can actually check:
+I also have not tested it at a scale where checking the files on every status
+call gets slow. I know the design has a ceiling, but I do not know where it is.
+The rule I am most sure of is the one I can check directly:
 
 ```text
 rm -f index.db && index rebuild && search <term>
 ```
 
-Same results as before, or the premise is wrong.
+If the results are not the same as before, the design is wrong.

@@ -1,16 +1,15 @@
 ---
 title: "Security Headers on machinageist.dev"
 date: 2026-07-09
-summary: "The HTTP response headers this site sets — what each does, the real curl -I output, where they come from in the code, and the honest limits of header hardening on a personal site."
+summary: "The HTTP response headers this site sets: what each one does, the real curl -I output, where they come from in the code, and what they do not cover."
 category: "Security"
 tags: [security, defensive, http-headers, csp, hsts, owned-scope]
 ---
 
-This is a small, defensive writeup for an owned site. mg-server stamps a set of
-HTTP security-response headers on every response, and this post documents them:
-what each header tells the browser to do, the real headers on the wire, and where
-they are set in the code. It is scoped honestly — this is header hardening on a
-personal site, not a claim that the application is "secured."
+mg-server adds a set of security headers to every HTTP response. This post goes
+through them: what each header tells the browser to do, what they look like on the
+wire, and where they are set in the code. Headers are one layer of defense on a
+personal site, and the last section covers what they do not do.
 
 ## The headers on the wire
 
@@ -29,13 +28,12 @@ permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
 server: cloudflare
 ```
 
-(Header set reviewed 2026-08-20. Run it yourself; a header audit should be
-reproducible.)
+(Header set reviewed 2026-08-20. You can run the same command and compare.)
 
 ## What each header does
 
 - **Content-Security-Policy** — restricts where the browser may load resources
-  from. `default-src 'self'` means only this origin; there are no inline scripts
+  from. `default-src 'self'` means only this origin. There are no inline scripts
   and no third-party CDNs. Even if an injection vector existed, the browser would
   refuse to load an off-origin `<script>`. `base-uri`, `form-action`, and
   `object-src` close other HTML-injection paths. `frame-ancestors 'none'` blocks
@@ -50,16 +48,16 @@ reproducible.)
   control alongside `frame-ancestors`.
 - **Referrer-Policy: strict-origin-when-cross-origin** — cross-origin navigations
   leak only the origin, not the full path.
-- **Permissions-Policy** — denies camera, microphone, geolocation, and payment
-  outright; this site uses none of them.
+- **Permissions-Policy** — denies camera, microphone, geolocation, and payment.
+  This site uses none of them.
 - **Server header removed** — mg-server strips its own `Server` header so it does
   not advertise a name or version. (`server: cloudflare` above is the edge, not the
   app.)
 
 ## Where they come from
 
-These are set in one response middleware applied at the router level so it runs
-on every response. The relevant policy operations are:
+They are set in one response middleware, applied at the router so it runs on
+every response. The two main policies:
 
 ```rust
 headers.insert(
@@ -78,21 +76,18 @@ headers.insert(
 The complete implementation is in the
 [router-wide response middleware](https://github.com/machinageist/mg-server/blob/main/src/middleware/security_headers.rs).
 
-A useful verification point: the live `curl -I` output and the source config
-agree — same CSP, same two-year HSTS. The header the browser receives is the
-header the code sets.
+I checked the live `curl -I` output against the source. The CSP and the two-year
+HSTS match.
 
-## Honest limits
+## Limits
 
-- Headers are one browser-enforced layer. They do not fix an application logic
-  bug; CSP mitigates the impact of injection, it does not remove the vector.
-- **TLS terminates at Cloudflare's edge**, not on my VM, so HSTS protects the
-  browser-to-edge leg. That tradeoff is worth stating rather than glossing.
-- This is an owned personal site with no accounts, write API, or database.
-  Search queries and study forms are still attacker-controlled input, so they
-  are bounded, parsed, and escaped rather than dismissed as "no user input."
-- **Safe claim:** reviewed and documented the HTTP security headers for an owned
-  web service, with reproducible `curl` evidence. **Not** a claim to have "secured
-  the application."
+- Headers are one layer, and the browser enforces them. They do not fix bugs in
+  the application. CSP limits what an injection can do, but it does not remove
+  the injection.
+- TLS terminates at Cloudflare's edge, not on my VM, so HSTS protects the
+  connection from the browser to the edge.
+- The site has no accounts, no write API, and no database. Search queries and
+  study answers are still input from strangers, so they are bounded, parsed, and
+  escaped like any other input.
 
-The source and tests for this defensive layer are available in the repository.
+The source and tests for these headers are in the repository.

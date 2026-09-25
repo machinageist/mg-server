@@ -107,8 +107,8 @@ pub fn all() -> Vec<Project> {
             slug: "mg-suite",
             name: "mg-suite",
             description: "An AI-assisted study in application architecture: a set of small local-first tools, each \
-                          owning its own data, wired together through explicit boundaries rather than a shared \
-                          database. Several are usable; several are not.",
+                          with its own data, connected through explicit interfaces instead of a shared database. \
+                          Some are usable and some are not.",
             tags: &[
                 "rust",
                 "sqlite",

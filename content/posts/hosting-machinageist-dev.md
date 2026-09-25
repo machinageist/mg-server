@@ -54,10 +54,10 @@ permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
 server: cloudflare
 ```
 
-`HTTP/2 200` confirms the whole path is up. `server: cloudflare` is the edge; my
-own Rust service removes its `Server` header rather than advertising a version.
-The security headers are stamped by mg-server itself — I cover them in a separate
-[security-headers post](/blog/security-headers-on-machinageist-dev).
+`HTTP/2 200` confirms the whole path is up. `server: cloudflare` is the edge. My
+Rust service removes its own `Server` header so it does not advertise a version.
+mg-server sets the security headers itself, and the
+[security headers post](/blog/security-headers-on-machinageist-dev) covers them.
 
 ## The origin service
 
@@ -70,22 +70,20 @@ $ journalctl -u <service> --since today
 ```
 
 One deployment failed because the service manager's executable path did not
-match the deployed binary. The general lesson was to validate the unit, binary,
-permissions, and startup behavior together before replacing the known-good
-release. The deployment check now covers the unit configuration, binary path,
-permissions, and a fresh-process startup before cutover.
+match the deployed binary. Now, before replacing the known-good release, I check
+the unit configuration, the binary path, permissions, and a fresh-process
+startup together.
 
 ## Why no database
 
 Blog posts and wiki pages are flat Markdown files on disk. The server reads a
 `.md` file, parses its YAML frontmatter, converts the body to HTML at request
-time, and renders it into a compile-time Askama template. No SQL, no ORM, no
-admin panel, no login form. That is partly an architecture preference and partly
-a security property: a smaller surface has fewer things to get wrong. It is not a
-claim that the site is "secure" — only that there is less of it to attack.
+time, and renders it into a compile-time Askama template. There is no SQL, no
+ORM, no admin panel, and no login form. Part of that is preference. The other
+part is that a smaller surface has fewer things to get wrong. It does not make
+the site secure, but it leaves less to attack.
 
-## Operational scope
+## Scope
 
-This is a personal service, not a production platform. The demonstrated scope is
-narrow: run, diagnose, and verify a small Linux-hosted Rust service across its
-public request path.
+This is one small personal service. The post covers running it, diagnosing it,
+and checking it across its public request path.
