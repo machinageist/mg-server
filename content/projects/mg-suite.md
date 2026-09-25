@@ -1,26 +1,24 @@
 ---
 title: "mg-suite"
 date: 2026-09-20
-summary: "A set of small local-first tools, each owning its own data and talking through explicit boundaries rather than a shared database. An architecture study more than a product."
+summary: "A set of small local-first tools, each with its own data, that talk through explicit interfaces instead of a shared database. More an architecture study than a product."
 tags: [rust, architecture, local-first, sqlite, data-ownership]
 ---
 
 ## What this is
 
-`mg-suite` is a collection of small command-line tools that each own one kind of
-data — notes, plans, calendar events, reminders, contacts, source material — and
-that are deliberately forbidden from reaching into each other's storage.
+`mg-suite` is a collection of small command-line tools. Each one owns one kind of
+data, such as notes, plans, calendar events, reminders, contacts, or source
+material, and none of them is allowed to reach into another's storage.
 
-It started as a way to get exposure to systems-shaped problems by building
-something with enough parts to have real boundaries. A single program teaches
-you very little about ownership, staleness, or what happens when two components
-disagree. Six of them, with a rule that none may read another's database,
-teaches you a great deal.
+I started it to get practice with problems that only show up when a system has
+several parts. A single program teaches you very little about ownership, stale
+data, or what happens when two components disagree. Six of them, with a rule that
+none can read another's database, teach a lot.
 
-That framing is the honest one. This is a hobby project and a study, built with
-heavy AI assistance. It is not a product, most of it is unfinished, and I am
-more confident about the architecture than about any particular line of the
-implementation.
+This is a hobby project and a study, built with heavy AI assistance. It is not a
+product, most of it is unfinished, and I am more confident about the architecture
+than about any given line of the code.
 
 ## The rule the whole thing is built around
 
@@ -28,11 +26,11 @@ One owner per kind of data. No application reads or writes another's store.
 Where two need to cooperate, the data crosses as an explicit request or a
 published projection, never as a shared table.
 
-This sounds obvious and is constantly tempting to break. The moment the
+This sounds obvious, and it is tempting to break all the time. As soon as the
 calendar wants to show today's reminders, the shortest path is to open the
-reminder database and select from it. That shortcut is how you end up unable to
-change either schema, and how you end up with two components that disagree about
-what is true while both being certain.
+reminder database and query it. Take that shortcut and neither schema can change
+without breaking the other. You also end up with two components that disagree
+about what is true, each sure it is right.
 
 The boundaries as written in the suite README:
 
@@ -47,17 +45,15 @@ The boundaries as written in the suite README:
 - **mg-remindr** is a transitional authority kept for compatibility while
   planning ownership moves to mg-plan.
 
-That last one is the interesting entry, because it is an admission rather than a
-design. It names a boundary that is in the wrong place, says why it is still
-there, and warns against deepening it. Writing that down was more useful than
-pretending the design was clean.
+The last entry is the one I find most useful. It names a boundary that is in the
+wrong place, says why it is still there, and warns against making it worse.
+Writing that down helped more than pretending the design was clean.
 
 ## What owns what
 
-These are the tools that actually work — the ones with their scoped behaviour
-implemented and their quality gates passing. The repository contains other work
-that is not finished, and I would rather describe six things honestly than
-fourteen aspirationally.
+These are the tools that work, meaning their scoped behavior is implemented and
+their quality gates pass. The repository has other work that is not finished,
+and this page only describes the six that are.
 
 | Tool | Owns | Storage |
 |---|---|---|
@@ -68,87 +64,83 @@ fourteen aspirationally.
 | `mg-remindr` | Todos, projects, tags, lifecycle transitions | SQLite |
 | `mg-contacts` | Contact identity, encrypted fields, audit history | Encrypted local store |
 
-The storage column used to be more varied. Two of these ran on PostgreSQL, which
-meant a local-first suite that needed a database server provisioned and
-supervised before it could open a calendar. That was the wrong trade for
-software meant to run on one person's machine, and they were moved onto SQLite.
+The storage column used to be more varied. Two of these ran on PostgreSQL, so a
+local-first suite needed a database server set up and running before it could
+open a calendar. That was the wrong tradeoff for software meant to run on one
+person's machine, and both were moved to SQLite.
 
-What is left is deliberate rather than uniform. Notes are files, because a notes
-system whose data you cannot read without its own software has failed at the one
-job it had. Everything relational is a SQLite file under `$XDG_DATA_HOME` with
-no server to install. Contacts are encrypted at rest because that content
-deserves it.
+The storage is not uniform, but each choice has a reason. Notes are files,
+because a notes system whose data you cannot read without its own software has
+failed at its main job. Everything relational is a SQLite file under
+`$XDG_DATA_HOME`, with no server to install. Contacts are encrypted at rest
+because of what they contain.
 
-## Where it actually stands
+## Where it stands
 
-`docs/MVP-SCOPE.md` in the repository tracks this, and it is the source I would
-point at rather than my own summary. As it records: `mg-vault`, `mg-plan`,
-`mg-brief`, and `mg-contacts` have their scoped MVP behaviour and quality gates
-implemented; `mg-calr` has its scoped behaviour with persistence verification.
+`docs/MVP-SCOPE.md` in the repository tracks this, and it is more reliable than
+my summary. According to it, `mg-vault`, `mg-plan`, `mg-brief`, and `mg-contacts`
+have their scoped MVP behavior and quality gates implemented. `mg-calr` has its
+scoped behavior, with persistence verified.
 
-The tools above are what this page describes. Work that has not reached that bar
-is not documented here — not hidden, just not written up as though it were
-finished. It can have a page when it earns one.
+Work that has not reached that bar is not written up here. It can get a page once
+it is finished.
 
-The suite rule for "done" is worth repeating because it is a low bar
-deliberately set: a tool is MVP-complete when you can do its core job from the
-CLI, close it, reopen it, and still find the authoritative result, with tests
-covering the happy path, restart, invalid input, and the most important safety
-boundary. Nothing about that requires a daemon, a dashboard, or a plugin system,
-and the scope document explicitly forbids building those to make an MVP feel
-finished.
+The suite's rule for "done" is a low bar on purpose. A tool is MVP-complete when
+you can do its core job from the CLI, close it, reopen it, and still find the
+authoritative result, with tests covering the happy path, a restart, invalid
+input, and the most important safety boundary. None of that needs a daemon, a
+dashboard, or a plugin system, and the scope document forbids building those just
+to make an MVP feel finished.
 
 ## What I built, what I directed, and what I still don't understand
 
-**What I can explain end to end.** The architecture, which is the part I
-actually care about: why one owner per domain, why projections rather than
-shared tables, why the index is disposable, what each boundary is protecting,
-and which boundary (`mg-remindr`) is in the wrong place and why it is still
-there. The storage choices and their reasoning. What "done" means for each tool
-and why the bar is set where it is.
+**What I can explain end to end.** The architecture, which is the part I care
+about most: why each domain has one owner, why data crosses as projections
+instead of shared tables, why the index is disposable, what each boundary
+protects, and which boundary (`mg-remindr`) is in the wrong place and why it is
+still there. The storage choices and the reasons for them. What "done" means for
+each tool and why the bar is where it is.
 
-**What I directed rather than wrote.** Nearly all of the Rust. I specified
-behaviour, boundaries, and failure cases; agents wrote the implementations; I
-reviewed, tested, and sent work back. These six tools are tens of thousands of
-lines and I did not type most of them.
+**What I directed rather than wrote.** Nearly all of the Rust. I specified the
+behavior, the boundaries, and the failure cases. Agents wrote the
+implementations, and I reviewed them, tested them, and sent work back. These six
+tools are tens of thousands of lines, and I did not type most of them.
 
-**What I do not understand yet.** Substantial parts of the implementation in
-detail — I could not sit down and reproduce `mg-calr`'s recurrence handling from
-memory. Async Rust beyond using it: lifetimes and ownership in async contexts
-are still something I work through rather than know. SQLite's behaviour
-underneath the query layer — transaction isolation and WAL in particular are
-things I have read about and not yet had to reason about under pressure.
-Cryptographic review of `mg-contacts`: it encrypts fields, and I am not
-qualified to tell you the scheme is sound.
+**What I do not understand yet.** Large parts of the implementation in detail. I
+could not sit down and rewrite `mg-calr`'s recurrence handling from memory. Async
+Rust past the point of using it. Lifetimes and ownership in async code are still
+something I work through each time. SQLite's behavior below the query layer. I
+have read about transaction isolation and WAL, but I have not had to reason about
+them under pressure. The cryptography in `mg-contacts`. It encrypts fields, and I
+am not qualified to say whether the scheme is sound.
 
-Lower-level Rust is where I want to end up, and `mg-server` — this site, which I
-did write and can explain line by line — is the work where I am actually getting
-there. This suite is the wider-scope counterpart: it taught me architecture, and
-it did not teach me Rust.
+Lower-level Rust is where I want to end up. `mg-server`, the application behind
+this site, which I wrote and can explain line by line, is where I am working on
+that. This suite is the wider counterpart. It taught me architecture. It did not
+teach me Rust.
 
 ## Status
 
-In progress. The six tools above work and some of them I use daily; the
-cross-application projections between them are barely started. Other work in the
+In progress. The six tools above work, and I use some of them daily. The
+projections between applications have barely started. Other work in the
 repository has not reached the bar this page describes, so it is not described
 here.
 
-The umbrella repository is public for its documentation — the architecture, the
-scope fence, and the boundary reasoning. The individual application repositories
-stay private until they are finished enough that I would be comfortable
-defending what is in them.
+The umbrella repository is public for its documentation: the architecture, the
+scope limits, and the reasoning behind the boundaries. The individual application
+repositories stay private until they are finished enough that I can defend what
+is in them.
 
 ## Related writing
 
 - [Markdown is the database](/blog/markdown-is-the-database) — why mg-vault's
-  SQLite index is disposable, and what it took to mean it.
+  SQLite index is disposable, and what it took to keep it that way.
 
 ## Source
 
-[github.com/machinageist/mg-suite](https://github.com/machinageist/mg-suite) —
-the umbrella repository. What is there is documentation: the architecture, the
-scope fence, and the boundary reasoning. The application repositories are
-gitignored from it and remain private.
+[github.com/machinageist/mg-suite](https://github.com/machinageist/mg-suite) is
+the umbrella repository. It holds documentation: the architecture, the scope
+limits, and the reasoning behind the boundaries. The application repositories
+are gitignored from it and are private.
 
-The desktop that launches these tools is
-[documented separately](/portfolio/geistos).
+The desktop that launches these tools is [documented separately](/portfolio/geistos).
