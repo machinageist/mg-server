@@ -423,6 +423,59 @@ or a name starting with `wlp`.
 A scan from one spot is only a sample. Signal changes from room to room, so scan
 from a few places before drawing conclusions about coverage.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objectives: 1.11 wireless principles, 2.6 Cisco wireless architectures and AP
+modes, 2.7 WLAN physical connections, 5.9 wireless security protocols, and 5.10
+WLAN configuration with WPA2 PSK (v1.1). In v2.0, which replaces it in February
+2027, wireless principles move to 1.5 and AP switch ports to 2.2.b.
+
+- In 2.4 GHz, 1, 6, and 11 are the non-overlapping channels. Expect to assign
+  channels to neighboring access points.
+- Know WPA, WPA2, and WPA3 by what changed: WPA2 brought AES with CCMP, and WPA3
+  added SAE, required PMF, and a 192-bit enterprise mode.
+- A lightweight AP talks to its WLC over CAPWAP: UDP 5246 for control, which is
+  encrypted with DTLS, and UDP 5247 for data.
+- AP modes are not covered on this page. Know that local mode, the default,
+  tunnels client traffic to the WLC, and FlexConnect can switch traffic locally
+  and keep working if the link to the WLC drops. The others are monitor,
+  sniffer, rogue detector, SE-Connect, and bridge.
+- A lightweight AP in local mode connects to an access port, because its client
+  traffic is tunneled. An autonomous or FlexConnect AP serving several VLANs
+  needs a trunk. WLC ports are trunks, and on the AireOS controllers most CCNA
+  material uses, LAG does not negotiate LACP or PAgP, so the switch side is
+  `channel-group <n> mode on`.
+- Configuring a WLAN in the WLC GUI with WPA2 PSK is a lab skill this page does
+  not cover: the profile name, SSID, WLAN ID, the interface or VLAN it maps to,
+  and the security settings.
+
+### Network+ N10-009
+
+Objective 2.3, select and configure wireless devices and technologies, is this
+page's outline item for item. 802.1X also appears under network access control
+in 4.3, and wireless performance problems in 5.4.
+
+- 802.11h is listed under regulatory impacts. It adds DFS, which moves off
+  channels shared with radar, and TPC, which lowers transmit power.
+- Wider channels carry more data and overlap more. In 2.4 GHz only 1, 6, and 11
+  stay clear of each other.
+- Band steering nudges dual-band clients toward 5 GHz. The client still decides.
+- The SSID is the network name, a BSSID identifies one AP radio, and the ESSID is
+  the name shared across an extended service set.
+- The four network types are infrastructure, ad hoc, mesh, and point-to-point.
+- WPA2 uses AES with CCMP. WPA3 replaces the pre-shared key exchange with SAE.
+  PSK means one shared password, and Enterprise means per-user logins through
+  802.1X and RADIUS.
+- A captive portal controls guest access. It does not encrypt anything.
+- For 5.4, channel overlap, interference, signal loss, weak coverage, client
+  disassociation, and roaming misconfiguration are the wireless problems to
+  recognize from symptoms.
+
 ## Related pages
 
 - [Wireless media](/learn/wireless-media) — how stations share a radio channel, and
