@@ -83,6 +83,9 @@ Reading is half of it. Two surfaces work directly off these pages:
 - [Routing technologies and route selection](/learn/routing-technologies) — static
   and dynamic routing, BGP, EIGRP, and OSPF, how a router breaks a tie between two
   matching routes, NAT, and first-hop redundancy.
+- [Wireless technologies](/learn/wireless-technologies) — channels and channel
+  width, SSIDs and roaming, wireless network types, WPA2 and WPA3, 802.1X, and
+  access point management.
 - [Zero-trust architecture](/learn/zero-trust-architecture) — verifying every
   request rather than trusting a location, the NIST policy model, and SASE.
 

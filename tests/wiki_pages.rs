@@ -31,6 +31,7 @@ const WIKI_SLUGS: &[&str] = &[
     "software-defined-networking",
     "switching-technologies",
     "routing-technologies",
+    "wireless-technologies",
     "zero-trust-architecture",
     "linux-abstraction-layers",
     "linux-filesystem-hierarchy",

@@ -12,6 +12,17 @@ entries:
     learn:
       - { slug: "switching-technologies", anchor: "802-1q-tagging", label: "Switching technologies" }
 
+  - term: "802.1X"
+    category: networking
+    definition: >
+      The IEEE standard for port-based network access control. A device gets
+      onto a wired or wireless network only after it authenticates. The
+      client is the supplicant, the switch port or access point is the
+      authenticator, and a RADIUS server usually makes the decision.
+    see_also: ["extensible-authentication-protocol", "radius"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "802-1x-and-eap", label: "Wireless technologies" }
+
   - term: "Access port"
     category: networking
     definition: >
@@ -21,6 +32,17 @@ entries:
     see_also: ["vlan", "trunk-port"]
     learn:
       - { slug: "switching-technologies", anchor: "access-ports-and-the-vlan-database", label: "Switching technologies" }
+
+  - term: "Ad hoc network"
+    aka: ["IBSS", "Independent basic service set"]
+    category: networking
+    definition: >
+      A temporary wireless network where devices connect directly to each
+      other, peer to peer, with no access point. Wi-Fi Direct fills the same
+      role on phones today.
+    see_also: ["wireless-access-point"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "ad-hoc-networks", label: "Wireless technologies" }
 
   - term: "Administrative distance"
     aka: ["AD"]
@@ -85,6 +107,16 @@ entries:
     learn:
       - { slug: "routing-technologies", anchor: "bgp", label: "Routing technologies and route selection" }
 
+  - term: "Band steering"
+    category: networking
+    definition: >
+      An access point nudging a dual-band client toward the better band,
+      usually 5 GHz, by delaying its 2.4 GHz replies or asking the client to
+      move. The client still makes the final decision.
+    see_also: ["channel-width"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "band-steering", label: "Wireless technologies" }
+
   - term: "Bastion host"
     category: networking
     definition: >
@@ -144,6 +176,37 @@ entries:
     see_also: ["vlan", "broadcast", "collision-domain"]
     learn:
       - { slug: "switching-technologies", anchor: "vlans", label: "Switching technologies" }
+
+  - term: "BSSID"
+    aka: ["Basic service set identifier"]
+    category: networking
+    definition: >
+      The identifier of one access point radio, usually its MAC address.
+      Several access points can share an SSID, but each has its own BSSID,
+      and that is how a client tells them apart.
+    see_also: ["ssid", "extended-service-set"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "bssid", label: "Wireless technologies" }
+
+  - term: "Captive portal"
+    category: networking
+    definition: >
+      A login page that a new client's web traffic is sent to before it gets
+      access, for signing in or accepting terms of service. It controls
+      access but does not encrypt anything.
+    see_also: ["wpa3"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "guest-networks-and-captive-portals", label: "Wireless technologies" }
+
+  - term: "Channel width"
+    category: networking
+    definition: >
+      How much spectrum a Wi-Fi channel takes up: 20, 40, 80, 160, or 320
+      MHz. Wider channels carry more data but overlap neighbors more easily
+      and pick up more interference.
+    see_also: ["non-overlapping-channels"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "channel-width", label: "Wireless technologies" }
 
   - term: "CIDR"
     aka: ["Classless Inter-Domain Routing"]
@@ -276,6 +339,17 @@ entries:
     learn:
       - { slug: "switching-technologies", anchor: "speed-and-duplex", label: "Switching technologies" }
 
+  - term: "Dynamic Frequency Selection"
+    aka: ["DFS"]
+    category: networking
+    definition: >
+      The 802.11h feature that lets Wi-Fi share parts of the 5 GHz band with
+      radar. An access point listens before using a DFS channel and has to
+      leave it if it detects radar.
+    see_also: ["channel-width"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "802-11h-dfs-and-tpc", label: "Wireless technologies" }
+
   - term: "Dynamic routing"
     category: networking
     definition: >
@@ -367,6 +441,28 @@ entries:
     see_also: ["well-known-port"]
     learn:
       - { slug: "network-protocols", anchor: "port-number-ranges", label: "Network protocols and ports" }
+
+  - term: "Extended service set"
+    aka: ["ESS", "ESSID"]
+    category: networking
+    definition: >
+      A group of access points that share one SSID and connect to the same
+      wired network. The shared name is the ESSID. It is what lets a client
+      roam between access points without joining a new network.
+    see_also: ["ssid", "bssid"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "ess-and-essid", label: "Wireless technologies" }
+
+  - term: "Extensible Authentication Protocol"
+    aka: ["EAP", "EAP-TLS", "PEAP", "EAP-TTLS", "EAP-FAST"]
+    category: networking
+    definition: >
+      The authentication framework that 802.1X carries. EAP is not a single
+      method. EAP-TLS, PEAP, EAP-TTLS, and EAP-FAST each decide differently
+      what the client and the server have to prove.
+    see_also: ["802-1x", "radius"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "802-1x-and-eap", label: "Wireless technologies" }
 
   - term: "Fibre Channel"
     category: networking
@@ -576,6 +672,17 @@ entries:
     see_also: ["system-call", "user-space"]
     learn:
       - { slug: "linux-abstraction-layers", anchor: "the-kernel", label: "Linux abstraction layers" }
+
+  - term: "Lightweight access point"
+    aka: ["LWAP", "Wireless LAN controller", "WLC"]
+    category: networking
+    definition: >
+      An access point managed by a central wireless LAN controller instead
+      of being configured on its own. The controller handles its settings,
+      security, channel, and power, usually over a CAPWAP tunnel.
+    see_also: ["wireless-access-point"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "autonomous-and-lightweight-access-points", label: "Wireless technologies" }
 
   - term: "Link aggregation"
     category: networking
@@ -830,6 +937,16 @@ entries:
     learn:
       - { slug: "network-appliances", anchor: "firewalls", label: "Network appliances" }
 
+  - term: "Non-overlapping channels"
+    category: networking
+    definition: >
+      Wi-Fi channels far enough apart that they do not interfere with each
+      other. The 2.4 GHz band has three, channels 1, 6, and 11. The 5 GHz
+      band has about 25 in the US.
+    see_also: ["channel-width"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "non-overlapping-channels", label: "Wireless technologies" }
+
   - term: "North-south traffic"
     category: networking
     definition: >
@@ -977,6 +1094,17 @@ entries:
     learn:
       - { slug: "network-appliances", anchor: "switches", label: "Network appliances" }
 
+  - term: "Pre-shared key"
+    aka: ["PSK"]
+    category: networking
+    definition: >
+      The single password every device uses on a WPA2-Personal network.
+      Someone who records a device joining can test guesses against it
+      offline, so its length matters.
+    see_also: ["wpa2", "simultaneous-authentication-of-equals"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "wpa2", label: "Wireless technologies" }
+
   - term: "Prefix length"
     category: networking
     definition: >
@@ -998,6 +1126,17 @@ entries:
     see_also: ["vlan", "broadcast-domain"]
     learn:
       - { slug: "switching-technologies", anchor: "private-vlans", label: "Switching technologies" }
+
+  - term: "Protected Management Frames"
+    aka: ["PMF", "802.11w"]
+    category: networking
+    definition: >
+      Protection against forged Wi-Fi management frames, such as the fake
+      deauthentication frames used to knock clients off a network. WPA3
+      requires it.
+    see_also: ["wpa3"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "wpa3", label: "Wireless technologies" }
 
   - term: "Protocol data unit"
     aka: ["PDU"]
@@ -1033,6 +1172,17 @@ entries:
     see_also: ["voice-vlan"]
     learn:
       - { slug: "network-functions", anchor: "quality-of-service", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
+
+  - term: "RADIUS"
+    aka: ["Remote Authentication Dial-In User Service"]
+    category: networking
+    definition: >
+      The protocol an access point or switch uses to ask a central server
+      whether a user may connect. The server often checks the credentials
+      against a directory such as Active Directory.
+    see_also: ["802-1x", "extensible-authentication-protocol"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "enterprise-wireless-authentication", label: "Wireless technologies" }
 
   - term: "Rapid Spanning Tree Protocol"
     aka: ["RSTP"]
@@ -1129,6 +1279,17 @@ entries:
     learn:
       - { slug: "linux-shell", anchor: "shell-and-environment-variables", label: "The shell and the command line" }
 
+  - term: "Simultaneous Authentication of Equals"
+    aka: ["SAE", "Dragonfly"]
+    category: networking
+    definition: >
+      The password-based key exchange in WPA3-Personal. Recording a device
+      joining gives an attacker nothing to test guesses against offline, and
+      it provides forward secrecy.
+    see_also: ["pre-shared-key", "wpa3"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "wpa3", label: "Wireless technologies" }
+
   - term: "Single-mode fiber"
     category: networking
     definition: >
@@ -1196,6 +1357,17 @@ entries:
     see_also: ["topology", "east-west-traffic", "three-tier-hierarchical-model"]
     learn:
       - { slug: "network-topologies", anchor: "spine-and-leaf", label: "Network topologies" }
+
+  - term: "SSID"
+    aka: ["Service set identifier"]
+    category: networking
+    definition: >
+      The name of a wireless network, up to 32 bytes long. Hiding it does
+      not hide the network, because clients that have joined before ask for
+      it by name.
+    see_also: ["bssid", "extended-service-set"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "service-set-identifiers", label: "Wireless technologies" }
 
   - term: "Standard streams"
     category: linux
@@ -1574,6 +1746,17 @@ entries:
     learn:
       - { slug: "network-protocols", anchor: "port-number-ranges", label: "Network protocols and ports" }
 
+  - term: "Wi-Fi Protected Setup"
+    aka: ["WPS"]
+    category: networking
+    definition: >
+      A shortcut for joining a WPA2-Personal network without typing the
+      password, usually by pressing a button on the router. The PIN version
+      has a design flaw that lets an attacker guess the PIN in hours.
+    see_also: ["pre-shared-key"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "wi-fi-protected-setup", label: "Wireless technologies" }
+
   - term: "Wireless access point"
     aka: ["AP"]
     category: networking
@@ -1581,9 +1764,32 @@ entries:
       The device bridging radio clients onto a wired network. An autonomous AP
       holds its own configuration; in a controller-based design a controller
       coordinates policy and radio management across many.
-    see_also: ["power-over-ethernet", "csma-ca"]
+    see_also: ["power-over-ethernet", "csma-ca", "lightweight-access-point"]
     learn:
       - { slug: "network-appliances", anchor: "wireless-appliances", label: "Network appliances" }
+      - { slug: "wireless-technologies", anchor: "autonomous-and-lightweight-access-points", label: "Wireless technologies" }
+
+  - term: "WPA2"
+    aka: ["Wi-Fi Protected Access 2"]
+    category: networking
+    definition: >
+      The Wi-Fi security standard from 2004, still common. It encrypts with
+      CCMP and 128-bit AES, and uses one shared password in Personal mode or
+      per-user logins in Enterprise mode.
+    see_also: ["wpa3", "pre-shared-key"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "wpa2", label: "Wireless technologies" }
+
+  - term: "WPA3"
+    aka: ["Wi-Fi Protected Access 3"]
+    category: networking
+    definition: >
+      The 2018 replacement for WPA2. It swaps the pre-shared key exchange
+      for SAE, requires Protected Management Frames, and is required in the
+      6 GHz band.
+    see_also: ["wpa2", "simultaneous-authentication-of-equals", "protected-management-frames"]
+    learn:
+      - { slug: "wireless-technologies", anchor: "wpa3", label: "Wireless technologies" }
 
   - term: "Zero-trust architecture"
     aka: ["ZTA"]

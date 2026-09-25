@@ -188,6 +188,7 @@ entries:
     synopsis:
       - "iw dev"
       - "iw dev wlan0 scan"
+      - "iw reg get"
     category: networking
     purpose: "Inspect wireless interfaces, and scan for networks."
     context: >
@@ -200,6 +201,7 @@ entries:
     see_also: ["ip", "ethtool"]
     learn:
       - { slug: "wireless-media", anchor: "suggested-practice-watch-a-wireless-link-negotiate", label: "Wireless media" }
+      - { slug: "wireless-technologies", anchor: "suggested-practice-survey-the-wireless-networks-around-you", label: "Wireless technologies" }
     man: "https://man7.org/linux/man-pages/man8/iw.8.html"
 
   - name: "ln"

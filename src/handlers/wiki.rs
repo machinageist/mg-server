@@ -116,6 +116,10 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "Routing technologies and route selection",
             },
             SidebarEntry {
+                slug: "wireless-technologies",
+                label: "Wireless technologies",
+            },
+            SidebarEntry {
                 slug: "zero-trust-architecture",
                 label: "Zero-trust architecture",
             },
