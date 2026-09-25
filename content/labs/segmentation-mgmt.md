@@ -1,7 +1,7 @@
 ---
 title: "S6 — Management plane last"
 date: 2026-08-14
-summary: "The stage that looks cosmetic and is the most dangerous — re-tagging the network that carries cluster traffic and your own access to fix whatever you break."
+summary: "The stage that looks cosmetic and is the most dangerous: re-tagging the network that carries cluster traffic and your own access for fixing whatever you break."
 tags: [labs, networking, segmentation, cluster, console]
 ---
 
@@ -12,9 +12,9 @@ cutover and rollback pattern.
 
 The change can affect:
 
-- hypervisor management, both SSH and the web UI;
-- **cluster membership traffic**; and
-- your own access to fix whatever you break.
+- hypervisor management, both SSH and the web UI
+- cluster membership traffic
+- your own access for fixing whatever you break
 
 A tagging mismatch can isolate a node or cost the cluster quorum. Record exact
 cluster membership and a tested recovery path for each node before cutover.
@@ -47,22 +47,22 @@ quorum.
 
 Sequence matters:
 
-- Prepare the trunk to carry **both** the current native VLAN and tagged
+- Prepare the trunk to carry both the current native VLAN and tagged
   management, before removing anything.
 - Move the host onto the tagged interface.
 - Remove the native VLAN only after the node is confirmed healthy on tagged.
 
-Overlapping the two rather than cutting over hard is what keeps the window short
-enough that the cluster does not notice.
+Running both at once, instead of switching over in one step, keeps the window
+short enough that the cluster does not notice.
 
 ## Stop immediately on any of these
 
 This list is not advisory:
 
-- cluster token loss;
-- retransmits;
-- any quorum change; or
-- unexpected firewall drops.
+- cluster token loss
+- retransmits
+- any quorum change
+- unexpected firewall drops
 
 Revert from the console. Diagnose only after cluster health is restored.
 
@@ -70,8 +70,8 @@ Revert from the console. Diagnose only after cluster health is restored.
 
 - [ ] All nodes on tagged management, quorate, peers connected
 - [ ] Cluster configuration hash still identical across every node
-- [ ] Switch configuration re-exported — it changed, so the earlier export is
-      now stale
+- [ ] Switch configuration re-exported, since it changed and the earlier export
+      is now stale
 - [ ] Firewall configuration re-exported
 - [ ] Management reachable only from the approved administrative path
 - [ ] Topology document updated to record management as tagged, with the date
@@ -81,18 +81,18 @@ Revert from the console. Diagnose only after cluster health is restored.
 Check it against the full definition of done. The items most likely still open
 at this point:
 
-- [ ] One VLAN mismatch **and** one firewall mistake safely induced, diagnosed,
+- [ ] One VLAN mismatch and one firewall mistake safely induced, diagnosed,
       and rolled back. The VLAN one should be done from
       [S2](/labs/segmentation-lab); the firewall one may not be.
-- [ ] Configuration backups **restored in a controlled drill** — restored, not
-      merely exported. An export you have never restored is a file.
+- [ ] Configuration backups restored in a controlled drill, not only exported.
+      A backup you have never restored has not been tested.
 - [ ] Stale references to the pre-migration addressing absent from active
       scripts, or explicitly marked historical
 - [ ] Evidence records each test, result, and rollback confirmation
 - [ ] The writeup distinguishes a homelab validation from production-scale
       network engineering
 
-That last line is a claim-discipline requirement rather than a modesty gesture.
-A small managed network and virtualization cluster can be real, defensible work.
-Describing it as enterprise network engineering turns a strong claim into one
-that collapses under a single follow-up question.
+That last line is about accuracy, not modesty. A small managed network and
+virtualization cluster is real work you can defend. Calling it enterprise network
+engineering turns a strong claim into one that falls apart at the first
+follow-up question.

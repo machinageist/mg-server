@@ -43,7 +43,7 @@ questions:
       - "Private addresses are one-way by design and can only be used as a source"
       - "The gateway holds a public address and translates on the private network's behalf, so there is no return path until the inside starts the exchange"
       - "ISPs filter inbound traffic to private ranges as a policy choice, and can be asked to stop"
-      - "Private addresses use a different protocol number that public routers do not recognise"
+      - "Private addresses use a different protocol number that public routers do not recognize"
     answer: 1
     explanation: >
       Routers on the public internet drop private addresses, so a packet
@@ -126,7 +126,7 @@ questions:
       multicast is class D, which starts at 224 — a long way from 127.
     learn: { slug: "ipv4-addressing", anchor: "classful-addressing" }
 
-  - stem: "An organisation in the classful era needed 300 addresses. What made this awkward, and why does the story still matter?"
+  - stem: "An organization in the classful era needed 300 addresses. What made this awkward, and why does the story still matter?"
     options:
       - "A class C gave 254 usable addresses and a class B gave 65,534, so the choice was between too few and enormous waste — the granularity problem that CIDR fixed"
       - "Class B was reserved for governments, so the only lawful option was several class C networks"
@@ -137,8 +137,8 @@ questions:
       Fixed class sizes meant the network/host boundary could only sit in three
       places, and 300 hosts falls in the gap between two of them. That
       granularity failure is the reason classful addressing was abandoned in
-      the 1990s in favour of explicit prefix lengths. Class B was not reserved
-      by policy for any particular kind of organisation. The claim that any
+      the 1990s in favor of explicit prefix lengths. Class B was not reserved
+      by policy for any particular kind of organization. The claim that any
       prefix length was allowed describes CIDR, which is the thing that
       replaced classes — under classes the mask was implied by the first
       octet. And routing table capacity is a different problem entirely from
@@ -158,8 +158,8 @@ questions:
       has. The class table is worth learning as history because it explains
       otherwise arbitrary facts — why the default masks are /8, /16, and /24,
       and why the private ranges are the odd shapes they are. Defaulting a mask
-      from the first octet is exactly the behaviour that was abandoned. The
-      private ranges are recognised by prefix, not by class. And whether an
+      from the first octet is exactly the behavior that was abandoned. The
+      private ranges are recognized by prefix, not by class. And whether an
       address is advertised is a policy and registry matter, not a class one.
     learn: { slug: "ipv4-addressing", anchor: "classful-addressing" }
 

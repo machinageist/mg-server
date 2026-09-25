@@ -82,7 +82,7 @@ questions:
     explanation: >
       The 16 bits between the /48 and the /64 are the subnet ID, giving 2^16 =
       65,536 subnets. The point being made is that subnetting in IPv6 is an
-      organisational question rather than a conservation one — a single site
+      organizational question rather than a conservation one — a single site
       has more subnets than it can find uses for. The very large figure is 2^64,
       which counts interfaces within one subnet, not subnets. The smaller
       figures would correspond to 8 and 12 subnet bits, which is not how the

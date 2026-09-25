@@ -1,14 +1,14 @@
 ---
 title: "S0 — Document the physical topology"
 date: 2026-08-14
-summary: "Record what is actually plugged in where before configuring a single VLAN — switch config, port map, PVIDs, per-node NIC names, and the out-of-band path for every cutover."
+summary: "Record what is plugged in where before configuring a single VLAN: switch config, port map, PVIDs, per-node NIC names, and the out-of-band path for every cutover."
 tags: [labs, networking, segmentation, vlan, documentation]
 ---
 
 ## Why this comes first
 
-This stage changes nothing. It only records — and it is still the stage most
-worth doing carefully, because every stage after it acts on what it produces.
+This stage changes nothing. It only records. It still needs the most care,
+because every later stage acts on what it produces.
 
 The failure it prevents is specific: configuring VLANs against a *remembered*
 port map is how you trunk the wrong port and lose management access to the
@@ -35,10 +35,10 @@ Work through the switch first, then the hypervisors, then the guests.
 
 **Each hypervisor node**
 
-- [ ] The exact NIC names, **confirmed per node rather than assumed**. Interface
-      naming differs between machines — `eno1` on one, a renamed alias on
-      another — and assuming symmetry across nodes is a reliable way to apply a
-      bridge change to the wrong interface.
+- [ ] The exact NIC names, confirmed on each node, not assumed. Interface names
+      differ between machines (`eno1` on one, a renamed alias on another), and
+      assuming they match is a good way to apply a bridge change to the wrong
+      interface.
 - [ ] Which bridge each guest currently sits on
 
 **Each guest**
@@ -48,8 +48,8 @@ Work through the switch first, then the hypervisors, then the guests.
 **Per cutover, not in general**
 
 - [ ] Which controlled client and switch port provide an independent recovery
-      path *during that specific change*. "I can get to the console" is not a
-      plan; the change record needs the exact port and access method.
+      path during that specific change. "I can get to the console" is not a
+      plan. The change record needs the exact port and access method.
 
 ## The design this feeds
 
@@ -77,7 +77,7 @@ placing it anywhere, answer:
   compatible with that?
 - **What happens if the node hosting the router VM is down?** A router that is a
   virtual machine on one hypervisor node is a single point of failure. That may
-  be an acceptable trade in a lab — it is not an acceptable *unnamed* one.
+  be an acceptable tradeoff in a lab, but only if it is written down.
 - Is physical separation or an additional NIC available?
 
 If a VLAN-backed WAN transit turns out to be unavoidable, document its exact
@@ -86,14 +86,14 @@ unintentionally.
 
 ## Verification
 
-There is nothing to verify functionally — nothing changed. The check is whether
-the document is usable by someone who is not you:
+There is nothing to verify functionally, because nothing changed. The check is
+whether someone other than you could use the document:
 
 1. Hand the port map to someone else and ask them which port they would unplug
    to isolate the management network. If they can answer, it is complete.
 2. Confirm every NIC name against the node itself, not against the other nodes.
-3. Confirm the exported switch config actually restores. An export you have
-   never restored is a file, not a backup.
+3. Confirm the exported switch config restores. Until you have restored it, you
+   do not know that it works.
 
 ## Stop conditions
 

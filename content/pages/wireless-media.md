@@ -155,7 +155,7 @@ quality and interference need dedicated tools to measure rather than infer.
   compares with copper and glass.
 - [Wired media](/learn/wired-media) — copper and fiber, and the collision
   handling that a cable makes possible.
-- [The OSI model](/learn/osi-model) — where physical signalling and framing sit
+- [The OSI model](/learn/osi-model) — where physical signaling and framing sit
   relative to each other.
 - [Network appliances](/learn/network-appliances) — the access points
   terminating these links.

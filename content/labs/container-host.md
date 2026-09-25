@@ -1,29 +1,29 @@
 ---
 title: "Container host and its workloads"
 date: 2026-08-14
-summary: "The container runtime punches holes in your firewall by design — how it happens, four ways to stop it, and why rootless Podman is worth choosing on a RHEL-family lab."
+summary: "The container runtime punches holes in your firewall by design. How it happens, four ways to stop it, and why rootless Podman suits a RHEL-family lab."
 tags: [labs, linux, containers, podman, firewall]
 ---
 
 ## Role
 
-The container host for internal services, and the **first** guest to move to the
-servers zone — the lower-risk service that proves the pattern before the
-publicly visible one follows.
+The container host for internal services, and the first guest to move to the
+servers zone. It is the lower-risk service, so it proves the pattern before the
+public-facing one follows.
 
 ## Containers punch holes in your firewall. Know this first.
 
-Docker manipulates `iptables` directly and **bypasses host firewall rules** in
-the common case. A container published with `-p 8096:8096` binds the wildcard
-address and is reachable from anywhere the host is reachable — *including zones
-your policy matrix denies* — because the Docker chain is evaluated before the
-rules you wrote.
+Docker manipulates `iptables` directly and, in the common case, bypasses host
+firewall rules. A container published with `-p 8096:8096` binds the wildcard
+address and is reachable from anywhere the host is reachable, including zones
+your policy matrix denies. That happens because the Docker chain is evaluated
+before the rules you wrote.
 
 This is the single most common way a carefully segmented network leaks, and it
 leaks silently: every rule you wrote is still there, still correct, and no longer
 reached.
 
-**Mitigations, in order of preference:**
+Mitigations, in order of preference:
 
 1. **Bind published ports to a specific address**, never the wildcard:
 
@@ -32,18 +32,18 @@ reached.
      - "<the host's zone address>:8096:8096"   # not "8096:8096"
    ```
 
-2. Enforce policy on **the firewall** — the inter-zone path — rather than
+2. Enforce policy on the firewall, on the path between zones, instead of
    relying on the host's own rules.
-3. Disable the runtime's firewall management entirely, only if you are prepared
-   to manage all container networking rules yourself. Powerful, and easy to get
-   wrong.
-4. Use **rootless Podman**, which does not manipulate the host firewall the same
+3. Disable the runtime's firewall management entirely, but only if you are
+   prepared to manage all container networking rules yourself. It works, and it
+   is easy to get wrong.
+4. Use rootless Podman, which does not manipulate the host firewall the same
    way.
 
-Whichever you choose, **verify from another zone** that only the intended ports
-answer. Testing from the host proves nothing about this failure mode.
+Whichever you choose, verify from another zone that only the intended ports
+answer. Testing from the host tells you nothing about this problem.
 
-## Podman is worth choosing here
+## Why Podman here
 
 If you have not already built workloads on Docker, use Podman:
 
@@ -54,15 +54,15 @@ If you have not already built workloads on Docker, use Podman:
 | Firewall interference | Significant | Less — rootless uses user networking |
 | Service integration | Compose | Native systemd units |
 
-The systemd integration is the part that matters operationally: `podman generate
-systemd`, or Quadlet `.container` units, makes a container a normal service the
-host supervises, logs, and restarts. That is a better fit for a machine you
-manage with the same tools as everything else — and it is the same tooling the
-RHEL-family work on the [study box](/labs/rhel-study-box) uses.
+The systemd integration is what matters day to day. `podman generate systemd`,
+or Quadlet `.container` units, make a container a normal service that the host
+supervises, logs, and restarts. That fits a machine you manage with the same
+tools as everything else, and it is the same tooling the RHEL-family work on the
+[study box](/labs/rhel-study-box) uses.
 
 ## Verification
 
-The important test is from a **different zone**, not from the host:
+The important test is from a different zone, not from the host:
 
 ```bash
 # From a host in another zone — only intended ports may answer
@@ -91,10 +91,10 @@ policy. Fix that before adding any workload.
 
 ## Done when
 
-- [ ] Every running workload documented — what it is, what it listens on, what
-      it needs to reach
-- [ ] Runtime chosen deliberately, with the firewall interaction understood
+- [ ] Every running workload documented: what it is, what it listens on, and
+      what it needs to reach
+- [ ] Runtime chosen with the firewall interaction understood
 - [ ] Published ports bound to a specific address, not the wildcard
-- [ ] Port exposure verified **from another zone**
+- [ ] Port exposure verified from another zone
 - [ ] Servers-zone denies confirmed from the host itself
 - [ ] Services supervised by systemd rather than started by hand

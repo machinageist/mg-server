@@ -182,7 +182,7 @@ questions:
   - stem: "Given the reason for learning the arithmetic by hand, what is the argument for using `ipcalc` in day-to-day work?"
     options:
       - "There is none — hand calculation is the professional standard and tools are a crutch"
-      - "The manual method exists to make a wrong mask recognisable on sight; once you have that, the tool is faster and does not misread"
+      - "The manual method exists to make a wrong mask recognizable on sight; once you have that, the tool is faster and does not misread"
       - "The tool handles VLSM, which cannot be worked out by hand"
       - "The tool is required because prefix lengths above /24 have no dotted-mask equivalent"
     answer: 1

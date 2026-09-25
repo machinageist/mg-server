@@ -7,14 +7,13 @@ tags: [labs, networking, firewall, policy, opnsense]
 
 ## Settle one question before anything else
 
-Before using a virtual firewall design, prove which device actually owns the
-gateway address.
+Before using a virtual firewall design, prove which device owns the gateway
+address.
 
 Two possibilities, and they lead to different projects:
 
-- **The firewall VM owns the gateway address.** It is the inter-zone policy
-  enforcement point, the design works as written, and it is load-bearing
-  infrastructure.
+- **The firewall VM owns the gateway address.** It enforces policy between
+  zones, the design works as written, and everything else depends on it.
 - **The ISP device owns it.** The firewall is not in the traffic path at all,
   and every rule in the policy matrix has nowhere to be enforced. The whole
   segmentation design needs rework before any VLAN is prepared.
@@ -27,7 +26,7 @@ ip neigh show <the gateway address>   # read the MAC
 ```
 
 Then compare that MAC against the firewall VM's virtual NIC. A hypervisor OUI
-means a guest owns the address; a hardware vendor OUI means physical equipment
+means a guest owns the address. A hardware vendor OUI means physical equipment
 does. On the node hosting it, read the VM's config and compare directly.
 
 This is the single most consequential unknown in the project, and it costs ten
@@ -39,12 +38,13 @@ A firewall virtual machine on one hypervisor creates a node dependency. If that
 node is down, routed zones lose their gateway at the same moment the operator is
 trying to repair the host.
 
-State this plainly rather than discovering it during an outage. The options,
-none of them free:
+Write this down now instead of finding out during an outage. None of the options
+is free:
 
-- **Accept it**, with a documented manual failback path. Cheapest, and honest.
-- **A second firewall instance with address failover** on another node. Real
-  redundancy, real complexity.
+- **Accept it**, with a documented manual failback path. This is the cheapest
+  option.
+- **A second firewall instance with address failover** on another node. It gives
+  real redundancy and adds real complexity.
 - **Physical router hardware.** Removes the dependency, costs money and a NIC.
 
 Do not add high availability until the base design and its recovery path have
@@ -53,7 +53,7 @@ modes than it removes.
 
 ## Interface plan
 
-Create one interface per role, prepared **disabled** during the preparation
+Create one interface per role, prepared disabled during the preparation
 stage and enabled one stage at a time. Record the addressing plan before
 activation.
 
@@ -62,22 +62,22 @@ inert before any client moves.
 
 ## Rules: aliases, not literals
 
-Create aliases for every network and service group **before** writing a single
+Create aliases for every network and service group before writing a single
 rule. A matrix built on literal addresses has to be rewritten by hand the first
-time a subnet moves — and during the servers cutover, a subnet does exactly
-that.
+time a subnet moves, and a subnet moves during the servers cutover.
 
-**Rules belong on the interface where traffic enters.** A rule on the wrong
-interface either does nothing at all or does something surprising, and the two
-failure modes look identical from the far side.
+Rules belong on the interface where traffic enters. A rule on the wrong interface
+either does nothing or does something surprising, and from the other end the two
+look the same.
 
 ## Backups are the rollback path
 
-- [ ] Export after **every accepted change**, not on a schedule
+- [ ] Export after every accepted change, not on a schedule
 - [ ] Store the export outside the firewall itself
-- [ ] Store exports encrypted and outside the repository; they contain rules,
+- [ ] Store exports encrypted and outside the repository. They contain rules,
       keys, and the complete interface map
-- [ ] Practise a **restore**, not just an export. Untested backups are hope.
+- [ ] Practice a restore, not only an export. A backup you have never restored
+      is untested.
 
 ## Verification
 
@@ -87,8 +87,8 @@ ping -c2 <that zone's gateway>
 dig +short @<that zone's gateway> example.com
 ```
 
-The allows are the easy half. Each segmentation stage carries the denies that
-matter for its zone, and those are the tests worth recording.
+The allows are the easy part. Each segmentation stage lists the denies that
+matter for its zone, and those are the tests to record.
 
 ## Stop conditions
 

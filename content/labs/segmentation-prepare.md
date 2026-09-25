@@ -1,26 +1,26 @@
 ---
 title: "S1 — Prepare without moving traffic"
 date: 2026-08-14
-summary: "Create every VLAN object inert — defined, validated, and carrying nothing — then rehearse the rollback for real before any host changes broadcast domain."
+summary: "Create every VLAN object inert, defined and validated but carrying nothing. Then rehearse the rollback for real before any host changes broadcast domain."
 tags: [labs, networking, segmentation, vlan, rollback]
 ---
 
 ## The principle
 
-Every object gets created **inert**. VLAN interfaces disabled, VLAN IDs defined
+Every object gets created inert. VLAN interfaces disabled, VLAN IDs defined
 but no port membership changed, bridges written but not applied. Nothing carries
 traffic any differently at the end of this stage than it did at the start.
 
-That is the entire point. Doing this separately is what turns the first real
-cutover into a small change instead of a big one — when something breaks in the
-next stage, the plumbing has already been proven to exist and parse, so the
-failure has one candidate cause instead of several.
+Doing this as its own stage makes the first real cutover a small change instead
+of a big one. If something breaks in the next stage, the new configuration is
+already known to exist and parse, so there is one likely cause instead of
+several.
 
 ## Procedure
 
 1. **Export current configurations** — hypervisor networking, firewall, switch.
    These are your rollback baseline. The previous stage should have produced
-   them; re-export anything that has changed since.
+   them. Re-export anything that has changed since.
 
 2. **Firewall: create the VLAN objects and aliases with their interfaces
    disabled.** Aliases first. A policy matrix built on literal addresses is
@@ -31,8 +31,8 @@ failure has one candidate cause instead of several.
    six now so the later stages only change membership.
 
 4. **Hypervisors: write the VLAN-aware bridge configuration per node, using
-   each node's real interface name.** Interface naming differs between nodes —
-   write separate configs, not one template with an assumed name.
+   each node's real interface name.** Interface names differ between nodes, so
+   write separate configs instead of one template with an assumed name.
 
 5. **Validate syntax without applying it:**
 
@@ -41,18 +41,19 @@ failure has one candidate cause instead of several.
    ifreload -s          # syntax check only, if your ifupdown2 supports it
    ```
 
-   Confirm which flags your version actually supports before relying on them.
+   Check which flags your version supports before relying on them.
 
-   **Do not restart all nodes together.** A syntax error applied simultaneously
-   to every node is a total cluster outage; applied to one it is an
-   inconvenience you can walk to the console and fix.
+   **Do not restart all nodes together.** A syntax error applied to every node
+   at once takes down the whole cluster. Applied to one node, it is a problem
+   you can walk to the console and fix.
 
 6. **Write and rehearse the rollback** for one node and one switch port.
 
 ## The rollback rehearsal is the stage
 
-Rehearse means perform. A rollback you have written down is a plan; a rollback
-you have executed is a capability, and only one of those is useful at 2am.
+Rehearsing means running the rollback for real. A rollback that has only been
+written down has not been tested, and an outage is a bad time to find its
+mistakes.
 
 | Rehearse | Confirm |
 |---|---|
@@ -60,12 +61,12 @@ you have executed is a capability, and only one of those is useful at 2am.
 | One switch port PVID and membership revert | The attached device regains its previous connectivity |
 | Firewall config restore from export | Rules and interfaces match the pre-change export |
 
-Save evidence of each. This is what turns "at least one tested rollback path"
-from a checklist line into something true.
+Save evidence of each one. Without it, "at least one tested rollback path" is
+only a checklist item.
 
 ## Verification
 
-The pass condition for this stage is that **nothing changed**:
+The pass condition for this stage is that nothing changed:
 
 - Every host still has the address it had before.
 - The cluster is still healthy.
@@ -95,5 +96,5 @@ been. Find it before continuing.
 - [ ] Per-node bridge config written using each node's verified interface name
 - [ ] Syntax validated on every node, applied to none
 - [ ] Rollback rehearsed and evidenced for one node and one switch port
-- [ ] Traffic behaviour verified unchanged — the network works exactly as it did
-      before this stage
+- [ ] Traffic behavior verified unchanged, so the network works the same as it
+      did before this stage

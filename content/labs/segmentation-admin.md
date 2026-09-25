@@ -1,14 +1,14 @@
 ---
 title: "S4 — Administrative access"
 date: 2026-08-14
-summary: "Moving the bastion and the remote-access endpoint onto the admin zone, one at a time, and testing the policy from genuinely outside rather than from the sofa."
+summary: "Moving the bastion and the remote-access endpoint onto the admin zone, one at a time, and testing the policy from outside the network, not from the couch."
 tags: [labs, networking, segmentation, bastion, vpn]
 ---
 
 ## Scope
 
-Move the bastion and the remote-access endpoint onto the admin zone — **one at
-a time**. The service-level setup for each has its own page:
+Move the bastion and the remote-access endpoint onto the admin zone, one at a
+time. The service-level setup for each has its own page:
 [bastion host](/labs/bastion-host) and [remote access](/labs/remote-access).
 
 ## The mistake this stage exists to prevent
@@ -17,10 +17,9 @@ a time**. The service-level setup for each has its own page:
 > the zone is authenticated.
 
 Authentication is not authorization. A VPN client that has authenticated has
-proven *who* it is, not that it should reach every subnet. If the admin zone
+proven who it is, not that it should reach every subnet. If the admin zone
 becomes a flat "trusted once you're in" network, you have rebuilt the flat
-network you are in the middle of segmenting — just with a login on the front of
-it.
+network you are in the middle of segmenting, with a login in front of it.
 
 The reference policy grants only named administrative destinations and required
 supporting services. Everything else is denied.
@@ -33,7 +32,7 @@ fake.
 **1. From an approved local client** — prove the entry point, allowed
 destinations, and denies using targets selected before the change window.
 
-**2. From a genuinely external client** — not from inside the house.
+**2. From an external client** — not from inside the house.
 
 Connecting to your own VPN from your own LAN proves the tunnel process is
 running. It does not prove the external path, NAT traversal, DNS inside the
@@ -46,16 +45,15 @@ probes. Watch for an unintended full-tunnel route.
 ## What makes a bastion a bastion
 
 If the bastion is reachable from the trusted zone and can reach everything, it
-is not a bastion — it is a jump box with no policy. A bastion is worth having
-because it is the *only* path to a zone, it is logged, and it has a narrow
-allowlist.
+is a jump box with no policy, not a bastion. A bastion is useful because it is
+the only path to a zone, it is logged, and it has a narrow allowlist.
 
-Decide these explicitly rather than by default:
+Decide these explicitly instead of leaving them to defaults:
 
-- [ ] Which hosts may admin clients reach **through** the bastion?
+- [ ] Which hosts may admin clients reach through the bastion?
 - [ ] Is direct trusted → management allowed, or must it go via the bastion? If
-      the policy matrix allows it directly, be honest that the bastion is for
-      remote access rather than internal segmentation.
+      the policy matrix allows it directly, say that the bastion is for remote
+      access, not internal segmentation.
 - [ ] Is session logging on, and where does it go?
 
 ## Order
@@ -81,9 +79,9 @@ remote path, you have removed your own ability to fix it from outside.
 ## Done when
 
 - [ ] Bastion on the admin zone, verified from trusted
-- [ ] Remote-access endpoint on the admin zone, verified **from a genuinely
-      external client**
-- [ ] Full admin policy matrix tested — allows and denies — from both vantage
-      points
+- [ ] Remote-access endpoint on the admin zone, verified from an external
+      client
+- [ ] Full admin policy matrix tested, both allows and denies, from both
+      vantage points
 - [ ] The bastion's allowlist explicitly defined and documented
 - [ ] Rollback rehearsed for each guest before its move

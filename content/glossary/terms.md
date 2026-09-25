@@ -846,7 +846,7 @@ entries:
     category: networking
     definition: >
       Delivery to a group of interested interfaces rather than to one host or
-      to everybody. IPv6 leans on it heavily: neighbour discovery asks a
+      to everybody. IPv6 leans on it heavily: neighbor discovery asks a
       solicited-node group rather than shouting at the whole segment, which is
       the structural improvement over ARP.
     see_also: ["broadcast", "unicast", "anycast"]
@@ -1796,7 +1796,7 @@ entries:
     category: networking
     definition: >
       A model that stops treating network location as evidence of
-      authorisation. Identity is verified continuously and no position on the
+      authorization. Identity is verified continuously and no position on the
       network grants trust by itself; the practical goal is that one
       compromised host is not a path to everything else.
     see_also: ["policy-enforcement-point"]

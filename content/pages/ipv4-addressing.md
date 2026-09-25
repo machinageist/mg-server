@@ -163,7 +163,7 @@ most Linux systems. Nothing here needs root or changes any configuration.
    show` for a `169.254` address. Reconnect and watch it be replaced.
 
 The mask arithmetic that goes with this — the AND test, host counts, and
-splitting a range — is practised on
+splitting a range — is practiced on
 [subnetting, CIDR, and VLSM](/learn/subnetting#suggested-practice-verify-a-subnet-by-hand-then-check-yourself).
 
 ## Related pages

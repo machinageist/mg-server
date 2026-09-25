@@ -1,17 +1,16 @@
 ---
-title: "Remote access — pick one primary"
+title: "Remote access: pick one primary"
 date: 2026-08-14
-summary: "Self-hosted WireGuard or a coordinated overlay, the claim each one commits you to, and why running both quietly undoes the segmentation you just built."
+summary: "Self-hosted WireGuard or a coordinated overlay, the claim each one commits you to, and why running both undoes the segmentation you just built."
 tags: [labs, networking, vpn, wireguard, remote-access]
 ---
 
 ## Read this before installing anything
 
-**These two options overlap.** A coordinated mesh service like Tailscale *is*
-WireGuard, with a coordination server, key distribution, and NAT traversal
-layered on top. Running both gives you two remote-access paths, two policy
-surfaces, and two ways to bypass the firewall matrix you have just spent six
-stages building.
+These two options overlap. A coordinated mesh service like Tailscale is
+WireGuard, with a coordination server, key distribution, and NAT traversal on
+top. Running both gives you two remote-access paths, two sets of policy, and two
+ways around the firewall matrix you just spent six stages building.
 
 Pick a primary. The tradeoff is genuine in both directions:
 
@@ -30,17 +29,16 @@ port for independence, the other trades a third-party dependency for reachabilit
 Assume the reference public service uses an outbound connector with no inbound
 HTTP listener. A remote-access choice should not silently broaden that claim.
 
-Self-hosted WireGuard requires an inbound UDP port forward. That does not make
-WireGuard the wrong choice — it makes the *claim* need scoping. If you run it,
-the honest statement becomes something like:
+Self-hosted WireGuard needs an inbound UDP port forward. That does not make it
+the wrong choice, but it changes what you can claim. If you run it, an accurate
+statement looks something like:
 
 > The public web service uses an outbound tunnel with no inbound HTTP exposure.
 > Remote administration uses a WireGuard endpoint on a single UDP port.
 
-That is still a good posture. It is just not "no open inbound ports" full stop,
-and the difference matters the moment someone asks a follow-up question. Decide
-this before publishing rather than after being asked — a claim you cannot defend
-cold is worse than no claim.
+That is still a good setup. It is just not "no open inbound ports", and the
+difference matters as soon as someone asks a follow-up question. Decide which
+claim you are making before you publish it, not after someone asks.
 
 ## Placement, and why it matters
 
@@ -54,7 +52,7 @@ The failure to avoid: a VPN peer that lands in a zone with full internal reach
 has undone the segmentation for anyone who obtains a key. Authentication proved
 *who* the peer is. It did not decide what they may reach.
 
-## Verification — from genuinely outside
+## Verification from outside the network
 
 ```bash
 # From cellular or another network, NOT from your own LAN
@@ -75,7 +73,7 @@ test in a homelab writeup.
 - The external test fails after moving the endpoint → revert. You are now blind
   from outside, and the next problem will be the one you cannot reach.
 - A remote peer reaches a zone the matrix denies → the policy is wrong, and the
-  VPN is currently a hole rather than a control.
+  VPN is a hole in the policy instead of a control.
 - You find yourself running both options "for now" → stop and pick. Two
   remote-access paths is the state this page exists to prevent.
 
@@ -83,9 +81,8 @@ test in a homelab writeup.
 
 - [ ] One primary chosen, with the reason recorded
 - [ ] Endpoint on the admin zone, under the policy matrix
-- [ ] Full policy tested from a genuinely external client — allows and denies
-- [ ] DNS behaviour inside the tunnel confirmed
+- [ ] Full policy tested from an external client, both allows and denies
+- [ ] DNS behavior inside the tunnel confirmed
 - [ ] If self-hosted: the inbound-port claim scoped correctly wherever the
       posture is stated publicly
-- [ ] The other option removed, or explicitly documented as deliberately
-      unused
+- [ ] The other option removed, or documented as intentionally unused

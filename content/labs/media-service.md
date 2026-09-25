@@ -1,16 +1,16 @@
 ---
 title: "Media service, LAN-only by default"
 date: 2026-08-14
-summary: "The service most likely to tempt you into punching a hole in a security model you just spent months building — and the access models ranked by what they actually cost."
+summary: "The service most likely to tempt you into punching a hole in the segmentation you just built, and the access models ranked by what they cost."
 tags: [labs, linux, containers, media, exposure]
 ---
 
 ## Why this page is cautious
 
 This is the service most likely to tempt you into undoing the segmentation. It
-does not exist yet — no guest, no install — which makes now the right time to
-decide how it will be reached, rather than after it is running and someone wants
-it on their phone.
+does not exist yet. There is no guest and no install, so now is the time to
+decide how it will be reached, before it is running and someone wants it on
+their phone.
 
 The rule it exists under: do not infer that because the public web service uses
 an outbound tunnel, every other service should. Make that a separate risk
@@ -30,15 +30,14 @@ service and should not be treated as one.
 | Behind a tunnel, unauthenticated | High | No |
 | Inbound WAN port-forward | High | **Never** — it breaks the model the whole project rests on |
 
-One practical note that catches people: **CDN terms commonly restrict proxying
-large volumes of non-HTML content**, which is exactly what video streaming is.
-Do not assume the tunnel serving a website is an appropriate transport for
-media. Check the current terms before relying on it — this is the kind of
-assumption that quietly becomes a published claim you cannot defend.
+One practical note that catches people: CDN terms commonly restrict proxying
+large volumes of non-HTML content, and video streaming is exactly that. Do not
+assume the tunnel serving a website is the right transport for media. Check the
+current terms before relying on it.
 
-The honest default: watch it at home, or reach it over the VPN that already
-exists for administration. That covers the real use case without adding an
-internet-facing service to a network you just finished locking down.
+The simplest default is to watch it at home, or reach it over the VPN that
+already exists for administration. That covers the real use case without adding
+an internet-facing service to a network you just finished locking down.
 
 ## Placement
 
@@ -78,6 +77,6 @@ never that the paths which should still be closed still are.
 
 - [ ] Running on the container host, in the servers zone
 - [ ] Reachable from the trusted zone
-- [ ] **Not** reachable from the guest or lab zones — tested, not assumed
-- [ ] Access model chosen deliberately and written down
+- [ ] Tested as unreachable from the guest or lab zones
+- [ ] Access model chosen and written down
 - [ ] No inbound WAN exposure

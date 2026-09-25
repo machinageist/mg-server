@@ -1,13 +1,13 @@
 ---
 title: "S5 — Public services last"
 date: 2026-08-14
-summary: "The only publicly visible cutover. Prove the pattern on a service nobody watches, keep the outbound-tunnel model, and verify the public path from genuinely outside."
+summary: "The only publicly visible cutover. Prove the pattern on a service nobody watches, keep the outbound-tunnel model, and verify the public path from outside the network."
 tags: [labs, networking, segmentation, servers, cloudflare-tunnel]
 ---
 
 ## The one publicly visible stage
 
-In this reference plan, a public service moves **last**, behind a lower-risk
+In this reference plan, a public service moves last, behind a lower-risk
 service that proves the pattern first.
 
 ## Order
@@ -19,8 +19,8 @@ service that proves the pattern first.
 3. **Prepare everything for the public service before touching its tag** — target
    address, DNS, firewall aliases, rollback. All of it, in advance.
 4. Move it, and update its address consistently everywhere it is referenced.
-5. Verify local origin, resolver behaviour, tunnel registration, and public HTTP
-   **from outside the home network**.
+5. Verify local origin, resolver behavior, tunnel registration, and public HTTP
+   from outside the home network.
 
 ## Keep the outbound-tunnel model
 
@@ -63,12 +63,12 @@ The tunnel is an outbound connection from the origin host to the edge. Changing
 the host's local address means:
 
 - [ ] The daemon must still resolve DNS and reach the internet from the new zone
-- [ ] The tunnel re-registers — confirm a fresh connection, not a stale cached
+- [ ] The tunnel re-registers. Confirm a fresh connection, not a stale cached
       one
 - [ ] The local origin target may need updating if it referenced the old subnet
 - [ ] **Nothing about the public DNS record should need to change.** If you find
-      yourself editing public DNS to fix this, stop and work out why first —
-      that is a symptom of a different problem.
+      yourself editing public DNS to fix this, stop and work out why first. It
+      is a symptom of a different problem.
 
 ## Stop conditions
 
@@ -77,7 +77,7 @@ the host's local address means:
 - The servers zone can reach management → policy failure, and precisely the risk
   segmentation exists to remove. Revert.
 - The tunnel will not re-register → revert. Do not "temporarily" open an inbound
-  port; temporary firewall exceptions have a way of becoming the architecture.
+  port. Temporary firewall exceptions tend to become permanent.
 
 ## Done when
 
@@ -86,5 +86,5 @@ the host's local address means:
 - [ ] Service-zone deny policy verified against administrative and unrelated zones
 - [ ] Local origin, resolver, and tunnel registration verified
 - [ ] Public HTTP verified from outside the home network
-- [ ] No inbound WAN port-forward exists — confirmed, not assumed
+- [ ] Confirmed that no inbound WAN port forward exists
 - [ ] The topology document updated with the new address

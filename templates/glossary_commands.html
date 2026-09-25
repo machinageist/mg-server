@@ -50,8 +50,8 @@
           <div class="glossary-example">{{ entry.example_html()|safe }}</div>
           {% endif %}
           {% if let Some(caution) = entry.caution %}
-          {# Labelled in words, so the warning survives a reader who cannot
-             distinguish whatever colour it is tinted with #}
+          {# Labeled in words, so the warning survives a reader who cannot
+             distinguish whatever color it is tinted with #}
           <p class="glossary-caution"><strong>Careful:</strong> {{ entry.caution_html()|safe }}</p>
           {% endif %}
           <p class="glossary-links">

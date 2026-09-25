@@ -37,7 +37,7 @@ questions:
       about.
     learn: { slug: "osi-model", anchor: "layer-2-data-link" }
 
-  - stem: "A host has a link light, exchanges frames with its neighbours on the local segment without trouble, and cannot reach anything on a remote network. Which layer does the model point at first?"
+  - stem: "A host has a link light, exchanges frames with its neighbors on the local segment without trouble, and cannot reach anything on a remote network. Which layer does the model point at first?"
     options:
       - "Layer 1, because reaching a remote network depends on signal strength over distance"
       - "Layer 2, because forwarding between networks is the switch's job"

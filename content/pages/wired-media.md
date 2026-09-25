@@ -168,7 +168,7 @@ On a network you own:
 4. Swap a suspect cable for a known-good one of the same category and re-check
    `ethtool` and the error counters. This is the cheapest layer-1 test there is.
 5. If you have fiber, identify the connector type and whether the run is
-   single-mode or multimode from the jacket colour and printing, then check it
+   single-mode or multimode from the jacket color and printing, then check it
    against the optic in the transceiver. A mismatch links up and performs badly.
 
 This shows what your equipment negotiated. It does not show why — signal
@@ -182,7 +182,7 @@ quality and cable condition need dedicated tools to measure rather than infer.
   does not have.
 - [Transceivers and connectors](/learn/transceivers) — the modules and plugs
   that attach a device to these media.
-- [The OSI model](/learn/osi-model) — where physical signalling sits relative to
+- [The OSI model](/learn/osi-model) — where physical signaling sits relative to
   framing and addressing.
 - [Network appliances](/learn/network-appliances) — the switches and routers
   terminating these links.

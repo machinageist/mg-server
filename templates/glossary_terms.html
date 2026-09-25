@@ -45,7 +45,7 @@
           {% if !entry.aka.is_empty() %}
           <span class="glossary-aka">{% for name in entry.aka %}{{ name }}{% if !loop.last %}, {% endif %}{% endfor %}</span>
           {% endif %}
-          {# The domain is a word, never a colour alone #}
+          {# The domain is a word, never a color alone #}
           <span class="glossary-cat">{{ entry.category.label() }}</span>
         </dt>
         <dd>

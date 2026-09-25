@@ -1,7 +1,7 @@
 ---
 title: "RHEL study box"
 date: 2026-08-14
-summary: "A golden template for practising RHEL-family administration, and the trap of conflating careful documented building with timed rebuilding — they train opposite habits."
+summary: "A golden template for practicing RHEL-family administration, and why careful, documented building and timed rebuilding train different habits."
 tags: [labs, linux, rhel, selinux, practice]
 ---
 
@@ -9,13 +9,13 @@ tags: [labs, linux, rhel, selinux, practice]
 
 The Linux pages on this site are checked against man pages and the Filesystem
 Hierarchy Standard, but the server they are written on runs Debian. A
-RHEL-family box is where a claim about RHEL tooling can be *tested* rather than
-assumed — where `dnf`, SELinux, and `firewalld` behave the way the documentation
-for those tools says, rather than the way the Debian equivalents do.
+RHEL-family box is where a claim about RHEL tooling can be tested instead of
+assumed. There, `dnf`, SELinux, and `firewalld` behave the way their own
+documentation says, not the way the Debian equivalents do.
 
-Use a free RHEL-compatible distribution. Knowledge from other families transfers
-conceptually but not command-for-command, and the gap is exactly where mistakes
-live.
+Use a free RHEL-compatible distribution. Knowledge from other families carries
+over in concept but not command for command, and that gap is where the mistakes
+happen.
 
 ## Two tracks, and they must stay separate
 
@@ -26,21 +26,20 @@ This is the thing most likely to go wrong, and it is not obvious:
 | **Speed** | Build, destroy, rebuild against a clock, from memory | A throwaway clone — not this machine |
 | **Evidence** | A durable, documented system worth writing up | The lab fleet |
 
-Conflating them is how someone ends up with an impressive homelab and slow
-hands. A carefully built, carefully documented system trains you to build
-carefully. A timed rebuild trains something else entirely — recall under
-pressure, with no notes and no internet.
+Mixing them up is how someone ends up with an impressive homelab and slow hands.
+A carefully built, documented system trains you to build carefully. A timed
+rebuild trains recall under pressure, with no notes and no internet.
 
-Both are worth having. They are not the same exercise, and doing one while
-believing you are doing the other is the failure mode.
+You need both. They are different exercises, and the mistake is doing one while
+thinking you are doing the other.
 
-Use this machine as the **golden template**: clone from it for each timed run,
-wreck the clone, delete it.
+Use this machine as the golden template. Clone from it for each timed run, wreck
+the clone, and delete it.
 
-## Set the template up deliberately incomplete
+## Keep the template bare
 
 If the template already has SELinux configured, storage laid out, and containers
-running, you never practise doing any of it. The template should give you a
+running, you never practice doing any of it. The template should give you a
 booted box and nothing else.
 
 ```bash
@@ -48,11 +47,10 @@ cat /etc/os-release     # confirm the family and version
 sudo dnf update -y      # baseline, and nothing more
 ```
 
-## What to practise, hardest first
+## What to practice, hardest first
 
-Sequence by measured weakness rather than by book order — the topics you are
-worst at are the ones with the most to gain, and they are never the ones that
-feel most rewarding to revise.
+Work in order of weakness, not book order. The topics you are worst at have the
+most to gain, and they are never the ones that feel best to review.
 
 **SELinux**, because it is the one that has no Debian-side intuition to fall
 back on:
@@ -62,9 +60,9 @@ getenforce                    # Enforcing / Permissive / Disabled
 sudo setenforce 0             # runtime only
 ```
 
-Know the difference between `setenforce` and the configuration file — one
+Know the difference between `setenforce` and the configuration file. One
 survives a reboot and the other does not, and finding that out during a timed
-rebuild is expensive. Then work through contexts and booleans:
+rebuild costs you time. Then work through contexts and booleans:
 
 ```bash
 ls -Z /var/www/html           # see the context, not just the mode
@@ -73,7 +71,7 @@ getsebool -a | head           # what is toggleable
 sudo semanage fcontext -l | head
 ```
 
-Then storage — partitions, LVM, filesystems, and persistent mounts — followed by
+Then storage (partitions, LVM, filesystems, and persistent mounts), followed by
 service management, users and permissions, and firewall rules with `firewalld`.
 
 ## Verification
@@ -99,8 +97,8 @@ and "it is configured" is whether it comes back.
 
 ## Done when
 
-- [ ] Golden template built and deliberately minimal
+- [ ] Golden template built and kept minimal
 - [ ] Clone-and-destroy workflow tested end to end
-- [ ] Weakest topics identified honestly and worked first
-- [ ] Every practised change verified to survive a reboot
+- [ ] Weakest topics identified and worked first
+- [ ] Every practiced change verified to survive a reboot
 - [ ] The durable, documented work kept on separate machines from the timed work
