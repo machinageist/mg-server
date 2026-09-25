@@ -9,14 +9,14 @@ tags: [education, linux, filesystem, fhs, sudo]
 
 Linux has no drive letters. Every file on every disk hangs off a single tree
 whose root is `/`, and additional storage is attached at a directory somewhere
-inside it. A USB drive does not become `E:`; it becomes `/media/you/label`, and
+inside it. A USB drive does not become `E:`. It becomes `/media/you/label`, and
 the paths beneath it work like any other path.
 
 The layout of that tree is not arbitrary. It follows the Filesystem Hierarchy
 Standard (FHS), which is why a configuration file lives in `/etc` on Debian,
-Fedora, and Arch alike. Knowing the map means being able to guess where
-something is before searching for it — and being able to tell, from a path
-alone, roughly what a file does and whether you should be editing it.
+Fedora, and Arch alike. Once you know the map, you can guess where something is
+before searching for it, and tell from a path alone roughly what a file does and
+whether you should be editing it.
 
 ## The top-level directories
 
@@ -46,13 +46,13 @@ Several of these repay a closer look.
 ### /etc
 
 System-wide configuration, in plain text, editable with any editor. `/etc/fstab`
-describes what gets mounted at boot; `/etc/passwd` lists accounts;
+describes what gets mounted at boot, `/etc/passwd` lists accounts, and
 `/etc/ssh/sshd_config` configures the SSH daemon. The convention that
 configuration is text you can read, diff, and put under version control is one
 of the reasons Linux systems are administrable at scale.
 
-Nothing in `/etc` should be a binary, and nothing in it should be per-user —
-user configuration lives in the home directory, usually in dot files.
+Nothing in `/etc` should be a binary, and nothing in it should be per-user. User
+configuration lives in the home directory, usually in dot files.
 
 ### /usr and the merged directories
 
@@ -77,15 +77,14 @@ lrwxrwxrwx 1 root root 7 ... /bin -> usr/bin
 
 ### /proc and /sys
 
-Neither of these is on a disk. Both are pseudo-filesystems — the kernel
-presenting its own state through the file interface so ordinary tools can read
-it.
+Neither of these is on a disk. Both are pseudo-filesystems, where the kernel
+presents its own state through the file interface so ordinary tools can read it.
 
 `/proc` is process and kernel information. Every running process has a numbered
 directory: `/proc/1/status` describes PID 1. `/proc/meminfo` is where `free`
 gets its numbers. `/sys` is the newer and more structured of the two, exposing
-devices, drivers, and kernel objects; it is what `udev` and most modern
-device tooling work against.
+devices, drivers, and kernel objects. It is what `udev` and most modern device
+tools work with.
 
 This is the same abstraction described in [Linux abstraction
 layers](/learn/linux-abstraction-layers): a system call dressed up as a file
@@ -93,14 +92,15 @@ read, so that `cat` works on kernel state.
 
 ### /var and /run
 
-`/var` is for data that grows and changes while the system runs — logs in
-`/var/log`, mail spools, package manager caches, databases. It is the directory
+`/var` is for data that grows and changes while the system runs, such as logs in
+`/var/log`, mail spools, package manager caches, and databases. It is the directory
 most likely to fill a disk, and `/var/log` is the first place to look when
 something has failed.
 
 `/run` holds runtime state for the current boot: PID files, sockets, lock files.
 It is a tmpfs, meaning it lives in memory and is empty again after a reboot.
-That is the point — stale lock files from a crashed process should not survive.
+That is intended, because stale lock files from a crashed process should not
+survive a reboot.
 
 ### /boot
 
@@ -137,9 +137,9 @@ Every invocation is logged, and the journal can be queried for it:
 $ journalctl SYSLOG_IDENTIFIER=sudo
 ```
 
-An account gains that ability by being granted it in the sudo configuration —
-in practice by being added to a group (`wheel` on RHEL and Fedora, `sudo` on
-Debian and Ubuntu) that the configuration already permits.
+An account gets that ability from the sudo configuration. In practice, that
+means adding it to a group the configuration already allows (`wheel` on RHEL and
+Fedora, `sudo` on Debian and Ubuntu).
 
 Edit that configuration with `visudo`, never with a plain editor. `visudo`
 validates the syntax before saving. A malformed sudoers file locks everyone out
@@ -158,9 +158,9 @@ Everything here is inspectable on any Linux system, and none of it needs root.
    symbolic links. Note which distribution you are on and when it merged them.
 3. Run `df -h` and `findmnt` to see which directories are separate filesystems.
    Find `/run` and confirm it is a tmpfs.
-4. Read `/proc/$$/status` — the kernel's view of your own shell. Then
-   `cat /proc/cpuinfo` and `free -h`, and notice that the second is reading the
-   first kind of thing.
+4. Read `/proc/$$/status`, which is the kernel's view of your own shell. Then run
+   `cat /proc/cpuinfo` and `free -h`, and notice that `free` gets its numbers
+   from `/proc` as well.
 5. Find the largest consumers under `/var` with `du -h --max-depth=1 /var/log |
    sort -h`. This is the first command to reach for when a disk fills up.
 6. Run `sudo true`, then `journalctl SYSLOG_IDENTIFIER=sudo -n 5` and find your

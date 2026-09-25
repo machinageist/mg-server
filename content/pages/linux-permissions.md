@@ -8,10 +8,10 @@ tags: [education, linux, permissions, chmod, umask]
 ## Overview
 
 Every file on a Linux system has an owner, a group, and a set of permissions.
-That triple is the whole access control model in its basic form, and it is
-doing more work than it appears to — it is why one user cannot read another's
-private keys, why a web server can serve a file it cannot modify, and why
-"Permission denied" is the most common error a new administrator meets.
+Those three are the whole access control model in its basic form. They are why
+one user cannot read another's private keys, why a web server can serve a file
+it cannot modify, and why "Permission denied" is the most common error a new
+administrator meets.
 
 The model is small enough to hold in your head, which is its main virtue. Ten
 characters of `ls -l` output tell you what a file is and who may do what with
@@ -39,7 +39,7 @@ The mode is one character of file type followed by nine permission bits:
 └──────────────── type:   regular file
 ```
 
-The type character is the one worth learning first:
+Learn the type character first:
 
 | Character | Type |
 |---|---|
@@ -66,8 +66,8 @@ does not save them.
 
 ## Changing permissions with chmod
 
-`chmod` accepts two notations, and both are worth knowing because each is
-clearer in different situations.
+`chmod` accepts two notations. Learn both, because each is clearer in different
+situations.
 
 ### Symbolic notation
 
@@ -104,30 +104,28 @@ $ chmod 755 script.sh         # rwxr-xr-x
 $ chmod 600 ~/.ssh/id_ed25519 # rw------- and nothing else
 ```
 
-Three values cover most of what you will actually type. `644` for a document,
-`755` for a program or a directory, `600` for a secret. SSH refuses to use a
-private key that is readable by anyone else, which makes `600` a habit worth
-forming early.
+Three values cover most of what you will type: `644` for a document, `755` for a
+program or a directory, and `600` for a secret. SSH refuses to use a private key
+that anyone else can read, so get in the habit of using `600` early.
 
 ## Permissions on directories
 
-The same three bits mean different things on a directory, and this is the part
-that is genuinely counterintuitive:
+The same three bits mean different things on a directory, and this part is not
+intuitive:
 
 - **read** lets you list the names inside it;
 - **write** lets you create, rename, and delete entries in it; and
 - **execute** lets you traverse into it and reach files by name.
 
 Two consequences follow. First, `r` without `x` means you can see the names but
-cannot open anything — `ls` works and `cat dir/file` does not. Second, `x`
+cannot open anything. `ls` works and `cat dir/file` does not. Second, `x`
 without `r` means the opposite: you cannot list the directory, but you can open
 a file inside it if you already know its name. That combination is a real
 technique for a directory that should be reachable but not enumerable.
 
-The other consequence surprises people: deleting a file requires write
-permission on the *directory*, not on the file. The file is just data; the name
-is an entry in the directory, and removing the name is a change to the
-directory.
+Another consequence surprises people. Deleting a file requires write permission
+on the directory, not on the file. The file is just data. Its name is an entry
+in the directory, and removing the name changes the directory.
 
 In practice a usable directory needs `r-x` for anyone expected to work in it,
 and `rwx` for anyone expected to add to it.
@@ -135,15 +133,15 @@ and `rwx` for anyone expected to add to it.
 ### What else you will see
 
 Occasionally an `s` or `t` appears where an `x` would be. These are the setuid,
-setgid, and sticky bits — `/usr/bin/passwd` is setuid root so that an ordinary
+setgid, and sticky bits. `/usr/bin/passwd` is setuid root so that an ordinary
 user can change their own password in a file they cannot write, and `/tmp` is
-sticky so that users can create files there without deleting each other's. They
-are worth recognizing in `ls -l` output now and studying properly later.
+sticky so that users can create files there without deleting each other's. Learn
+to recognize them in `ls -l` output now, and study them properly later.
 
 ## Default permissions and umask
 
 New files do not appear with arbitrary permissions. The system starts from a
-base — `666` for files, `777` for directories — and removes the bits set in the
+base (`666` for files, `777` for directories) and removes the bits set in the
 umask:
 
 ```text
@@ -153,17 +151,17 @@ $ umask
 
 A umask of `022` removes write permission for group and other, giving new files
 `644` and new directories `755`. A umask of `077` removes everything for group
-and other, giving `600` and `700` — private by default, which is the right
-setting on a shared machine.
+and other, giving `600` and `700`. That is private by default, which is the
+right setting on a shared machine.
 
 Note that the base for files is `666`, not `777`. New files never get execute
 permission from the umask no matter what you set, which is a deliberate safety
 property: a downloaded or generated file is not runnable until someone says so.
 
 Setting `umask` in a shell affects that shell only. To make it apply to your
-sessions generally, put it in a startup file such as `~/.bashrc` — the same
-repetition-rather-than-persistence pattern that [shell
-variables](/learn/linux-shell) follow.
+sessions generally, put it in a startup file such as `~/.bashrc`. It works the
+same way as [shell variables](/learn/linux-shell): set again in every new shell,
+not stored permanently.
 
 ## Symbolic links
 
@@ -176,8 +174,8 @@ $ ls -l current.log
 lrwxrwxrwx 1 you staff 26 Aug 14 09:20 current.log -> /var/log/nginx/access.log
 ```
 
-The syntax is `ln -s target linkname`, in that order — the thing that exists
-first, the name being created second. Reversing them is the most common mistake
+The syntax is `ln -s target linkname`, in that order: the thing that exists
+first, and the name being created second. Reversing them is the most common mistake
 with this command.
 
 Two properties matter:
@@ -185,7 +183,7 @@ Two properties matter:
 - The `lrwxrwxrwx` permissions on a symlink are meaningless. Access is decided
   by the target's permissions, not the link's.
 - The link stores a path, not a reference to the data. Delete or move the
-  target and the link remains, now pointing at nothing — a broken link. `ls`
+  target and the link remains, pointing at nothing. That is a broken link. `ls`
   will usually colorize it, and `ls -lL` fails on it.
 
 Symlinks are why `/bin` can be a link to `/usr/bin` and every path that ever
@@ -251,5 +249,5 @@ the primary documentation:
 
 This page covers the traditional permission bits. Access control lists (`getfacl`
 and `setfacl`) and SELinux contexts sit on top of them and can deny access that
-these nine bits appear to allow — worth knowing exists before a file that looks
-readable is not.
+these nine bits appear to allow. Know that they exist before you run into a file
+that looks readable and is not.

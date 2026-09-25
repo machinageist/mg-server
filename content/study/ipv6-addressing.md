@@ -192,7 +192,7 @@ questions:
       IPv4 and IPv6 are different protocols with different packet formats and
       address lengths, and neither has a built-in fallback to the other. Making
       the two talk requires a translator: NAT64 rewrites between them and DNS64
-      synthesises IPv6 answers for names that only have IPv4 records, which is
+      synthesizes IPv6 answers for names that only have IPv4 records, which is
       how carriers run IPv6-only access networks. Happy Eyeballs is a client
       strategy for choosing between two stacks that both already work, so it
       does not apply to a host with only one. And an IPv4-only server has no

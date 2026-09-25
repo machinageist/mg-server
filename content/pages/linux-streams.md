@@ -15,7 +15,7 @@ input. The shell decides.
 That indirection is why a handful of small Unix tools compose into work none of
 them was written for. `grep` does not need a "search a file listing" mode,
 because `ls` can hand it one. Learning the redirection syntax is learning most
-of what makes [the shell](/learn/linux-shell) worth using over a graphical file
+of what makes [the shell](/learn/linux-shell) more useful than a graphical file
 manager.
 
 ## The three standard streams
@@ -58,8 +58,8 @@ Read input from a file with `<`:
 $ sort < names.txt
 ```
 
-Redirect standard error separately with `2>` — the `2` is the stream number
-from the table above:
+Redirect standard error separately with `2>`. The `2` is the stream number from
+the table above:
 
 ```text
 $ find / -name "*.conf" > found.txt 2> errors.txt
@@ -114,7 +114,7 @@ The two read as though they should be equivalent and are not. Bash also accepts
 $ command &> everything.txt
 ```
 
-To discard output entirely, send it to `/dev/null` — a pseudodevice that accepts
+To discard output entirely, send it to `/dev/null`, a pseudo-device that accepts
 anything written to it and returns nothing:
 
 ```text
@@ -140,7 +140,7 @@ changes the system.
    `ps -ef`, then `ps -ef | grep bash`, then `ps -ef | grep bash | wc -l`.
 6. Prove a stream does not have to be a terminal: run `ls | cat` and then
    `ls > /dev/null`. Then try `ls -l /proc/self/fd` inside a pipeline and see
-   the descriptors the shell actually set up.
+   the descriptors the shell set up.
 
 ## Related pages
 
@@ -164,10 +164,10 @@ the primary documentation:
 - [POSIX Shell Command Language — Redirection](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_07)
   — the portable subset, which `&>` is not part of.
 - [`pipe(7)`](https://man7.org/linux/man-pages/man7/pipe.7.html) — what a pipe
-  actually is at the system-call level, including its buffer.
+  is at the system-call level, including its buffer.
 - [`null(4)`](https://man7.org/linux/man-pages/man4/null.4.html) — `/dev/null`
   and its siblings.
 
 `&>` and a few other conveniences here are bash extensions. A script that has to
-run under `dash` — which is `/bin/sh` on Debian and Ubuntu — needs the `> file
+run under `dash`, which is `/bin/sh` on Debian and Ubuntu, needs the `> file
 2>&1` form instead.

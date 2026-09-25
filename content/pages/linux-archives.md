@@ -1,7 +1,7 @@
 ---
 title: "Archives and compression"
 date: 2026-08-14
-summary: "Why gzip and tar are separate tools, the positional tar flags worth memorising, what metadata an archive preserves that cp does not, and decompressing through a pipe."
+summary: "Why gzip and tar are separate tools, the positional tar flags to memorize, what metadata an archive preserves that cp does not, and decompressing through a pipe."
 tags: [education, linux, archives, tar, gzip, compression]
 ---
 
@@ -9,16 +9,15 @@ tags: [education, linux, archives, tar, gzip, compression]
 
 Two jobs get confused because one command usually does both. Compression
 makes a file smaller. Archiving bundles many files into one. On Linux they
-are separate tools that compose, which is why the canonical filename is
-`archive.tar.gz` — a tar archive that has then been gzipped.
+are separate tools that compose, which is why the usual filename is
+`archive.tar.gz`: a tar archive that has then been gzipped.
 
 The reason to care beyond disk space is metadata. Ownership, permission bits,
-timestamps, and symbolic links are properties the filesystem holds *about* a
+timestamps, and symbolic links are properties the filesystem holds about a
 file, not content inside it. Copy a directory tree the naive way and you can
 lose all of them. An archive carries them along, which makes `tar` the right
-tool for moving a tree between machines intact — and the wrong thing to skip
-when the tree contains anything whose
-[permissions](/learn/linux-permissions) matter.
+tool for moving a tree between machines intact. Do not skip it when the tree
+contains anything whose [permissions](/learn/linux-permissions) matter.
 
 ## gzip compresses one file
 
@@ -27,7 +26,7 @@ $ gzip logfile.txt        # produces logfile.txt.gz, removes the original
 $ gunzip logfile.txt.gz   # restores it
 ```
 
-Note that `gzip` replaces the original rather than sitting alongside it. That
+`gzip` replaces the original instead of keeping it alongside. That
 surprises people once. Use `gzip -k` to keep the source, and `gzip -l` to see
 the compression ratio without decompressing.
 
@@ -56,7 +55,7 @@ The flags are positional and predate the convention of writing a dash:
 `tar cvf archive.tar dir/` works; `tar cfv archive.tar dir/` tries to use `v` as
 the filename.
 
-The habit worth building is running `tar tvf` before `tar xvf`. A well-made
+Get in the habit of running `tar tvf` before `tar xvf`. A well-made
 archive expands into a single directory. A badly made one scatters files into
 whatever directory you are standing in, and there is no undo.
 
@@ -91,8 +90,8 @@ $ zcat archive.tar.gz | tar xvf -
 
 The `-` is the archive filename, meaning "standard input." This is ordinary
 [stream plumbing](/learn/linux-streams#pipes) applied to a case where the
-intermediate file would be large and pointless — which matters when the archive
-is bigger than the free space you have.
+intermediate file would be large and pointless. That matters when the archive is
+bigger than the free space you have.
 
 `zcat` is `gzip -dc`: decompress, write to stdout. The same pattern works for
 `bzcat` and `xzcat`.
@@ -100,7 +99,7 @@ is bigger than the free space you have.
 ## What survives, and what does not
 
 `tar` preserves modes, ownership, timestamps, and symbolic links. Two caveats
-are worth knowing before trusting that:
+before you rely on that:
 
 - Ownership is restored by numeric UID and GID. Extracting as an ordinary user
   gives everything to *you*, because a non-root user cannot give a file away.
@@ -109,8 +108,8 @@ are worth knowing before trusting that:
   `--acls`, `--selinux`, and `--xattrs` respectively. They are not included by
   default.
 
-`cp -a` is the equivalent for a local copy — archive mode, preserving the same
-metadata without producing a file.
+`cp -a` is the equivalent for a local copy. It is archive mode, which preserves
+the same metadata without producing a file.
 
 ## Suggested practice: prove what an archive preserves
 
@@ -129,8 +128,8 @@ Do this in a scratch directory. Nothing here touches the system.
    Then try `-j` and `-J` and compare both size and how long each took.
 6. Extract through a pipe with `zcat test.tar.gz | tar xvf -` and confirm it
    produces the same result as `tar xzf`.
-7. Compress an already-compressed file — a `.jpg` or a `.gz` — and check the
-   size. Compression works on redundancy, and there is none left to find.
+7. Compress an already-compressed file, such as a `.jpg` or a `.gz`, and check
+   the size. Compression works on redundancy, and there is none left to find.
 
 ## Related pages
 

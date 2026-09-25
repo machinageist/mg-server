@@ -17,9 +17,9 @@ those domains over a single cable without mixing them, and keeping redundant lin
 between switches from turning into loops. VLANs, 802.1Q tagging, and Spanning Tree
 Protocol are the mechanisms for those three jobs.
 
-A useful habit when reading a switch configuration is to ask, of every port, three
-things: which broadcast domain does it belong to, is its traffic tagged, and what
-happens to a frame that arrives on it without a tag.
+When reading a switch configuration, ask three things about every port: which
+broadcast domain it belongs to, whether its traffic is tagged, and what happens to a
+frame that arrives on it without a tag.
 
 ## VLANs
 
@@ -30,8 +30,8 @@ inside VLAN 10 reaches VLAN 10 and stops there.
 
 The usual reasons to do this are performance and containment. A smaller broadcast
 domain carries less flooded traffic, and a device in one VLAN cannot reach a device
-in another without passing through a router — which is a place where policy can be
-applied.
+in another without passing through a router, and a router is a place where policy
+can be applied.
 
 A VLAN and an IP subnet are not the same thing. A VLAN is a Layer 2 broadcast domain;
 a subnet is a Layer 3 address range. They are almost always configured one to one,
@@ -40,8 +40,8 @@ than from anything in the standards.
 
 ### Access ports and the VLAN database
 
-A switch keeps a list of the VLANs it knows about, each with a numeric ID — 10, 20,
-30, and so on. A port assigned to exactly one of them is an access port. Frames
+A switch keeps a list of the VLANs it knows about, each with a numeric ID, such as
+10, 20, or 30. A port assigned to exactly one of them is an access port. Frames
 leaving an access port toward an end device carry no VLAN tag, and the device is not
 expected to know it is in a VLAN at all.
 
@@ -78,9 +78,9 @@ Giving voice its own VLAN creates somewhere for queuing and priority policy to b
 applied, and keeps the traffic out of the data VLAN's broadcasts.
 
 Separating the traffic is necessary but not sufficient. A voice VLAN only improves
-call quality if something along the path acts on the priority marking — see
-[network functions](/learn/network-functions) for how such a marking is honored, or
-is not.
+call quality if something along the path acts on the priority marking.
+[Network functions](/learn/network-functions) covers how that marking is honored, or
+not.
 
 ### Private VLANs
 
@@ -98,8 +98,8 @@ It divides one primary VLAN into secondary VLANs with different reachability:
   gateway.
 
 All of them keep the same IP subnet and the same default gateway, so nothing changes
-on the attached hosts. The enforcement lives on the switch, which is worth
-remembering when reasoning about where the control actually is.
+on the attached hosts. The enforcement happens on the switch, so that is where the
+control is.
 
 ## Inter-VLAN routing and switch virtual interfaces
 
@@ -110,8 +110,8 @@ A switch virtual interface (SVI) is a logical Layer 3 interface on the switch it
 one per VLAN, each holding an IP address that serves as that VLAN's default gateway.
 A Layer 3 switch with SVIs routes between its VLANs internally.
 
-The alternative puts the routing on a separate router reached over a trunk, using
-subinterfaces — router-on-a-stick. That side is covered on
+The alternative, called router-on-a-stick, puts the routing on a separate router
+reached over a trunk, using subinterfaces. That side is covered on
 [routing technologies](/learn/routing-technologies), where the subinterfaces live.
 
 Either way, the moment traffic crosses between VLANs it is being routed, and the
@@ -121,7 +121,7 @@ something at the routing point enforces policy.
 ## 802.1Q tagging
 
 IEEE 802.1Q is the standard that lets a trunk carry several VLANs. A tagged frame
-carries four extra bytes naming the VLAN it belongs to; a switch receiving it reads
+carries four extra bytes naming the VLAN it belongs to. A switch receiving it reads
 the VLAN ID and forwards the frame only within that VLAN.
 
 The tag is inserted after the source MAC address, ahead of the original frame's
@@ -139,8 +139,8 @@ EtherType:
 A common misreading is that the tag follows the EtherType. It does not. The tag's
 first two bytes sit where the EtherType would have been, and the original EtherType
 is pushed along behind them. Those two bytes are the tag protocol identifier (TPID),
-always `0x8100` for a VLAN tag, and their whole job is to tell a receiver that a tag
-follows rather than a payload.
+always `0x8100` for a VLAN tag, and their only job is to tell a receiver that a tag
+follows instead of a payload.
 
 The other two bytes are the tag control information (TCI):
 
@@ -151,8 +151,8 @@ The other two bytes are the tag control information (TCI):
 | VLAN identifier (VID)         | Which VLAN the frame belongs to      | 12 bits |
 
 Twelve bits gives 4,096 values, of which 4,094 are usable VLAN IDs: 0 means the frame
-carries priority information but no VLAN, and 4,095 is reserved. That ceiling is one
-of the reasons overlay encapsulations exist — see
+carries priority information but no VLAN, and 4,095 is reserved. That limit is one
+of the reasons overlay encapsulations exist, as covered on
 [software-defined networking](/learn/software-defined-networking).
 
 Tags are added and removed continuously as frames move. A switch tags a frame on its
@@ -167,9 +167,8 @@ interface can carry several logical subinterfaces, each with its own address and
 VLAN, which is how a single cable serves several networks.
 
 The settings that most often have to agree between two ends are VLAN assignment,
-tagging, speed, and duplex. A mismatch in any of them produces symptoms that look
-like a failing cable rather than a configuration error, which is exactly why they are
-worth checking first.
+tagging, speed, and duplex. A mismatch in any of them looks like a failing cable
+instead of a configuration error, so check them first.
 
 ## Link aggregation
 
@@ -179,8 +178,8 @@ common between switches, and between a switch and a busy server, wherever a sing
 link is the constraint.
 
 The capacity is aggregate, not per-flow. A bundle spreads traffic by hashing fields
-out of each frame — MAC addresses, IP addresses, port numbers — so every frame in one
-conversation takes the same member link and arrives in order. Four 1 Gbps links give
+from each frame, such as MAC addresses, IP addresses, and port numbers, so every
+frame in one conversation takes the same member link and arrives in order. Four 1 Gbps links give
 4 Gbps of total capacity, not a 4 Gbps single transfer.
 
 Link Aggregation Control Protocol (LACP) negotiates the bundle with the device at the
@@ -215,9 +214,10 @@ write memory
 
 Two things in that are easy to get backwards. `mode active` is what makes a member
 speak LACP instead of bundling unconditionally. And `channel-group` belongs on the
-physical interfaces, not on the port-channel — the port-channel exists because
-members join it. Trunk settings go on the port-channel and the members inherit them;
-setting them per member instead is a reliable way to build a bundle that never forms.
+physical interfaces, not on the port-channel. The port-channel exists because
+members join it. Trunk settings go on the port-channel, and the members inherit them.
+Setting them on each member instead is a good way to build a bundle that never
+forms.
 
 ## Speed and duplex
 
@@ -227,10 +227,10 @@ on [wired media](/learn/wired-media) and
 [transceivers and connectors](/learn/transceivers).
 
 Duplex is whether an interface can send and receive at the same time. Half duplex
-allows one direction at a time and belongs to the shared-media era; full duplex,
+allows one direction at a time and belongs to the shared-media era. Full duplex,
 which every switched link uses, allows both at once.
 
-Duplex is mostly worth knowing about because of what a mismatch does. If one end
+Duplex mostly matters because of what a mismatch does. If one end
 autonegotiates and the other is pinned, the negotiating end commonly settles on half
 duplex while its partner runs full. The link comes up, pings succeed, and throughput
 collapses under load, with late collisions and errors climbing on one side only. It
@@ -267,9 +267,9 @@ The original standard, IEEE 802.1D, moves a port through five states:
 - Forwarding — carries traffic, and goes on processing BPDUs.
 - Disabled — administratively down and outside STP entirely.
 
-The deliberate delay through listening and learning is what makes classic STP slow:
-roughly thirty seconds before a port that has just come up passes traffic, which is
-long enough for people to conclude the port is dead.
+The built-in delay through listening and learning is what makes classic STP slow. It
+takes roughly thirty seconds before a port that has just come up passes traffic,
+which is long enough for people to decide the port is dead.
 
 ### Faster variants
 
@@ -284,7 +284,7 @@ another instead of sitting idle.
 
 Both amendments were later folded into IEEE 802.1Q, which is now the single bridging
 standard holding VLAN tagging and spanning tree together. RSTP is the sensible
-default on current equipment; plain 802.1D turns up on old gear and in exam
+default on current equipment. Plain 802.1D shows up on old gear and in exam
 questions.
 
 ## Frame size
@@ -298,21 +298,22 @@ Getting it wrong is asymmetric. An MTU set too small is a steady tax: more heade
 per byte delivered, more packets to process. An MTU too large for some link along the
 path is worse, because the correction happens somewhere else. In IPv4 a router may
 fragment the packet, unless the don't-fragment bit is set, in which case it drops the
-packet and reports back. IPv6 routers do not fragment at all — the sending host is
+packet and reports back. IPv6 routers do not fragment at all. The sending host is
 expected to learn the path MTU and size its packets to fit. When that report never
 arrives, commonly because a firewall discards the ICMP messages carrying it, the
 result is a connection that completes its handshake and then stalls on the first
-large transfer. It is a distinctive failure and an easy one to misattribute.
+large transfer. It is a distinctive failure, and an easy one to blame on the wrong
+thing.
 
 ### Jumbo frames
 
 A jumbo frame carries an MTU well above 1,500 bytes, typically around 9,000. Fewer,
-larger frames mean less per-frame overhead and less processing, which is worth having
-on storage and backup networks.
+larger frames mean less per-frame overhead and less processing, which helps on
+storage and backup networks.
 
 Jumbo frames only help when every device along the path agrees. One switch left at
-1,500 in the middle of an otherwise jumbo-configured path produces exactly the stall
-described above, so this is a setting applied to a path rather than to a device.
+1,500 in the middle of an otherwise jumbo-configured path produces the same stall
+described above, so this setting applies to a whole path, not to one device.
 
 ### Where the sliding window fits
 
@@ -330,8 +331,8 @@ loss and retransmission. Changing the MTU fixes neither.
 ## Suggested practice: make a VLAN tag visible on your own machine
 
 Linux builds a tagged interface without needing a managed switch, which is enough to
-see the mechanism. On a machine you own, with a wired interface — substitute yours
-for `eth0` — and `sudo`:
+see the mechanism. On a machine you own, with a wired interface and `sudo`
+(substitute your interface name for `eth0`):
 
 1. Create a tagged subinterface with
    `sudo ip link add link eth0 name eth0.10 type vlan id 10`, then bring it up with
@@ -342,7 +343,7 @@ for `eth0` — and `sudo`:
    something from the tagged interface in another. `tcpdump -e` prints the link-layer
    header, so the tag shows up as `vlan 10`.
 4. Compare that against untagged traffic on `eth0` itself, and note that the payload
-   is unchanged — only the frame header differs.
+   is unchanged. Only the frame header differs.
 5. Read the MTU of both with `ip link show`, then probe the real path MTU with
    `ping -M do -s 1472 <a host on your LAN>`. 1,472 plus 28 bytes of IPv4 and ICMP
    header is exactly 1,500, so raising `-s` should fail with a fragmentation-needed
@@ -350,8 +351,8 @@ for `eth0` — and `sudo`:
 6. Remove it with `sudo ip link delete eth0.10`.
 
 This demonstrates tag format, MTU, and path behavior. It does not demonstrate
-inter-VLAN routing, trunk negotiation, or spanning tree — those need at least two
-switches, physical or virtual, and are worth building when you have them.
+inter-VLAN routing, trunk negotiation, or spanning tree. Those need at least two
+switches, physical or virtual. Build them when you have the hardware.
 
 ## Related pages
 

@@ -12,10 +12,10 @@ interface Unix systems have, and it is still the one that scales: anything you
 can type, you can put in a file and run again, schedule, or hand to someone
 else.
 
-That is the property worth holding onto. A graphical file manager and `cp` both
-copy a file, but only one of them leaves behind something you can repeat exactly
-next month. Most of the Linux system is itself made of shell scripts — text
-files containing sequences of the same commands you type interactively.
+A graphical file manager and `cp` both copy a file, but only `cp` leaves behind
+something you can repeat exactly next month. Much of the Linux system is itself
+made of shell scripts, which are text files containing the same commands you
+type interactively.
 
 The original was the Bourne shell, at `/bin/sh`. Linux systems use an enhanced
 version called the Bourne-again shell, or `bash`. What `/bin/sh` points to
@@ -36,8 +36,8 @@ you@hostname:~/projects$
 ```
 
 - `you` is the account running commands.
-- `hostname` is the machine you are on — which matters more than it seems once
-  you have several SSH sessions open.
+- `hostname` is the machine you are on. That matters once you have several SSH
+  sessions open.
 - `~/projects` is the current working directory. `~` is shorthand for your home
   directory.
 - `$` marks the end of the prompt and the start of what you type. A `#` there
@@ -53,12 +53,12 @@ A command line has up to four kinds of part:
 $ ls -l --color=auto /etc
 ```
 
-- `ls` is the command — the program to run.
+- `ls` is the command: the program to run.
 - `-l` is an option or flag, altering behavior. Single-letter options take
   one dash and can usually be combined: `-la` is `-l -a`.
 - `--color=auto` is a long option, taking two dashes, and this one takes its own
   argument.
-- `/etc` is an argument — the data the command acts on.
+- `/etc` is an argument: the data the command acts on.
 
 Some commands add a subcommand before the options, which is common in newer
 tooling: `systemctl restart sshd`, `git commit -m "..."`, `ip addr show`.
@@ -80,14 +80,14 @@ cat: /etc/shadow: Permission denied
 ```
 
 That is the program name, the thing it failed on, and why. Reading it as three
-fields rather than as one wall of text usually identifies the problem
-immediately — and "Permission denied" versus "No such file or directory" are
-very different failures that look similar when skimmed.
+fields instead of one wall of text usually shows the problem right away.
+"Permission denied" and "No such file or directory" are very different failures
+that look alike when you skim.
 
 ## Dot files
 
 A file whose name begins with `.` is hidden from ordinary listings. This is not
-a security feature; it is a convention that keeps configuration out of the way.
+a security feature. It is a convention that keeps configuration out of the way.
 Most of what is in your home directory is hidden, including `.bashrc`,
 `.ssh/`, and `.config/`.
 
@@ -108,7 +108,7 @@ $ echo $EXAMPLE
 one
 ```
 
-Assigning uses the bare name; reading it uses `$` in front. It exists only in
+Assigning uses the bare name, and reading it uses `$` in front. It exists only in
 the shell that created it, and disappears when that shell exits.
 
 An environment variable is a shell variable marked for inheritance by child
@@ -118,14 +118,14 @@ processes:
 $ export EXAMPLE
 ```
 
-This is the part my own notes had wrong, and it is worth stating plainly:
-`export` does not make a variable permanent and does not write anything to disk.
+My own notes had this wrong. `export` does not make a variable permanent and
+does not write anything to disk.
 It marks the variable so that programs the shell launches receive a copy. Close
 the terminal and it is gone with everything else.
 
 Persistence comes from startup files. Putting the assignment in `~/.bashrc` or
-`~/.profile` means it is set again each time a new shell starts — which looks
-like permanence but is really repetition.
+`~/.profile` means it is set again each time a new shell starts. It looks
+permanent, but it is really being set again every time.
 
 ### PATH
 
@@ -146,11 +146,10 @@ $ export PATH=/opt/mytool/bin:$PATH      # searched first
 ```
 
 Position matters. A directory placed first can shadow a system command with
-something else of the same name — which is occasionally what you want and
-occasionally a security problem, and is the reason `.` should never be on your
-`PATH`.
+something else of the same name. Sometimes that is what you want, and sometimes
+it is a security problem, which is why `.` should never be on your `PATH`.
 
-Use `which ls` or `type ls` to see which file a command actually resolves to.
+Use `which ls` or `type ls` to see which file a command resolves to.
 
 ## Manual pages
 
@@ -161,8 +160,8 @@ $ man ls
 ```
 
 Manual pages are references, not tutorials. They are organized by structure
-rather than by task, list options in alphabetical order, and put the examples —
-when there are any — at the end. That makes them frustrating as a first
+rather than by task, list options in alphabetical order, and put the examples,
+when there are any, at the end. That makes them frustrating as a first
 introduction and excellent once you know roughly what you are looking for.
 
 They are divided into numbered sections, and the same name can appear in more
@@ -176,7 +175,7 @@ $ man 5 passwd      # the file format
 Section 1 is user commands, 5 is file formats, and 8 is administration
 commands. Those three cover most of what an administrator needs.
 
-There is no `man ls -l` for a single option — the page covers the whole command
+There is no `man ls -l` for a single option. The page covers the whole command,
 and you search within it. Press `/` to search, `n` for the next match, and `q`
 to quit. To find a page when you do not know its name, `man -k` searches the
 descriptions:
@@ -196,7 +195,7 @@ Every step runs on any Linux machine as an ordinary user.
 1. Run `echo $SHELL` and `ls -l /bin/sh` to find out which shell you have and
    what `sh` points to on your distribution.
 2. Set a shell variable, check it with `echo`, then start a new shell with
-   `bash` and check again — it is gone. Repeat with `export` before starting the
+   `bash` and check again. It is gone. Repeat with `export` before starting the
    child shell, and watch it survive.
 3. Run `type ls`, `type cd`, and `type ll`. One is a file on disk, one is built
    into the shell, and the third is probably an alias. Knowing which is which
@@ -215,13 +214,13 @@ The redirection and pipeline exercises live on
 ## Related pages
 
 - [Streams, redirection, and pipes](/learn/linux-streams) — where a command's
-  output actually goes, and how to send it somewhere else.
+  output goes, and how to send it somewhere else.
 - [The Linux filesystem hierarchy](/learn/linux-filesystem-hierarchy) — the tree
   you are navigating, and where `PATH` points.
 - [File permissions and links](/learn/linux-permissions) — reading `ls -l`
   output, and why "Permission denied" happens.
-- [Linux abstraction layers](/learn/linux-abstraction-layers) — what actually
-  happens when the shell forks and runs a command.
+- [Linux abstraction layers](/learn/linux-abstraction-layers) — what happens
+  when the shell forks and runs a command.
 
 ## Sources and further reading
 

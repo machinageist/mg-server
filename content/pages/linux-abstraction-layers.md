@@ -7,11 +7,11 @@ tags: [education, linux, kernel, processes, memory]
 
 ## Overview
 
-Linux looks arcane from the outside, but most of it becomes tractable once you
-split the system into three layers: hardware, the kernel, and the
-processes that run on top of it. Each layer only talks to its neighbor, and
-almost every Linux concept you meet later — permissions, memory pressure,
-device files, system calls — sits at one of those two boundaries.
+Linux looks complicated from the outside, but most of it gets easier once you
+split the system into three layers: hardware, the kernel, and the processes that
+run on top of it. Each layer only talks to its neighbor, and almost every Linux
+concept you meet later, such as permissions, memory pressure, device files, and
+system calls, sits at one of those two boundaries.
 
 - **Hardware** is the physical machine: processing units, memory, and
   input/output devices.
@@ -37,8 +37,8 @@ ultimately about deciding who gets which region of that array, and when.
 
 ## The kernel
 
-One of the kernel's central jobs is to allocate memory — tracking what is
-available and how much each process is asking for. Its work is usually grouped
+One of the kernel's main jobs is to allocate memory, which means tracking what
+is available and how much each process is asking for. Its work is usually grouped
 into four areas:
 
 - **Process management** — scheduling processes for CPU access.
@@ -50,16 +50,16 @@ into four areas:
 
 Process management covers starting, pausing, resuming, scheduling, and
 terminating processes. Many processes need to run at once, but a CPU core
-handles one instruction stream at any given moment. The kernel resolves this by
-giving each process a time slice — a window of CPU time long enough to make
-progress — and rotating between them. This rotation is multitasking, and it
+handles one instruction stream at any given moment. The kernel handles this by
+giving each process a time slice, a window of CPU time long enough to make
+progress, and rotating between them. This rotation is multitasking, and it
 runs fast enough that every program appears to be running simultaneously, the
 way a sequence of still frames reads as motion.
 
 Moving the CPU from one process to another is context switching. A single
 switch looks roughly like this:
 
-1. A timer interrupt stops the running user process; the CPU enters kernel mode
+1. A timer interrupt stops the running user process. The CPU enters kernel mode
    and hands control to the kernel.
 2. The kernel records the CPU and memory state of the outgoing process so it can
    be resumed later.
@@ -76,13 +76,13 @@ once:
 - The kernel needs private memory that no process can reach.
 - Each user process needs its own memory.
 - One process must not read another process's private memory.
-- Processes must still be able to share memory deliberately.
+- Processes must still be able to share memory when they mean to.
 - Some memory is read-only.
 - Disk space can serve as auxiliary memory when physical memory runs out.
 
 Modern CPUs include a memory management unit (MMU), which lets the kernel
-give each process virtual memory — an address space that looks private and
-contiguous to the process regardless of how the underlying physical memory is
+give each process virtual memory: an address space that looks private and
+contiguous to the process, no matter how the underlying physical memory is
 arranged.
 
 ### Device management
@@ -98,7 +98,7 @@ A system call (or syscall) is a request from a user process asking the
 kernel to do something only the kernel can do. Opening, reading, and writing
 files are all system calls.
 
-Two are worth knowing early because they explain how processes come to exist:
+Two are good to know early because they explain how processes come to exist:
 
 - `fork()` — the kernel creates a nearly identical copy of the calling process.
 - `exec()` — the kernel loads and starts a new program, replacing the current
@@ -125,8 +125,8 @@ with a username and a numeric user ID. Users exist to support permission
 boundaries.
 
 `root` is a special administrative user with full access to the local system,
-sometimes called the superuser; accounts able to operate as `root` have
-root access. Groups are sets of users that can share file access.
+sometimes called the superuser. Accounts able to act as `root` have root
+access. Groups are sets of users that can share file access.
 
 ## Suggested practice: watch the layers from user space
 
@@ -135,8 +135,8 @@ the system. Nothing here requires root or risks the host.
 
 1. Run `ps -ef` to list running processes, then `ps -ef --forest` to see the
    parent/child tree that `fork()` produces. Find `init` or `systemd` at PID 1.
-2. Look at `/proc/$$/status` for your own shell. `/proc` is a pseudo-filesystem —
-   the kernel presenting its own state as files.
+2. Look at `/proc/$$/status` for your own shell. `/proc` is a pseudo-filesystem,
+   where the kernel presents its own state as files.
 3. Run `free -h` and `vmstat 1 5` to see physical memory, swap, and context
    switch counts. Watch the `cs` column while the system is busy.
 4. Trace the system calls behind a simple command with `strace -f ls`. Look for

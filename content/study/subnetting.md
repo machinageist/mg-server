@@ -103,7 +103,7 @@ questions:
       second octet. That puts 10.0 with 10.1 and 10.2 with 10.3, so the pair in
       the question straddles a boundary and cannot be combined. The first
       option invents a /15 starting at 10.1, which is not a legal /15. The
-      second generalises adjacency into a rule that does not hold. And the last
+      second generalizes adjacency into a rule that does not hold. And the last
       option has aggregation backwards: it combines blocks of the same size
       into a shorter prefix.
     learn: { slug: "subnetting", anchor: "cidr" }
