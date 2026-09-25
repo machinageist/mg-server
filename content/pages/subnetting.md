@@ -142,6 +142,33 @@ most Linux systems. Nothing here needs root or changes any configuration.
 6. Take two adjacent prefixes from your own network and decide whether they
    aggregate. Most pairs do not, and working out why is the point.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objective 1.6 in v1.1 covers configuring and verifying IPv4 addressing and
+subnetting. In v2.0, which replaces it in February 2027, it becomes 1.3,
+troubleshooting IPv4 addressing and subnetting.
+
+- Expect to subnet quickly without a calculator. Hosts per subnet are 2^h - 2,
+  subnets are 2^n, and the block size is 256 minus the mask value in the
+  interesting octet.
+- Given an address and prefix, find the network address, the broadcast address,
+  and the first and last usable hosts.
+- Point-to-point links often use /30, which leaves two usable hosts, or /31, which
+  RFC 3021 allows on point-to-point links with no network or broadcast address.
+- With VLSM, allocate the largest block first.
+
+### Network+ N10-009
+
+Objective 1.7 lists VLSM and CIDR under subnetting.
+
+- Convert between prefix length and dotted mask, at least from /24 to /30.
+- CIDR also covers supernetting, combining aligned networks into one route.
+
 ## Related pages
 
 - [IPv4 addressing](/learn/ipv4-addressing) — the 32-bit address these masks

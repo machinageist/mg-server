@@ -71,6 +71,24 @@ Choose a site you own or have permission to inspect, then:
 This shows the path visible from outside. It does not reveal a provider's
 private architecture.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+CDNs are not on the CCNA blueprint in v1.1 or v2.0.
+
+### Network+ N10-009
+
+Objective 1.2 lists the content delivery network as its only application.
+
+- A CDN caches content at edge locations close to users, which cuts latency and
+  load on the origin.
+- Know the difference between the origin, which holds the authoritative content,
+  and the edge, which delivers it.
+
 ## Related pages
 
 - [The OSI model](/learn/osi-model) — a functional map for following application

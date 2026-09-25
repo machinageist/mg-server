@@ -354,6 +354,52 @@ This demonstrates tag format, MTU, and path behavior. It does not demonstrate
 inter-VLAN routing, trunk negotiation, or spanning tree. Those need at least two
 switches, physical or virtual. Build them when you have the hardware.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objectives 2.1, 2.2, 2.4, and 2.5 in v1.1 cover VLANs, trunks and the native VLAN,
+EtherChannel with LACP, and Rapid PVST+, with switching concepts in 1.13. In v2.0,
+which replaces it in February 2027, 2.1 covers trunks, port channels, and SVIs
+between switches and routers, 2.2 covers edge ports for phones, access points, and
+virtualized hosts, and 2.5 keeps Rapid PVST+.
+
+- Access ports: `switchport mode access`, `switchport access vlan 10`, and
+  `switchport voice vlan 20` for a phone. Check with `show vlan brief`.
+- Trunks: `switchport mode trunk`, `switchport trunk native vlan 99`, and
+  `switchport trunk allowed vlan 10,20`. Some switches need
+  `switchport trunk encapsulation dot1q` first. Check with
+  `show interfaces trunk`.
+- DTP: two ends set to dynamic auto stay access ports. Turn negotiation off with
+  `switchport nonegotiate`.
+- EtherChannel: LACP uses active and passive, and at least one end must be active.
+  PAgP uses desirable and auto. `mode on` does not negotiate. Members must match
+  speed, duplex, and VLAN settings. Check with `show etherchannel summary`.
+- Rapid PVST+: the root bridge has the lowest bridge ID, which is the priority
+  (32768 by default, plus the VLAN number) followed by the MAC address. Set it
+  with `spanning-tree vlan 10 root primary`. Port roles are root, designated,
+  alternate, and backup, and states are discarding, learning, and forwarding.
+- Use PortFast with BPDU guard on edge ports: `spanning-tree portfast` and
+  `spanning-tree bpduguard enable`. v1.1 also lists root guard and loop guard.
+- Inter-VLAN routing uses an SVI (`interface vlan 10` plus `ip routing`) or
+  router-on-a-stick subinterfaces (`encapsulation dot1Q 10`).
+- CDP and LLDP (2.3 in both versions) are not covered on this page.
+
+### Network+ N10-009
+
+Objective 2.2 lists the VLAN database, SVIs, native and voice VLANs, 802.1Q
+tagging, link aggregation, speed, duplex, spanning tree, MTU, and jumbo frames.
+Objective 5.3 adds switching problems to troubleshoot.
+
+- For 5.3, know how STP loops, the wrong root bridge, port roles and states, and
+  incorrect VLAN assignment show up.
+- A duplex mismatch shows up as late collisions and errors on one side, with the
+  link still up.
+- Private VLANs are background. Neither exam lists them.
+
 ## Related pages
 
 - [Network appliances](/learn/network-appliances) — the switch itself, its MAC

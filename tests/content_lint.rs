@@ -36,6 +36,12 @@ const SUMMARY_MAX_CHARS: usize = 200;
 // Sections the page-authoring contract requires on every topic page
 const REQUIRED_PAGE_SECTIONS: &[&str] = &["## Related pages", "## Sources and further reading"];
 
+// Networking pages are the ones whose Sources cite Ian Neil's textbook. Each maps
+// its material to both exams it is studied for, above Related pages
+const NETWORKING_SOURCE_MARKER: &str = "Ian Neil";
+const EXAM_SECTION: &str = "## Exam key points";
+const EXAM_SUBSECTIONS: &[&str] = &["### CCNA 200-301", "### Network+ N10-009"];
+
 // Certification slugs must never return as tags. A tag pill reads as a claim of
 // credential rather than a citation of a textbook; criteria.md 1D scores a stale
 // cert claim at zero, and these were removed from every learn page on 2026-08-14.
@@ -260,6 +266,45 @@ fn every_topic_page_follows_the_authoring_contract() {
              standard, or man page is the check",
             file.path.display()
         );
+    }
+}
+
+// Every networking page carries exam key points for CCNA and Network+
+#[test]
+fn every_networking_page_carries_exam_key_points() {
+    for file in load_dir(PAGES_DIR) {
+        if CONTRACT_EXEMPT_PAGES.contains(&file.slug.as_str()) {
+            continue;
+        }
+
+        let sources = file
+            .body
+            .split("## Sources and further reading")
+            .nth(1)
+            .unwrap_or_default();
+        if !sources.contains(NETWORKING_SOURCE_MARKER) {
+            continue;
+        }
+
+        let above_related = file
+            .body
+            .split("## Related pages")
+            .next()
+            .unwrap_or_default();
+        let exam = above_related.split(EXAM_SECTION).nth(1).unwrap_or_else(|| {
+            panic!(
+                "{}: no `{EXAM_SECTION}` above Related pages. Networking pages map \
+                 their material to the CCNA and Network+ objectives",
+                file.path.display()
+            )
+        });
+        for subsection in EXAM_SUBSECTIONS {
+            assert!(
+                exam.contains(subsection),
+                "{}: `{EXAM_SECTION}` has no `{subsection}`",
+                file.path.display()
+            );
+        }
     }
 }
 

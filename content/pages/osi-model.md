@@ -259,6 +259,41 @@ request through DNS, Cloudflare's edge, a tunnel, Caddy, systemd, and the Rust
 application. The OSI model classifies the functions; the captured commands provide
 the evidence.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+The OSI model is not its own objective in v1.1 or v2.0, but both assume it. The
+parts tested directly are TCP versus UDP (1.5 in v1.1) and troubleshooting layer
+by layer with show commands, ping, and traceroute (2.4 in v2.0, which replaces
+v1.1 in February 2027).
+
+- Know which layer each device works at: hubs at layer 1, switches at layer 2, and
+  routers and Layer 3 switches at layer 3.
+- Know the PDU names: bits, frames, packets, and segments for TCP or datagrams for
+  UDP.
+- TCP versus UDP (v1.1 1.5): TCP has the three-way handshake, sequencing,
+  acknowledgments, windowing, and retransmission. UDP has none of them.
+- In `show ip interface brief`, the Status column is layer 1 and the Protocol
+  column is layer 2. An interface that shows up/down usually has a layer 2
+  problem, such as an encapsulation or keepalive mismatch.
+
+### Network+ N10-009
+
+Objective 1.1 lists the seven layers by name and number, and this page covers each
+one. The troubleshooting method in 5.1 names bottom-up, top-down, and divide and
+conquer as approaches.
+
+- Know the layers in order, with the PDU at each and an example protocol or
+  device.
+- Layer 5 and 6 questions usually ask for examples: setting up and tearing down
+  sessions for 5, and encryption, compression, and encoding for 6.
+- Encapsulation adds a header at each layer on the way down, and decapsulation
+  removes them on the way up.
+
 ## Related pages
 
 - [Network topologies](/learn/network-topologies) — how nodes and links are

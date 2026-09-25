@@ -173,6 +173,41 @@ On a network you own:
 This shows what your equipment negotiated. It does not show why. Measuring
 signal quality and cable condition takes dedicated tools.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objectives 1.3 and 1.4 in v1.1 compare cabling types and cover interface and cable
+issues. In v2.0, which replaces it in February 2027, 1.1 adds signal levels,
+pinouts, and cable types to the list of things to diagnose.
+
+- Single-mode fiber has a small core, uses lasers, and reaches kilometers.
+  Multimode has a wider core and a shorter reach.
+- Twisted-pair Ethernet runs up to 100 m per channel.
+- Read interface problems in `show interfaces`: CRC and input errors point at the
+  cable or interference, runts and giants at framing, and late collisions at a
+  duplex mismatch.
+- Auto-MDIX on modern switches makes crossover cables mostly unnecessary, but v2.0
+  still expects you to know straight-through and crossover pinouts.
+
+### Network+ N10-009
+
+Objective 1.5 lists 802.3 standards, single-mode and multimode fiber, DAC and
+twinax, coaxial cable, cable speeds, and plenum versus non-plenum. Objective 5.2
+turns cabling into troubleshooting scenarios.
+
+- Know the category limits: Cat 5e for 1 Gbps, Cat 6 for 10 Gbps up to 55 m, and
+  Cat 6a for 10 Gbps at the full 100 m.
+- For 5.2, know the symptoms of the wrong cable, crosstalk, interference,
+  attenuation, improper termination, TX and RX transposed, and rising CRC, runt,
+  and giant counters.
+- 5.2 also lists port states to recognize: error disabled, administratively down,
+  and suspended.
+- Plenum cable is required by code in air-handling spaces. It is not an upgrade.
+
 ## Related pages
 
 - [Transmission media](/learn/transmission-media) — the overview, and how copper

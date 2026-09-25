@@ -117,6 +117,34 @@ reading systems you already have and naming the parts.
 5. Read a firewall rule set and classify each rule as identity-based or
    location-based. The ratio shows how close to zero trust the design is.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Zero trust is not a CCNA objective. The related items are key security concepts
+(5.1) and AAA (5.8) in v1.1, and configuring devices as AAA clients with TACACS+
+and RADIUS (4.1) in v2.0, which replaces it in February 2027.
+
+- AAA: authentication is who you are, authorization is what you can do, and
+  accounting is what you did.
+- TACACS+ is Cisco's, runs on TCP 49, encrypts the whole payload, and separates
+  the three functions. RADIUS is an open standard on UDP 1812 and 1813, encrypts
+  only the password, and combines authentication and authorization.
+- On IOS, AAA starts with `aaa new-model`, followed by method lists.
+
+### Network+ N10-009
+
+Objective 1.8 lists zero trust architecture (policy-based authentication,
+authorization, and least privilege access) and SASE and SSE.
+
+- Zero trust gives no implicit trust based on network location. Every request is
+  verified.
+- SASE combines SD-WAN with cloud-delivered security. SSE is the security half
+  without the networking.
+
 ## Related pages
 
 - [Software-defined networking](/learn/software-defined-networking) — SD-WAN,

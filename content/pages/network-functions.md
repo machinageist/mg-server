@@ -119,6 +119,38 @@ On a system and destination you are authorized to use:
 This shows packet lifetime and routing behavior. It does not demonstrate VPN
 confidentiality or the presence of a QoS policy.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objective 5.5 in v1.1 describes IPsec remote-access and site-to-site VPNs, and 4.7
+covers QoS per-hop behavior. In v2.0, which replaces it in February 2027, IPsec
+becomes 4.5 and adds protocols and transport modes, and QoS is dropped.
+
+- A site-to-site VPN joins networks through gateways. A remote-access VPN connects
+  individual clients, usually with a client application.
+- ESP provides encryption and AH does not. IKE negotiates the security
+  associations. Know transport mode versus tunnel mode for v2.0.
+- QoS terms for v1.1: classification and marking (DSCP, CoS), queuing, congestion,
+  policing, which drops or re-marks traffic over the limit, and shaping, which
+  buffers and delays it. Voice is usually marked DSCP EF, which is 46.
+- Each router decrements the TTL. At zero the packet is dropped and an ICMP time
+  exceeded message goes back, which is how traceroute works.
+
+### Network+ N10-009
+
+Objective 1.2 lists VPN, QoS, and TTL as network functions, and 1.4 lists GRE and
+IPsec with AH, ESP, and IKE.
+
+- GRE tunnels traffic without encrypting it, which is why it is often paired with
+  IPsec.
+- AH gives integrity without confidentiality. ESP gives both. IKE uses UDP 500,
+  and UDP 4500 through NAT.
+- QoS decides which traffic goes first. It does not create bandwidth.
+
 ## Related pages
 
 - [The OSI model](/learn/osi-model) — the layered reference model that places these

@@ -199,6 +199,38 @@ addressing whether or not the upstream network does. Nothing here needs root.
 Write down which of these worked and which did not. "My ISP does not hand out
 IPv6, so I only have link-local" is a real and useful finding.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objectives 1.8 and 1.9 in v1.1 cover configuring IPv6 addresses and the address
+types, including modified EUI-64. In v2.0, which replaces it in February 2027,
+they become 1.4, troubleshooting IPv6 configuration and prefix sizing.
+
+- On IOS, `ipv6 unicast-routing` turns on IPv6 routing.
+  `ipv6 address 2001:db8:1::1/64` sets a static address, and
+  `ipv6 address 2001:db8:1::/64 eui-64` builds the interface ID from the MAC.
+  Check with `show ipv6 interface brief`.
+- Practice modified EUI-64 by hand: split the MAC, insert `fffe` in the middle,
+  and flip the seventh bit.
+- Know the prefixes: link-local `fe80::/10`, global unicast `2000::/3`, unique
+  local `fc00::/7` (with `fd00::/8` in use), and multicast `ff00::/8`.
+
+### Network+ N10-009
+
+Objective 1.8 lists IPv6 under modern network environments: address exhaustion,
+and compatibility through tunneling, dual stack, and NAT64. Objective 3.4 adds
+SLAAC.
+
+- Dual stack runs both protocols. Tunneling carries IPv6 over IPv4. NAT64, with
+  DNS64, lets IPv6-only clients reach IPv4-only servers.
+- With SLAAC, a host builds its own address from the prefix in a router
+  advertisement.
+- Zero compression: `::` can appear only once in an address.
+
 ## Related pages
 
 - [IPv4 addressing](/learn/ipv4-addressing) — the addressing model IPv6

@@ -204,6 +204,39 @@ Physical and logical topology have to be observed separately:
 Provider infrastructure will remain opaque past your own edge. Mark it as unknown
 rather than drawing a topology you cannot verify.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objective 1.2 in v1.1 covers two-tier, three-tier, spine-leaf, WAN, SOHO, and
+on-premises versus cloud. v2.0, which replaces it in February 2027, has no
+topology objective.
+
+- Two-tier is the collapsed core: distribution and core combined, with access
+  below them.
+- Three-tier separates access, distribution, and core. Know what each layer is
+  for.
+- In spine-leaf, every leaf connects to every spine, leaves never connect to each
+  other, and endpoints attach to leaves.
+- A SOHO network usually puts the router, switch, firewall, and access point in
+  one device.
+- Ring and token passing are background here. Neither exam lists them.
+
+### Network+ N10-009
+
+Objective 1.6 lists mesh, hybrid, star or hub and spoke, spine and leaf, point to
+point, the three-tier model, collapsed core, and north-south and east-west
+traffic. This page covers all of them.
+
+- A full mesh of n nodes needs n(n-1)/2 links, which is why partial mesh is more
+  common.
+- Collapsed core merges the core and distribution layers for smaller networks.
+- North-south traffic crosses the network edge. East-west traffic stays inside,
+  usually between servers.
+
 ## Related pages
 
 - [The OSI model](/learn/osi-model) — the layered model that separates physical

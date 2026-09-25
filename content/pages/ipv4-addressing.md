@@ -163,6 +163,39 @@ The mask arithmetic that goes with this (the AND test, host counts, and
 splitting a range) is practiced on
 [subnetting, CIDR, and VLSM](/learn/subnetting#suggested-practice-verify-a-subnet-by-hand-then-check-yourself).
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objectives 1.6, 1.7, and 1.10 in v1.1 cover IPv4 addressing and subnetting,
+private addressing, and checking IP settings on client operating systems. In v2.0,
+which replaces it in February 2027, they become troubleshooting objectives: 1.3
+for IPv4 configuration and 1.6 for client connectivity.
+
+- On IOS, an interface address is `ip address <address> <mask>` with a dotted
+  mask, and the interface also needs `no shutdown`. Check it with
+  `show ip interface brief`.
+- Know the RFC 1918 ranges by prefix: 10.0.0.0/8, 172.16.0.0/12, and
+  192.168.0.0/16.
+- Client checks for 1.10: `ipconfig /all` on Windows, `ip addr` and `ip route` on
+  Linux, and `ifconfig` on macOS.
+- A 169.254 address on a client means DHCP failed.
+
+### Network+ N10-009
+
+Objective 1.7 lists public and private addressing (APIPA, RFC 1918, and loopback),
+subnetting, and address classes A through E. Objective 5.3 adds the scenarios to
+recognize.
+
+- Know the class ranges: A is 1 to 126, B is 128 to 191, C is 192 to 223, D is 224
+  to 239 for multicast, and E is 240 to 255, reserved.
+- APIPA is 169.254.0.0/16, and loopback is 127.0.0.0/8.
+- For 5.3, know the symptoms of an incorrect default gateway, an incorrect subnet
+  mask, a duplicate IP address, and DHCP address pool exhaustion.
+
 ## Related pages
 
 - [Subnetting, CIDR, and VLSM](/learn/subnetting) — how these 32 bits get

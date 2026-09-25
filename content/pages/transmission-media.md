@@ -80,6 +80,34 @@ Trace one real connection end to end and name the medium at each hop.
    and [wireless](/learn/wireless-media#suggested-practice-watch-a-wireless-link-negotiate)
    links, and compare what each one negotiated against what it is rated for.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objective 1.3 in v1.1 compares cabling types, including shared media and
+point-to-point connections, and 1.4 covers interface and cable issues. In v2.0,
+which replaces it in February 2027, both become 1.1, diagnosing interface and
+cable problems on copper and fiber.
+
+- A hub segment is shared media. A switch port is a point-to-point connection.
+- The medium sets the access rule: CSMA/CD on shared half-duplex copper, and
+  CSMA/CA on Wi-Fi.
+- The details for each medium are on [wired media](/learn/wired-media) and
+  [wireless media](/learn/wireless-media).
+
+### Network+ N10-009
+
+Objective 1.5, transmission media and transceivers, is split across this page,
+[wired media](/learn/wired-media), [wireless media](/learn/wireless-media), and
+[transceivers](/learn/transceivers).
+
+- Know which media are wired and which are wireless, and what limits the distance
+  and speed of each.
+- Cabling problems are tested separately as troubleshooting scenarios in 5.2.
+
 ## Related pages
 
 - [Wireless media](/learn/wireless-media) — radio, 802.11, cellular, satellite.

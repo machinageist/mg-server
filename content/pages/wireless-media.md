@@ -151,6 +151,38 @@ On a network you own:
 This shows what your equipment negotiated. It does not show why. Measuring
 signal quality and interference takes dedicated tools.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objective 1.11.c in v1.1 covers RF under wireless principles. In v2.0, which
+replaces it in February 2027, that becomes 1.5.b, RF characteristics, with 1.5.d
+adding causes of interference.
+
+- RF terms not covered on this page: amplitude, frequency, and wavelength, signal
+  strength in dBm, RSSI, and SNR. dBm is logarithmic, so +3 dB doubles the power
+  and +10 dB multiplies it by ten.
+- Know the Wi-Fi Alliance names alongside the IEEE ones: 802.11n is Wi-Fi 4,
+  802.11ac is Wi-Fi 5, and 802.11ax is Wi-Fi 6, or 6E in the 6 GHz band.
+- CSMA/CA avoids collisions, and CSMA/CD detects them.
+- Cellular and satellite are not on the CCNA blueprint.
+
+### Network+ N10-009
+
+Objective 1.5 lists 802.11 standards, cellular, and satellite under wireless
+media.
+
+- Match each 802.11 standard to its band and maximum rate using the table above.
+- 802.11a and 802.11ac are 5 GHz only, 802.11b and 802.11g are 2.4 GHz only,
+  802.11n and 802.11ax use both, and Wi-Fi 6E adds 6 GHz.
+- 5G trades range for higher throughput and lower latency, so it needs more towers
+  than 4G.
+- GEO satellites have high latency because of their distance. LEO satellites cut
+  latency but need a large constellation and a tracking ground station.
+
 ## Related pages
 
 - [Transmission media](/learn/transmission-media) — the overview, and how radio

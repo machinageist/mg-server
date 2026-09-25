@@ -260,6 +260,56 @@ carries a metric on the route instead. So steps 4 and 5 show longest-prefix matc
 not the full decision. The exercise is finished when you can predict
 what `ip route get` will say before you run it.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objectives 3.1 to 3.5 in v1.1 cover the routing table, the forwarding decision,
+static routes, single-area OSPFv2, and FHRPs, and 4.1 covers NAT. In v2.0, which
+replaces it in February 2027, OSPFv3 joins OSPFv2 in 3.3, 3.4 asks you to read
+HSRP and VRRP status, and NAT and PAT move to 4.3.
+
+- Routing table codes: C connected, L local, S static, O OSPF, D EIGRP, B BGP, and
+  an asterisk for a candidate default. The gateway of last resort is the default
+  route.
+- Default administrative distances: connected 0, static 1, external BGP 20, EIGRP
+  90, OSPF 110, RIP 120, and internal BGP 200.
+- Static routes: `ip route 0.0.0.0 0.0.0.0 <next-hop>` for a default, a /32 for a
+  host route, and a distance at the end for a floating static, such as
+  `ip route 10.0.0.0 255.0.0.0 192.0.2.2 150`. IPv6 uses `ipv6 route`.
+- OSPF: `router ospf 1`, then `network <address> <wildcard> area 0` or
+  `ip ospf 1 area 0` on the interface. The router ID comes from `router-id`, then
+  the highest loopback address, then the highest active interface address.
+- OSPF neighbors must match area, subnet, hello and dead timers, and MTU for a
+  full adjacency. On broadcast networks the DR is the highest priority, then the
+  highest router ID, and priority 0 never becomes DR. Point-to-point links have no
+  DR. Check with `show ip ospf neighbor`.
+- HSRP is Cisco's FHRP with active and standby routers, VRRP is the open standard
+  with master and backup, and GLBP adds load balancing. Check with
+  `show standby brief` or `show vrrp brief`.
+- NAT: mark interfaces with `ip nat inside` and `ip nat outside`, then use
+  `ip nat inside source static` or a pool with an ACL. `overload` turns it into
+  PAT. Know inside local, inside global, outside local, and outside global, and
+  check with `show ip nat translations`.
+- EIGRP and BGP are not configured on the CCNA. Know their route codes and
+  distances.
+
+### Network+ N10-009
+
+Objective 2.1 lists static and dynamic routing (BGP, EIGRP, and OSPF), route
+selection by administrative distance, prefix length, and metric, NAT and PAT,
+FHRP, VIPs, and subinterfaces. Objective 5.3 adds routing table and default route
+problems.
+
+- BGP is the path-vector protocol between autonomous systems. EIGRP is an advanced
+  distance-vector protocol from Cisco. OSPF is link-state.
+- Route selection order: longest prefix first, then administrative distance, then
+  metric.
+- PAT lets many hosts share one public address by tracking ports.
+
 ## Related pages
 
 - [Switching technologies](/learn/switching-technologies) — VLANs and tagging, and

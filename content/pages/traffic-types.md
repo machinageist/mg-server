@@ -69,6 +69,32 @@ On a network you own or are authorized to inspect, use Wireshark or `tcpdump`:
 4. Compare the broadcast destination MAC (`ff:ff:ff:ff:ff:ff`) with the
    destination MACs in multicast and unicast frames.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objective 1.9 in v1.1 covers IPv6 address types, including anycast and multicast.
+In v2.0, which replaces it in February 2027, IPv6 moves to 1.4.
+
+- IPv6 has no broadcast. It uses multicast, such as `ff02::1` for all nodes and
+  `ff02::2` for all routers.
+- In IPv6, an anycast address is a unicast address assigned to several devices. On
+  IOS it is configured with the `anycast` keyword on `ipv6 address`.
+- OSPF uses multicast: 224.0.0.5 reaches all OSPF routers, and 224.0.0.6 reaches
+  the DR and BDR.
+
+### Network+ N10-009
+
+Objective 1.4 lists unicast, multicast, anycast, and broadcast as the traffic
+types.
+
+- Unicast is one to one, multicast is one to a group that asked for it, anycast is
+  one to the nearest of several, and broadcast is one to everyone on the segment.
+- Broadcast stops at a router. That is what makes a subnet a broadcast domain.
+
 ## Related pages
 
 - [The OSI model](/learn/osi-model) — where MAC and IP addressing, including

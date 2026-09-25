@@ -190,6 +190,16 @@ tags: [education, networking, osi, tcp-ip, troubleshooting]
   Bullet-dumping a source note scores ≤ 1 against `criteria.md` 2C.
 - `## Suggested practice: <specific thing>` — something the reader can actually do, on
   hardware they already own, with FOSS tools.
+- `## Exam key points` — networking pages only (the ones citing Ian Neil). Two
+  subsections, `### CCNA 200-301` and `### Network+ N10-009`, each opening with the
+  objective numbers the page maps to and then a short list of what that exam
+  expects, including what the page does not cover yet. CCNA numbers are v1.1 with
+  the v2.0 equivalents noted, because v2.0 replaces v1.1 in February 2027 and
+  renumbers the domains. Check numbers against Cisco's and CompTIA's published
+  objective documents, not memory. Enforced by
+  `every_networking_page_carries_exam_key_points` (added 2026-09-25). The section
+  maps material to objectives for the reader. It never says Jeff is sitting either
+  exam; see §4 and `PUBLIC_FACE.md`.
 - `## Related pages` — cross-links to other `/learn/<slug>` pages, each with a clause saying
   why you would follow it.
 - `## Sources and further reading` — names the source textbook, then the primary sources that

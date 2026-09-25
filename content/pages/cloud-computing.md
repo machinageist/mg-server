@@ -147,6 +147,40 @@ You can see the main VM/container difference without a cloud account:
 4. Check which environment has its own kernel and which shares the host kernel.
    That difference explains much of what you measured.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objective 1.2.f in v1.1 covers on-premises versus cloud, and 1.12 covers
+virtualization, including server virtualization, containers, and VRFs. In v2.0,
+which replaces it in February 2027, 1.2 covers hypervisors, virtual machines, and
+containers, and 5.3 lists cloud-based management.
+
+- A type 1 hypervisor runs on bare metal. A type 2 hypervisor runs on a host
+  operating system.
+- Containers share the host kernel. Each virtual machine runs its own operating
+  system.
+- VRFs, which give one router several separate routing tables, are on v1.1 and not
+  covered on this page.
+
+### Network+ N10-009
+
+Objective 1.3 lists NFV, VPCs, network security groups and lists, cloud gateways,
+VPN and direct connections, the public, private, and hybrid deployment models, the
+SaaS, IaaS, and PaaS service models, and scalability, elasticity, and
+multitenancy.
+
+- Security groups attach to interfaces and are stateful. Subnet-level lists can be
+  stateless, which means return traffic needs its own rule.
+- An internet gateway serves public subnets. A NAT gateway lets private subnets
+  reach out without accepting connections in.
+- A direct connection gives steadier performance than a VPN but costs more and is
+  not encrypted by default.
+- Community cloud is covered on this page but is not in the N10-009 list.
+
 ## Related pages
 
 - [Network appliances](/learn/network-appliances) — the physical roles

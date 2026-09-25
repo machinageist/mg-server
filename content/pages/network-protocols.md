@@ -106,6 +106,46 @@ On a network you own or are authorized to inspect:
    that it has no port numbers because ICMP sits below the transport layer's
    port addressing.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+In v1.1 these services are spread across 4.2 (NTP), 4.3 (DHCP and DNS), 4.4
+(SNMP), 4.5 (syslog), 4.6 (DHCP client and relay), 4.8 (SSH), and 4.9 (TFTP and
+FTP). In v2.0, which replaces it in February 2027, DHCPv4 moves to 1.7 as
+troubleshooting, DNS records to 4.4, secure file transfer with SFTP and SCP to
+4.2, and SNMP and syslog to 5.4 and 5.6.
+
+- DHCP relay: `ip helper-address` on the interface facing the clients forwards
+  their broadcasts to a server in another subnet.
+- SSH on IOS needs a hostname, a domain name, RSA keys from
+  `crypto key generate rsa`, a local user, and `transport input ssh` on the vty
+  lines.
+- An NTP client is `ntp server <address>`, checked with `show ntp associations`.
+- Syslog severity runs from 0 to 7: emergency, alert, critical, error, warning,
+  notification, informational, and debugging.
+- SNMP managers poll agents on UDP 161, and agents send traps to UDP 162. SNMPv3
+  adds authentication and encryption.
+- v2.0 adds DNS record types (A, AAAA, CNAME, MX, NS, and PTR) as a
+  troubleshooting objective.
+
+### Network+ N10-009
+
+Objective 1.4 lists specific protocols with their ports, plus the IP protocol
+types ICMP, TCP, UDP, GRE, and IPsec.
+
+- The listed ports: FTP 20/21, SSH and SFTP 22, Telnet 23, SMTP 25, DNS 53, DHCP
+  67/68, TFTP 69, HTTP 80, NTP 123, SNMP 161/162, LDAP 389, HTTPS 443, SMB 445,
+  syslog 514, SMTPS 587, LDAPS 636, SQL Server 1433, RDP 3389, and SIP 5060/5061.
+- The objectives list SMTPS as 587. Port 587 is really mail submission with
+  STARTTLS, and 465 is SMTP over implicit TLS, but 587 is the answer the exam
+  expects.
+- Objective 3.4 adds DHCP details (scopes, reservations, lease time, options,
+  relay, and exclusions) and DNS record and zone types.
+
 ## Related pages
 
 - [The OSI model](/learn/osi-model) — where TCP, UDP, and port-based addressing

@@ -187,6 +187,46 @@ one machine with free software.
    versus where it is enforced. On a single home router these are the same box.
    Naming the two roles separately is the concept.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objectives 6.1 to 6.7 in v1.1 cover automation, controller-based networking,
+overlay, underlay, and fabric, northbound and southbound APIs, REST, Ansible and
+Terraform, and JSON. In v2.0, which replaces it in February 2027, these narrow to
+5.3, network management approaches including infrastructure as code, and 5.5,
+running commands with Ansible.
+
+- Northbound APIs connect the controller to applications, usually over REST.
+  Southbound APIs connect it to devices, with protocols such as NETCONF, RESTCONF,
+  and OpenFlow.
+- An overlay, such as VXLAN tunnels, runs on an underlay, the physical routed
+  network. Together they form the fabric. Cisco SD-Access uses VXLAN for the data
+  plane and LISP for the control plane.
+- REST verbs map to CRUD: POST creates, GET reads, PUT and PATCH update, and
+  DELETE deletes.
+- Ansible is agentless, uses YAML playbooks, and connects over SSH. Terraform is
+  declarative infrastructure as code.
+- For JSON, know objects in braces, arrays in brackets, and key-value pairs.
+
+### Network+ N10-009
+
+Objective 1.8 lists SDN and SD-WAN (application aware, zero-touch provisioning,
+transport agnostic, and central policy), VXLAN, infrastructure as code, and source
+control.
+
+- Transport agnostic means SD-WAN runs over any link type, such as MPLS,
+  broadband, or LTE.
+- VXLAN has a 24-bit VNI, about 16 million segments against 4,094 VLANs, and uses
+  UDP 4789.
+- Infrastructure as code terms to know: playbooks and templates, configuration
+  drift and compliance, upgrades, and dynamic inventories.
+- Source control terms to know: version control, a central repository, conflict
+  identification, and branching.
+
 ## Related pages
 
 - [Zero-trust architecture](/learn/zero-trust-architecture) — the security model

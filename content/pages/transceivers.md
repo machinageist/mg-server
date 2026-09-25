@@ -119,6 +119,35 @@ Handle fiber carefully while doing this. Keep dust caps on unused connectors,
 avoid touching the endface, and never look into a fiber or a populated optical
 port. The light is invisible and can injure your eye.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objective 1.3.a in v1.1 compares single-mode fiber, multimode fiber, and copper.
+In v2.0, which replaces it in February 2027, 1.1 covers diagnosing fiber problems,
+including distance and signal levels.
+
+- Pick an optic by fiber type and distance. A short-range multimode optic will not
+  work on single-mode fiber.
+- `show interfaces transceiver` shows transmit and receive power for modules that
+  support monitoring. Low receive power points at a dirty connector, a bad patch,
+  or too much distance.
+- Fibre Channel and BNC connectors are not on the CCNA blueprint.
+
+### Network+ N10-009
+
+Objective 1.5 lists transceiver protocols (Ethernet and Fibre Channel), the SFP
+and QSFP form factors, and the connector types this page covers.
+
+- Know the connectors by sight: SC, LC, ST, MPO, RJ11, RJ45, F-type, and BNC.
+- SFP is one channel per module. QSFP carries four lanes and makes 40G and 100G
+  practical.
+- Transceiver mismatch and signal strength also appear as troubleshooting items in
+  5.2.
+
 ## Related pages
 
 - [Transmission media](/learn/transmission-media) — the copper, fiber, and

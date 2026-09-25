@@ -190,6 +190,39 @@ The result is a topology hypothesis, not proof. Configuration exports, packet ca
 and controlled failure tests give stronger evidence for what each device actually
 does.
 
+## Exam key points
+
+Where this page's material shows up in the exam objectives, and what each exam
+expects beyond it.
+
+### CCNA 200-301
+
+Objective 1.1 in v1.1 covers the role of routers, Layer 2 and Layer 3 switches,
+next-generation firewalls and IPS, access points, controllers, endpoints, servers,
+and PoE. v2.0, which replaces it in February 2027, drops the descriptive objective
+and adds PoE configuration on switch ports in 2.2.
+
+- A Layer 2 switch forwards by MAC address. A Layer 3 switch also routes between
+  VLANs using SVIs.
+- A next-generation firewall adds application awareness and intrusion prevention
+  to stateful filtering.
+- PoE power levels: 802.3af gives 15.4 W at the switch, 802.3at (PoE+) 30 W, and
+  802.3bt up to 90 W. On IOS, `power inline auto` is the default and
+  `power inline never` turns it off.
+- A wireless LAN controller manages lightweight access points centrally. See
+  [wireless technologies](/learn/wireless-technologies).
+
+### Network+ N10-009
+
+Objective 1.2 lists routers, switches, firewalls, IDS and IPS, load balancers,
+proxies, NAS, SAN, access points, and controllers, each as a physical or virtual
+appliance.
+
+- An IDS watches and alerts. An IPS sits inline and can block.
+- A forward proxy acts for clients. A reverse proxy acts for servers.
+- NAS serves files over the network. A SAN presents block storage.
+- Any of these can be physical hardware or a virtual appliance.
+
 ## Related pages
 
 - [The OSI model](/learn/osi-model) — the layered reference model used to distinguish
