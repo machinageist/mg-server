@@ -1,25 +1,45 @@
 {% extends "base.html" %}
+{% block head_extra %}
+<script src="/static/js/learn-order.js?v={{ crate::assets::version() }}"></script>
+{% endblock %}
 {% block content %}
 <div class="wiki-layout">
   <aside class="wiki-sidebar" aria-label="Education wiki navigation">
     <details class="wiki-nav">
       <summary>Wiki navigation</summary>
       <nav>
-        {% for section in sidebar %}
-        <section class="wiki-section">
-          <h2>{{ section.heading }}</h2>
-          <ul>
-            {% for entry in section.entries %}
-            <li{% if entry.slug == active_slug %} class="active"{% endif %}>
-              {% if entry.slug == "index" %}
-              <a href="/learn">{{ entry.label }}</a>
-              {% else %}
-              <a href="/learn/{{ entry.slug }}">{{ entry.label }}</a>
-              {% endif %}
-            </li>
-            {% endfor %}
-          </ul>
-        </section>
+        {# Three orderings of the same pages. The server renders all three and CSS
+           shows the one named by data-learn-order on <html>, which
+           learn-order.js sets from the reader's last choice before first paint.
+           Without JavaScript the toggle stays hidden and the topic order shows. #}
+        <div class="wiki-order" role="group" aria-label="Order pages by" hidden>
+          {% for view in views %}
+          <button type="button" data-order="{{ view.key }}" aria-pressed="false">{{ view.name }}</button>
+          {% endfor %}
+        </div>
+
+        {% for view in views %}
+        <div class="wiki-view" data-view="{{ view.key }}">
+          {% for note in view.notes %}
+          <p class="wiki-view-note">{{ note }}</p>
+          {% endfor %}
+          {% for section in view.sections %}
+          <section class="wiki-section">
+            <h2>{{ section.heading }}</h2>
+            <ul>
+              {% for entry in section.entries %}
+              <li{% if entry.slug == active_slug %} class="active"{% endif %}>
+                {% if entry.slug == "index" %}
+                <a href="/learn">{{ entry.label }}</a>
+                {% else %}
+                <a href="/learn/{{ entry.slug }}">{% if let Some(objective) = entry.objective %}<span class="wiki-objective">{{ objective }}</span> {% endif %}{{ entry.label }}</a>
+                {% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+          </section>
+          {% endfor %}
+        </div>
         {% endfor %}
 
         {# Not part of SIDEBAR — its entries are /learn pages, guarded by the

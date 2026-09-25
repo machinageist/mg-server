@@ -14,6 +14,7 @@ use askama::Template;
 use askama_axum::IntoResponse;
 use axum::extract::Path as AxumPath;
 use axum::response::{Redirect, Response};
+use chrono::{NaiveDate, Utc};
 use std::path::PathBuf;
 
 pub(crate) const PAGES_DIR: &str = "content/pages";
@@ -48,7 +49,7 @@ const SIDEBAR: &[SidebarSection] = &[
         }],
     },
     SidebarSection {
-        heading: "Networking Foundations",
+        heading: "Models and patterns",
         entries: &[
             SidebarEntry {
                 slug: "osi-model",
@@ -59,45 +60,35 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "Network topologies",
             },
             SidebarEntry {
+                slug: "traffic-types",
+                label: "Network traffic types",
+            },
+        ],
+    },
+    SidebarSection {
+        heading: "Physical layer",
+        entries: &[
+            SidebarEntry {
                 slug: "transmission-media",
                 label: "Transmission media",
-            },
-            SidebarEntry {
-                slug: "wireless-media",
-                label: "Wireless media",
             },
             SidebarEntry {
                 slug: "wired-media",
                 label: "Wired media",
             },
             SidebarEntry {
+                slug: "wireless-media",
+                label: "Wireless media",
+            },
+            SidebarEntry {
                 slug: "transceivers",
                 label: "Transceivers and connectors",
             },
-            SidebarEntry {
-                slug: "network-appliances",
-                label: "Network appliances",
-            },
-            SidebarEntry {
-                slug: "content-delivery-networks",
-                label: "Content delivery networks",
-            },
-            SidebarEntry {
-                slug: "vpns-and-ipsec",
-                label: "VPNs and IPsec",
-            },
-            SidebarEntry {
-                slug: "quality-of-service",
-                label: "Quality of service",
-            },
-            SidebarEntry {
-                slug: "network-protocols",
-                label: "Network protocols and ports",
-            },
-            SidebarEntry {
-                slug: "traffic-types",
-                label: "Network traffic types",
-            },
+        ],
+    },
+    SidebarSection {
+        heading: "Addressing",
+        entries: &[
             SidebarEntry {
                 slug: "ipv4-addressing",
                 label: "IPv4 addressing",
@@ -110,6 +101,58 @@ const SIDEBAR: &[SidebarSection] = &[
                 slug: "ipv6-addressing",
                 label: "IPv6 addressing",
             },
+        ],
+    },
+    SidebarSection {
+        heading: "Local networks",
+        entries: &[
+            SidebarEntry {
+                slug: "switching-technologies",
+                label: "Switching technologies",
+            },
+            SidebarEntry {
+                slug: "wireless-technologies",
+                label: "Wireless technologies",
+            },
+        ],
+    },
+    SidebarSection {
+        heading: "Between networks",
+        entries: &[
+            SidebarEntry {
+                slug: "routing-technologies",
+                label: "Routing technologies and route selection",
+            },
+            SidebarEntry {
+                slug: "vpns-and-ipsec",
+                label: "VPNs and IPsec",
+            },
+            SidebarEntry {
+                slug: "quality-of-service",
+                label: "Quality of service",
+            },
+        ],
+    },
+    SidebarSection {
+        heading: "Services and devices",
+        entries: &[
+            SidebarEntry {
+                slug: "network-protocols",
+                label: "Network protocols and ports",
+            },
+            SidebarEntry {
+                slug: "network-appliances",
+                label: "Network appliances",
+            },
+            SidebarEntry {
+                slug: "content-delivery-networks",
+                label: "Content delivery networks",
+            },
+        ],
+    },
+    SidebarSection {
+        heading: "Modern environments",
+        entries: &[
             SidebarEntry {
                 slug: "cloud-computing",
                 label: "Cloud computing concepts",
@@ -119,25 +162,13 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "Software-defined networking",
             },
             SidebarEntry {
-                slug: "switching-technologies",
-                label: "Switching technologies",
-            },
-            SidebarEntry {
-                slug: "routing-technologies",
-                label: "Routing technologies and route selection",
-            },
-            SidebarEntry {
-                slug: "wireless-technologies",
-                label: "Wireless technologies",
-            },
-            SidebarEntry {
                 slug: "zero-trust-architecture",
                 label: "Zero-trust architecture",
             },
         ],
     },
     SidebarSection {
-        heading: "Linux Foundations",
+        heading: "Linux foundations",
         entries: &[
             SidebarEntry {
                 slug: "linux-abstraction-layers",
@@ -167,11 +198,336 @@ const SIDEBAR: &[SidebarSection] = &[
     },
 ];
 
+// One page in an exam ordering, filed under the objective it maps to
+pub struct ExamEntry {
+    pub objective: &'static str,
+    pub slug: &'static str,
+}
+
+// One exam domain, with its pages in objective order
+pub struct ExamSection {
+    pub heading: &'static str,
+    pub entries: &'static [ExamEntry],
+}
+
+// Network+ N10-009 ordering. Every networking page maps to it, because the
+// notes these pages come from follow its objectives
+const NETWORK_PLUS: &[ExamSection] = &[
+    ExamSection {
+        heading: "1.0 Networking concepts",
+        entries: &[
+            ExamEntry {
+                objective: "1.1",
+                slug: "osi-model",
+            },
+            ExamEntry {
+                objective: "1.2",
+                slug: "network-appliances",
+            },
+            ExamEntry {
+                objective: "1.2",
+                slug: "content-delivery-networks",
+            },
+            ExamEntry {
+                objective: "1.2",
+                slug: "vpns-and-ipsec",
+            },
+            ExamEntry {
+                objective: "1.2",
+                slug: "quality-of-service",
+            },
+            ExamEntry {
+                objective: "1.3",
+                slug: "cloud-computing",
+            },
+            ExamEntry {
+                objective: "1.4",
+                slug: "network-protocols",
+            },
+            ExamEntry {
+                objective: "1.4",
+                slug: "traffic-types",
+            },
+            ExamEntry {
+                objective: "1.5",
+                slug: "transmission-media",
+            },
+            ExamEntry {
+                objective: "1.5",
+                slug: "wired-media",
+            },
+            ExamEntry {
+                objective: "1.5",
+                slug: "wireless-media",
+            },
+            ExamEntry {
+                objective: "1.5",
+                slug: "transceivers",
+            },
+            ExamEntry {
+                objective: "1.6",
+                slug: "network-topologies",
+            },
+            ExamEntry {
+                objective: "1.7",
+                slug: "ipv4-addressing",
+            },
+            ExamEntry {
+                objective: "1.7",
+                slug: "subnetting",
+            },
+            ExamEntry {
+                objective: "1.8",
+                slug: "ipv6-addressing",
+            },
+            ExamEntry {
+                objective: "1.8",
+                slug: "software-defined-networking",
+            },
+            ExamEntry {
+                objective: "1.8",
+                slug: "zero-trust-architecture",
+            },
+        ],
+    },
+    ExamSection {
+        heading: "2.0 Network implementation",
+        entries: &[
+            ExamEntry {
+                objective: "2.1",
+                slug: "routing-technologies",
+            },
+            ExamEntry {
+                objective: "2.2",
+                slug: "switching-technologies",
+            },
+            ExamEntry {
+                objective: "2.3",
+                slug: "wireless-technologies",
+            },
+        ],
+    },
+];
+
+// CCNA 200-301 v1.1 ordering. Pages whose material is not on the blueprint are
+// left out: content delivery networks, zero trust, and the Linux section
+const CCNA_V1_1: &[ExamSection] = &[
+    ExamSection {
+        heading: "1.0 Network fundamentals",
+        entries: &[
+            ExamEntry {
+                objective: "1.1",
+                slug: "network-appliances",
+            },
+            ExamEntry {
+                objective: "1.2",
+                slug: "network-topologies",
+            },
+            ExamEntry {
+                objective: "1.3",
+                slug: "transmission-media",
+            },
+            ExamEntry {
+                objective: "1.3",
+                slug: "wired-media",
+            },
+            ExamEntry {
+                objective: "1.3",
+                slug: "transceivers",
+            },
+            ExamEntry {
+                objective: "1.5",
+                slug: "osi-model",
+            },
+            ExamEntry {
+                objective: "1.6",
+                slug: "ipv4-addressing",
+            },
+            ExamEntry {
+                objective: "1.6",
+                slug: "subnetting",
+            },
+            ExamEntry {
+                objective: "1.8",
+                slug: "ipv6-addressing",
+            },
+            ExamEntry {
+                objective: "1.9",
+                slug: "traffic-types",
+            },
+            ExamEntry {
+                objective: "1.11",
+                slug: "wireless-media",
+            },
+            ExamEntry {
+                objective: "1.11",
+                slug: "wireless-technologies",
+            },
+            ExamEntry {
+                objective: "1.12",
+                slug: "cloud-computing",
+            },
+        ],
+    },
+    ExamSection {
+        heading: "2.0 Network access",
+        entries: &[ExamEntry {
+            objective: "2.1",
+            slug: "switching-technologies",
+        }],
+    },
+    ExamSection {
+        heading: "3.0 IP connectivity",
+        entries: &[ExamEntry {
+            objective: "3.1",
+            slug: "routing-technologies",
+        }],
+    },
+    ExamSection {
+        heading: "4.0 IP services",
+        entries: &[
+            ExamEntry {
+                objective: "4.3",
+                slug: "network-protocols",
+            },
+            ExamEntry {
+                objective: "4.7",
+                slug: "quality-of-service",
+            },
+        ],
+    },
+    ExamSection {
+        heading: "5.0 Security fundamentals",
+        entries: &[ExamEntry {
+            objective: "5.5",
+            slug: "vpns-and-ipsec",
+        }],
+    },
+    ExamSection {
+        heading: "6.0 Automation and programmability",
+        entries: &[ExamEntry {
+            objective: "6.2",
+            slug: "software-defined-networking",
+        }],
+    },
+];
+
+// CCNA 200-301 v2.0 ordering. v2.0 also drops topologies, the OSI model as a
+// TCP-versus-UDP objective, traffic types, and QoS
+const CCNA_V2_0: &[ExamSection] = &[
+    ExamSection {
+        heading: "1.0 Network infrastructure and connectivity",
+        entries: &[
+            ExamEntry {
+                objective: "1.1",
+                slug: "transmission-media",
+            },
+            ExamEntry {
+                objective: "1.1",
+                slug: "wired-media",
+            },
+            ExamEntry {
+                objective: "1.1",
+                slug: "transceivers",
+            },
+            ExamEntry {
+                objective: "1.2",
+                slug: "cloud-computing",
+            },
+            ExamEntry {
+                objective: "1.3",
+                slug: "ipv4-addressing",
+            },
+            ExamEntry {
+                objective: "1.3",
+                slug: "subnetting",
+            },
+            ExamEntry {
+                objective: "1.4",
+                slug: "ipv6-addressing",
+            },
+            ExamEntry {
+                objective: "1.5",
+                slug: "wireless-media",
+            },
+            ExamEntry {
+                objective: "1.5",
+                slug: "wireless-technologies",
+            },
+        ],
+    },
+    ExamSection {
+        heading: "2.0 Switching and network access",
+        entries: &[
+            ExamEntry {
+                objective: "2.1",
+                slug: "switching-technologies",
+            },
+            ExamEntry {
+                objective: "2.2",
+                slug: "network-appliances",
+            },
+        ],
+    },
+    ExamSection {
+        heading: "3.0 IP routing",
+        entries: &[ExamEntry {
+            objective: "3.1",
+            slug: "routing-technologies",
+        }],
+    },
+    ExamSection {
+        heading: "4.0 Network services and security",
+        entries: &[
+            ExamEntry {
+                objective: "4.4",
+                slug: "network-protocols",
+            },
+            ExamEntry {
+                objective: "4.5",
+                slug: "vpns-and-ipsec",
+            },
+        ],
+    },
+    ExamSection {
+        heading: "5.0 AI, network operations, and management",
+        entries: &[ExamEntry {
+            objective: "5.3",
+            slug: "software-defined-networking",
+        }],
+    },
+];
+
+// First day CCNA 200-301 v2.0 is delivered. v1.1's last day is the day before,
+// and the CCNA ordering switches blueprints on this date without a redeploy
+const CCNA_V2_FIRST_DAY: (i32, u32, u32) = (2027, 2, 3);
+
+// One link in a rendered sidebar ordering. Exam orderings carry the objective
+pub struct NavEntry {
+    pub slug: &'static str,
+    pub label: &'static str,
+    pub objective: Option<&'static str>,
+}
+
+// One heading's worth of links in a rendered sidebar ordering
+pub struct NavSection {
+    pub heading: &'static str,
+    pub entries: Vec<NavEntry>,
+}
+
+// One of the three sidebar orderings the toggle switches between
+pub struct NavView {
+    pub key: &'static str,
+    pub name: &'static str,
+    pub notes: Vec<String>,
+    pub sections: Vec<NavSection>,
+}
+
 #[derive(Template)]
 #[template(path = "wiki_page.html")]
 pub struct WikiPageTemplate {
     pub page: Page,
-    pub sidebar: &'static [SidebarSection],
+    pub views: Vec<NavView>,
     pub active_slug: &'static str,
 }
 
@@ -211,9 +567,118 @@ async fn render_for_slug(slug: &'static str) -> Result<WikiPageTemplate, SiteErr
     let page = Page::find(&pages_dir, slug)?;
     Ok(WikiPageTemplate {
         page,
-        sidebar: SIDEBAR,
+        views: nav_views(slug, Utc::now().date_naive()),
         active_slug: slug,
     })
+}
+
+// Pick the CCNA blueprint that is live on a given day, with its version name
+fn ccna_blueprint(today: NaiveDate) -> (&'static str, &'static [ExamSection]) {
+    let (year, month, day) = CCNA_V2_FIRST_DAY;
+    let first_day = NaiveDate::from_ymd_opt(year, month, day).expect("cutover date is valid");
+    if today >= first_day {
+        ("v2.0", CCNA_V2_0)
+    } else {
+        ("v1.1", CCNA_V1_1)
+    }
+}
+
+// Build the topic, CCNA, and Network+ orderings for the page being shown
+fn nav_views(active: &str, today: NaiveDate) -> Vec<NavView> {
+    let topic = NavView {
+        key: "topic",
+        name: "Topic",
+        notes: Vec::new(),
+        sections: SIDEBAR
+            .iter()
+            .map(|section| NavSection {
+                heading: section.heading,
+                entries: section
+                    .entries
+                    .iter()
+                    .map(|entry| NavEntry {
+                        slug: entry.slug,
+                        label: entry.label,
+                        objective: None,
+                    })
+                    .collect(),
+            })
+            .collect(),
+    };
+    let (version, ccna) = ccna_blueprint(today);
+    vec![
+        topic,
+        exam_view(
+            "ccna",
+            "CCNA",
+            &format!("CCNA 200-301 {version}"),
+            ccna,
+            active,
+        ),
+        exam_view(
+            "netplus",
+            "Network+",
+            "Network+ N10-009",
+            NETWORK_PLUS,
+            active,
+        ),
+    ]
+}
+
+// Build one exam ordering. It lists only pages on that exam, and says so when
+// the page being shown is not one of them
+fn exam_view(
+    key: &'static str,
+    name: &'static str,
+    exam: &str,
+    sections: &'static [ExamSection],
+    active: &str,
+) -> NavView {
+    let mut notes = vec![format!("Pages on {exam}, by objective.")];
+    let listed = active == OVERVIEW_SLUG
+        || sections
+            .iter()
+            .any(|section| section.entries.iter().any(|entry| entry.slug == active));
+    if !listed {
+        notes.push("This page is not on this exam.".to_string());
+    }
+
+    let overview = NavSection {
+        heading: SIDEBAR[0].heading,
+        entries: vec![NavEntry {
+            slug: OVERVIEW_SLUG,
+            label: SIDEBAR[0].entries[0].label,
+            objective: None,
+        }],
+    };
+    let domains = sections.iter().map(|section| NavSection {
+        heading: section.heading,
+        entries: section
+            .entries
+            .iter()
+            .map(|entry| NavEntry {
+                slug: entry.slug,
+                label: sidebar_label(entry.slug).unwrap_or(entry.slug),
+                objective: Some(entry.objective),
+            })
+            .collect(),
+    });
+
+    NavView {
+        key,
+        name,
+        notes,
+        sections: std::iter::once(overview).chain(domains).collect(),
+    }
+}
+
+// Look up a page's sidebar label, so exam orderings never restate one
+fn sidebar_label(slug: &str) -> Option<&'static str> {
+    SIDEBAR
+        .iter()
+        .flat_map(|section| section.entries.iter())
+        .find(|entry| entry.slug == slug)
+        .map(|entry| entry.label)
 }
 
 // Permanently redirect the legacy /wiki root to /learn
@@ -265,7 +730,7 @@ mod tests {
             Page::find(&PathBuf::from(PAGES_DIR), OVERVIEW_SLUG).expect("overview page must exist");
         let html = WikiPageTemplate {
             page,
-            sidebar: SIDEBAR,
+            views: nav_views(OVERVIEW_SLUG, before_cutover()),
             active_slug: OVERVIEW_SLUG,
         }
         .render()
@@ -296,26 +761,34 @@ mod tests {
         let page = Page::find(&PathBuf::from(PAGES_DIR), slug).expect("OSI page must exist");
         let html = WikiPageTemplate {
             page,
-            sidebar: SIDEBAR,
+            views: nav_views(slug, before_cutover()),
             active_slug: slug,
         }
         .render()
         .expect("template renders");
-        // Exactly one entry is active, and its <li> wraps the OSI-model link.
-        assert_eq!(
-            html.matches("class=\"active\"").count(),
-            1,
-            "exactly one sidebar entry should be active"
-        );
-        let active_li = html
-            .split("<li class=\"active\">")
-            .nth(1)
-            .and_then(|rest| rest.split("</li>").next())
-            .expect("an active sidebar entry should exist");
-        assert!(
-            active_li.contains("/learn/osi-model"),
-            "expected OSI model to be the active sidebar entry"
-        );
+        // The page is in all three orderings. Each marks exactly one entry
+        // active, and that entry's <li> wraps the OSI-model link.
+        for view in ["topic", "ccna", "netplus"] {
+            let block = html
+                .split(&format!("data-view=\"{view}\""))
+                .nth(1)
+                .and_then(|rest| rest.split("data-view=").next())
+                .unwrap_or_else(|| panic!("the {view} ordering should render"));
+            assert_eq!(
+                block.matches("class=\"active\"").count(),
+                1,
+                "exactly one entry should be active in the {view} ordering"
+            );
+            let active_li = block
+                .split("<li class=\"active\">")
+                .nth(1)
+                .and_then(|rest| rest.split("</li>").next())
+                .expect("an active sidebar entry should exist");
+            assert!(
+                active_li.contains("/learn/osi-model"),
+                "expected OSI model to be the active entry in the {view} ordering"
+            );
+        }
     }
 
     // End-to-end guard for the heading-anchor pass in models::markdown: a real
@@ -328,7 +801,7 @@ mod tests {
         let page = Page::find(&PathBuf::from(PAGES_DIR), slug).expect("OSI page must exist");
         let html = WikiPageTemplate {
             page,
-            sidebar: SIDEBAR,
+            views: nav_views(slug, before_cutover()),
             active_slug: slug,
         }
         .render()
@@ -361,6 +834,139 @@ mod tests {
                 "{old} redirects to {new}, which is not a published page"
             );
         }
+    }
+
+    // A fixed day on the v1.1 side of the CCNA cutover, so tests do not change
+    // behavior when the calendar does
+    fn before_cutover() -> NaiveDate {
+        NaiveDate::from_ymd_opt(2026, 9, 25).expect("valid date")
+    }
+
+    // Split an objective like "1.11" into (1, 11) so it sorts numerically
+    fn objective_key(objective: &str) -> (u32, u32) {
+        let (domain, item) = objective
+            .split_once('.')
+            .unwrap_or_else(|| panic!("objective {objective} is not domain.item"));
+        (
+            domain.parse().expect("numeric domain"),
+            item.parse().expect("numeric item"),
+        )
+    }
+
+    const EXAM_ORDERINGS: &[(&str, &[ExamSection])] = &[
+        ("Network+ N10-009", NETWORK_PLUS),
+        ("CCNA v1.1", CCNA_V1_1),
+        ("CCNA v2.0", CCNA_V2_0),
+    ];
+
+    // An exam ordering can only point at published pages, each once, filed
+    // under the right domain and in objective order
+    #[test]
+    fn exam_orderings_list_published_pages_once_in_objective_order() {
+        for (exam, sections) in EXAM_ORDERINGS {
+            let mut seen = Vec::new();
+            let mut previous = (0, 0);
+            for section in *sections {
+                let domain: u32 = section
+                    .heading
+                    .split('.')
+                    .next()
+                    .and_then(|d| d.parse().ok())
+                    .unwrap_or_else(|| panic!("{exam}: heading {} has no domain", section.heading));
+                for entry in section.entries {
+                    assert!(
+                        lookup_sidebar_slug(entry.slug).is_some() && entry.slug != OVERVIEW_SLUG,
+                        "{exam}: {} is not a published topic page",
+                        entry.slug
+                    );
+                    assert!(
+                        !seen.contains(&entry.slug),
+                        "{exam}: {} is listed twice",
+                        entry.slug
+                    );
+                    seen.push(entry.slug);
+                    let key = objective_key(entry.objective);
+                    assert_eq!(
+                        key.0, domain,
+                        "{exam}: {} is filed under the wrong domain",
+                        entry.slug
+                    );
+                    assert!(
+                        key >= previous,
+                        "{exam}: {} is out of objective order",
+                        entry.slug
+                    );
+                    previous = key;
+                }
+            }
+        }
+    }
+
+    // Every networking page maps to Network+, because the notes follow its
+    // objectives. Pages that cite the Network+ textbook must appear there
+    #[test]
+    fn network_plus_ordering_covers_every_networking_page() {
+        let listed: Vec<&str> = NETWORK_PLUS
+            .iter()
+            .flat_map(|section| section.entries.iter().map(|entry| entry.slug))
+            .collect();
+        for slug in sidebar_slugs() {
+            if slug == OVERVIEW_SLUG {
+                continue;
+            }
+            let body = std::fs::read_to_string(format!("{PAGES_DIR}/{slug}.md"))
+                .expect("every sidebar page exists");
+            let networking = body.contains("Ian Neil");
+            assert_eq!(
+                listed.contains(&slug),
+                networking,
+                "{slug}: the Network+ ordering should list exactly the networking pages"
+            );
+        }
+    }
+
+    // The exam orderings leave out what the exam does not cover
+    #[test]
+    fn ccna_orderings_leave_out_material_off_the_blueprint() {
+        for sections in [CCNA_V1_1, CCNA_V2_0] {
+            for section in sections {
+                for entry in section.entries {
+                    assert!(
+                        !entry.slug.starts_with("linux-")
+                            && entry.slug != "content-delivery-networks"
+                            && entry.slug != "zero-trust-architecture",
+                        "{} is not on the CCNA blueprint",
+                        entry.slug
+                    );
+                }
+            }
+        }
+    }
+
+    // The CCNA ordering follows whichever blueprint is being delivered that day
+    #[test]
+    fn ccna_ordering_switches_to_v2_on_its_first_day() {
+        let last_v1 = NaiveDate::from_ymd_opt(2027, 2, 2).expect("valid date");
+        let first_v2 = NaiveDate::from_ymd_opt(2027, 2, 3).expect("valid date");
+        assert_eq!(ccna_blueprint(last_v1).0, "v1.1");
+        assert_eq!(ccna_blueprint(first_v2).0, "v2.0");
+    }
+
+    // A reader on a page the exam does not cover is told so, not left looking
+    // for a highlighted entry that is not there
+    #[test]
+    fn a_page_off_an_exam_says_so_in_that_ordering() {
+        let views = nav_views("content-delivery-networks", before_cutover());
+        let notes = |key: &str| {
+            views
+                .iter()
+                .find(|view| view.key == key)
+                .map(|view| view.notes.join(" "))
+                .expect("ordering exists")
+        };
+        assert!(notes("ccna").contains("not on this exam"));
+        assert!(!notes("netplus").contains("not on this exam"));
+        assert!(notes("topic").is_empty());
     }
 
     #[test]

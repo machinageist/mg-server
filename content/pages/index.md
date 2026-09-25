@@ -43,32 +43,33 @@ Two other parts of the site are built from these pages:
 
 ## Networking foundations
 
+Grouped by subject, from how networks are described down to the wire and back up
+to the services on top. The sidebar has a toggle that lists the same pages by CCNA
+or Network+ objective instead.
+
+### Models and patterns
+
 - [OSI model](/learn/osi-model) — a seven-layer reference model for connecting
   protocols, devices, encapsulation, and troubleshooting to the larger communication
   system.
 - [Network topologies](/learn/network-topologies) — how nodes and links are arranged,
   from mesh and star to spine-and-leaf and tiered enterprise designs.
-- [Transmission media](/learn/transmission-media) — the radio, copper, and fiber
-  that carry data, what bounds each one, and who standardizes what.
-- [Wireless media](/learn/wireless-media) — taking turns on a shared channel,
-  the 802.11 generations and their bands, cellular, and satellite.
-- [Wired media](/learn/wired-media) — copper categories, the 802.3 standards,
-  single-mode and multimode fiber, coax, and plenum ratings.
-- [Transceivers and connectors](/learn/transceivers) — pluggable modules, their form
-  factors, and the connectors that terminate copper and fiber.
-- [Network appliances](/learn/network-appliances) — the physical and virtual systems
-  that forward, filter, distribute, store, and expose network traffic.
-- [Content delivery networks](/learn/content-delivery-networks) — serving content
-  from the edge, and where the CDN ends and the application begins.
-- [VPNs and IPsec](/learn/vpns-and-ipsec) — tunneling, site-to-site and remote-access
-  VPNs, and how AH, ESP, and IKE fit together.
-- [Quality of service](/learn/quality-of-service) — classifying, marking, queuing, and
-  limiting competing traffic.
-- [Network protocols and ports](/learn/network-protocols) — common application
-  protocols, the port ranges IANA allocates, and the network-layer protocols that
-  carry them.
 - [Network traffic types](/learn/traffic-types) — unicast, multicast, anycast, and
   broadcast delivery patterns.
+
+### Physical layer
+
+- [Transmission media](/learn/transmission-media) — the radio, copper, and fiber
+  that carry data, what bounds each one, and who standardizes what.
+- [Wired media](/learn/wired-media) — copper categories, the 802.3 standards,
+  single-mode and multimode fiber, coax, and plenum ratings.
+- [Wireless media](/learn/wireless-media) — taking turns on a shared channel,
+  the 802.11 generations and their bands, cellular, and satellite.
+- [Transceivers and connectors](/learn/transceivers) — pluggable modules, their form
+  factors, and the connectors that terminate copper and fiber.
+
+### Addressing
+
 - [IPv4 addressing](/learn/ipv4-addressing) — binary octets, public and private
   ranges, subnet masks, CIDR, and variable length subnet masking.
 - [Subnetting, CIDR, and VLSM](/learn/subnetting) — counting hosts and networks,
@@ -76,18 +77,41 @@ Two other parts of the site are built from these pages:
 - [IPv6 addressing](/learn/ipv6-addressing) — hextets and zero compression, the
   address types on a working interface, neighbor discovery, and coexistence with
   IPv4.
+
+### Local networks
+
+- [Switching technologies](/learn/switching-technologies) — VLANs and trunks, the
+  802.1Q tag, link aggregation, spanning tree, and what bounds the size of a frame.
+- [Wireless technologies](/learn/wireless-technologies) — channels and channel
+  width, SSIDs and roaming, wireless network types, WPA2 and WPA3, 802.1X, and
+  access point management.
+
+### Between networks
+
+- [Routing technologies and route selection](/learn/routing-technologies) — static
+  and dynamic routing, BGP, EIGRP, and OSPF, how a router breaks a tie between two
+  matching routes, NAT, and first-hop redundancy.
+- [VPNs and IPsec](/learn/vpns-and-ipsec) — tunneling, site-to-site and remote-access
+  VPNs, and how AH, ESP, and IKE fit together.
+- [Quality of service](/learn/quality-of-service) — classifying, marking, queuing, and
+  limiting competing traffic.
+
+### Services and devices
+
+- [Network protocols and ports](/learn/network-protocols) — common application
+  protocols, the port ranges IANA allocates, and the network-layer protocols that
+  carry them.
+- [Network appliances](/learn/network-appliances) — the physical and virtual systems
+  that forward, filter, distribute, store, and expose network traffic.
+- [Content delivery networks](/learn/content-delivery-networks) — serving content
+  from the edge, and where the CDN ends and the application begins.
+
+### Modern environments
+
 - [Cloud computing concepts](/learn/cloud-computing) — NFV, virtual private clouds,
   cloud traffic controls, and deployment and service models.
 - [Software-defined networking](/learn/software-defined-networking) — separating
   the control and data planes, SD-WAN, VXLAN overlays, and infrastructure as code.
-- [Switching technologies](/learn/switching-technologies) — VLANs and trunks, the
-  802.1Q tag, link aggregation, spanning tree, and what bounds the size of a frame.
-- [Routing technologies and route selection](/learn/routing-technologies) — static
-  and dynamic routing, BGP, EIGRP, and OSPF, how a router breaks a tie between two
-  matching routes, NAT, and first-hop redundancy.
-- [Wireless technologies](/learn/wireless-technologies) — channels and channel
-  width, SSIDs and roaming, wireless network types, WPA2 and WPA3, 802.1X, and
-  access point management.
 - [Zero-trust architecture](/learn/zero-trust-architecture) — verifying every
   request rather than trusting a location, the NIST policy model, and SASE.
 

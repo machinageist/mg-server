@@ -3855,6 +3855,72 @@ pre {
     border-left-color: var(--accent);
 }
 
+/* The sidebar holds three orderings of the same pages. Topic shows by default,
+   and data-learn-order on <html> (set by learn-order.js) swaps in another. */
+.wiki-view {
+    display:        flex;
+    flex-direction: column;
+    gap:            1.5rem;
+}
+
+.wiki-view[data-view="ccna"],
+.wiki-view[data-view="netplus"],
+:root[data-learn-order="ccna"] .wiki-view[data-view="topic"],
+:root[data-learn-order="netplus"] .wiki-view[data-view="topic"] {
+    display: none;
+}
+
+:root[data-learn-order="ccna"] .wiki-view[data-view="ccna"],
+:root[data-learn-order="netplus"] .wiki-view[data-view="netplus"] {
+    display: flex;
+}
+
+.wiki-order {
+    display:               grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:                   0.25rem;
+}
+
+.wiki-order[hidden] {
+    display: none;
+}
+
+.wiki-order button {
+    font:          inherit;
+    font-size:     0.7rem;
+    padding:       0.25rem 0.1rem;
+    color:         var(--text-muted);
+    background:    transparent;
+    border:        1px solid var(--border);
+    border-radius: 4px;
+    cursor:        pointer;
+}
+
+.wiki-order button:hover {
+    color: var(--text);
+}
+
+.wiki-order button[aria-pressed="true"] {
+    color:        var(--accent);
+    background:   var(--surface);
+    border-color: var(--accent);
+}
+
+.wiki-view-note {
+    color:       var(--text-faint);
+    font-size:   0.75rem;
+    line-height: 1.4;
+    margin:      0;
+}
+
+/* Exam orderings prefix each page with its objective number */
+.wiki-objective {
+    display:              inline-block;
+    min-width:            2.5em;
+    color:                var(--text-faint);
+    font-variant-numeric: tabular-nums;
+}
+
 /* Lab names run to a short sentence, so an entry wraps to two or three lines.
    The wiki's flat line-height leaves the wrap ambiguous — a little extra gap
    and a tighter wrap keep one entry visibly one entry. */

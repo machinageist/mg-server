@@ -164,6 +164,28 @@ bin. `tests/wiki_pages.rs` enforces it in both directions —
 `no_orphaned_wiki_pages_on_disk` catches a file with no sidebar entry. **Adding a Markdown
 file to `content/pages/` and nothing else breaks the build.**
 
+**Three sidebar orderings (added 2026-09-25).** `SIDEBAR` is the topic ordering, grouped by
+subject, and it stays the allowlist of servable pages. `handlers/wiki.rs` also holds
+`NETWORK_PLUS`, `CCNA_V1_1`, and `CCNA_V2_0`, which file each page under the objective it
+maps to. A toggle in the sidebar (`static/js/learn-order.js`, stored in `localStorage`)
+switches between them. The server renders all three, and with JavaScript off the topic
+order shows. A new networking page therefore also goes in `NETWORK_PLUS`, and in the CCNA
+orderings only if the blueprint covers it. Material off an exam is left out of that
+exam's ordering entirely, and the page says so in the sidebar note. Tests in `wiki.rs`
+hold the rules: every networking page is in `NETWORK_PLUS`, each exam ordering lists
+published pages once, in objective order, under the right domain, and the CCNA orderings
+never list CDNs, zero trust, or Linux.
+
+**CCNA cutover.** `CCNA_V2_FIRST_DAY` is 2027-02-03, the first day v2.0 is delivered (v1.1's
+last day is 2027-02-02). The CCNA ordering switches on that date without a redeploy. The
+exam key points on the pages do not switch themselves: they cite v1.1 numbers first with
+v2.0 noted, and after the cutover they should be flipped to lead with v2.0.
+
+**Retired slugs.** `RENAMED_SLUGS` in `wiki.rs` permanently redirects a split or renamed
+page's old URL. `network-functions` went to `vpns-and-ipsec` (with QoS and TTL moved to
+`quality-of-service` and `routing-technologies`), and `network-applications` became
+`content-delivery-networks`.
+
 ---
 
 ## 6. The page-authoring contract
