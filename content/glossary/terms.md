@@ -84,7 +84,7 @@ entries:
       for protected parts of a packet, with no confidentiality.
     see_also: ["ipsec", "encapsulating-security-payload"]
     learn:
-      - { slug: "network-functions", anchor: "ipsec", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
+      - { slug: "vpns-and-ipsec", anchor: "ipsec", label: "VPNs and IPsec" }
 
   - term: "Autonomous system"
     aka: ["AS"]
@@ -270,7 +270,7 @@ entries:
       an application. It is not the application.
     see_also: ["origin-server", "reverse-proxy"]
     learn:
-      - { slug: "network-applications", anchor: "overview", label: "Network applications: content delivery networks" }
+      - { slug: "content-delivery-networks", anchor: "overview", label: "Content delivery networks" }
 
   - term: "Context switch"
     category: linux
@@ -399,7 +399,7 @@ entries:
       encryption is needed.
     see_also: ["ipsec", "authentication-header"]
     learn:
-      - { slug: "network-functions", anchor: "ipsec", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
+      - { slug: "vpns-and-ipsec", anchor: "ipsec", label: "VPNs and IPsec" }
 
   - term: "Encapsulation"
     category: networking
@@ -551,7 +551,7 @@ entries:
       bounding a packet's path through a routed network.
     see_also: ["time-to-live", "hop"]
     learn:
-      - { slug: "network-functions", anchor: "packet-lifetime-ttl-and-hop-limit", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
+      - { slug: "routing-technologies", anchor: "packet-lifetime-ttl-and-hop-limit", label: "Routing technologies and route selection" }
 
   - term: "Hub"
     category: networking
@@ -618,7 +618,7 @@ entries:
       Commonly UDP port 500, or 4500 when traversing NAT.
     see_also: ["ipsec", "security-association"]
     learn:
-      - { slug: "network-functions", anchor: "internet-key-exchange", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
+      - { slug: "vpns-and-ipsec", anchor: "internet-key-exchange", label: "VPNs and IPsec" }
 
   - term: "Intrusion detection system"
     aka: ["IDS"]
@@ -648,7 +648,7 @@ entries:
       security associations that define how selected traffic is protected.
     see_also: ["security-association", "encapsulating-security-payload", "authentication-header", "internet-key-exchange", "virtual-private-network"]
     learn:
-      - { slug: "network-functions", anchor: "ipsec", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
+      - { slug: "vpns-and-ipsec", anchor: "ipsec", label: "VPNs and IPsec" }
 
   - term: "Jumbo frame"
     category: networking
@@ -995,7 +995,7 @@ entries:
       connection, or the application.
     see_also: ["content-delivery-network"]
     learn:
-      - { slug: "network-applications", anchor: "a-simple-request-path", label: "Network applications: content delivery networks" }
+      - { slug: "content-delivery-networks", anchor: "a-simple-request-path", label: "Content delivery networks" }
 
   - term: "PATH"
     category: linux
@@ -1170,7 +1170,7 @@ entries:
       bandwidth that is not there.
     see_also: ["voice-vlan"]
     learn:
-      - { slug: "network-functions", anchor: "quality-of-service", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
+      - { slug: "quality-of-service", anchor: "the-mechanisms", label: "Quality of service" }
 
   - term: "RADIUS"
     aka: ["Remote Authentication Dial-In User Service"]
@@ -1244,7 +1244,7 @@ entries:
       needs one in each direction.
     see_also: ["ipsec", "internet-key-exchange"]
     learn:
-      - { slug: "network-functions", anchor: "ipsec", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
+      - { slug: "vpns-and-ipsec", anchor: "ipsec", label: "VPNs and IPsec" }
 
   - term: "Security group"
     category: networking
@@ -1518,7 +1518,7 @@ entries:
       packet forever.
     see_also: ["hop", "hop-limit"]
     learn:
-      - { slug: "network-functions", anchor: "packet-lifetime-ttl-and-hop-limit", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
+      - { slug: "routing-technologies", anchor: "packet-lifetime-ttl-and-hop-limit", label: "Routing technologies and route selection" }
 
   - term: "Topology"
     category: networking
@@ -1559,7 +1559,7 @@ entries:
       authentication. Those come from cryptography added on top.
     see_also: ["virtual-private-network", "encapsulation", "ipsec"]
     learn:
-      - { slug: "network-functions", anchor: "tunneling-and-vpns", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
+      - { slug: "vpns-and-ipsec", anchor: "tunneling-and-vpns", label: "VPNs and IPsec" }
 
   - term: "Umask"
     category: linux
@@ -1666,7 +1666,7 @@ entries:
       environment.
     see_also: ["tunneling", "ipsec"]
     learn:
-      - { slug: "network-functions", anchor: "tunneling-and-vpns", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
+      - { slug: "vpns-and-ipsec", anchor: "tunneling-and-vpns", label: "VPNs and IPsec" }
 
   - term: "Virtual Router Redundancy Protocol"
     aka: ["VRRP"]

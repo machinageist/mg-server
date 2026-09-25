@@ -208,8 +208,8 @@ recognize.
   multicast range that class D reserves.
 - [Network appliances](/learn/network-appliances) — the routers and gateways
   that act on the network/host boundary this page describes.
-- [Network functions](/learn/network-functions) — routing, tunneling, and what
-  happens to a packet once it leaves its own subnet.
+- [Routing technologies](/learn/routing-technologies) — what happens to a packet
+  once it leaves its own subnet.
 - [Moving my homelab management network first](/blog/management-layer-first-network-migration)
   — a subnet migration I performed, including the outage caused by systems still
   referring to the old addresses.

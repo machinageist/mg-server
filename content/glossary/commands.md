@@ -342,7 +342,7 @@ entries:
     example: "tracepath example.com"
     see_also: ["ping", "ip"]
     learn:
-      - { slug: "network-functions", anchor: "suggested-practice-observe-packet-lifetime", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
+      - { slug: "routing-technologies", anchor: "suggested-practice-explain-your-own-routing-table", label: "Routing technologies and route selection" }
       - { slug: "routing-technologies", anchor: "suggested-practice-explain-your-own-routing-table", label: "Routing technologies and route selection" }
       - { slug: "network-topologies", anchor: "suggested-practice-map-both-topologies-of-a-network-you-own", label: "Network topologies" }
     man: "https://man7.org/linux/man-pages/man8/traceroute.8.html"

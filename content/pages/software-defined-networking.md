@@ -235,8 +235,8 @@ control.
   clouds, and the virtualization these designs assume.
 - [Network appliances](/learn/network-appliances) — the physical devices whose
   control planes are being centralized.
-- [Network functions](/learn/network-functions) — tunneling and VPNs, the
-  encapsulation pattern VXLAN generalizes.
+- [VPNs and IPsec](/learn/vpns-and-ipsec) — tunneling, the encapsulation pattern
+  VXLAN generalizes.
 - [IPv6 addressing](/learn/ipv6-addressing) — the addressing model that makes
   large overlay designs practical.
 

@@ -185,8 +185,8 @@ multitenancy.
 
 - [Network appliances](/learn/network-appliances) — the physical roles
   (routing, firewalling, load balancing) that NFV reimplements in software.
-- [Network functions](/learn/network-functions) — VPNs and IPsec, relevant to
-  the connectivity options described above.
+- [VPNs and IPsec](/learn/vpns-and-ipsec) — relevant to the connectivity options
+  described above.
 - [Network protocols and ports](/learn/network-protocols) — the port-level
   detail behind a security group or access-list rule.
 

@@ -58,10 +58,12 @@ Two other parts of the site are built from these pages:
   factors, and the connectors that terminate copper and fiber.
 - [Network appliances](/learn/network-appliances) — the physical and virtual systems
   that forward, filter, distribute, store, and expose network traffic.
-- [Network applications](/learn/network-applications) — beginning with content delivery
-  networks and the relationship between distributed infrastructure and applications.
-- [Network functions](/learn/network-functions) — VPNs, tunneling, IPsec, quality of
-  service, and the lifetime of routed packets.
+- [Content delivery networks](/learn/content-delivery-networks) — serving content
+  from the edge, and where the CDN ends and the application begins.
+- [VPNs and IPsec](/learn/vpns-and-ipsec) — tunneling, site-to-site and remote-access
+  VPNs, and how AH, ESP, and IKE fit together.
+- [Quality of service](/learn/quality-of-service) — classifying, marking, queuing, and
+  limiting competing traffic.
 - [Network protocols and ports](/learn/network-protocols) — common application
   protocols, the port ranges IANA allocates, and the network-layer protocols that
   carry them.

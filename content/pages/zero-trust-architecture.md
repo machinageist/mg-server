@@ -153,8 +153,8 @@ authorization, and least privilege access) and SASE and SSE.
   sits in front of, and the VPC boundaries policy is written against.
 - [Network appliances](/learn/network-appliances) — firewalls and proxies, the
   devices that become enforcement points.
-- [Network functions](/learn/network-functions) — VPNs and IPsec, the remote
-  access model zero trust is replacing.
+- [VPNs and IPsec](/learn/vpns-and-ipsec) — the remote access model zero trust is
+  replacing.
 
 ## Sources and further reading
 

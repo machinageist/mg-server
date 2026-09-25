@@ -79,7 +79,7 @@ applied, and keeps the traffic out of the data VLAN's broadcasts.
 
 Separating the traffic is necessary but not sufficient. A voice VLAN only improves
 call quality if something along the path acts on the priority marking.
-[Network functions](/learn/network-functions) covers how that marking is honored, or
+[Quality of service](/learn/quality-of-service) covers how that marking is honored, or
 not.
 
 ### Private VLANs

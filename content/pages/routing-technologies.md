@@ -235,6 +235,17 @@ virtual interfaces does the same job internally without that constraint. See
 [switching technologies](/learn/switching-technologies) for the trunking and tagging
 that feed these subinterfaces.
 
+## Packet lifetime: TTL and Hop Limit
+
+The IPv4 header has an eight-bit TTL field. Each forwarding router decreases it. When
+it reaches zero, the router discards the packet. IPv6 calls the corresponding field
+Hop Limit. Without this bound, a routing loop could circulate a packet indefinitely.
+
+Despite the name "Time to Live," modern forwarding treats TTL as a hop bound rather
+than a wall-clock timer. Operating systems choose different initial values, so `128`
+is common but not universal. Tools such as `traceroute` and `tracepath` vary the value
+to expose successive routers along a path.
+
 ## Suggested practice: explain your own routing table
 
 On a machine you own:
@@ -254,6 +265,9 @@ On a machine you own:
    `sudo ip route del <a prefix>`.
 6. Run `traceroute` or `tracepath` to a destination beyond your own network, and
    match its first hop against what the table said.
+7. Read the rest of the traceroute output. Each line is a router that sent back an
+   ICMP time exceeded message when the TTL ran out. A line of `* * *` means that
+   router did not reply, not that forwarding stopped there.
 
 A Linux host has no administrative distance. That is a router feature, and Linux
 carries a metric on the route instead. So steps 4 and 5 show longest-prefix match,
@@ -296,6 +310,8 @@ HSRP and VRRP status, and NAT and PAT move to 4.3.
   check with `show ip nat translations`.
 - EIGRP and BGP are not configured on the CCNA. Know their route codes and
   distances.
+- Each router decrements the TTL. At zero the packet is dropped and an ICMP time
+  exceeded message goes back, which is how traceroute works.
 
 ### Network+ N10-009
 
@@ -309,6 +325,8 @@ problems.
 - Route selection order: longest prefix first, then administrative distance, then
   metric.
 - PAT lets many hosts share one public address by tracking ports.
+- TTL is listed under network functions in 1.2. It bounds a packet's path, which
+  is what stops a routing loop from lasting forever.
 
 ## Related pages
 
@@ -322,8 +340,8 @@ problems.
   of.
 - [IPv6 addressing](/learn/ipv6-addressing) — addressing designed without needing
   NAT.
-- [Network functions](/learn/network-functions) — packet lifetime, which is what
-  stops a routing loop lasting forever.
+- [VPNs and IPsec](/learn/vpns-and-ipsec) — tunnels, which carry routed traffic
+  across networks that would not route it on their own.
 - [Software-defined networking](/learn/software-defined-networking) — moving the
   route computation off the individual router.
 
@@ -342,6 +360,10 @@ Network+ certification guide, and checked against the primary sources:
   — virtual router election, the virtual address, and failover behavior.
 - [RFC 3022: Traditional IP Network Address Translator](https://www.rfc-editor.org/rfc/rfc3022.txt)
   — basic NAT and the port-multiplexed form.
+- [RFC 791: Internet Protocol](https://www.rfc-editor.org/rfc/rfc791.txt) — the IPv4
+  TTL field.
+- [RFC 8200: IPv6 Specification](https://www.rfc-editor.org/rfc/rfc8200.txt) — the
+  IPv6 Hop Limit field.
 - [RFC 1812: Requirements for IPv4 Routers](https://www.rfc-editor.org/rfc/rfc1812.txt)
   — forwarding behavior and the longest-match rule.
 

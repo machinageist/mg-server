@@ -231,10 +231,12 @@ appliance.
   terminate, and the collision-domain behavior hubs and switches inherit from it.
 - [Network topologies](/learn/network-topologies) — the arrangements these
   appliances are wired into, and where each one sits in them.
-- [Network applications](/learn/network-applications) — how distributed application
-  delivery uses network infrastructure.
-- [Network functions](/learn/network-functions) — tunneling, IPsec, QoS, and packet
-  lifetime.
+- [Content delivery networks](/learn/content-delivery-networks) — how distributed
+  application delivery uses network infrastructure.
+- [VPNs and IPsec](/learn/vpns-and-ipsec) — tunnels, and the cryptography that
+  makes them private.
+- [Quality of service](/learn/quality-of-service) — how these devices decide which
+  traffic goes first.
 
 ## Sources and further reading
 

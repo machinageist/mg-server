@@ -302,10 +302,12 @@ conquer as approaches.
   that Layer 1 signals actually travel over.
 - [Network appliances](/learn/network-appliances) — switches, routers, firewalls,
   proxies, load balancers, storage, and wireless systems.
-- [Network applications](/learn/network-applications) — content delivery networks and
-  distributed request paths.
-- [Network functions](/learn/network-functions) — tunnels, IPsec, QoS, and IP packet
-  lifetime.
+- [Content delivery networks](/learn/content-delivery-networks) — distributed request
+  paths.
+- [VPNs and IPsec](/learn/vpns-and-ipsec) — tunnels, and where encryption sits in the
+  layers.
+- [Routing technologies](/learn/routing-technologies) — layer 3 forwarding, and IP
+  packet lifetime.
 
 ## Sources and further reading
 

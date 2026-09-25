@@ -13,7 +13,7 @@ use crate::models::page::Page;
 use askama::Template;
 use askama_axum::IntoResponse;
 use axum::extract::Path as AxumPath;
-use axum::response::Redirect;
+use axum::response::{Redirect, Response};
 use std::path::PathBuf;
 
 pub(crate) const PAGES_DIR: &str = "content/pages";
@@ -30,6 +30,13 @@ pub struct SidebarSection {
     pub heading: &'static str,
     pub entries: &'static [SidebarEntry],
 }
+
+// Slugs retired when a page was split or renamed, and the page each now points at.
+// Published URLs keep working through a permanent redirect.
+const RENAMED_SLUGS: &[(&str, &str)] = &[
+    ("network-functions", "vpns-and-ipsec"),
+    ("network-applications", "content-delivery-networks"),
+];
 
 // Static education-wiki sidebar layout. New reviewed topics land here when published.
 const SIDEBAR: &[SidebarSection] = &[
@@ -72,12 +79,16 @@ const SIDEBAR: &[SidebarSection] = &[
                 label: "Network appliances",
             },
             SidebarEntry {
-                slug: "network-applications",
-                label: "Network applications",
+                slug: "content-delivery-networks",
+                label: "Content delivery networks",
             },
             SidebarEntry {
-                slug: "network-functions",
-                label: "Network functions",
+                slug: "vpns-and-ipsec",
+                label: "VPNs and IPsec",
+            },
+            SidebarEntry {
+                slug: "quality-of-service",
+                label: "Quality of service",
             },
             SidebarEntry {
                 slug: "network-protocols",
@@ -183,11 +194,15 @@ pub async fn index() -> Result<impl IntoResponse, SiteError> {
     render_for_slug(OVERVIEW_SLUG).await
 }
 
-// Render one education-wiki page selected by URL slug
-pub async fn page(AxumPath(slug): AxumPath<String>) -> Result<impl IntoResponse, SiteError> {
-    let allowed =
-        lookup_sidebar_slug(&slug).ok_or_else(|| SiteError::PageNotFound(slug.clone()))?;
-    render_for_slug(allowed).await
+// Render one education-wiki page selected by URL slug, or redirect a retired one
+pub async fn page(AxumPath(slug): AxumPath<String>) -> Result<Response, SiteError> {
+    if let Some(allowed) = lookup_sidebar_slug(&slug) {
+        return Ok(render_for_slug(allowed).await?.into_response());
+    }
+    if let Some(target) = renamed_slug(&slug) {
+        return Ok(Redirect::permanent(&format!("/learn/{target}")).into_response());
+    }
+    Err(SiteError::PageNotFound(slug))
 }
 
 // Load a page from disk and wrap it with the sidebar context
@@ -217,6 +232,14 @@ pub(crate) fn sidebar_slugs() -> Vec<&'static str> {
         .iter()
         .flat_map(|section| section.entries.iter().map(|entry| entry.slug))
         .collect()
+}
+
+// Look up where a retired slug now lives
+fn renamed_slug(slug: &str) -> Option<&'static str> {
+    RENAMED_SLUGS
+        .iter()
+        .find(|(old, _)| *old == slug)
+        .map(|(_, new)| *new)
 }
 
 // Look up a slug in the sidebar; returns the static slug reference if known
@@ -323,6 +346,21 @@ mod tests {
             html.contains(r#"id="encapsulation-and-decapsulation""#),
             "multi-word headings should slug predictably, so cross-page links stay stable"
         );
+    }
+
+    // A retired slug must redirect somewhere real, and must not also be served
+    #[test]
+    fn renamed_slugs_point_at_published_pages() {
+        for (old, new) in RENAMED_SLUGS {
+            assert!(
+                lookup_sidebar_slug(old).is_none(),
+                "{old} is retired but still in the sidebar"
+            );
+            assert!(
+                lookup_sidebar_slug(new).is_some(),
+                "{old} redirects to {new}, which is not a published page"
+            );
+        }
     }
 
     #[test]

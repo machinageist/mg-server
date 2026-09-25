@@ -177,8 +177,8 @@ Objective 1.7 lists VLSM and CIDR under subnetting.
   the scarcity that made subnetting an exercise in conservation.
 - [Network appliances](/learn/network-appliances) — the routers and gateways
   that act on the boundary a mask defines.
-- [Network functions](/learn/network-functions) — what happens to a packet once
-  the AND test says it belongs to someone else.
+- [Routing technologies](/learn/routing-technologies) — what happens to a packet
+  once the AND test says it belongs to someone else.
 - [Moving my homelab management network first](/blog/management-layer-first-network-migration)
   — a subnet migration I performed, including the outage caused by systems still
   referring to the old addresses.

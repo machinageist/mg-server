@@ -85,8 +85,8 @@ Some study-note shortcuts are easy to misread:
   across another. GRE began as a Cisco protocol and is now an open standard. It
   provides **no encryption or authentication** by itself, so it is often paired
   with IPsec when confidentiality is needed.
-- **IPsec** secures IP traffic. The [network
-  functions](/learn/network-functions) page covers AH, ESP, and IKE.
+- **IPsec** secures IP traffic. The [VPNs and
+  IPsec](/learn/vpns-and-ipsec) page covers AH, ESP, and IKE.
 
 The familiar 1500-byte figure is the Ethernet MTU, not a universal maximum
 packet size. Other link types and jumbo-frame configurations use different
@@ -150,8 +150,8 @@ types ICMP, TCP, UDP, GRE, and IPsec.
 
 - [The OSI model](/learn/osi-model) — where TCP, UDP, and port-based addressing
   sit in the layered model.
-- [Network functions](/learn/network-functions) — IPsec, IKE, and tunneling
-  built on top of these protocols.
+- [VPNs and IPsec](/learn/vpns-and-ipsec) — IPsec, IKE, and tunneling built on
+  top of these protocols.
 - [Network appliances](/learn/network-appliances) — firewalls and load
   balancers that make decisions using this same port and protocol information.
 

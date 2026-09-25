@@ -1,7 +1,7 @@
 ---
-title: "Network applications: content delivery networks"
+title: "Content delivery networks: serving content from the edge"
 date: 2026-07-23
-summary: "A foundational overview of content delivery networks and how distributed infrastructure supports web applications."
+summary: "What a content delivery network is, why it exists, the path a request takes through one, and where the CDN ends and the application begins."
 tags: [education, networking, applications, cdn]
 ---
 
@@ -95,8 +95,8 @@ Objective 1.2 lists the content delivery network as its only application.
   data through transport, routing, local links, and physical media.
 - [Network appliances](/learn/network-appliances) — load balancers, proxies,
   firewalls, and other roles that may participate in a delivery path.
-- [Network functions](/learn/network-functions) — traffic handling, tunneling,
-  quality of service, and packet lifetime.
+- [Quality of service](/learn/quality-of-service) — how devices decide which
+  traffic goes first on a congested link.
 - [How machinageist.dev is hosted](/blog/hosting-machinageist-dev) — documented
   evidence from this site's request path.
 
