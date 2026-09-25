@@ -50,7 +50,7 @@ entries:
     definition: >
       A local trust ranking a router assigns to routes learned from different
       sources. When the same prefix is available from multiple protocols, the
-      lower administrative distance is preferred; it does not measure link speed.
+      lower administrative distance is preferred. It does not measure link speed.
     see_also: ["cidr", "subnet-mask"]
     learn:
       - { slug: "routing-technologies", anchor: "how-a-router-selects-a-route", label: "Routing technologies and route selection" }
@@ -70,8 +70,8 @@ entries:
     category: linux
     definition: >
       Bundling many files into one, which `tar` does. Distinct from
-      compression, which makes a file smaller — the two are separate tools on
-      Linux, which is why the canonical filename is `archive.tar.gz`.
+      compression, which makes a file smaller. The two are separate tools on
+      Linux, which is why the usual filename is `archive.tar.gz`.
     see_also: ["compression"]
     learn:
       - { slug: "linux-archives", anchor: "tar-bundles-many-files", label: "Archives and compression" }
@@ -121,8 +121,8 @@ entries:
     category: networking
     definition: >
       A single, hardened, logged entry point into a network zone. It is only a
-      bastion if it is the *only* path in; if the zone is reachable around it,
-      it is a jump box with extra steps.
+      bastion if it is the only path in. If the zone can be reached around it,
+      it is just a jump box.
     learn:
       - { slug: "zero-trust-architecture", anchor: "the-policy-components", label: "Zero-trust architecture" }
 
@@ -139,8 +139,8 @@ entries:
   - term: "Bounded media"
     category: networking
     definition: >
-      Media confining a signal to a physical path — a copper pair, a glass
-      core. The path is private and measurable, and a station can listen to it
+      Media that confine a signal to a physical path, such as a copper pair or
+      a glass core. The path is private and measurable, and a station can listen to it
       while transmitting, which is what made collision detection possible.
     see_also: ["unbounded-media", "csma-cd"]
     learn:
@@ -160,7 +160,7 @@ entries:
   - term: "Broadcast"
     category: networking
     definition: >
-      Delivery to every host on a segment at once. IPv4 has it; IPv6 removed
+      Delivery to every host on a segment at once. IPv4 has it. IPv6 removed
       it entirely and uses multicast groups instead, which is why an IPv6
       network is quieter than an IPv4 one of the same size.
     see_also: ["multicast", "unicast"]
@@ -212,10 +212,10 @@ entries:
     aka: ["Classless Inter-Domain Routing"]
     category: networking
     definition: >
-      Writing the network/host boundary as an explicit prefix length — the /24
-      in 203.0.113.0/24 — instead of inferring it from an address class. It
-      replaced classful addressing in the 1990s and is what every current
-      router actually uses.
+      Writing the network/host boundary as an explicit prefix length, such as
+      the /24 in 203.0.113.0/24, instead of inferring it from an address class.
+      It replaced classful addressing in the 1990s and is what every current
+      router uses.
     see_also: ["subnet-mask", "supernetting"]
     learn:
       - { slug: "subnetting", anchor: "cidr", label: "Subnetting, CIDR, and VLSM" }
@@ -245,7 +245,7 @@ entries:
     category: linux
     definition: >
       Making a file smaller, which `gzip` does to one stream of bytes. It does
-      not bundle, so `gzip` on a directory does nothing useful; that is
+      not bundle, so `gzip` on a directory does nothing useful. That is
       `tar`'s job.
     see_also: ["archiving"]
     learn:
@@ -267,7 +267,7 @@ entries:
     definition: >
       Servers in many locations delivering content from a place suited to the
       user, sitting between an application's origin and its users. It serves
-      an application; it is not the application.
+      an application. It is not the application.
     see_also: ["origin-server", "reverse-proxy"]
     learn:
       - { slug: "network-applications", anchor: "overview", label: "Network applications: content delivery networks" }
@@ -310,9 +310,9 @@ entries:
   - term: "Default route"
     category: networking
     definition: >
-      The route `0.0.0.0/0`, matching every destination on zero bits. Being
-      the shortest possible prefix is exactly what makes it a last resort —
-      anything more specific beats it.
+      The route `0.0.0.0/0`, matching every destination on zero bits. Because
+      it is the shortest possible prefix, it is the last resort. Anything more
+      specific beats it.
     see_also: ["prefix-length", "longest-prefix-match", "routing-table"]
     learn:
       - { slug: "routing-technologies", anchor: "prefix-length", label: "Routing technologies and route selection" }
@@ -332,7 +332,7 @@ entries:
     category: networking
     definition: >
       Whether an interface can send and receive at the same time. Full duplex
-      does both and is what every switched link uses; half duplex allows one
+      does both and is what every switched link uses. Half duplex allows one
       direction at a time. A mismatch leaves the link up but collapses
       throughput under load, which reads like a failing cable.
     see_also: ["collision-domain"]
@@ -426,8 +426,8 @@ entries:
     category: linux
     definition: >
       A shell variable marked for inheritance by child processes, using
-      `export`. It does not write anything to disk and is not permanent —
-      permanence comes from a startup file setting it again each time a shell
+      `export`. It does not write anything to disk and is not permanent. It
+      only seems permanent when a startup file sets it again each time a shell
       starts.
     see_also: ["shell-variable", "path"]
     learn:
@@ -590,8 +590,8 @@ entries:
     category: networking
     definition: >
       The last 64 bits of an IPv6 address, identifying an interface on its
-      link. EUI-64 is one way to build it — derived from the MAC address —
-      but modern systems prefer identifiers that are stable per network and
+      link. EUI-64, derived from the MAC address, is one way to build it, but
+      modern systems prefer identifiers that are stable per network and
       not derived from hardware, because embedding a serial number in every
       packet is a privacy problem.
     learn:
@@ -655,8 +655,7 @@ entries:
     definition: >
       A frame carrying an MTU well above 1,500 bytes, typically around 9,000.
       Fewer, larger frames cut per-frame overhead, but only when every device
-      along the path agrees — one device left at 1,500 produces a stalling
-      path.
+      along the path agrees. One device left at 1,500 makes the path stall.
     see_also: ["maximum-transmission-unit"]
     learn:
       - { slug: "switching-technologies", anchor: "jumbo-frames", label: "Switching technologies" }
@@ -713,7 +712,7 @@ entries:
     definition: >
       An address valid only on one link, with no gateway and no routing. In
       IPv4 it is the 169.254 fallback a host self-assigns when DHCP does not
-      answer — which makes it a diagnostic signal. In IPv6 every interface has
+      answer, which makes it a useful clue. In IPv6 every interface has
       one permanently, and routing protocols use them.
     see_also: ["unique-local-address"]
     learn:
@@ -734,7 +733,7 @@ entries:
   - term: "Logical topology"
     category: networking
     definition: >
-      How data actually moves between nodes, as opposed to how the cables run.
+      How data moves between nodes, as opposed to how the cables run.
       Replacing a hub with a switch changes nothing physically and changes
       this completely.
     see_also: ["physical-topology", "topology", "collision-domain"]
@@ -746,7 +745,7 @@ entries:
     category: networking
     definition: >
       The identifier for a logical storage unit presented to a host over a
-      SAN. It names the unit; it is not the size of an individual read or
+      SAN. It names the unit. It is not the size of an individual read or
       write.
     see_also: ["storage-area-network"]
     learn:
@@ -800,9 +799,9 @@ entries:
     aka: ["MTU"]
     category: networking
     definition: >
-      The largest payload a link will carry in one unit — 1,500 bytes for
-      standard Ethernet. Set too large for some link on the path, the
-      correction happens elsewhere: IPv4 routers may fragment, IPv6 routers do
+      The largest payload a link will carry in one unit, 1,500 bytes for
+      standard Ethernet. If it is set too large for some link on the path, the
+      correction happens elsewhere. IPv4 routers may fragment, IPv6 routers do
       not, and a filtered ICMP report turns it into a connection that stalls
       on the first large transfer.
     see_also: ["jumbo-frame", "sliding-window"]
@@ -814,8 +813,8 @@ entries:
     category: linux
     definition: >
       Hardware in modern CPUs that lets the kernel give each process a private,
-      contiguous-looking virtual address space regardless of how the physical
-      memory is actually arranged.
+      contiguous-looking virtual address space, no matter how the physical
+      memory is arranged.
     see_also: ["kernel", "virtual-memory"]
     learn:
       - { slug: "linux-abstraction-layers", anchor: "memory-management", label: "Linux abstraction layers" }
@@ -824,9 +823,8 @@ entries:
     category: networking
     definition: >
       An arrangement where each node connects to several others. A full mesh
-      connects every node to every other and needs `(n * (n - 1)) / 2` links —
-      a count of links, not nodes — which is why partial mesh is the common
-      compromise.
+      connects every node to every other and needs `(n * (n - 1)) / 2` links,
+      which is why partial mesh is the common compromise.
     see_also: ["topology", "point-to-point-link"]
     learn:
       - { slug: "network-topologies", anchor: "mesh", label: "Network topologies" }
@@ -847,8 +845,8 @@ entries:
     definition: >
       Delivery to a group of interested interfaces rather than to one host or
       to everybody. IPv6 leans on it heavily: neighbor discovery asks a
-      solicited-node group rather than shouting at the whole segment, which is
-      the structural improvement over ARP.
+      solicited-node group instead of the whole segment, which is its main
+      improvement over ARP.
     see_also: ["broadcast", "unicast", "anycast"]
     learn:
       - { slug: "traffic-types", anchor: "multicast", label: "Network traffic types" }
@@ -857,7 +855,7 @@ entries:
     category: networking
     definition: >
       Fiber with a wider core admitting several light paths at once. They
-      arrive at slightly different times — modal dispersion — which limits
+      arrive at slightly different times (modal dispersion), which limits
       usable distance, making it the practical choice inside buildings and
       data centers.
     see_also: ["single-mode-fiber", "optical-multimode-grade"]
@@ -992,7 +990,7 @@ entries:
     category: networking
     definition: >
       The authoritative source for an application's content. An edge server is
-      a delivery point, not necessarily the source of truth — which matters
+      a delivery point, not necessarily the source of truth. That matters
       when a request could be failing at DNS, the edge, the edge-to-origin
       connection, or the application.
     see_also: ["content-delivery-network"]
@@ -1013,8 +1011,8 @@ entries:
   - term: "Physical topology"
     category: networking
     definition: >
-      The cabling and radio layout — what is plugged into what. It can differ
-      completely from how data actually moves: hub-based and switch-based
+      The cabling and radio layout, meaning what is plugged into what. It can
+      differ completely from how data moves: hub-based and switch-based
       stars look identical on a cable diagram and behave nothing alike.
     see_also: ["logical-topology", "topology"]
     learn:
@@ -1055,7 +1053,7 @@ entries:
     category: networking
     definition: >
       A link connecting exactly two nodes, with no shared medium and no
-      intermediate nodes — a leased line, or a fiber run between two
+      intermediate nodes, such as a leased line or a fiber run between two
       buildings.
     see_also: ["topology", "mesh-topology"]
     learn:
@@ -1066,9 +1064,9 @@ entries:
     category: networking
     definition: >
       The component sitting in the traffic path that carries out an access
-      decision made elsewhere. In the zero-trust model it is deliberately
-      separate from the policy engine that decides — deciding and enforcing
-      are different jobs.
+      decision made elsewhere. In the zero-trust model it is kept separate from
+      the policy engine that decides, because deciding and enforcing are
+      different jobs.
     see_also: ["bastion-host"]
     learn:
       - { slug: "zero-trust-architecture", anchor: "the-policy-components", label: "Zero-trust architecture" }
@@ -1153,7 +1151,7 @@ entries:
   - term: "Pseudo-filesystem"
     category: linux
     definition: >
-      A filesystem with nothing on a disk behind it — the kernel presenting its
+      A filesystem with nothing on a disk behind it. The kernel presents its
       own state through the file interface so that ordinary tools work on it.
       `/proc` and `/sys` are the two you meet first, which is why `cat` works
       on kernel state.
@@ -1165,8 +1163,9 @@ entries:
     aka: ["QoS"]
     category: networking
     definition: >
-      Techniques deciding how devices treat competing traffic — classification
-      and marking, priority and scheduling, shaping and policing. A marking
+      Techniques that decide how devices treat competing traffic:
+      classification and marking, priority and scheduling, and shaping and
+      policing. A marking
       cannot force the next network to honor it, and none of it creates
       bandwidth that is not there.
     see_also: ["voice-vlan"]
@@ -1199,8 +1198,8 @@ entries:
     category: networking
     definition: >
       A proxy representing servers to incoming clients. It can terminate TLS,
-      cache, enforce policy, and route to different backends — which also
-      moves the trust boundary to wherever it terminates.
+      cache, enforce policy, and route to different backends. That also moves
+      the trust boundary to wherever it terminates.
     see_also: ["forward-proxy", "load-balancer"]
     learn:
       - { slug: "network-appliances", anchor: "proxy-servers", label: "Network appliances" }
@@ -1264,7 +1263,7 @@ entries:
       A permission bit making a program run as its owner rather than as the
       user who launched it. It is how an ordinary user can change their own
       password in a file they cannot write, and it is why an unexpected setuid
-      binary is worth investigating.
+      binary deserves a closer look.
     see_also: ["umask"]
     learn:
       - { slug: "linux-permissions", anchor: "what-else-you-will-see", label: "File permissions and links" }
@@ -1273,8 +1272,8 @@ entries:
     category: linux
     definition: >
       A named value belonging to one shell, set with `NAME=value` and gone when
-      that shell exits. It becomes an environment variable — visible to child
-      processes — only when exported.
+      that shell exits. It becomes an environment variable, visible to child
+      processes, only when exported.
     see_also: ["environment-variable"]
     learn:
       - { slug: "linux-shell", anchor: "shell-and-environment-variables", label: "The shell and the command line" }
@@ -1317,7 +1316,7 @@ entries:
     category: networking
     definition: >
       The dominant family of pluggable transceiver form factors. SFP holds one
-      channel per module; the QSFP family carries four lanes, which is what
+      channel per module. The QSFP family carries four lanes, which is what
       makes 40G and 100G practical. Matching the form factor does not
       guarantee a platform accepts the module.
     see_also: ["transceiver", "direct-attach-copper"]
@@ -1329,7 +1328,7 @@ entries:
     category: networking
     definition: >
       A cloud service model providing a complete application, usually through
-      a browser. The provider carries more operational responsibility; the
+      a browser. The provider carries more operational responsibility. The
       customer is still responsible for how its data is used in the service.
     see_also: ["infrastructure-as-a-service", "platform-as-a-service"]
     learn:
@@ -1470,9 +1469,9 @@ entries:
     category: linux
     definition: >
       A small file whose contents are a path to something else. Its own
-      permission bits are meaningless — access is decided by the target — and
-      because it stores a path rather than a reference to the data, deleting
-      the target leaves the link pointing at nothing.
+      permission bits do not matter, because the target decides access. It
+      stores a path, not a reference to the data, so deleting the target leaves
+      the link pointing at nothing.
     learn:
       - { slug: "linux-permissions", anchor: "symbolic-links", label: "File permissions and links" }
 
@@ -1482,7 +1481,7 @@ entries:
     definition: >
       A request from a user process asking the kernel to do something only the
       kernel can. Opening, reading, and writing files are all system calls, and
-      so are `fork()` and `exec()` — which is how every process other than the
+      so are `fork()` and `exec()`, which are how every process other than the
       first one comes to exist.
     see_also: ["kernel", "user-space"]
     learn:
@@ -1524,9 +1523,9 @@ entries:
   - term: "Topology"
     category: networking
     definition: >
-      The arrangement of a network's nodes and the links between them — what
-      paths exist, and what happens when one fails. Worth separating from
-      equipment: the same switches can be wired into arrangements with very
+      The arrangement of a network's nodes and the links between them: what
+      paths exist, and what happens when one fails. It is separate from
+      equipment. The same switches can be wired into arrangements with very
       different failure behavior.
     see_also: ["physical-topology", "logical-topology"]
     learn:
@@ -1557,7 +1556,7 @@ entries:
     definition: >
       Encapsulating one packet or protocol as the payload of another.
       Encapsulation alone provides no confidentiality, integrity, or peer
-      authentication — those come from cryptography added on top.
+      authentication. Those come from cryptography added on top.
     see_also: ["virtual-private-network", "encapsulation", "ipsec"]
     learn:
       - { slug: "network-functions", anchor: "tunneling-and-vpns", label: "Network functions: tunnels, traffic priority, and packet lifetime" }
@@ -1567,8 +1566,8 @@ entries:
     definition: >
       The mask of permission bits removed from newly created files and
       directories. It subtracts from 666 for files and 777 for directories, so
-      a new file never gets execute permission no matter what you set — a
-      deliberate safety property.
+      a new file never gets execute permission, whatever you set. That is
+      intended as a safety measure.
     see_also: ["setuid"]
     learn:
       - { slug: "linux-permissions", anchor: "default-permissions-and-umask", label: "File permissions and links" }
@@ -1577,9 +1576,8 @@ entries:
     category: networking
     definition: >
       Media radiating into shared space, where nothing confines the signal and
-      a station cannot hear the channel over its own transmission. That single
-      physical fact is why wireless avoids collisions rather than detecting
-      them.
+      a station cannot hear the channel over its own transmission. That is why
+      wireless avoids collisions instead of detecting them.
     see_also: ["bounded-media", "csma-ca"]
     learn:
       - { slug: "transmission-media", anchor: "bounded-and-unbounded-media", label: "Transmission media" }
@@ -1597,10 +1595,10 @@ entries:
     aka: ["ULA"]
     category: networking
     definition: >
-      IPv6's counterpart to the RFC 1918 private ranges — addresses that route
+      IPv6's counterpart to the RFC 1918 private ranges: addresses that route
       inside a site and never on the internet. A site generates a random
       identifier so that two networks merging later are unlikely to collide.
-      Not a security boundary; simply not routed off-site.
+      It is not a security boundary. It is just not routed off-site.
     see_also: ["link-local-address"]
     learn:
       - { slug: "ipv6-addressing", anchor: "address-types", label: "IPv6 addressing" }
@@ -1664,7 +1662,7 @@ entries:
     definition: >
       A connection joining users or networks across infrastructure they do not
       control, normally with authentication and encryption. There is no single
-      universal VPN protocol; the design depends on the use case and
+      universal VPN protocol. The design depends on the use case and
       environment.
     see_also: ["tunneling", "ipsec"]
     learn:
@@ -1687,7 +1685,7 @@ entries:
     definition: >
       A logical division of a switch into separate broadcast domains. Ports on
       one switch can sit in different VLANs and ports on different switches in
-      the same one. A VLAN is a Layer 2 construct; the subnet usually mapped
+      the same one. A VLAN is a Layer 2 construct. The subnet usually mapped
       onto it is a Layer 3 one, and they are not the same thing.
     see_also: ["broadcast-domain", "access-port", "trunk-port"]
     learn:
@@ -1698,7 +1696,7 @@ entries:
     category: networking
     definition: >
       Splitting one network into subnets of different sizes to match what each
-      segment actually needs. Allocate the largest block first, or the later
+      segment needs. Allocate the largest block first, or the later
       ones have no correctly aligned boundary to start on.
     see_also: ["subnet-mask", "cidr"]
     learn:
@@ -1709,7 +1707,7 @@ entries:
     definition: >
       A VLAN carrying traffic from IP phones, separate from the data VLAN on
       the same access port. Separation gives voice somewhere for priority
-      policy to be applied; it improves call quality only if something on the
+      policy to be applied. It improves call quality only if something on the
       path acts on the marking.
     see_also: ["vlan", "quality-of-service"]
     learn:
@@ -1730,7 +1728,7 @@ entries:
     category: networking
     definition: >
       A firewall inspecting HTTP for application-layer patterns and policy
-      violations. It can reduce exposure to some web attacks; it cannot repair
+      violations. It can reduce exposure to some web attacks. It cannot fix
       vulnerable application code.
     see_also: ["stateful-firewall", "next-generation-firewall"]
     learn:
@@ -1740,8 +1738,8 @@ entries:
     category: networking
     definition: >
       A port in the range 0–1023, registered by IANA for long-established
-      system services. The ranges are a registration convention rather than a
-      technical restriction — a service can still be run on an unusual port.
+      system services. The ranges are a registration convention, not a
+      technical restriction. A service can still run on an unusual port.
     see_also: ["ephemeral-port"]
     learn:
       - { slug: "network-protocols", anchor: "port-number-ranges", label: "Network protocols and ports" }
@@ -1762,7 +1760,7 @@ entries:
     category: networking
     definition: >
       The device bridging radio clients onto a wired network. An autonomous AP
-      holds its own configuration; in a controller-based design a controller
+      holds its own configuration. In a controller-based design, a controller
       coordinates policy and radio management across many.
     see_also: ["power-over-ethernet", "csma-ca", "lightweight-access-point"]
     learn:
@@ -1797,7 +1795,7 @@ entries:
     definition: >
       A model that stops treating network location as evidence of
       authorization. Identity is verified continuously and no position on the
-      network grants trust by itself; the practical goal is that one
+      network grants trust by itself. The practical goal is that one
       compromised host is not a path to everything else.
     see_also: ["policy-enforcement-point"]
     learn:

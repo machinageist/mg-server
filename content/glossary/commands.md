@@ -8,10 +8,9 @@ entries:
     category: linux
     purpose: "Write files to standard output."
     context: >
-      Named for concatenate — `cat a b` joins two files onto one stream, which
-      is the job it was built for. Most of its daily use is reading one short
-      file, where it is really a way of putting a file onto stdout so
-      something else can have it. `-n` numbers the lines.
+      Named for concatenate. `cat a b` joins two files onto one stream, which
+      is the job it was built for. Most daily use is reading one short file,
+      where it just puts the file onto stdout so something else can have it. `-n` numbers the lines.
     example: "cat /etc/os-release"
     see_also: ["grep", "ls", "gzip"]
     learn:
@@ -26,7 +25,7 @@ entries:
     category: linux
     purpose: "Change a file's permission bits."
     context: >
-      Two notations, and both are worth knowing. Symbolic (`g+r`) changes only
+      Two notations, and you need both. Symbolic (`g+r`) changes only
       what you name and leaves the rest alone. Numeric (`644`) sets all nine
       bits at once. Reach for symbolic when adjusting one thing, numeric when
       you want a known end state.
@@ -93,9 +92,9 @@ entries:
     purpose: "Read and set an interface's link settings."
     context: >
       The layer-1 instrument. It reports negotiated speed and duplex, which is
-      how you catch a duplex mismatch pretending to be a failing cable. `-m`
-      dumps a pluggable module's EEPROM — vendor, part number, wavelength,
-      rated reach — where the driver supports it.
+      how you catch a duplex mismatch that looks like a failing cable. `-m`
+      dumps a pluggable module's EEPROM (vendor, part number, wavelength, rated
+      reach) where the driver supports it.
     example: "ethtool eth0 | grep -E 'Speed|Duplex'"
     caution: "Setting speed or duplex by hand is how most mismatches are created. Read first, and change only when you control both ends."
     see_also: ["ip", "tcpdump"]
@@ -112,8 +111,8 @@ entries:
     purpose: "Show physical memory and swap use."
     context: >
       Reads its numbers from `/proc/meminfo`. The `available` column is the one
-      to look at — Linux deliberately uses spare memory for cache, so a small
-      `free` figure is normal rather than a problem.
+      to look at. Linux uses spare memory for cache on purpose, so a small
+      `free` figure is normal, not a problem.
     see_also: ["ps"]
     learn:
       - { slug: "linux-abstraction-layers", anchor: "suggested-practice-watch-the-layers-from-user-space", label: "Linux abstraction layers" }
@@ -141,11 +140,11 @@ entries:
     category: linux
     purpose: "Compress or decompress a single file."
     context: >
-      It compresses one stream of bytes; it does not bundle, so running it on
-      a directory does nothing useful — that is `tar`'s job. `-k` keeps the
+      It compresses one stream of bytes. It does not bundle, so running it on
+      a directory does nothing useful. That is `tar`'s job. `-k` keeps the
       source, and `-l` reports the ratio without decompressing.
     example: "gzip -k logfile.txt"
-    caution: "It replaces the original rather than sitting alongside it. That surprises people exactly once."
+    caution: "It replaces the original instead of keeping it alongside. Use -k to keep the source."
     see_also: ["tar", "cat"]
     learn:
       - { slug: "linux-archives", anchor: "gzip-compresses-one-file", label: "Archives and compression" }
@@ -160,7 +159,7 @@ entries:
     context: >
       The modern replacement for `ifconfig` and `route`. `-br` gives a brief
       one-line-per-interface view, `-4` and `-6` restrict it to one family, and
-      `ip -s link` adds error and drop counters — a link can negotiate fine and
+      `ip -s link` adds error and drop counters. A link can negotiate fine and
       still be marginal.
     example: "ip -6 neigh show"
     see_also: ["ss", "dig"]
@@ -176,8 +175,8 @@ entries:
     purpose: "Calculate the network, broadcast, and host range for a prefix."
     context: >
       The check on subnetting done by hand. Work the boundaries out yourself
-      first, then confirm them here — using it in production is not cheating,
-      and using it instead of ever learning the arithmetic is.
+      first, then confirm them here. Using it for real work is not cheating.
+      Using it so you never learn the arithmetic is.
     example: "ipcalc 198.51.100.0/27"
     see_also: ["ip"]
     learn:
@@ -192,10 +191,10 @@ entries:
     category: networking
     purpose: "Inspect wireless interfaces, and scan for networks."
     context: >
-      `iw dev` reports the band, channel, and channel width actually in use,
-      which is usually a different story from the Wi-Fi generation on the box.
-      Scanning and counting how many networks share your channel explains most
-      slow links.
+      `iw dev` reports the band, channel, and channel width in use, which often
+      differ from what the Wi-Fi generation on the box suggests. Scanning and
+      counting how many networks share your channel explains most slow links.
+      `iw reg get` shows the regulatory domain the card is following.
     example: "iw dev wlan0 link"
     caution: "Scanning briefly interrupts the interface's association on some drivers."
     see_also: ["ip", "ethtool"]
@@ -225,7 +224,7 @@ entries:
     category: linux
     purpose: "List directory contents."
     context: >
-      `-l` is the form worth reading closely: ten characters of mode, then
+      `-l` is the form to read closely: ten characters of mode, then
       links, owner, group, size, time, and name. `-a` includes dot files, which
       is most of a home directory.
     example: "ls -ld /bin"
@@ -241,7 +240,7 @@ entries:
     category: linux
     purpose: "Read the manual page for a command, file format, or system call."
     context: >
-      Sections matter — the same name can appear in several. Section 1 is user
+      Sections matter, because the same name can appear in several. Section 1 is user
       commands, 5 is file formats, 8 is administration. `man -k` searches the
       descriptions when you do not know the name. Press `/` to search within a
       page.
@@ -257,7 +256,7 @@ entries:
     purpose: "Send ICMP echo requests to test reachability."
     context: >
       Proves a host answers ICMP. It says nothing about whether a service is
-      listening — use `ss` or `curl` for that. Plenty of hosts drop ICMP by
+      listening. Use `ss` or `curl` for that. Plenty of hosts drop ICMP by
       policy, so silence is not proof of absence.
     caution: "A quiet ping is weak evidence in both directions. Do not conclude a host is down from it."
     see_also: ["ss", "curl", "ip"]
@@ -273,7 +272,7 @@ entries:
     purpose: "List running processes."
     context: >
       `--forest` draws the parent/child tree, which makes the result of
-      `fork()` visible — every process descends from the first one. Usually
+      `fork()` visible. Every process descends from the first one. Usually
       piped into `grep` to find a particular service.
     example: "ps -ef --forest | head -20"
     see_also: ["grep", "free"]
@@ -285,7 +284,7 @@ entries:
     synopsis:
       - "ss -tln"
     category: networking
-    purpose: "Show sockets — what is listening, and what is connected."
+    purpose: "Show sockets: what is listening, and what is connected."
     context: >
       The replacement for `netstat`. `-t` is TCP, `-l` listening only, `-n`
       skips name resolution so the output is fast and unambiguous. Compare
@@ -321,9 +320,8 @@ entries:
     category: networking
     purpose: "Capture and print packets crossing an interface."
     context: >
-      The instrument for questions no status command answers — what is actually
-      on the wire, and whether an encapsulated frame really carries what you
-      think. Needs root, and a filter expression, or it will drown you.
+      The tool for questions no status command answers: what is on the wire,
+      and whether an encapsulated frame really carries what you think. Needs root, and a filter expression, or it will drown you.
     caution: "Captures may contain credentials and payload data. Use purpose-built fixtures for examples you intend to share."
     see_also: ["ip", "ss"]
     learn:
@@ -354,7 +352,7 @@ entries:
       - "type ls"
       - "type -a python"
     category: linux
-    purpose: "Say what the shell will actually run for a name."
+    purpose: "Show what the shell will run for a name."
     context: >
       The answer to "which one is it": a binary on `PATH`, a shell builtin, a
       function, or an alias. `-a` lists every match in order, which is how you
