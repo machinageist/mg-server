@@ -55,8 +55,8 @@ The nine bits that follow are three groups of three, and each group is `r`
 (read), `w` (write), `x` (execute) in that fixed order. A dash means the
 permission is absent. The three groups apply to:
 
-- the **user** who owns the file;
-- the **group** the file belongs to; and
+- the user who owns the file;
+- the group the file belongs to; and
 - **other** — everyone else.
 
 Only one group applies to any given request. If you own the file, the user bits
@@ -144,7 +144,7 @@ are worth recognizing in `ls -l` output now and studying properly later.
 
 New files do not appear with arbitrary permissions. The system starts from a
 base — `666` for files, `777` for directories — and removes the bits set in the
-**umask**:
+umask:
 
 ```text
 $ umask
@@ -167,7 +167,7 @@ variables](/learn/linux-shell) follow.
 
 ## Symbolic links
 
-A **symbolic link** is a small file whose contents are a path to something else.
+A symbolic link is a small file whose contents are a path to something else.
 Opening the link opens the target.
 
 ```text
@@ -185,7 +185,7 @@ Two properties matter:
 - The `lrwxrwxrwx` permissions on a symlink are meaningless. Access is decided
   by the target's permissions, not the link's.
 - The link stores a path, not a reference to the data. Delete or move the
-  target and the link remains, now pointing at nothing — a **broken link**. `ls`
+  target and the link remains, now pointing at nothing — a broken link. `ls`
   will usually colorize it, and `ls -lL` fails on it.
 
 Symlinks are why `/bin` can be a link to `/usr/bin` and every path that ever

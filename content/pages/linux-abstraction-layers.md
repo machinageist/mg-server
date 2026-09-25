@@ -8,36 +8,36 @@ tags: [education, linux, kernel, processes, memory]
 ## Overview
 
 Linux looks arcane from the outside, but most of it becomes tractable once you
-split the system into three layers: **hardware**, the **kernel**, and the
-**processes** that run on top of it. Each layer only talks to its neighbor, and
+split the system into three layers: hardware, the kernel, and the
+processes that run on top of it. Each layer only talks to its neighbor, and
 almost every Linux concept you meet later — permissions, memory pressure,
 device files, system calls — sits at one of those two boundaries.
 
 - **Hardware** is the physical machine: processing units, memory, and
   input/output devices.
-- The **kernel** is the core of the operating system. It loads into memory at
+- The kernel is the core of the operating system. It loads into memory at
   startup, schedules instructions for the CPU, and mediates between hardware
   and the programs a user runs.
 - **Processes** are the running programs the kernel manages. Collectively they
-  make up **user space**.
+  make up user space.
 
-The memory the kernel reserves for itself is **kernel space**, and nothing in
+The memory the kernel reserves for itself is kernel space, and nothing in
 user space is allowed to touch it. That single boundary is the reason a
 misbehaving program can crash itself without taking down the machine.
 
 ## Hardware: main memory
 
-**Main memory** is the most important piece of hardware to understand first. It
+Main memory is the most important piece of hardware to understand first. It
 is a large array of bits, each of which can be 0 or 1. Programs live and run
 there, and the CPU acts on instructions it finds in memory, moving bits around
-according to them. A **memory state** is one discrete arrangement of those bits.
+according to them. A memory state is one discrete arrangement of those bits.
 
 This matters for the layers above it: nearly everything the kernel does is
 ultimately about deciding who gets which region of that array, and when.
 
 ## The kernel
 
-One of the kernel's central jobs is to **allocate** memory — tracking what is
+One of the kernel's central jobs is to allocate memory — tracking what is
 available and how much each process is asking for. Its work is usually grouped
 into four areas:
 
@@ -48,15 +48,15 @@ into four areas:
 
 ### Process management
 
-**Process management** covers starting, pausing, resuming, scheduling, and
+Process management covers starting, pausing, resuming, scheduling, and
 terminating processes. Many processes need to run at once, but a CPU core
 handles one instruction stream at any given moment. The kernel resolves this by
-giving each process a **time slice** — a window of CPU time long enough to make
-progress — and rotating between them. This rotation is **multitasking**, and it
+giving each process a time slice — a window of CPU time long enough to make
+progress — and rotating between them. This rotation is multitasking, and it
 runs fast enough that every program appears to be running simultaneously, the
 way a sequence of still frames reads as motion.
 
-Moving the CPU from one process to another is **context switching**. A single
+Moving the CPU from one process to another is context switching. A single
 switch looks roughly like this:
 
 1. A timer interrupt stops the running user process; the CPU enters kernel mode
@@ -80,8 +80,8 @@ once:
 - Some memory is read-only.
 - Disk space can serve as auxiliary memory when physical memory runs out.
 
-Modern CPUs include a **memory management unit (MMU)**, which lets the kernel
-give each process **virtual memory** — an address space that looks private and
+Modern CPUs include a memory management unit (MMU), which lets the kernel
+give each process virtual memory — an address space that looks private and
 contiguous to the process regardless of how the underlying physical memory is
 arranged.
 
@@ -89,12 +89,12 @@ arranged.
 
 Devices are normally reached only through the kernel, so that unsafe direct
 access cannot crash the system. Because vendors expose different proprietary
-interfaces, **device drivers** exist to translate between the kernel and a
+interfaces, device drivers exist to translate between the kernel and a
 particular piece of hardware.
 
 ### System calls
 
-A **system call** (or **syscall**) is a request from a user process asking the
+A system call (or syscall) is a request from a user process asking the
 kernel to do something only the kernel can do. Opening, reading, and writing
 files are all system calls.
 
@@ -107,26 +107,26 @@ Two are worth knowing early because they explain how processes come to exist:
 Every process other than `init` is started with `fork()`. Running `ls` in a
 shell forks the shell, and the new copy calls `exec()` on `ls`.
 
-**Pseudodevices** are virtual software devices that look like real hardware to
+Pseudodevices are virtual software devices that look like real hardware to
 processes. `/dev/random` is a familiar example. They are usually implemented in
 kernel space for practical reasons, though nothing requires that.
 
 ### User space
 
-**User space** is the region of main memory the kernel allocates to user
+User space is the region of main memory the kernel allocates to user
 processes, and it is where most running programs live. User space tends to be
 layered in its own right: basic services at the bottom, utility services in the
 middle, and user-facing applications on top.
 
 ## Users
 
-A **user** is an entity that can run processes and own files. Each is associated
-with a **username** and a numeric **user ID**. Users exist to support permission
+A user is an entity that can run processes and own files. Each is associated
+with a username and a numeric user ID. Users exist to support permission
 boundaries.
 
 `root` is a special administrative user with full access to the local system,
-sometimes called the **superuser**; accounts able to operate as `root` have
-**root access**. **Groups** are sets of users that can share file access.
+sometimes called the superuser; accounts able to operate as `root` have
+root access. Groups are sets of users that can share file access.
 
 ## Suggested practice: watch the layers from user space
 

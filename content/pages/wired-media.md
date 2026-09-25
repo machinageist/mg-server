@@ -7,11 +7,10 @@ tags: [education, networking, physical-layer, cabling, fiber, ethernet]
 
 ## Overview
 
-A cable is a private medium in a way radio never is. Nobody else's traffic
-shares your patch lead, the path is bounded and measurable, and a station can
-listen to the wire while transmitting on it — which is why wired Ethernet could
-*detect* collisions where [wireless](/learn/wireless-media) can only try to
-avoid them.
+A cable is private in a way radio never is. Nobody else's traffic shares your
+patch cable, the path is bounded and measurable, and a station can listen to the
+wire while transmitting on it. That is why wired Ethernet could detect
+collisions, while [wireless](/learn/wireless-media) can only try to avoid them.
 
 What limits a wired link is the cable itself: how far a signal travels before it
 degrades, how much interference it picks up, and how much bandwidth its
@@ -19,26 +18,26 @@ construction supports. Those limits are why cable categories, fiber grades, and
 distance ratings exist, and why "it plugged in and linked up" is not the same as
 "it will work reliably."
 
-However convenient wireless is, nearly every network is wired somewhere — and
-wired media are generally the fastest, most reliable, and hardest to intercept
-of the three. This page covers the Ethernet standards, copper conductors, fiber
+However convenient wireless is, nearly every network is wired somewhere. Wired
+media are generally the fastest, most reliable, and hardest to intercept of the
+three. This page covers the Ethernet standards, copper conductors, fiber
 optics, and the material properties that bound each one.
 
-The IEEE defines Ethernet in the **802.3** family, which specifies how data
-crosses physical cabling in a wired LAN. A link can be **full-duplex**, sending
-in both directions simultaneously, or **half-duplex**, sending in one direction
+The IEEE defines Ethernet in the 802.3 family, which specifies how data
+crosses physical cabling in a wired LAN. A link can be full-duplex, sending
+in both directions simultaneously, or half-duplex, sending in one direction
 at a time.
 
 Standards are what make equipment from different vendors interoperate.
-Interoperability has limits worth respecting: fiber optics and twisted-pair
-copper are not interchangeable, and mixing devices rated for different speeds
+Interoperability has limits. Fiber optics and twisted-pair copper are not
+interchangeable, and mixing devices rated for different speeds
 means the link negotiates down to what both ends support.
 
 ## Collisions on a shared cable
 
 Shared half-duplex Ethernet has the same contention problem as Wi-Fi, and 802.3
-solves it with **carrier-sense multiple access with collision detection
-(CSMA/CD)**:
+solves it with carrier-sense multiple access with collision detection
+(CSMA/CD):
 
 - A device listens for a quiet moment on the cable and waits if it is busy.
 - Devices sharing the cable transmit by taking turns.
@@ -46,10 +45,10 @@ solves it with **carrier-sense multiple access with collision detection
 - Both back off for a random interval before retrying, which makes a second
   collision between the same pair unlikely.
 
-The region of the network where collisions are possible is the **collision
-domain**. Switched full-duplex links, which is nearly all modern wired
+The region of the network where collisions are possible is the collision
+domain. Switched full-duplex links, which is nearly all modern wired
 Ethernet, give each port its own collision domain and remove the contention
-entirely — CSMA/CD is legacy behavior on those links, not active mechanism.
+entirely. On those links, CSMA/CD is legacy behavior and is not in use.
 
 ## Ethernet standards
 
@@ -70,18 +69,18 @@ entirely — CSMA/CD is legacy behavior on those links, not active mechanism.
 
 The twisted-pair distance limit of 100 m is a property of the whole channel,
 including patch cords and terminations, not just the run of cable in the wall.
-Fiber distances vary with the grade of fiber and the optic driving it; the
+Fiber distances vary with the grade of fiber and the optic driving it. The
 figures above are planning numbers.
 
 ## Fiber Ethernet and OM grades
 
-**Fiber Ethernet** transmits data as pulses of light through glass. Light
+Fiber Ethernet transmits data as pulses of light through glass. Light
 travels further before needing regeneration than an electrical signal in
-copper, and fiber is immune to **electromagnetic interference (EMI)**, which
+copper, and fiber is immune to electromagnetic interference (EMI), which
 makes it the reliable choice near motors, fluorescent lighting, and heavy power
 runs.
 
-Multimode fiber is graded by **optical multimode (OM)** classes, which describe
+Multimode fiber is graded by optical multimode (OM) classes, which describe
 the reach a given fiber supports at a given speed:
 
 | Grade | Description |
@@ -92,20 +91,20 @@ the reach a given fiber supports at a given speed:
 | OM4 | Enhanced OM3. 10 Gbps to 550 m, 40/100 Gbps to 150 m |
 | OM5 | Wideband, supports shortwave wavelength division multiplexing (SWDM) |
 
-Treat these as nominal. The reach a link actually achieves depends on the
+Treat these as nominal. The reach a link achieves depends on the
 fiber's modal bandwidth, the wavelength, the transceiver, and the loss budget
 of the installed run.
 
 ## Single-mode and multimode fiber
 
-**Single-mode fiber** has a narrow core, around 9 µm, that carries light along
+Single-mode fiber has a narrow core, around 9 µm, that carries light along
 essentially one path. Without multiple paths there is no modal dispersion, so
-it holds a signal over long distances. Telecoms and **Internet service
-providers (ISPs)** use it for backhaul and long-haul links.
+it holds a signal over long distances. Telecoms and Internet service
+providers (ISPs) use it for backhaul and long-haul links.
 
-**Multimode fiber** has a wider core that admits several light paths at once.
-Those paths arrive at slightly different times — modal dispersion — which
-limits usable distance. It is the practical choice inside buildings, campuses,
+Multimode fiber has a wider core that admits several light paths at once.
+Those paths arrive at slightly different times, which is called modal
+dispersion, and that limits usable distance. It is the practical choice inside buildings, campuses,
 and data centers.
 
 The usual "single-mode costs more" shorthand is about the optics, not the
@@ -115,29 +114,29 @@ sources, and that is where the cost difference lives.
 ## Direct attach copper
 
 Copper is simpler than fiber over short distances: no optics to align, less
-power per link, and more tolerance for rough handling. **Direct attach copper
-(DAC)** cables use **twinaxial** ("twinax") construction — two insulated
-conductors inside a shield — with the transceiver ends permanently attached.
+power per link, and more tolerance for rough handling. Direct attach copper
+(DAC) cables use twinaxial ("twinax") construction, meaning two insulated
+conductors inside a shield, with the transceiver ends permanently attached.
 They are common for top-of-rack switch connections a few meters long.
 
 ## Coaxial cable
 
 Coaxial cable carries a signal on a single center conductor inside a shield. It
 predates twinax in LAN use, reaches further than twinax but at lower speeds,
-and is more durable and easier to work with than fiber. It survives today in
-cable broadband and video distribution rather than in LANs.
+and is more durable and easier to work with than fiber. Today it is used in
+cable broadband and video distribution, not in LANs.
 
 ## Plenum cabling
 
-A **plenum space** is a void used to move air for **heating, ventilation, and
-air conditioning (HVAC)** — typically above a drop ceiling or below a raised
+A plenum space is a void used to move air for heating, ventilation, and
+air conditioning (HVAC), usually above a drop ceiling or below a raised
 floor. Cable run through one has to be plenum-rated: flame-retardant jacketing
 that produces little smoke and low toxicity when it burns, so a fire is not
 distributed through the building's air handling. Plenum cable costs more than
-standard cable, and where it is required, it is required by fire and building
-code rather than by preference.
+standard cable, and where fire and building codes require it, it is not
+optional.
 
-## Study-note shortcuts worth correcting
+## Study-note shortcuts to correct
 
 - **CSMA/CD detects collisions; CSMA/CA avoids them.** A wired station can hear
   the cable while transmitting. On a modern full-duplex switched link there are
@@ -171,8 +170,8 @@ On a network you own:
    single-mode or multimode from the jacket color and printing, then check it
    against the optic in the transceiver. A mismatch links up and performs badly.
 
-This shows what your equipment negotiated. It does not show why — signal
-quality and cable condition need dedicated tools to measure rather than infer.
+This shows what your equipment negotiated. It does not show why. Measuring
+signal quality and cable condition takes dedicated tools.
 
 ## Related pages
 

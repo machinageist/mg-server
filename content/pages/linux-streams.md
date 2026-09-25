@@ -8,7 +8,7 @@ tags: [education, linux, shell, streams, redirection, pipes]
 ## Overview
 
 The single idea behind this page is that a program's input and output do not
-have to be a terminal. A process writes to **standard output** without knowing
+have to be a terminal. A process writes to standard output without knowing
 or caring whether that lands on a screen, in a file, or in another program's
 input. The shell decides.
 
@@ -39,26 +39,26 @@ to debug than one where the errors still reach the screen.
 
 ## Redirection
 
-**Send output to a file** with `>`, which creates the file or overwrites it:
+Send output to a file with `>`, which creates the file or overwrites it:
 
 ```text
 $ ls /etc > listing.txt
 ```
 
-**Append instead** with `>>`, which is the difference between keeping a log and
+Append instead with `>>`, which is the difference between keeping a log and
 destroying one:
 
 ```text
 $ date >> logbook.txt
 ```
 
-**Read input from a file** with `<`:
+Read input from a file with `<`:
 
 ```text
 $ sort < names.txt
 ```
 
-**Redirect standard error separately** with `2>` — the `2` is the stream number
+Redirect standard error separately with `2>` — the `2` is the stream number
 from the table above:
 
 ```text

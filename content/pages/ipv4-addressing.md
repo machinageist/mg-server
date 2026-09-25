@@ -8,10 +8,9 @@ tags: [education, networking, addressing, subnetting, cidr]
 ## Overview
 
 An IPv4 address is a 32-bit number that identifies an interface on a network.
-Everything else about addressing — private ranges, subnet masks, CIDR notation,
-subnetting — is a consequence of that one fact plus a single question every
-router has to answer: *is this destination on my network, or does it belong to
-someone else?*
+Everything else about addressing, including private ranges, subnet masks, CIDR
+notation, and subnetting, follows from that fact and from one question every
+router has to answer: is this destination on my network, or somewhere else?
 
 This page builds the address up from bits and covers the kinds of address you
 meet on a real network. Dividing those bits into subnets is the other half of
@@ -20,9 +19,9 @@ the story, and it has its own page:
 
 ## Binary and the shape of an address
 
-Network addressing rests on binary. A single binary digit is a **bit**, and
-eight bits make one **byte**. Because each of those eight positions is either 0
-or 1, a byte can represent 256 distinct values — 0 through 255 in ordinary
+Network addressing rests on binary. A single binary digit is a bit, and
+eight bits make one byte. Because each of those eight positions is either 0
+or 1, a byte can represent 256 different values, 0 through 255 in ordinary
 base 10.
 
 The positions have fixed place values, doubling from right to left:
@@ -31,33 +30,32 @@ The positions have fixed place values, doubling from right to left:
 |---:|---:|---:|---:|---:|---:|---:|---:|
 | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 0 |
 
-Add the place values wherever there is a 1: 64 + 16 + 8 + 2 = **90**.
+Add the place values wherever there is a 1: 64 + 16 + 8 + 2 = 90.
 
-An IPv4 address is four of those bytes — 32 bits total — written as four base-10
-numbers separated by dots. Each byte in this context is called an **octet**:
+An IPv4 address is four of those bytes, 32 bits in total, written as four
+base-10 numbers separated by dots. Each byte in this context is called an octet:
 
 ```
 192.168.1.10
 11000000.10101000.00000001.00001010
 ```
 
-Thirty-two bits gives 2³² addresses, or 4,294,967,296 — a number that seemed
-generous in 1981 and is the reason IPv6 exists. Converting an octet between
-binary and decimal in your head is worth practicing, because subnet masks only
-make sense in binary.
+Thirty-two bits gives 2³² addresses, or 4,294,967,296. That seemed like plenty
+in 1981, and running out is the reason IPv6 exists. Practice converting an octet
+between binary and decimal in your head, because subnet masks only make sense in
+binary.
 
 ## Public and private addresses
 
 Addresses fall into two broad groups by where they are meaningful.
 
-**Public addresses** are globally routable. Any host on the internet can, in
+Public addresses are globally routable. Any host on the internet can, in
 principle, address them. They are allocated through regional registries and
 usually reach you leased from an ISP.
 
-**Private addresses** are meaningful only inside one local network. Routers on
-the public internet drop them, which is exactly the point: everyone can reuse
-the same private ranges without colliding, because those addresses never appear
-on the open internet. RFC 1918 reserves three blocks:
+Private addresses are meaningful only inside one local network. Routers on the
+public internet drop them, and that is what lets everyone reuse the same private
+ranges without conflict. Those addresses never appear on the open internet. RFC 1918 reserves three blocks:
 
 | Block | Range | Prefix |
 |---|---|---|
@@ -78,11 +76,11 @@ mask. A default gateway is optional for local traffic and required for anything
 beyond the local network.
 
 Most hosts get all three from DHCP. When DHCP does not answer, an interface can
-fall back to **link-local addressing** — the mechanism Microsoft named APIPA
-(Automatic Private IP Addressing) and RFC 3927 standardized. The host picks a
+fall back to link-local addressing, which Microsoft named APIPA (Automatic
+Private IP Addressing) and RFC 3927 standardized. The host picks a
 random address in `169.254.0.0/16`, checks whether anything else on the segment
 is already using it, and picks again if so. RFC 3927 reserves the first and last
-/24 of that block, so the usable range is 169.254.1.0 – 169.254.254.255.
+/24 of that block, so the usable range is 169.254.1.0 to 169.254.254.255.
 
 Link-local addressing has no gateway and no routing. It lets hosts on the same
 segment talk to each other and nothing more. It is a fallback, not a
@@ -93,22 +91,21 @@ layer 2, and DHCP is not answering.
 
 ## Loopback
 
-`127.0.0.0/8` is reserved for **loopback** — traffic a host sends to itself.
+`127.0.0.0/8` is reserved for loopback, which is traffic a host sends to itself.
 `127.0.0.1`, conventionally named `localhost`, is the address you almost always
-see. Packets sent there never reach a wire; the network stack turns them around
+see. Packets sent there never reach a wire. The network stack turns them around
 internally.
 
 That makes loopback useful in two ways. `ping 127.0.0.1` exercises the local
 IP stack without depending on any cable, switch, or router, so a failure points
-at local configuration rather than the network. And a service bound to
-`127.0.0.1` is reachable only from the machine it runs on, which is a genuine
-security boundary — this site's own server binds loopback by default and is
-published through a reverse proxy rather than by listening on a public
-interface.
+at local configuration instead of the network. A service bound to `127.0.0.1` is
+reachable only from the machine it runs on, which makes it a real security
+boundary. This site's own server binds to loopback by default and is published
+through a reverse proxy, not by listening on a public interface.
 
 ## Classful addressing
 
-Early IPv4 divided the address space into fixed **classes**, distinguished by
+Early IPv4 divided the address space into fixed classes, distinguished by
 the leading bits and therefore by the value of the first octet. The class
 determined how much of the address was network and how much was host.
 
@@ -138,10 +135,10 @@ the shape of the private ranges.
 
 ## Dividing the address
 
-Everything above concerns the shape of one address. Splitting a network into
-smaller ones — counting usable hosts, reading a subnet mask bit by bit, prefix
-notation, and sizing each subnet to what it actually needs — is covered in
-[subnetting, CIDR, and VLSM](/learn/subnetting).
+Everything above is about the shape of one address. Splitting a network into
+smaller ones is covered in [subnetting, CIDR, and VLSM](/learn/subnetting):
+counting usable hosts, reading a subnet mask bit by bit, prefix notation, and
+sizing each subnet to what it needs.
 
 ## Suggested practice: read and verify your own network
 
@@ -154,16 +151,16 @@ most Linux systems. Nothing here needs root or changes any configuration.
 2. Convert one octet of your address to binary by hand, then check yourself:
    `printf '%d\n' 0b10101000` converts the other direction.
 3. Run `ping -c 3 127.0.0.1` and confirm it succeeds with the network cable
-   unplugged. Note that `ping` uses ICMP, not TCP — it tests reachability, not
-   whether any service is listening.
+   unplugged. `ping` uses ICMP, not TCP, so it tests reachability, not whether
+   any service is listening.
 4. Run `ss -tln` and compare services bound to `127.0.0.1` with those bound to
    `0.0.0.0`. The first group is reachable only from the machine itself; the
    second is reachable from the network.
 5. Disconnect from your network, wait for DHCP to give up, and check `ip -4 addr
    show` for a `169.254` address. Reconnect and watch it be replaced.
 
-The mask arithmetic that goes with this — the AND test, host counts, and
-splitting a range — is practiced on
+The mask arithmetic that goes with this (the AND test, host counts, and
+splitting a range) is practiced on
 [subnetting, CIDR, and VLSM](/learn/subnetting#suggested-practice-verify-a-subnet-by-hand-then-check-yourself).
 
 ## Related pages
@@ -199,12 +196,12 @@ Network+ certification guide, and checked against the primary sources:
 - [RFC 6890: Special-Purpose IP Address Registries](https://www.rfc-editor.org/rfc/rfc6890.txt)
   — one authoritative list of every reserved IPv4 block, loopback included.
 
-IPv4 is defined by the IETF through these RFCs, not by the IEEE — IEEE standards
-govern the layer beneath, such as Ethernet and Wi-Fi.
+IPv4 is defined by the IETF through these RFCs, not by the IEEE. IEEE standards
+cover the layer beneath it, such as Ethernet and Wi-Fi.
 
-Two limits are worth stating. The class table is historical: it explains where
+Two limits to keep in mind. The class table is historical. It explains where
 default masks and private ranges came from, but no current router makes
 forwarding decisions from it. And everything here is IPv4 only. IPv6 keeps the
-prefix-length notation and discards nearly all of the rest — 128-bit addresses,
-no broadcast, and no equivalent of the address scarcity that made subnetting an
-exercise in conservation.
+prefix-length notation and drops nearly everything else. It has 128-bit
+addresses, no broadcast, and none of the address shortage that made subnetting
+an exercise in saving addresses.

@@ -7,8 +7,8 @@ tags: [education, linux, archives, tar, gzip, compression]
 
 ## Overview
 
-Two jobs get confused because one command usually does both. **Compression**
-makes a file smaller. **Archiving** bundles many files into one. On Linux they
+Two jobs get confused because one command usually does both. Compression
+makes a file smaller. Archiving bundles many files into one. On Linux they
 are separate tools that compose, which is why the canonical filename is
 `archive.tar.gz` — a tar archive that has then been gzipped.
 

@@ -15,6 +15,9 @@ entries in `src/models/project.rs`, and `README.md`.
 - Short declarative sentences, one idea each. If a sentence needs a dash or a
   semicolon to hold together, it is two sentences.
 - Concrete nouns: the tool, the command, the file, the port number.
+- American spelling: color, behavior, neighbor, practice (verb and noun),
+  authorization, labeled. A British spelling is a typo. Code blocks and quoted
+  repository text keep whatever they already say.
 - Few contractions in body copy. The sentences Jeff wrote in 618398f use "did not"
   and "is not", even though his notes contract freely. Short UI labels ("What's
   here") are fine as they are.

@@ -7,9 +7,9 @@ tags: [education, networking, physical-layer, wireless, wifi, cellular]
 
 ## Overview
 
-Radio is the medium most people meet first — cellular networks, Bluetooth, smart
+Radio is the medium most people meet first: cellular networks, Bluetooth, smart
 home devices, and Wi-Fi. It is convenient because nothing has to be cabled to
-the client, and difficult for exactly the same reason. The medium is shared with
+the client, and difficult for the same reason. The medium is shared with
 every other transmitter in range, including ones on networks nobody in the
 building controls.
 
@@ -23,28 +23,28 @@ while causing one.
 
 A Wi-Fi station cannot listen while it transmits, so it cannot detect a
 collision the way a wired station can. It tries to avoid one instead.
-**Carrier-sense multiple access with collision avoidance (CSMA/CA)** works like
+Carrier-sense multiple access with collision avoidance (CSMA/CA) works like
 this:
 
 1. A station listens for activity on the channel it intends to use.
 2. If the channel is busy, it waits and checks again.
 3. If the channel is clear, it transmits.
-4. The receiver checks the frame for errors and returns an **acknowledgment
-   (ACK)**.
+4. The receiver checks the frame for errors and returns an acknowledgment
+   (ACK).
 5. If no ACK arrives, the sender treats the frame as lost and retries.
 
-Two optional control frames protect longer transmissions. A **request to send
-(RTS)** announces how long the sender expects to occupy the channel. The
-receiver answers with a **clear to send (CTS)**, which other stations in range
+Two optional control frames protect longer transmissions. A request to send
+(RTS) announces how long the sender expects to occupy the channel. The
+receiver answers with a clear to send (CTS), which other stations in range
 hear as an instruction to wait.
 
 A typical Wi-Fi network is hub-and-spoke: several devices associate with one
 wireless router or access point. In 802.11 terminology the client devices are
-**stations**.
+stations.
 
 ## 802.11 standards
 
-The **Institute of Electrical and Electronics Engineers (IEEE)** publishes the
+The Institute of Electrical and Electronics Engineers (IEEE) publishes the
 standards for both wireless and wired LAN technology. The 802.11 family covers
 wireless LANs.
 
@@ -58,60 +58,62 @@ wireless LANs.
 | 802.11ax (Wi-Fi 6) | 9.6 Gbps | 2.4 and 5 GHz | 70 m | OFDMA; holds up better in crowded environments |
 
 Wi-Fi 6E extends 802.11ax into the 6 GHz band where regulators allow it. A
-separate amendment, **802.11h**, added dynamic frequency selection and transmit
-power control so 5 GHz networks can share spectrum with radar systems; it is an
-amendment to 5 GHz operation, not a band variant of 802.11g.
+separate amendment, 802.11h, added dynamic frequency selection and transmit
+power control so 5 GHz networks can share spectrum with radar systems. It is an
+amendment to 5 GHz operation, not a band variant of 802.11g, and
+[wireless technologies](/learn/wireless-technologies#802-11h-dfs-and-tpc) covers
+how it works.
 
 ## Cellular networks
 
-**Cellular networks** are built and operated by telecom carriers. A mobile
+Cellular networks are built and operated by telecom carriers. A mobile
 device associates with a nearby tower, which connects onward to the carrier's
 core network.
 
-- **2G** and **3G** are deprecated and largely decommissioned.
-- **4G** and **5G** carry modern mobile traffic.
+- **2G** and 3G are deprecated and largely decommissioned.
+- **4G** and 5G carry modern mobile traffic.
 - **6G** is still in research and standardization.
 
-**Long Term Evolution (LTE)** drove the transition from voice-centric cellular
+Long Term Evolution (LTE) drove the transition from voice-centric cellular
 networks to data networks capable of ordinary Internet access. 5G improves on
 it with higher throughput and lower latency, but at shorter range per site,
 which means denser tower deployments.
 
-**Narrowband-IoT (NB-IoT)** is a low-power profile that occupies a narrow slice
-of the carrier's spectrum. It transmits slowly — roughly 20–100 kbps — but
+Narrowband-IoT (NB-IoT) is a low-power profile that occupies a narrow slice
+of the carrier's spectrum. It transmits slowly, roughly 20 to 100 kbps, but it
 penetrates walls and reaches underground locations well, which suits metering
 and sensor devices that send small readings infrequently.
 
-The **Global System for Mobile Communications (GSM)** family identifies
+The Global System for Mobile Communications (GSM) family identifies
 subscribers with a SIM card, which is what makes a device portable between
-networks and carriers internationally. **Code division multiple access (CDMA)**
+networks and carriers internationally. Code division multiple access (CDMA)
 was a competing approach used in the United States by carriers such as Verizon
-and Sprint; CDMA networks identified devices in the network rather than with a
+and Sprint. CDMA networks identified devices in the network instead of with a
 removable card. Those networks have been retired in favor of LTE and 5G.
 
 ## Satellite
 
 Satellite links carry traffic where terrestrial coverage does not reach. The
-distance a signal travels to orbit and back introduces **latency**, signal
+distance a signal travels to orbit and back introduces latency, signal
 strength falls off with the square of the distance, and atmospheric conditions
 degrade the link further.
 
-**Geostationary (GEO)** satellites orbit at roughly 35,000 km (22,000 miles)
+Geostationary (GEO) satellites orbit at roughly 35,000 km (22,000 miles)
 and hold a fixed position over one point on the ground. A single GEO satellite
 covers a large area consistently and the ground dish can stay pointed in one
 direction, but the round trip adds substantial latency.
 
-**Low-earth orbit (LEO)** satellites orbit much closer, which cuts latency
+Low-earth orbit (LEO) satellites orbit much closer, which cuts latency
 considerably. They do not hold a fixed position, so the ground station has to
-track them — mechanically, or with an electronically steered phased array — and
-coverage depends on a constellation of many satellites handing off to each
+track them, either mechanically or with an electronically steered phased array.
+Coverage depends on a constellation of many satellites handing off to each
 other. Providers such as Starlink offer consumer Internet access this way.
 
-**Global Positioning System (GPS)** and its counterpart constellations are a
+Global Positioning System (GPS) and its counterpart constellations are a
 different use of the same infrastructure. A receiver measures how long signals
 took to arrive from several satellites and solves for its own position.
 
-## Study-note shortcuts worth correcting
+## Study-note shortcuts to correct
 
 - **Advertised rates are shared, aggregate PHY rates.** The 9.6 Gbps figure for
   Wi-Fi 6 is the theoretical total across the channel under ideal conditions,
@@ -135,8 +137,8 @@ On a network you own:
 1. On a wireless client, use `iw dev` or `nmcli dev wifi list` to see the band,
    channel, and channel width in use, and match them to the 802.11 table above.
 2. Move the client further from the access point and repeat. Watch the
-   negotiated rate change while the standard stays the same — the generation is
-   a ceiling, not a promise.
+   negotiated rate change while the standard stays the same. The generation
+   sets the maximum rate, not the rate you get.
 3. Run `iw dev <interface> scan | grep -E "SSID|freq|signal"` and count how many
    networks share your channel. That contention is invisible and is usually the
    real explanation for a slow link.
@@ -146,8 +148,8 @@ On a network you own:
 5. Check `ip -s link` on the wireless interface for error and drop counters. A
    link can associate successfully and still be marginal.
 
-This shows what your equipment negotiated. It does not show why — signal
-quality and interference need dedicated tools to measure rather than infer.
+This shows what your equipment negotiated. It does not show why. Measuring
+signal quality and interference takes dedicated tools.
 
 ## Related pages
 
@@ -159,6 +161,8 @@ quality and interference need dedicated tools to measure rather than infer.
   relative to each other.
 - [Network appliances](/learn/network-appliances) — the access points
   terminating these links.
+- [Wireless technologies](/learn/wireless-technologies) — channel planning,
+  SSIDs and roaming, WPA2 and WPA3, and managing access points.
 
 ## Sources and further reading
 

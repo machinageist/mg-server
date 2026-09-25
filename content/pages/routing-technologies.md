@@ -12,19 +12,20 @@ finds the best matching entry in its routing table, and hands the packet to the 
 hop named there. Each router that does this is one hop, and the frame around the
 packet is rewritten at every one of them while the IP addresses stay the same.
 
-The routing table is the whole story, and it is worth being precise about what sits
-in it. Each entry pairs a destination prefix with a way to reach it: a next-hop
-address, an outgoing interface, or both. Where those entries come from — typed in by
-an administrator, or learned from a protocol — is the first thing below. How a router
-picks between two entries that both match is the part most worth understanding,
-because that is where troubleshooting usually ends up.
+Everything a router does starts with its routing table, so it helps to be precise
+about what is in it. Each entry pairs a destination prefix with a way to reach it: a
+next-hop address, an outgoing interface, or both. The first sections below cover
+where entries come from, whether typed in by an administrator or learned from a
+protocol. After that comes how a router picks between two entries that both match,
+which is where troubleshooting usually ends up.
 
 ## Static and dynamic routing
 
-A static route is one an administrator enters. It does not change on its own, spends
-no bandwidth advertising itself, and does exactly what it says. That predictability
-is why static routes remain the normal choice for a default route out of a small
-network, for a stub network with only one way in, and for a deliberate backup path.
+A static route is one an administrator enters. It does not change on its own, uses
+no bandwidth advertising itself, and does exactly what it says. Because it is
+predictable, static routes are still the normal choice for a default route out of a
+small network, for a stub network with only one way in, and for a planned backup
+path.
 
 The cost is that the route goes on claiming to be valid after it stops being true. If
 the next hop disappears, the route stays in the table and traffic keeps going into
@@ -44,7 +45,7 @@ the table follows the topology instead of describing what it looked like on the 
 it was configured. The price is bandwidth, CPU, and one more protocol to understand
 and secure.
 
-One thing worth separating out: DHCP is not dynamic routing. DHCP hands an address
+DHCP is not dynamic routing. DHCP hands an address
 and a default gateway to a host. Dynamic routing is routers exchanging reachability
 with each other. The word "dynamic" turns up in both, and the two mechanisms have
 nothing to do with one another.
@@ -53,7 +54,7 @@ nothing to do with one another.
 
 Routing protocols divide first by scope. An interior gateway protocol (IGP) runs
 inside one administrative domain and optimizes for a best path. An exterior gateway
-protocol runs between domains and optimizes for policy — whose traffic you are
+protocol runs between domains and optimizes for policy: whose traffic you are
 willing to carry, and through whom.
 
 An autonomous system (AS) is that administrative domain: a network or group of
@@ -68,12 +69,11 @@ is what makes inter-domain routing on the public internet work. It carries prefi
 along with path attributes, and decides between them by policy rather than by
 measuring anything.
 
-That last point is where BGP is most often misread. It has no metric for speed,
-latency, or load. Its best-known attribute is the AS path — the list of autonomous
-systems a route has crossed — and a shorter AS path beats a longer one by default,
-but "by default" is doing real work in that sentence. Local preference, which an
-operator sets, is consulted ahead of AS path. A network can and routinely does prefer
-a longer, slower path because of a contract.
+This is where BGP is most often misunderstood. It has no metric for speed, latency,
+or load. Its best-known attribute is the AS path, the list of autonomous systems a
+route has crossed. A shorter AS path beats a longer one by default, but only by
+default. Local preference, which an operator sets, is checked before AS path.
+Networks routinely prefer a longer, slower path because of a contract.
 
 BGP also runs inside an AS, between that AS's own border routers, where it is called
 internal BGP. That is a different job from an IGP, and the two run together rather
@@ -84,9 +84,9 @@ which prefixes are out there at all.
 
 Enhanced Interior Gateway Routing Protocol (EIGRP) is an IGP, originally Cisco
 proprietary and later published. It computes a composite metric from bandwidth and
-delay, with load and reliability available but off by default — turning those on is
-generally discouraged, because a metric that moves with traffic can set the routing
-itself oscillating.
+delay, with load and reliability available but off by default. Turning those on is
+generally discouraged, because a metric that changes with traffic can make the
+routing itself flap back and forth.
 
 Its distinguishing piece is the Diffusing Update Algorithm (DUAL). Each router keeps
 not only the route it is using but a precomputed alternative that is provably
@@ -97,9 +97,9 @@ none exists, DUAL queries its neighbors and converges the slow way.
 ### OSPF
 
 Open Shortest Path First (OSPF) is a link-state IGP and an open standard. Each router
-advertises the state of its own links; every router in an area assembles the same
-topology database out of those advertisements and runs a shortest-path calculation
-over it. Routers inside an area therefore share a view of the topology, rather than
+advertises the state of its own links. Every router in an area builds the same
+topology database from those advertisements and runs a shortest-path calculation
+over it. So routers inside an area share one view of the topology, instead of
 trading summaries of each other's conclusions.
 
 Its metric is cost, conventionally derived from interface bandwidth, and it is summed
@@ -155,13 +155,13 @@ Cisco defaults:
 | Internal BGP                 | 200                     |
 
 It is a statement about trust, not about the path. A static route has an AD of 1
-because an administrator asserted it, not because it is fast — a static route pointed
+because an administrator entered it, not because it is fast. A static route pointed
 at a congested link still beats an OSPF route over a clear one. Values also vary by
-platform, so read them off the device being operated rather than from a table.
+platform, so read them from the device you are working on, not from a table.
 
-The ranking is useful precisely because it can be adjusted. Giving a backup static
-route an AD above the routing protocol's — a floating static route — keeps it out of
-the table until the protocol's route disappears, at which point it takes over.
+The ranking is useful because it can be adjusted. A backup static route given an AD
+higher than the routing protocol's is called a floating static route. It stays out
+of the table until the protocol's route disappears, and then it takes over.
 
 ### Metric
 
@@ -180,18 +180,17 @@ Network address translation (NAT) rewrites addresses as packets cross between pr
 and public address space. A one-to-one mapping, one private address to one public
 address, is NAT in the narrow sense.
 
-Port address translation (PAT) is the one almost everyone actually runs. Many
+Port address translation (PAT) is the one almost everyone uses. Many
 internal hosts share a single public address, and the router keeps a table keyed on
 the transport port it assigned each outbound session, so replies can be matched back
 to the host that started them. Every home router does this, which is why a household
 with a dozen devices needs one public address.
 
-Two corrections worth carrying away. NAT is not a firewall: a translation table drops
-unsolicited inbound traffic because it has nowhere to send it, not because a policy
-decided to. That is a side effect rather than filtering, and it disappears the moment
-a port forward is configured. And NAT is not the reason private addressing exists —
-it is what makes private addressing usable against the public internet, which is a
-different claim.
+Two corrections. NAT is not a firewall. A translation table drops unsolicited inbound
+traffic because it has nowhere to send it, not because a policy decided to. That is a
+side effect, not filtering, and it disappears as soon as a port forward is
+configured. And NAT is not the reason private addressing exists. It is what makes
+private addresses usable on the public internet.
 
 NAT also breaks the end-to-end addressing model, which is why protocols that carry
 addresses inside their own payloads need helpers to work through it, and part of why
@@ -208,17 +207,17 @@ hosts.
 Two or more routers share a virtual IP address (VIP), and a virtual MAC address with
 it. Hosts are configured with the VIP as their gateway. One router is active and
 answers for it while the others listen for its periodic hello. When the hellos stop,
-another router takes over the VIP and the virtual MAC, and the hosts notice nothing —
-as far as they are concerned, the gateway never changed.
+another router takes over the VIP and the virtual MAC. The hosts notice nothing,
+because to them the gateway never changed.
 
 Hot Standby Router Protocol (HSRP) and Gateway Load Balancing Protocol (GLBP) are
-Cisco protocols; Virtual Router Redundancy Protocol (VRRP) is the open standard, and
-what Linux implementations such as keepalived speak.
+Cisco protocols. Virtual Router Redundancy Protocol (VRRP) is the open standard, and
+it is what Linux implementations such as keepalived use.
 
 The same idea appears one layer up, where a VIP fronts several servers running the
-same service. What differs is what makes the decision: an FHRP is routers electing
-among themselves, while a service VIP is normally held by a load balancer that
-health-checks its backends. Both give clients one address to hold, and in both the
+same service. What differs is what makes the decision. In an FHRP, routers elect
+among themselves. A service VIP is normally held by a load balancer that
+health-checks its backends. Both give clients one address to use, and in both,
 failover is only as good as the check behind it. A gateway that is up but no longer
 forwarding still sends hellos.
 
@@ -245,9 +244,9 @@ On a machine you own:
 2. Pick one reachable destination and decide which entry will be used, before
    checking.
 3. Check with `ip route get <destination>`, which reports the entry the kernel
-   actually selects, its next hop, and the outgoing interface.
-4. Find a destination covered by two entries — a host inside a connected network is
-   covered both by that network and by the default route — and confirm that the more
+   picks, its next hop, and the outgoing interface.
+4. Find a destination covered by two entries. A host inside a connected network is
+   covered both by that network and by the default route. Confirm that the more
    specific entry wins.
 5. Add a more specific route through a different next hop with
    `sudo ip route add <a prefix> via <a gateway on your LAN>`, re-run
@@ -256,9 +255,9 @@ On a machine you own:
 6. Run `traceroute` or `tracepath` to a destination beyond your own network, and
    match its first hop against what the table said.
 
-A Linux host has no administrative distance — that is a router feature, and Linux
-carries a metric on the route instead — so steps 4 and 5 demonstrate longest-prefix
-match rather than the full decision. The exercise is finished when you can predict
+A Linux host has no administrative distance. That is a router feature, and Linux
+carries a metric on the route instead. So steps 4 and 5 show longest-prefix match,
+not the full decision. The exercise is finished when you can predict
 what `ip route get` will say before you run it.
 
 ## Related pages

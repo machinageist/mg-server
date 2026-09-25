@@ -12,8 +12,8 @@ whose root is `/`, and additional storage is attached at a directory somewhere
 inside it. A USB drive does not become `E:`; it becomes `/media/you/label`, and
 the paths beneath it work like any other path.
 
-The layout of that tree is not arbitrary. It follows the **Filesystem Hierarchy
-Standard (FHS)**, which is why a configuration file lives in `/etc` on Debian,
+The layout of that tree is not arbitrary. It follows the Filesystem Hierarchy
+Standard (FHS), which is why a configuration file lives in `/etc` on Debian,
 Fedora, and Arch alike. Knowing the map means being able to guess where
 something is before searching for it — and being able to tell, from a path
 alone, roughly what a file does and whether you should be editing it.
@@ -62,7 +62,7 @@ and `/usr/local` for software installed by the administrator rather than by the
 package manager.
 
 On any current distribution, `/bin`, `/sbin`, and `/lib` are symbolic links into
-`/usr`. This is the **usr-merge**, adopted by Fedora and RHEL, Debian, Arch, and
+`/usr`. This is the usr-merge, adopted by Fedora and RHEL, Debian, Arch, and
 others over the last decade. The original split existed because early Unix
 systems kept a minimal set of binaries on a small root partition and mounted
 `/usr` separately; initramfs made that unnecessary. The old paths still work,
@@ -77,7 +77,7 @@ lrwxrwxrwx 1 root root 7 ... /bin -> usr/bin
 
 ### /proc and /sys
 
-Neither of these is on a disk. Both are **pseudo-filesystems** — the kernel
+Neither of these is on a disk. Both are pseudo-filesystems — the kernel
 presenting its own state through the file interface so ordinary tools can read
 it.
 

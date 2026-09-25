@@ -1,17 +1,17 @@
 ---
 title: "Transmission media"
 date: 2026-08-02
-summary: "The physical media that carry data — radio, copper, and glass — what limits each one, and how systems sharing a medium take turns without destroying each other's transmissions."
+summary: "The physical media that carry data (radio, copper, and glass), what limits each one, and how systems sharing a medium take turns without wrecking each other's transmissions."
 tags: [education, networking, physical-layer, cabling, wireless]
 ---
 
 ## Overview
 
-**Transmission media** are the physical elements that carry data between
+Transmission media are the physical elements that carry data between
 systems: radio waves, copper conductors, and glass fiber. Everything above them
 in [the OSI model](/learn/osi-model) depends on a medium moving a signal from
-one place to another successfully — which is why a surprising share of network
-faults turn out to be layer 1.
+one place to another. That is why so many network faults turn out to be at
+layer 1.
 
 Two questions organize the whole subject:
 
@@ -28,16 +28,16 @@ this material splits in two.
 
 ## Bounded and unbounded media
 
-**Bounded media** confine the signal to a physical path — a copper pair, a glass
-core. The path is private, measurable, and interceptable only by touching it. A
-station can listen to the cable while transmitting on it, which is what made
-collision *detection* possible on early Ethernet.
+Bounded media confine the signal to a physical path, such as a copper pair or a
+glass core. The path is private and measurable, and the only way to intercept it
+is to touch it. A station can listen to the cable while transmitting on it,
+which is what made collision detection possible on early Ethernet.
 
-**Unbounded media** radiate into shared space. Nothing confines the signal, the
-medium is shared with every transmitter in range including ones nobody in the
+Unbounded media radiate into shared space. Nothing confines the signal. The
+medium is shared with every transmitter in range, including ones nobody in the
 building controls, and a station cannot hear the channel over its own
-transmission. That single physical fact is why wireless has to *avoid*
-collisions rather than detect them.
+transmission. That is why wireless has to avoid collisions instead of detecting
+them.
 
 ## The two halves
 
@@ -72,7 +72,7 @@ Trace one real connection end to end and name the medium at each hop.
    client's link, the run to the switch, the switch's uplink, the connection to
    the modem or ONT, and the service entering the building.
 2. For each hop, write down whether the medium is bounded or unbounded, and what
-   physically limits it — distance, interference, contention, or a contract.
+   physically limits it: distance, interference, contention, or a contract.
 3. Identify which hop you would suspect first if throughput dropped by half, and
    why. Usually it is the one you have the least visibility into.
 4. Work the medium-specific checks on

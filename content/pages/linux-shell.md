@@ -7,18 +7,18 @@ tags: [education, linux, shell, bash, streams]
 
 ## Overview
 
-The **shell** is a program that reads commands and runs them. It is the oldest
+The shell is a program that reads commands and runs them. It is the oldest
 interface Unix systems have, and it is still the one that scales: anything you
 can type, you can put in a file and run again, schedule, or hand to someone
 else.
 
 That is the property worth holding onto. A graphical file manager and `cp` both
 copy a file, but only one of them leaves behind something you can repeat exactly
-next month. Most of the Linux system is itself made of **shell scripts** — text
+next month. Most of the Linux system is itself made of shell scripts — text
 files containing sequences of the same commands you type interactively.
 
 The original was the Bourne shell, at `/bin/sh`. Linux systems use an enhanced
-version called the **Bourne-again shell**, or `bash`. What `/bin/sh` points to
+version called the Bourne-again shell, or `bash`. What `/bin/sh` points to
 varies: on Fedora and RHEL it is bash, while Debian and Ubuntu link it to
 `dash`, a smaller and stricter shell. Scripts written for bash should say `bash`
 in their `#!` line rather than assuming `sh` will behave the same way.
@@ -28,7 +28,7 @@ that eventually costs a system.
 
 ## Reading a command line
 
-Opening a terminal gives you a shell and a **prompt**, which by default looks
+Opening a terminal gives you a shell and a prompt, which by default looks
 something like:
 
 ```text
@@ -53,14 +53,14 @@ A command line has up to four kinds of part:
 $ ls -l --color=auto /etc
 ```
 
-- `ls` is the **command** — the program to run.
-- `-l` is an **option** or flag, altering behavior. Single-letter options take
+- `ls` is the command — the program to run.
+- `-l` is an option or flag, altering behavior. Single-letter options take
   one dash and can usually be combined: `-la` is `-l -a`.
 - `--color=auto` is a long option, taking two dashes, and this one takes its own
   argument.
-- `/etc` is an **argument** — the data the command acts on.
+- `/etc` is an argument — the data the command acts on.
 
-Some commands add a **subcommand** before the options, which is common in newer
+Some commands add a subcommand before the options, which is common in newer
 tooling: `systemctl restart sshd`, `git commit -m "..."`, `ip addr show`.
 
 ## Where the output goes
@@ -100,7 +100,7 @@ parent).
 
 ## Shell and environment variables
 
-A **shell variable** is set with an assignment, and no spaces around the `=`:
+A shell variable is set with an assignment, and no spaces around the `=`:
 
 ```text
 $ EXAMPLE=one
@@ -111,7 +111,7 @@ one
 Assigning uses the bare name; reading it uses `$` in front. It exists only in
 the shell that created it, and disappears when that shell exits.
 
-An **environment variable** is a shell variable marked for inheritance by child
+An environment variable is a shell variable marked for inheritance by child
 processes:
 
 ```text

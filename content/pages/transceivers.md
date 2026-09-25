@@ -7,16 +7,16 @@ tags: [education, networking, physical-layer, fiber, cabling]
 
 ## Overview
 
-A **transceiver** combines a **transmitter** and a **receiver** in one unit. It
+A transceiver combines a transmitter and a receiver in one unit. It
 is the interface between a device's electronics and the medium carrying its
 traffic: it converts signals the device produces into light or electrical
 signals on the wire, and converts what arrives back again.
 
-Network equipment increasingly uses pluggable transceivers rather than fixed
+More and more network equipment uses pluggable transceivers instead of fixed
 ports. One switch port can be fitted for twisted-pair copper, short-range
 multimode fiber, or long-haul single-mode fiber by changing the module instead
-of the switch. Most pluggable modules are **hot-swappable** — they can be
-replaced while the device is powered and in service.
+of the switch. Most pluggable modules are hot-swappable, meaning they can be
+replaced while the device is powered on and in service.
 
 ## What a transceiver carries
 
@@ -26,23 +26,22 @@ that equipment from different vendors interoperates.
 ### Ethernet
 
 Ethernet is the protocol most transceivers serve. The 802.3 standards cover
-both copper and fiber at every speed grade, and each port type — 1000BASE-LX,
-10GBASE-SR, 100GBASE-LR4 — specifies the medium, wavelength, and reach the
-module has to support. [Transmission media](/learn/transmission-media) covers
+both copper and fiber at every speed grade, and each port type, such as
+1000BASE-LX, 10GBASE-SR, or 100GBASE-LR4, specifies the medium, wavelength, and
+reach the module has to support. [Transmission media](/learn/transmission-media) covers
 those port types in more detail.
 
 ### Fibre Channel
 
 Fibre Channel is a separate high-speed transport built for storage traffic,
-most often in a **storage area network (SAN)**, and it runs predominantly over
-fiber optics. **Fibre Channel Protocol (FCP)** is the mapping that carries SCSI
-commands across it — the protocol riding the transport, not another name for
-the transport itself. Fibre Channel equipment uses the same families of
+most often in a storage area network (SAN), and it runs predominantly over
+fiber optics. Fibre Channel Protocol (FCP) is the mapping that carries SCSI
+commands across it. FCP runs over Fibre Channel. It is not another name for it. Fibre Channel equipment uses the same families of
 pluggable modules as Ethernet gear.
 
 ## Form factors
 
-A **form factor** describes a module's physical shape, size, and electrical
+A form factor describes a module's physical shape, size, and electrical
 interface. These come from multi-source agreements between manufacturers rather
 than from the IEEE, which is why the naming runs on a separate track from the
 Ethernet port types.
@@ -56,10 +55,10 @@ Ethernet port types.
 | QSFP28 | Four 25G lanes | 100 Gbps |
 
 The SFP family holds one channel per module and covers most access and
-distribution links. The QSFP family carries four lanes in one module, which is
-what makes 40G and 100G practical in high-performance data centers and cloud
-infrastructure — and what allows a breakout cable to split one QSFP port into
-four independent SFP-speed links.
+distribution links. The QSFP family carries four lanes in one module. That is
+what makes 40G and 100G practical in data centers and cloud infrastructure, and
+it is what lets a breakout cable split one QSFP port into four separate
+SFP-speed links.
 
 ## Connector types
 
@@ -78,12 +77,12 @@ existing plant was built with them.
 | F-type | Coaxial | Threaded connector for cable television and cable broadband |
 | BNC (Bayonet Neill–Concelman) | Coaxial | Legacy coaxial LANs, still common on video and test equipment |
 
-BNC **barrels** couple two BNC cables end to end, and T-connectors tap a cable
-— the arrangement that shared-media coaxial Ethernet depended on.
+BNC barrels join two BNC cables end to end, and T-connectors tap into a cable.
+Shared-media coaxial Ethernet depended on that arrangement.
 
 ## Reading the label
 
-- **An SFP cage is not a media converter.** The port accepts a module; the
+- **An SFP cage is not a media converter.** The port accepts a module, and the
   module determines whether the link is copper or fiber. Converting between two
   media requires a media converter, or two devices each fitted for their own
   side.
@@ -118,7 +117,7 @@ On equipment you own:
 
 Handle fiber carefully while doing this. Keep dust caps on unused connectors,
 avoid touching the endface, and never look into a fiber or a populated optical
-port — the light is invisible and can injure your eye.
+port. The light is invisible and can injure your eye.
 
 ## Related pages
 
@@ -139,7 +138,7 @@ Network+ certification guide, and checked against the primary sources:
   reach.
 
 Form factors are defined by multi-source agreements and the SFF specifications
-maintained by the SFF Technology Affiliate group; fiber connector geometry
+maintained by the SFF Technology Affiliate group. Fiber connector geometry
 comes from the TIA-604 (FOCIS) series. Neither is published openly. For a
 specific module, the vendor datasheet and the platform's compatibility matrix
 are the references that determine whether a link will come up.

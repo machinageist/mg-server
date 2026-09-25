@@ -1,42 +1,42 @@
 ---
 title: "Education wiki"
 date: 2026-07-23
-summary: "Free, FOSS-first IT foundations paired with suggested practice and evidence from a learning-in-public systems and networking portfolio."
+summary: "Free, FOSS-first foundations in networking and Linux, each page paired with practice you can run on hardware you already own."
 tags: [education, networking, linux, digital-literacy, digital-sovereignty]
 ---
 
-## A doorway into technical agency
+## Who this is for
 
 This wiki is for curious adults who use technology every day but want to understand,
 operate, troubleshoot, and eventually build more of it themselves. It begins with the
 systems and networking foundations I am studying for an early career in Linux systems
 administration and network operations.
 
-The goal is not to make every reader a specialist. It is to provide enough context to
-see the larger technical landscape, understand ordinary documentation, and choose a
-useful next direction.
+The aim is enough context to see how the pieces fit together, read ordinary
+documentation, and pick a useful next step. It is not meant to make anyone a
+specialist.
 
 ## Understand → Practice → Evidence
 
-Topics are developed as flexible learning clusters:
+Each topic has up to three parts:
 
 1. **Understand** — connect a concept to the larger system and explain it in ordinary
-   language before moving toward protocols and technical specifications.
-2. **Practice** — use an accessible lab to observe, configure, break, or troubleshoot
-   the concept. Most suggested labs should work on an ordinary computer with free and
+   language before getting into protocols and specifications.
+2. **Practice** — use a simple lab to observe, configure, break, or troubleshoot the
+   concept. Most suggested labs work on an ordinary computer with free and
    open-source software.
-3. **Evidence** — connect the subject to completed, documented work where I have
-   personally applied it.
+3. **Evidence** — link the topic to finished, documented work where I have used it
+   myself.
 
-Not every topic needs all three parts. A foundational page may stand alone; an applied
-claim should be supported by work I performed and can explain.
+Not every topic needs all three. A foundational page can stand alone. An applied claim
+should be backed by work I did and can explain.
 
 ## Practice what is here
 
-Reading is half of it. Two surfaces work directly off these pages:
+Two other parts of the site are built from these pages:
 
 - [Glossary](/glossary) — every term and command defined here, each linked back
-  to the section that explains it properly.
+  to the section that explains it.
 - [Study](/study) — practice questions and command scenarios. Every answer
   carries an explanation of why the other options are wrong, and a link to the
   page it came from.
@@ -106,17 +106,17 @@ Reading is half of it. Two surfaces work directly off these pages:
 - [Archives and compression](/learn/linux-archives) — why `tar` and `gzip` are
   separate tools, and what metadata an archive preserves that `cp` does not.
 
-This wiki expands with finished notes and completed labs reviewed as standalone
+New pages are added as I finish notes and labs and review them as standalone
 lessons.
 
 ## Authorship and scope
 
-The educational substance begins in notes I typed while studying or in labs I
-performed and documented. AI may help interview me, organize the material, correct
-presentation, and fit it into the site, but it is not used to manufacture unlearned
-expertise or unperformed evidence.
+Every page starts from notes I typed while studying, or from labs I ran and
+documented. AI helps interview me, organize the material, fix the presentation, and
+fit it into the site. It is not used to make up expertise I have not learned or
+evidence for work I have not done.
 
-The material is FOSS-first because free tools and owned systems make practice more
-accessible. Proprietary workplace systems will still be addressed where reality
-requires them, with a clear distinction between transferable concepts, documentation-
-based comparisons, and systems I have personally operated.
+The material is FOSS-first because free tools and your own hardware make practice
+easier to get to. Proprietary workplace systems still come up where they matter, and
+the pages say which parts are general concepts, which are comparisons from
+documentation, and which are systems I have run myself.

@@ -1,26 +1,25 @@
 ---
 title: "Network topologies"
 date: 2026-08-02
-summary: "How nodes and links are arranged — mesh, star, ring, spine-and-leaf, and the tiered designs used in enterprise and data center networks."
+summary: "How nodes and links are arranged: mesh, star, ring, spine-and-leaf, and the tiered designs used in enterprise and data center networks."
 tags: [education, networking, topology, architecture, data-center]
 ---
 
 ## Overview
 
-A **topology** is the arrangement of a network's **nodes** and the **links**
+A topology is the arrangement of a network's nodes and the links
 between them. It answers a structural question that sits underneath most
 operational ones: when this device needs to reach that device, what paths exist,
 and what happens when one of them fails?
 
-Topology is worth separating from equipment. The same collection of switches can
-be wired into arrangements with very different failure behavior, and the diagram
-that describes how traffic flows is not always the diagram that describes how the
-cables run.
+Topology is separate from equipment. The same switches can be wired into layouts
+with very different failure behavior, and the diagram of how traffic flows is not
+always the diagram of how the cables run.
 
 ## Physical and logical topology
 
-**Physical topology** is the cabling and radio layout — what is plugged into
-what. **Logical topology** is how data actually moves between nodes.
+Physical topology is the cabling and radio layout, meaning what is plugged into
+what. Logical topology is how data moves between nodes.
 
 The two often differ. Classic 10BASE-T Ethernet wired every station to a central
 hub, so its physical topology was a star. But a hub repeats every incoming
@@ -34,14 +33,13 @@ routing design, and those are three different documents.
 
 ## Mesh
 
-In a **mesh** topology, each node connects to multiple other nodes.
+In a mesh topology, each node connects to multiple other nodes.
 
-A **full mesh** connects every node to every other node. For `n` nodes that
-requires `(n * (n - 1)) / 2` links — a count of links, not of nodes. The
-quadratic growth is the reason full mesh stays rare: 5 nodes need 10 links, 20
-nodes need 190, and 50 nodes need 1,225.
+A full mesh connects every node to every other node. For `n` nodes that takes
+`(n * (n - 1)) / 2` links. That number grows fast, which is why full mesh is
+rare: 5 nodes need 10 links, 20 nodes need 190, and 50 nodes need 1,225.
 
-A **partial mesh** connects some nodes to several others without connecting
+A partial mesh connects some nodes to several others without connecting
 everything to everything. It keeps most of the redundancy at a fraction of the
 link count.
 
@@ -53,30 +51,30 @@ mesh deployments, where nodes relay for each other.
 
 ## Star, or hub and spoke
 
-A **star** — also called **hub and spoke** — attaches every node to one central
-point, and traffic between two nodes passes through that center.
+A star, also called hub and spoke, attaches every node to one central point,
+and traffic between two nodes passes through that center.
 
 This is the shape of most ordinary local networks. It is easy to reason about,
 easy to extend by adding one more link to the center, and a convenient place to
 apply configuration or policy for the whole segment at once.
 
-The tradeoff is direct: the central device is a single point of failure. Losing
-it isolates every node attached to it. In practice that is managed rather than
-eliminated — redundant power supplies, stacked or paired switches, and a second
-uplink path all reduce the exposure without changing the basic shape.
+The tradeoff is that the central device is a single point of failure. Losing it
+cuts off every node attached to it. In practice that risk is reduced, not
+removed. Redundant power supplies, stacked or paired switches, and a second
+uplink all help without changing the basic shape.
 
-Modern star networks put a switch at the center rather than a hub, which is what
-moves the logical topology away from a shared bus.
+Modern star networks put a switch at the center instead of a hub. That is what
+keeps the logical topology from being a shared bus.
 
 ## Ring and token passing
 
-A **ring** connects each node to two neighbors so that traffic circulates around
-the loop. **Token Ring**, standardized as IEEE 802.5, controlled access by
+A ring connects each node to two neighbors so that traffic circulates around
+the loop. Token Ring, standardized as IEEE 802.5, controlled access by
 passing a token: the node holding the token is the only one permitted to
-**transmit**. Receiving is not gated by the token — every node still reads frames
+transmit. Receiving does not need the token. Every node still reads frames
 addressed to it as they pass.
 
-Token passing is **deterministic**. Unlike contention-based access, where a
+Token passing is deterministic. Unlike contention-based access, where a
 station transmits when it believes the medium is free, the token guarantees a
 bounded wait before any node gets its turn and removes collisions by
 construction. That property matters when timing must be predictable, which is why
@@ -87,15 +85,15 @@ outlived the product.
 
 ## Hybrid
 
-A **hybrid** topology combines two or more topology types, typically joined
+A hybrid topology combines two or more topology types, typically joined
 through a switch or bridge. Most real networks of any size are hybrids: a
 spine-and-leaf fabric in the data center, stars out to the access closets, and a
 point-to-point or partial-mesh WAN connecting sites.
 
 ## Spine and leaf
 
-**Spine-and-leaf** is a two-tier switching fabric built for data centers. Every
-**leaf** switch connects to every **spine** switch. Leaves never connect to other
+Spine-and-leaf is a two-tier switching fabric built for data centers. Every
+leaf switch connects to every spine switch. Leaves never connect to other
 leaves, and spines never connect to other spines. End devices attach to leaf
 switches.
 
@@ -103,20 +101,20 @@ The tier count is the point of the design, and it is easy to miscount: servers
 attach to leaves, but they are not a switching tier. The fabric is two tiers, in
 deliberate contrast to the three-tier model below.
 
-The arrangement gives every leaf-to-leaf path the same length — leaf, spine, leaf
-— so latency between any two endpoints is consistent rather than depending on
-where they happen to sit. Multiple equal-cost paths spread load across the spines
-and let the fabric survive losing one. Capacity grows by adding spines.
+Every leaf-to-leaf path has the same length (leaf, spine, leaf), so latency
+between any two endpoints is the same no matter where they sit. Multiple
+equal-cost paths spread load across the spines and let the fabric survive losing
+one. Capacity grows by adding spines.
 
-Note what this does *not* do: switched full-duplex links have no collisions, so
-the redundancy is about congestion, throughput, and failure tolerance rather than
-contention. The design became common because virtualization and distributed
+The extra paths are not about collisions. Switched full-duplex links have none,
+so the redundancy is about congestion, throughput, and surviving failures. The
+design became common because virtualization and distributed
 applications generate far more traffic between servers than in and out of the
 data center.
 
 ## Point to point
 
-A **point-to-point** link connects exactly two nodes. A leased line to a cloud
+A point-to-point link connects exactly two nodes. A leased line to a cloud
 provider, a fiber run between two buildings on a campus, or a link joining two
 campuses are all point-to-point.
 
@@ -127,27 +125,27 @@ would be excessive.
 
 ## The three-tier hierarchical model
 
-The **three-tier hierarchical model** divides an enterprise network into layers
+The three-tier hierarchical model divides an enterprise network into layers
 by role:
 
-- The **core** is the backbone. It moves high volumes of traffic between parts of
+- The core is the backbone. It moves high volumes of traffic between parts of
   the network as fast as possible and avoids doing anything that would slow that
   down.
-- The **distribution layer** sits between core and access. It aggregates access
+- The distribution layer sits between core and access. It aggregates access
   connections and is where routing between segments, network policy, and security
   policy are usually enforced.
-- The **access layer** is where end devices attach: workstations, printers, VoIP
+- The access layer is where end devices attach: workstations, printers, VoIP
   phones, wireless access points.
 
-Separating the layers by role means each can be sized, secured, and upgraded on
-its own terms, which is what makes the design scale in large enterprises.
+Because the layers are split by role, each one can be sized, secured, and
+upgraded on its own, and that is how the design scales in large enterprises.
 Spanning Tree Protocol (STP) is commonly used within it to keep redundant Layer 2
 links from forming loops that would otherwise flood the network with circulating
 broadcast traffic.
 
 ## Collapsed core
 
-A **collapsed core** merges the core and distribution layers into one tier.
+A collapsed core merges the core and distribution layers into one tier.
 Smaller networks often do not generate enough traffic to justify a separate core,
 and combining the layers reduces equipment, cost, and configuration. The
 concentration is the tradeoff: the merged tier carries both roles, so its failure
@@ -155,11 +153,11 @@ takes more of the network with it.
 
 ## Traffic flow: north-south and east-west
 
-**Traffic flow** describes the paths data takes through a network, and two
+Traffic flow describes the paths data takes through a network, and two
 directions are named because they raise different concerns:
 
-- **North-south traffic** enters or leaves the network — a user reaching the
-  internet, or a request arriving from outside. It crosses a trust boundary, so
+- **North-south traffic** enters or leaves the network, such as a user reaching
+  the internet or a request arriving from outside. It crosses a trust boundary, so
   the primary concern is usually security policy and inspection.
 - **East-west traffic** moves within the network, between servers or between
   devices in the same cluster or environment. The primary concern is usually
@@ -171,7 +169,7 @@ out to the internet handles server-to-server traffic poorly, because two servers
 on different access switches may have to travel up to the distribution or core
 layer and back down.
 
-## Study-note shortcuts worth correcting
+## Study-note shortcuts to correct
 
 - **`(n * (n - 1)) / 2` counts links, not nodes.** It answers how much cabling a
   full mesh needs for a given number of nodes.
