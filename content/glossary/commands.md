@@ -102,6 +102,7 @@ entries:
       - { slug: "wired-media", anchor: "suggested-practice-read-the-media-in-your-own-links", label: "Wired media" }
       - { slug: "transceivers", anchor: "suggested-practice-identify-what-is-plugged-into-your-own-gear", label: "Transceivers and connectors" }
       - { slug: "switching-technologies", anchor: "speed-and-duplex", label: "Switching technologies" }
+      - { slug: "physical-installations", anchor: "suggested-practice-check-the-cabling-power-and-heat-of-your-own-equipment", label: "Physical installations" }
     man: "https://man7.org/linux/man-pages/man8/ethtool.8.html"
 
   - name: "free"

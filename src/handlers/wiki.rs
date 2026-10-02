@@ -84,6 +84,10 @@ const SIDEBAR: &[SidebarSection] = &[
                 slug: "transceivers",
                 label: "Transceivers and connectors",
             },
+            SidebarEntry {
+                slug: "physical-installations",
+                label: "Physical installations",
+            },
         ],
     },
     SidebarSection {
@@ -305,6 +309,10 @@ const NETWORK_PLUS: &[ExamSection] = &[
                 objective: "2.3",
                 slug: "wireless-technologies",
             },
+            ExamEntry {
+                objective: "2.4",
+                slug: "physical-installations",
+            },
         ],
     },
 ];
@@ -334,6 +342,10 @@ const CCNA_V1_1: &[ExamSection] = &[
             ExamEntry {
                 objective: "1.3",
                 slug: "transceivers",
+            },
+            ExamEntry {
+                objective: "1.3",
+                slug: "physical-installations",
             },
             ExamEntry {
                 objective: "1.5",
@@ -429,6 +441,10 @@ const CCNA_V2_0: &[ExamSection] = &[
             ExamEntry {
                 objective: "1.1",
                 slug: "transceivers",
+            },
+            ExamEntry {
+                objective: "1.1",
+                slug: "physical-installations",
             },
             ExamEntry {
                 objective: "1.2",

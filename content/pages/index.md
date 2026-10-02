@@ -67,6 +67,9 @@ or Network+ objective instead.
   the 802.11 generations and their bands, cellular, and satellite.
 - [Transceivers and connectors](/learn/transceivers) — pluggable modules, their form
   factors, and the connectors that terminate copper and fiber.
+- [Physical installations](/learn/physical-installations) — distribution frames,
+  racks and airflow, patch panels and cable pinouts, locks, power, and the
+  temperature, humidity, and fire protection of the room.
 
 ### Addressing
 

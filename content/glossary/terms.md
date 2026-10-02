@@ -86,6 +86,18 @@ entries:
     learn:
       - { slug: "vpns-and-ipsec", anchor: "ipsec", label: "VPNs and IPsec" }
 
+  - term: "Auto MDI-X"
+    aka: ["Auto-MDIX"]
+    category: networking
+    definition: >
+      A feature of an Ethernet port that detects which pins the other end is
+      sending on and swaps its own to match. With it, a straight-through or a
+      crossover cable works between any two devices. Nearly every gigabit
+      port has it.
+    see_also: ["crossover-cable", "straight-through-cable"]
+    learn:
+      - { slug: "physical-installations", anchor: "straight-through-and-crossover-cables", label: "Physical installations" }
+
   - term: "Autonomous system"
     aka: ["AS"]
     category: networking
@@ -106,6 +118,17 @@ entries:
     see_also: ["autonomous-system"]
     learn:
       - { slug: "routing-technologies", anchor: "bgp", label: "Routing technologies and route selection" }
+
+  - term: "Backbone cabling"
+    aka: ["Vertical cabling"]
+    category: networking
+    definition: >
+      The cabling that connects distribution frames to each other, from floor
+      to floor or building to building. It is usually fiber, because it
+      carries the combined traffic of everything behind it.
+    see_also: ["horizontal-cabling", "main-distribution-frame", "intermediate-distribution-frame"]
+    learn:
+      - { slug: "physical-installations", anchor: "backbone-and-horizontal-cabling", label: "Physical installations" }
 
   - term: "Band steering"
     category: networking
@@ -220,6 +243,17 @@ entries:
     learn:
       - { slug: "subnetting", anchor: "cidr", label: "Subnetting, CIDR, and VLSM" }
 
+  - term: "Clean agent"
+    category: networking
+    definition: >
+      A fire suppression gas that does not conduct electricity and leaves no
+      residue, so it puts out a fire without ruining the equipment. Inert
+      gases lower the oxygen level, and chemical agents absorb the fire's
+      heat.
+    see_also: ["pre-action-sprinkler"]
+    learn:
+      - { slug: "physical-installations", anchor: "fire-suppression", label: "Physical installations" }
+
   - term: "Collapsed core"
     category: networking
     definition: >
@@ -250,6 +284,17 @@ entries:
     see_also: ["archiving"]
     learn:
       - { slug: "linux-archives", anchor: "gzip-compresses-one-file", label: "Archives and compression" }
+
+  - term: "Computer room air conditioner"
+    aka: ["CRAC"]
+    category: networking
+    definition: >
+      A cooling unit built for server rooms. It runs all day and all year,
+      moves much more air than a comfort air conditioner, and controls
+      humidity as well as temperature.
+    see_also: ["hot-and-cold-aisles"]
+    learn:
+      - { slug: "physical-installations", anchor: "temperature", label: "Physical installations" }
 
   - term: "Container"
     category: networking
@@ -282,6 +327,17 @@ entries:
     see_also: ["kernel", "time-slice"]
     learn:
       - { slug: "linux-abstraction-layers", anchor: "process-management", label: "Linux abstraction layers" }
+
+  - term: "Crossover cable"
+    category: networking
+    definition: >
+      A twisted-pair cable with T568A on one end and T568B on the other, which
+      swaps the sending and receiving pairs. It connects two ports of the same
+      kind, such as switch to switch or computer to computer. Auto MDI-X has
+      made it rare.
+    see_also: ["straight-through-cable", "auto-mdi-x", "t568a-and-t568b"]
+    learn:
+      - { slug: "physical-installations", anchor: "straight-through-and-crossover-cables", label: "Physical installations" }
 
   - term: "CSMA/CA"
     aka: ["Carrier-sense multiple access with collision avoidance"]
@@ -464,6 +520,16 @@ entries:
     learn:
       - { slug: "wireless-technologies", anchor: "802-1x-and-eap", label: "Wireless technologies" }
 
+  - term: "Fiber distribution panel"
+    category: networking
+    definition: >
+      A rack-mounted enclosure where fiber cables end. Each strand is
+      terminated or spliced inside, the spare length is coiled above its
+      minimum bend radius, and the front has a connector for each strand.
+    see_also: ["patch-panel", "backbone-cabling"]
+    learn:
+      - { slug: "physical-installations", anchor: "fiber-distribution-panels", label: "Physical installations" }
+
   - term: "Fibre Channel"
     category: networking
     definition: >
@@ -553,6 +619,27 @@ entries:
     learn:
       - { slug: "routing-technologies", anchor: "packet-lifetime-ttl-and-hop-limit", label: "Routing technologies and route selection" }
 
+  - term: "Horizontal cabling"
+    category: networking
+    definition: >
+      The cabling from a distribution frame to the wall jacks on its floor,
+      usually twisted-pair copper. A run is limited to 90 m, which leaves 10 m
+      of the 100 m channel for patch cables.
+    see_also: ["backbone-cabling", "patch-panel", "intermediate-distribution-frame"]
+    learn:
+      - { slug: "physical-installations", anchor: "backbone-and-horizontal-cabling", label: "Physical installations" }
+
+  - term: "Hot and cold aisles"
+    category: networking
+    definition: >
+      A data center layout where rows of racks face each other. Cooled air is
+      supplied to the cold aisle at the front of the racks, and exhaust is
+      collected from the hot aisle at the back, so one row never breathes
+      another row's exhaust.
+    see_also: ["port-side-exhaust", "port-side-intake", "computer-room-air-conditioner"]
+    learn:
+      - { slug: "physical-installations", anchor: "hot-and-cold-aisles", label: "Physical installations" }
+
   - term: "Hub"
     category: networking
     definition: >
@@ -608,6 +695,17 @@ entries:
     see_also: ["open-shortest-path-first", "enhanced-interior-gateway-routing-protocol", "border-gateway-protocol", "autonomous-system"]
     learn:
       - { slug: "routing-technologies", anchor: "routing-protocol-families", label: "Routing technologies and route selection" }
+
+  - term: "Intermediate distribution frame"
+    aka: ["IDF"]
+    category: networking
+    definition: >
+      A wiring room or closet close to the users, often one per floor. The
+      cables from that area's wall jacks end there on access switches, which
+      uplink to the main distribution frame.
+    see_also: ["main-distribution-frame", "horizontal-cabling"]
+    learn:
+      - { slug: "physical-installations", anchor: "intermediate-distribution-frames", label: "Physical installations" }
 
   - term: "Internet Key Exchange"
     aka: ["IKE"]
@@ -794,6 +892,18 @@ entries:
     see_also: ["broadcast-domain", "vlan"]
     learn:
       - { slug: "network-appliances", anchor: "switches", label: "Network appliances" }
+
+  - term: "Main distribution frame"
+    aka: ["MDF"]
+    category: networking
+    definition: >
+      The central wiring point of a building's network, usually where the
+      provider's lines come in. It holds the core routers, firewalls, and
+      switches, and every intermediate distribution frame connects back to
+      it.
+    see_also: ["intermediate-distribution-frame", "backbone-cabling"]
+    learn:
+      - { slug: "physical-installations", anchor: "main-distribution-frame", label: "Physical installations" }
 
   - term: "Maximum transmission unit"
     aka: ["MTU"]
@@ -997,6 +1107,17 @@ entries:
     learn:
       - { slug: "content-delivery-networks", anchor: "a-simple-request-path", label: "Content delivery networks" }
 
+  - term: "Patch panel"
+    category: networking
+    definition: >
+      A rack-mounted panel of jacks where the permanent cable runs end. Each
+      run is terminated once on the back, and a short patch cable connects
+      the matching jack on the front to a switch port. Changing a connection
+      means moving a patch cable.
+    see_also: ["fiber-distribution-panel", "horizontal-cabling"]
+    learn:
+      - { slug: "physical-installations", anchor: "patch-panels", label: "Physical installations" }
+
   - term: "PATH"
     category: linux
     definition: >
@@ -1081,6 +1202,46 @@ entries:
     learn:
       - { slug: "routing-technologies", anchor: "address-translation", label: "Routing technologies and route selection" }
 
+  - term: "Port-side exhaust"
+    category: networking
+    definition: >
+      A switch airflow direction. Cool air enters at the power supply end and
+      hot air leaves at the port end, so the ports face the hot aisle.
+    see_also: ["port-side-intake", "hot-and-cold-aisles"]
+    learn:
+      - { slug: "physical-installations", anchor: "port-side-intake-and-exhaust", label: "Physical installations" }
+
+  - term: "Port-side intake"
+    category: networking
+    definition: >
+      A switch airflow direction. Cool air enters at the port end and hot air
+      leaves at the power supply end, so the ports face the cold aisle.
+    see_also: ["port-side-exhaust", "hot-and-cold-aisles"]
+    learn:
+      - { slug: "physical-installations", anchor: "port-side-intake-and-exhaust", label: "Physical installations" }
+
+  - term: "Power distribution unit"
+    aka: ["PDU"]
+    category: networking
+    definition: >
+      The device that distributes power inside a rack. It takes one circuit
+      and provides an outlet for each piece of equipment. Metered units show
+      the current being drawn, and switched units can turn each outlet off
+      and on over the network. It has no battery.
+    see_also: ["uninterruptible-power-supply", "power-load"]
+    learn:
+      - { slug: "physical-installations", anchor: "power-distribution-units", label: "Physical installations" }
+
+  - term: "Power load"
+    category: networking
+    definition: >
+      The total power drawn by everything on a circuit. Watts are volts
+      multiplied by amps, so a 30 A circuit at 120 V carries 3,600 W, and a
+      load that runs all day should stay under 80% of that.
+    see_also: ["power-distribution-unit", "uninterruptible-power-supply"]
+    learn:
+      - { slug: "physical-installations", anchor: "power-load", label: "Physical installations" }
+
   - term: "Power over Ethernet"
     aka: ["PoE"]
     category: networking
@@ -1091,6 +1252,16 @@ entries:
     see_also: ["wireless-access-point", "voice-vlan"]
     learn:
       - { slug: "network-appliances", anchor: "switches", label: "Network appliances" }
+
+  - term: "Pre-action sprinkler"
+    category: networking
+    definition: >
+      A water sprinkler system whose pipes are kept dry. Water enters them
+      only after a detector signals a fire, and it comes out only from the
+      heads that heat has opened. It is the backup to a clean agent system.
+    see_also: ["clean-agent"]
+    learn:
+      - { slug: "physical-installations", anchor: "fire-suppression", label: "Physical installations" }
 
   - term: "Pre-shared key"
     aka: ["PSK"]
@@ -1171,6 +1342,17 @@ entries:
     see_also: ["voice-vlan"]
     learn:
       - { slug: "quality-of-service", anchor: "the-mechanisms", label: "Quality of service" }
+
+  - term: "Rack unit"
+    aka: ["U", "RU"]
+    category: networking
+    definition: >
+      The unit of height for rack-mounted equipment, 1.75 inches or 44.45 mm.
+      Most switches and patch panels are 1U, and a full-height rack is
+      usually 42U.
+    see_also: ["patch-panel", "power-distribution-unit"]
+    learn:
+      - { slug: "physical-installations", anchor: "rack-size", label: "Physical installations" }
 
   - term: "RADIUS"
     aka: ["Remote Authentication Dial-In User Service"]
@@ -1357,6 +1539,16 @@ entries:
     learn:
       - { slug: "network-topologies", anchor: "spine-and-leaf", label: "Network topologies" }
 
+  - term: "Split pair"
+    category: networking
+    definition: >
+      A termination fault where a signal's two wires come from different
+      twisted pairs. Every pin still connects end to end, so a continuity
+      test passes, but the link fails at speed.
+    see_also: ["t568a-and-t568b"]
+    learn:
+      - { slug: "physical-installations", anchor: "t568a-and-t568b", label: "Physical installations" }
+
   - term: "SSID"
     aka: ["Service set identifier"]
     category: networking
@@ -1419,6 +1611,16 @@ entries:
     see_also: ["network-attached-storage", "logical-unit-number", "fibre-channel"]
     learn:
       - { slug: "network-appliances", anchor: "storage-area-networks", label: "Network appliances" }
+
+  - term: "Straight-through cable"
+    category: networking
+    definition: >
+      A twisted-pair cable with the same wire order on both ends, so each pin
+      connects to the same pin at the far end. It connects unlike ports, such
+      as a computer or a router to a switch.
+    see_also: ["crossover-cable", "auto-mdi-x", "t568a-and-t568b"]
+    learn:
+      - { slug: "physical-installations", anchor: "straight-through-and-crossover-cables", label: "Physical installations" }
 
   - term: "Subinterface"
     category: networking
@@ -1486,6 +1688,16 @@ entries:
     see_also: ["kernel", "user-space"]
     learn:
       - { slug: "linux-abstraction-layers", anchor: "system-calls", label: "Linux abstraction layers" }
+
+  - term: "T568A and T568B"
+    category: networking
+    definition: >
+      The two wire orders TIA-568 defines for an eight-pin Ethernet plug. They
+      differ only in that the orange and green pairs trade places. Both ends
+      of a run have to use the same one.
+    see_also: ["straight-through-cable", "crossover-cable", "split-pair"]
+    learn:
+      - { slug: "physical-installations", anchor: "t568a-and-t568b", label: "Physical installations" }
 
   - term: "Three-tier hierarchical model"
     category: networking
@@ -1590,6 +1802,17 @@ entries:
     see_also: ["multicast", "broadcast", "anycast"]
     learn:
       - { slug: "traffic-types", anchor: "unicast", label: "Network traffic types" }
+
+  - term: "Uninterruptible power supply"
+    aka: ["UPS"]
+    category: networking
+    definition: >
+      A battery between the wall power and the equipment. When the power
+      fails it carries the load for minutes, long enough for a generator to
+      start or for servers to shut down cleanly.
+    see_also: ["power-distribution-unit", "power-load"]
+    learn:
+      - { slug: "physical-installations", anchor: "uninterruptible-power-supplies", label: "Physical installations" }
 
   - term: "Unique local address"
     aka: ["ULA"]

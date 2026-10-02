@@ -19,6 +19,7 @@ const WIKI_SLUGS: &[&str] = &[
     "wireless-media",
     "wired-media",
     "transceivers",
+    "physical-installations",
     "network-appliances",
     "content-delivery-networks",
     "vpns-and-ipsec",
