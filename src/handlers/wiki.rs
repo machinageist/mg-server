@@ -49,7 +49,8 @@ const RENAMED_SLUGS: &[(&str, &str)] = &[
     ("network-applications", "content-delivery-networks"),
 ];
 
-// Static education-wiki sidebar layout. New reviewed topics land here when published.
+// Static education-wiki sidebar layout. Every page on disk is registered here.
+// A page whose frontmatter says draft: true is registered and not shown
 const SIDEBAR: &[SidebarSection] = &[
     SidebarSection {
         heading: "Overview",
@@ -72,6 +73,10 @@ const SIDEBAR: &[SidebarSection] = &[
             SidebarEntry {
                 slug: "traffic-types",
                 label: "Network traffic types",
+            },
+            SidebarEntry {
+                slug: "troubleshooting-method",
+                label: "A troubleshooting method",
             },
         ],
     },
@@ -117,8 +122,24 @@ const SIDEBAR: &[SidebarSection] = &[
         heading: "Local networks",
         entries: &[
             SidebarEntry {
+                slug: "ethernet-and-arp",
+                label: "Ethernet frames and ARP",
+            },
+            SidebarEntry {
                 slug: "switching-technologies",
                 label: "Switching technologies",
+            },
+            SidebarEntry {
+                slug: "spanning-tree",
+                label: "Spanning tree: STP and RSTP",
+            },
+            SidebarEntry {
+                slug: "etherchannel",
+                label: "EtherChannel",
+            },
+            SidebarEntry {
+                slug: "layer-2-security",
+                label: "Layer 2 security",
             },
             SidebarEntry {
                 slug: "wireless-technologies",
@@ -132,6 +153,22 @@ const SIDEBAR: &[SidebarSection] = &[
             SidebarEntry {
                 slug: "routing-technologies",
                 label: "Routing technologies and route selection",
+            },
+            SidebarEntry {
+                slug: "ospf",
+                label: "OSPF, single area",
+            },
+            SidebarEntry {
+                slug: "first-hop-redundancy",
+                label: "First-hop redundancy",
+            },
+            SidebarEntry {
+                slug: "nat",
+                label: "NAT and PAT",
+            },
+            SidebarEntry {
+                slug: "access-control-lists",
+                label: "ACLs and wildcard masks",
             },
             SidebarEntry {
                 slug: "vpns-and-ipsec",
@@ -149,6 +186,18 @@ const SIDEBAR: &[SidebarSection] = &[
             SidebarEntry {
                 slug: "network-protocols",
                 label: "Network protocols and ports",
+            },
+            SidebarEntry {
+                slug: "dhcp-and-dns-services",
+                label: "DHCP, DHCP relay, and DNS",
+            },
+            SidebarEntry {
+                slug: "device-management-protocols",
+                label: "NTP, SNMP, syslog, CDP and LLDP",
+            },
+            SidebarEntry {
+                slug: "securing-device-access",
+                label: "Securing device access",
             },
             SidebarEntry {
                 slug: "network-appliances",
@@ -170,6 +219,14 @@ const SIDEBAR: &[SidebarSection] = &[
             SidebarEntry {
                 slug: "software-defined-networking",
                 label: "Software-defined networking",
+            },
+            SidebarEntry {
+                slug: "rest-json-and-config-management",
+                label: "REST, JSON, and config management",
+            },
+            SidebarEntry {
+                slug: "ai-in-network-operations",
+                label: "AI in network operations",
             },
             SidebarEntry {
                 slug: "zero-trust-architecture",
@@ -1044,6 +1101,47 @@ mod tests {
                         .iter()
                         .any(|s| s.heading == "3.0 IP connectivity"),
                     "a domain with only draft pages should not render"
+                );
+            }
+        }
+    }
+
+    // The gate itself, against a real draft on disk. A release build passes
+    // false, a debug build passes true
+    #[test]
+    fn a_draft_page_is_served_only_when_the_build_allows_it() {
+        let draft = *draft_slugs()
+            .first()
+            .expect("at least one page is a draft while the CCNA pages are being written");
+        assert!(!is_servable(draft, false), "{draft} must 404 in release");
+        assert!(is_servable(draft, true), "{draft} should load in debug");
+        assert!(
+            is_servable("osi-model", false),
+            "published pages always load"
+        );
+    }
+
+    // Drafts are registered but never offered, and the published list is the
+    // rest of the sidebar
+    #[test]
+    fn published_slugs_are_the_sidebar_minus_drafts() {
+        let drafts = draft_slugs();
+        let published = published_slugs();
+        assert_eq!(published.len() + drafts.len(), sidebar_slugs().len());
+        for slug in &drafts {
+            assert!(
+                !published.contains(slug),
+                "{slug} is a draft and is offered"
+            );
+        }
+        let views = nav_views(OVERVIEW_SLUG, before_cutover(), &drafts);
+        for view in &views {
+            for entry in view.sections.iter().flat_map(|s| s.entries.iter()) {
+                assert!(
+                    published.contains(&entry.slug),
+                    "{}: {} is not published",
+                    view.key,
+                    entry.slug
                 );
             }
         }

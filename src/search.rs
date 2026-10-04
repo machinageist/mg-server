@@ -487,6 +487,16 @@ mod tests {
             );
         }
 
+        // A /learn page marked draft: true is a 404 in production, so a result
+        // pointing at one would be a dead link
+        for doc in &index.docs {
+            assert!(
+                doc.kind != DocKind::Page || !Page::is_draft(Path::new(PAGES_DIR), &doc.slug),
+                "draft page {} leaked into the search corpus",
+                doc.slug
+            );
+        }
+
         // content/drafts/ is read by no route, so it must be unreachable here.
         // "spectre" appears only in the drafts tree.
         assert!(

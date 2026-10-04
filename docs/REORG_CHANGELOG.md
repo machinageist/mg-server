@@ -120,3 +120,12 @@ device, Exam key points, Lab, Related pages, and Sources with an `https://` link
 no Suggested practice and no textbook name. Draft pages skip the section contract. A
 published page or post that links to a draft fails `internal_links_resolve`. The
 existing textbook contract is unchanged, only moved into its own function.
+
+**Slice 3: 14 CCNA draft pages (A2).** `content/pages/` gained `ethernet-and-arp`,
+`spanning-tree`, `etherchannel`, `ospf`, `first-hop-redundancy`,
+`access-control-lists`, `dhcp-and-dns-services`, `device-management-protocols`, `nat`,
+`securing-device-access`, `layer-2-security`, `rest-json-and-config-management`,
+`ai-in-network-operations`, and `troubleshooting-method`. Each has `draft: true`,
+eight headings, and a `TODO(jeff)` line under each. No lesson prose. The summary is
+also `TODO(jeff)`. All 14 are registered in `SIDEBAR` (folded into the existing topic
+sections) and in `WIKI_SLUGS`. To publish one, write it and delete the `draft` line.
