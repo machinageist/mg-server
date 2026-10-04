@@ -1909,7 +1909,7 @@
        rather than repeating a literal. Both are measured, and both are
        overridden below where the nav and the vitals strip wrap to more rows. */
     --header-h: 4.5rem;
-    --footer-h: 7.25rem;
+    --footer-h: 5.45rem;
 }
 
 /* -----------------------------------------------------------------------
@@ -2307,7 +2307,7 @@ hr {
    occupies its own space at the end of the document and needs no padding
    compensation on main. Same opaque background and stacking as the header. */
 .site-footer {
-    padding:    1.5rem 2rem;
+    padding:    0.6rem 2rem;
     border-top: 1px solid var(--border);
     color:      var(--text-faint);
     font-size:  0.8rem;
@@ -4038,7 +4038,7 @@ pre {
        pinned bars are taller and everything measuring from them has to follow */
     :root {
         --header-h: 6.5rem;
-        --footer-h: 8.75rem;
+        --footer-h: 6.95rem;
     }
 
     /* No margin left to hang a permalink in, and it would overflow the viewport
