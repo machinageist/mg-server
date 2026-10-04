@@ -182,3 +182,20 @@ lessons on this site are AI-written with my direction and approval. The interact
 study tools are AI-assisted." (Jeff's correction, 2026-10-04). The citation tests for
 questions and scenarios reject a draft page as a target. The handoff document is
 tracked.
+
+---
+
+## 2026-10-04: interactive learning, feature 1 (subnetting drill)
+
+Built from `docs/plans/interactive-learning-ADR.md` section 3 after Jeff's go-ahead.
+
+**Drill model, routes, and grading.** `src/models/drill.rs` generates ten subnetting
+problems from a seed (SplitMix64, output pinned by a test), solves them, matches typed
+answers as values, and writes the block-size working for each. Three kinds ship:
+network and host range, hosts per prefix, and prefix for a host count. Wildcard
+problems wait for a published page to cite. `GET /study/drills/subnetting` redirects to
+a seeded URL, `?seed=` shows that set, and a POST to the same URL grades it. The server
+stores nothing. A seed or `type` that does not parse is a 404. Every kind links to the
+`/learn/subnetting` heading that teaches it, and a test resolves the links. **The
+working text in `Problem::working` and `network_working` is teaching copy for Jeff to
+read and approve.**

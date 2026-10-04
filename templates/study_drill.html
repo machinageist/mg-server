@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="study-quiz">
+  <a class="back-link" href="/study">Study</a>
+  <h1>Subnetting drill</h1>
+
+  <p class="study-lede">
+    Ten generated problems. Work them out on paper, then check your answers.
+    This address always shows this set, so you can come back to it or share it.
+  </p>
+
+  <p class="study-actions">
+    <a href="/study/drills/subnetting">All kinds</a>
+    {% for kind in self.kinds() %}
+    <a href="/study/drills/subnetting?type={{ kind.key() }}">{{ kind.label() }}</a>
+    {% endfor %}
+  </p>
+
+  <form class="study-form" method="post" action="{{ set.href() }}">
+    <ol class="study-questions">
+      {% for (index, problem) in problems.iter().enumerate() %}
+      <li class="study-question">
+        <p class="study-stem">{{ problem.prompt() }}</p>
+
+        {% for field in problem.fields() %}
+        <p class="pbq-input">
+          <label for="{{ crate::handlers::study::drill_field_name(index, field.key) }}">{{ field.label }}</label>
+          <input type="text" id="{{ crate::handlers::study::drill_field_name(index, field.key) }}"
+                 name="{{ crate::handlers::study::drill_field_name(index, field.key) }}"
+                 autocomplete="off" autocapitalize="off" spellcheck="false"
+                 autocorrect="off" inputmode="decimal">
+        </p>
+        {% endfor %}
+      </li>
+      {% endfor %}
+    </ol>
+
+    <div class="study-actions">
+      <button type="submit">Check answers</button>
+      <a href="{{ set.new_set_href() }}">New set</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
