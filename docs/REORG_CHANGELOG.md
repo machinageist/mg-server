@@ -226,3 +226,23 @@ page now links Disclosures, Terms, Contact (a mailto to the address `security.tx
 already publishes), and Source. The authorship line was removed from `/study`. The
 per-project disclosure sections stay where they are, because a test requires them on
 each project page. Both new routes are registered in `UTILITY_ROUTES`.
+
+---
+
+## 2026-10-04: wiki refactored around the CCNA objectives
+
+Jeff asked for the wiki to reflect the CCNA objectives. Plan agreed in session: sidebar
+rebuilt around the CCNA domains, every networking page reordered so CCNA material leads
+with Network+-only material kept below it, gaps against v1.1 filled, Linux pages
+untouched, the 14 scaffolds left empty. This lifts the handoff's freeze on the
+Network+-only pages.
+
+**Objective map.** `docs/plans/ccna-wiki-refactor-MAP.md` lists every v1.1 objective
+with the page that covers it, the gap, and the action, then the planned section order
+for each of the 21 networking pages. It ends with open questions: objectives 5.1 and 5.2
+have no page or scaffold.
+
+**Reading list.** `docs/ccna-reading-list.md` gives Jeff, for each of the 14 scaffolds,
+the v1.1 objectives verbatim, the Jeremy's IT Lab days and Odom chapters from his own
+syllabus, and primary sources to check against. Every link was loaded on 2026-10-04.
+His notes go in `content/drafts/ccna-notes/<slug>.md`.
