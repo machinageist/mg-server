@@ -98,3 +98,18 @@ affirmative tokens on public pages.
 
 7. **Merge.** This is on `site-reorg-sysadmin-noc`, not merged to `main`. Review
    the per-phase commits, then merge when you're happy.
+
+---
+
+## 2026-10-04: /learn pointed at CCNA
+
+Branch: `ccna-learn-reshape` (off `main`). Source:
+`docs/plans/2026-10-04-ccna-wiki-and-interactive-learning-HANDOFF.md`. One entry per
+slice, each its own commit with `cargo fmt`, `clippy -D warnings`, and `test` green.
+
+**Slice 1: draft flag (A1).** A page with `draft: true` in its frontmatter stays
+registered in `SIDEBAR` but is left out of all three sidebar orderings and out of
+search. Its URL is a 404 in a release build and loads in a debug build
+(`SERVE_DRAFTS = cfg!(debug_assertions)` in `handlers/wiki.rs`). The gate is the
+build profile, not an environment variable, so nothing can be left switched on in
+production. The site has no sitemap, so there was nothing to exclude there.

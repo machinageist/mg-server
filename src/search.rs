@@ -15,7 +15,7 @@
 use crate::handlers::blog::POSTS_DIR;
 use crate::handlers::labs::LABS_DIR;
 use crate::handlers::pages::PROJECTS_DIR;
-use crate::handlers::wiki::{PAGES_DIR, sidebar_slugs};
+use crate::handlers::wiki::{PAGES_DIR, published_slugs};
 use crate::models::lab;
 use crate::models::page::Page;
 use crate::models::post::BlogPost;
@@ -124,8 +124,8 @@ impl SearchIndex {
             }));
         }
 
-        // Only the SIDEBAR allowlist is servable at /learn/:slug
-        for slug in sidebar_slugs() {
+        // Only published SIDEBAR pages are servable at /learn/:slug
+        for slug in published_slugs() {
             if slug == OVERVIEW_SLUG {
                 continue;
             }

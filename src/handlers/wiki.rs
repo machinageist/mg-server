@@ -7,6 +7,12 @@
 //              active entry highlighted.
 //              `/wiki` and `/wiki/:slug` are the pre-rename URLs; they permanently
 //              redirect to the `/learn` equivalents so old links keep working.
+//
+// Notes:       A page with `draft: true` in its frontmatter is registered in
+//              SIDEBAR like any other, but it is left out of every sidebar
+//              ordering and out of search, and a release build answers its URL
+//              with a 404. A debug build serves it by direct URL so it can be
+//              read while it is being written. Publishing is one frontmatter edit.
 
 use crate::errors::SiteError;
 use crate::models::page::Page;
@@ -15,10 +21,14 @@ use askama_axum::IntoResponse;
 use axum::extract::Path as AxumPath;
 use axum::response::{Redirect, Response};
 use chrono::{NaiveDate, Utc};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 pub(crate) const PAGES_DIR: &str = "content/pages";
 const OVERVIEW_SLUG: &str = "index";
+
+// Draft pages answer by direct URL in a debug build only. There is no setting
+// to leave switched on, so a release build can never serve one
+const SERVE_DRAFTS: bool = cfg!(debug_assertions);
 
 // One entry in the left wiki sidebar
 pub struct SidebarEntry {
@@ -552,7 +562,9 @@ pub async fn index() -> Result<impl IntoResponse, SiteError> {
 
 // Render one education-wiki page selected by URL slug, or redirect a retired one
 pub async fn page(AxumPath(slug): AxumPath<String>) -> Result<Response, SiteError> {
-    if let Some(allowed) = lookup_sidebar_slug(&slug) {
+    if let Some(allowed) = lookup_sidebar_slug(&slug)
+        && is_servable(allowed, SERVE_DRAFTS)
+    {
         return Ok(render_for_slug(allowed).await?.into_response());
     }
     if let Some(target) = renamed_slug(&slug) {
@@ -567,7 +579,7 @@ async fn render_for_slug(slug: &'static str) -> Result<WikiPageTemplate, SiteErr
     let page = Page::find(&pages_dir, slug)?;
     Ok(WikiPageTemplate {
         page,
-        views: nav_views(slug, Utc::now().date_naive()),
+        views: nav_views(slug, Utc::now().date_naive(), &draft_slugs()),
         active_slug: slug,
     })
 }
@@ -583,8 +595,9 @@ fn ccna_blueprint(today: NaiveDate) -> (&'static str, &'static [ExamSection]) {
     }
 }
 
-// Build the topic, CCNA, and Network+ orderings for the page being shown
-fn nav_views(active: &str, today: NaiveDate) -> Vec<NavView> {
+// Build the topic, CCNA, and Network+ orderings for the page being shown.
+// Draft pages are left out of all three, and so is a section they leave empty
+fn nav_views(active: &str, today: NaiveDate, drafts: &[&str]) -> Vec<NavView> {
     let topic = NavView {
         key: "topic",
         name: "Topic",
@@ -596,6 +609,7 @@ fn nav_views(active: &str, today: NaiveDate) -> Vec<NavView> {
                 entries: section
                     .entries
                     .iter()
+                    .filter(|entry| !drafts.contains(&entry.slug))
                     .map(|entry| NavEntry {
                         slug: entry.slug,
                         label: entry.label,
@@ -603,6 +617,7 @@ fn nav_views(active: &str, today: NaiveDate) -> Vec<NavView> {
                     })
                     .collect(),
             })
+            .filter(|section| !section.entries.is_empty())
             .collect(),
     };
     let (version, ccna) = ccna_blueprint(today);
@@ -614,6 +629,7 @@ fn nav_views(active: &str, today: NaiveDate) -> Vec<NavView> {
             &format!("CCNA 200-301 {version}"),
             ccna,
             active,
+            drafts,
         ),
         exam_view(
             "netplus",
@@ -621,6 +637,7 @@ fn nav_views(active: &str, today: NaiveDate) -> Vec<NavView> {
             "Network+ N10-009",
             NETWORK_PLUS,
             active,
+            drafts,
         ),
     ]
 }
@@ -633,6 +650,7 @@ fn exam_view(
     exam: &str,
     sections: &'static [ExamSection],
     active: &str,
+    drafts: &[&str],
 ) -> NavView {
     let mut notes = vec![format!("Pages on {exam}, by objective.")];
     let listed = active == OVERVIEW_SLUG
@@ -651,18 +669,22 @@ fn exam_view(
             objective: None,
         }],
     };
-    let domains = sections.iter().map(|section| NavSection {
-        heading: section.heading,
-        entries: section
-            .entries
-            .iter()
-            .map(|entry| NavEntry {
-                slug: entry.slug,
-                label: sidebar_label(entry.slug).unwrap_or(entry.slug),
-                objective: Some(entry.objective),
-            })
-            .collect(),
-    });
+    let domains = sections
+        .iter()
+        .map(|section| NavSection {
+            heading: section.heading,
+            entries: section
+                .entries
+                .iter()
+                .filter(|entry| !drafts.contains(&entry.slug))
+                .map(|entry| NavEntry {
+                    slug: entry.slug,
+                    label: sidebar_label(entry.slug).unwrap_or(entry.slug),
+                    objective: Some(entry.objective),
+                })
+                .collect(),
+        })
+        .filter(|section| !section.entries.is_empty());
 
     NavView {
         key,
@@ -691,12 +713,35 @@ pub async fn redirect_page(AxumPath(slug): AxumPath<String>) -> Redirect {
     Redirect::permanent(&format!("/learn/{slug}"))
 }
 
-// List every slug the sidebar offers — the allowlist of servable /learn pages
+// List every slug registered in the sidebar, drafts included
 pub(crate) fn sidebar_slugs() -> Vec<&'static str> {
     SIDEBAR
         .iter()
         .flat_map(|section| section.entries.iter().map(|entry| entry.slug))
         .collect()
+}
+
+// List the registered slugs whose page is still a draft
+fn draft_slugs() -> Vec<&'static str> {
+    sidebar_slugs()
+        .into_iter()
+        .filter(|slug| Page::is_draft(Path::new(PAGES_DIR), slug))
+        .collect()
+}
+
+// List the slugs a reader can reach: the allowlist for search and for links
+pub(crate) fn published_slugs() -> Vec<&'static str> {
+    let drafts = draft_slugs();
+    sidebar_slugs()
+        .into_iter()
+        .filter(|slug| !drafts.contains(slug))
+        .collect()
+}
+
+// Decide whether a registered page may be served. A draft is served only
+// when the build allows it
+fn is_servable(slug: &str, serve_drafts: bool) -> bool {
+    serve_drafts || !Page::is_draft(Path::new(PAGES_DIR), slug)
 }
 
 // Look up where a retired slug now lives
@@ -730,7 +775,7 @@ mod tests {
             Page::find(&PathBuf::from(PAGES_DIR), OVERVIEW_SLUG).expect("overview page must exist");
         let html = WikiPageTemplate {
             page,
-            views: nav_views(OVERVIEW_SLUG, before_cutover()),
+            views: nav_views(OVERVIEW_SLUG, before_cutover(), &[]),
             active_slug: OVERVIEW_SLUG,
         }
         .render()
@@ -761,7 +806,7 @@ mod tests {
         let page = Page::find(&PathBuf::from(PAGES_DIR), slug).expect("OSI page must exist");
         let html = WikiPageTemplate {
             page,
-            views: nav_views(slug, before_cutover()),
+            views: nav_views(slug, before_cutover(), &[]),
             active_slug: slug,
         }
         .render()
@@ -801,7 +846,7 @@ mod tests {
         let page = Page::find(&PathBuf::from(PAGES_DIR), slug).expect("OSI page must exist");
         let html = WikiPageTemplate {
             page,
-            views: nav_views(slug, before_cutover()),
+            views: nav_views(slug, before_cutover(), &[]),
             active_slug: slug,
         }
         .render()
@@ -956,7 +1001,7 @@ mod tests {
     // for a highlighted entry that is not there
     #[test]
     fn a_page_off_an_exam_says_so_in_that_ordering() {
-        let views = nav_views("content-delivery-networks", before_cutover());
+        let views = nav_views("content-delivery-networks", before_cutover(), &[]);
         let notes = |key: &str| {
             views
                 .iter()
@@ -967,6 +1012,41 @@ mod tests {
         assert!(notes("ccna").contains("not on this exam"));
         assert!(!notes("netplus").contains("not on this exam"));
         assert!(notes("topic").is_empty());
+    }
+
+    // A draft is in no ordering, and a section it leaves empty is dropped
+    #[test]
+    fn a_draft_page_is_left_out_of_every_ordering() {
+        // Treat two published pages as drafts. routing-technologies is the
+        // only v1.1 entry under 3.0, so that section should go with it
+        let drafts = ["osi-model", "routing-technologies"];
+        for view in nav_views(OVERVIEW_SLUG, before_cutover(), &drafts) {
+            for section in &view.sections {
+                assert!(
+                    !section.entries.is_empty(),
+                    "{}: {} was left empty instead of dropped",
+                    view.key,
+                    section.heading
+                );
+                for entry in &section.entries {
+                    assert!(
+                        !drafts.contains(&entry.slug),
+                        "{}: draft {} is listed",
+                        view.key,
+                        entry.slug
+                    );
+                }
+            }
+            if view.key == "ccna" {
+                assert!(
+                    !view
+                        .sections
+                        .iter()
+                        .any(|s| s.heading == "3.0 IP connectivity"),
+                    "a domain with only draft pages should not render"
+                );
+            }
+        }
     }
 
     #[test]
