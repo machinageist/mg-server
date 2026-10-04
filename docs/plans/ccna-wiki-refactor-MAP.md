@@ -119,6 +119,7 @@ resolve links against second and third-level headings only.
 | `network-topologies` | 1.2 | Two-tier (collapsed core), three-tier, spine and leaf, WAN, SOHO, on-premises and cloud, traffic flow | Mesh, ring and token passing, hybrid, point to point, physical and logical | WAN and SOHO sections |
 | `transmission-media` | 1.3 | Bounded and unbounded media, shared media and point-to-point | Who standardizes what | Short. Mostly a pointer to `wired-media` |
 | `wired-media` | 1.3, 1.4 | Copper, single-mode and multimode fiber, the comparison, collisions, reading interface problems | Coaxial, plenum, direct attach copper, OM grades detail | Copper, multimode, single-mode comparison. Interface and cable issues section |
+| `physical-installations` | 1.3 | Published 2026-10-02 on `main`, after this map was drafted. To be read and planned with the rest | | |
 | `transceivers` | 1.3 | What a transceiver carries, picking an optic by fiber and distance | Form factors, connector types, reading the label | Little |
 | `osi-model` | 1.5 | Layers at a glance, encapsulation, TCP and UDP compared, OSI and TCP/IP, using layers to troubleshoot | Where it came from, session and presentation detail | TCP and UDP comparison |
 | `ipv4-addressing` | 1.6, 1.7, 1.10 | Shape of an address, dividing the address, public and private, checking a client's settings, link-local, loopback | Classful addressing | Client OS section |

@@ -77,22 +77,22 @@ const SIDEBAR: &[SidebarEntry] = &[
     SidebarEntry {
         slug: "osi-model",
         label: "OSI model",
-        group: Group::Overview,
+        group: Group::Networking,
     },
     SidebarEntry {
         slug: "network-topologies",
         label: "Network topologies",
-        group: Group::Overview,
+        group: Group::Networking,
     },
     SidebarEntry {
         slug: "traffic-types",
         label: "Network traffic types",
-        group: Group::Overview,
+        group: Group::Networking,
     },
     SidebarEntry {
         slug: "troubleshooting-method",
         label: "A troubleshooting method",
-        group: Group::Overview,
+        group: Group::Networking,
     },
     SidebarEntry {
         slug: "transmission-media",
@@ -1302,6 +1302,28 @@ mod tests {
                 Some(OVERVIEW_HEADING)
             );
         }
+    }
+
+    // The overview group is the wiki's front page and nothing else. A topic
+    // page filed there would show beside it instead of under "Not on this
+    // exam" in a view whose exam does not list it
+    #[test]
+    fn only_the_front_page_is_in_the_overview_group() {
+        for entry in SIDEBAR {
+            assert_eq!(
+                entry.group == Group::Overview,
+                entry.slug == OVERVIEW_SLUG,
+                "{} is in the wrong group",
+                entry.slug
+            );
+        }
+        // v2.0 drops the OSI model, so that view lists it as off the exam
+        let after_cutover = NaiveDate::from_ymd_opt(2027, 2, 3).expect("valid date");
+        let views = nav_views(after_cutover, &[]);
+        assert_eq!(
+            heading_of(&views, "ccna", "osi-model"),
+            Some(OFF_EXAM_HEADING)
+        );
     }
 
     // CCNA is the main way through the wiki, so it is the first view, which

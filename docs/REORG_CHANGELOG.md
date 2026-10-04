@@ -274,3 +274,14 @@ headings are read from each page on every request by `page_anchors` in
 exam", "Linux foundations") is also a native `<details>`. The group holding the page
 being read starts open, and so does Overview. The rest start
 collapsed, so the sidebar opens as a short list of headings.
+
+**Merged to `main`.** `main` had gained `physical-installations` (published
+2026-10-02) since the branch was cut. The merge keeps it: registered in the flat
+`SIDEBAR` as a networking page, with its exam ordering entries as published.
+
+**Fix: four pages were in the wrong sidebar group.** When `SIDEBAR` was flattened,
+`osi-model`, `network-topologies`, `traffic-types`, and `troubleshooting-method` were
+marked as the overview group. Under v1.1 that had no visible effect. After the v2.0
+cutover the first three would have been listed beside the front page instead of under
+"Not on this exam". They are networking pages now, and a test holds that only the
+front page is in the overview group.
