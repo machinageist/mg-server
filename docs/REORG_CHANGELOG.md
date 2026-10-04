@@ -170,3 +170,9 @@ the lessons on this site. The interactive study tools are AI-assisted." The hand
 worded it in the third person. It is in the first person here because the README and
 the site already are. Jeff to confirm the wording. The about page and footer are
 unchanged.
+
+**Slice 9: interactive learning ADR (B, design only).**
+`docs/plans/interactive-learning-ADR.md` covers routes, data formats, no-JS behavior,
+and what JavaScript adds. The subnetting drill and IOS PBQ matching are specified to
+build depth. Features 3 to 8 get a paragraph each. Nothing is built. It waits for
+Jeff's approval, and it ends with four open questions for him.
