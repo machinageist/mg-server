@@ -8,10 +8,10 @@
     <details class="wiki-nav">
       <summary>Wiki navigation</summary>
       <nav>
-        {# Three orderings of the same pages. The server renders all three and CSS
-           shows the one named by data-learn-order on <html>, which
-           learn-order.js sets from the reader's last choice before first paint.
-           Without JavaScript the toggle stays hidden and the topic order shows. #}
+        {# Two views of the same pages. The server renders both and CSS shows
+           the CCNA view unless data-learn-order on <html> names the other,
+           which learn-order.js sets from the reader's last choice before first
+           paint. Without JavaScript the toggle stays hidden and CCNA shows. #}
         <div class="wiki-order" role="group" aria-label="Order pages by" hidden>
           {% for view in views %}
           <button type="button" data-order="{{ view.key }}" aria-pressed="false">{{ view.name }}</button>

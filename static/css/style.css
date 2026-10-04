@@ -3868,22 +3868,19 @@ pre {
     border-left-color: var(--accent);
 }
 
-/* The sidebar holds three orderings of the same pages. Topic shows by default,
-   and data-learn-order on <html> (set by learn-order.js) swaps in another. */
+/* The sidebar holds two views of the same pages. CCNA shows by default, and
+   data-learn-order on <html> (set by learn-order.js) swaps in Network+. */
 .wiki-view {
     display:        flex;
     flex-direction: column;
     gap:            1.5rem;
 }
 
-.wiki-view[data-view="ccna"],
 .wiki-view[data-view="netplus"],
-:root[data-learn-order="ccna"] .wiki-view[data-view="topic"],
-:root[data-learn-order="netplus"] .wiki-view[data-view="topic"] {
+:root[data-learn-order="netplus"] .wiki-view[data-view="ccna"] {
     display: none;
 }
 
-:root[data-learn-order="ccna"] .wiki-view[data-view="ccna"],
 :root[data-learn-order="netplus"] .wiki-view[data-view="netplus"] {
     display: flex;
 }

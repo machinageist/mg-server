@@ -44,8 +44,8 @@ Two other parts of the site are built from these pages:
 ## Networking foundations
 
 Grouped by subject, from how networks are described down to the wire and back up
-to the services on top. The sidebar has a toggle that lists the same pages by CCNA
-or Network+ objective instead.
+to the services on top. The sidebar lists the same pages by CCNA objective, with a
+toggle to list them by Network+ objective instead.
 
 ### Models and patterns
 

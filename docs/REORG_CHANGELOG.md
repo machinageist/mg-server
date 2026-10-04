@@ -246,3 +246,9 @@ have no page or scaffold.
 the v1.1 objectives verbatim, the Jeremy's IT Lab days and Odom chapters from his own
 syllabus, and primary sources to check against. Every link was loaded on 2026-10-04.
 His notes go in `content/drafts/ccna-notes/<slug>.md`.
+
+**Sidebar rebuilt around CCNA.** The sidebar has two views: CCNA, which is the default
+and shows with JavaScript off, and Network+. The Topic view is gone. Each view lists the
+exam's domains in objective order, then "Not on this exam", then "Linux foundations", so
+either view reaches every published page once. `SIDEBAR` is now a flat registry with a
+group per page. A stored choice of `topic` falls back to CCNA.

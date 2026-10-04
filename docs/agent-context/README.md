@@ -65,7 +65,7 @@ src/
   handlers/
     pages.rs              # home, about, portfolio + /portfolio/:slug project docs
     blog.rs               # /blog list (grouped by pillar) + /blog/:slug
-    wiki.rs               # /learn index + pages; hardcoded SIDEBAR lives here
+    wiki.rs               # /learn index + pages; SIDEBAR registry and exam orderings live here
     search.rs             # /search — form, ranking call, results
     releases.rs           # /releases
     status.rs             # /status (human) + /status.json (machine)
@@ -172,17 +172,19 @@ it (`internal_links_resolve`). A release build answers its URL with a 404. A deb
 `SERVE_DRAFTS = cfg!(debug_assertions)` in `handlers/wiki.rs`, so there is no setting to
 leave on in production. Publishing a page is deleting the `draft` line.
 
-**Three sidebar orderings (added 2026-09-25).** `SIDEBAR` is the topic ordering, grouped by
-subject, and it stays the allowlist of servable pages. `handlers/wiki.rs` also holds
-`NETWORK_PLUS`, `CCNA_V1_1`, and `CCNA_V2_0`, which file each page under the objective it
-maps to. A toggle in the sidebar (`static/js/learn-order.js`, stored in `localStorage`)
-switches between them. The server renders all three, and with JavaScript off the topic
-order shows. A new networking page therefore also goes in `NETWORK_PLUS`, and in the CCNA
-orderings only if the blueprint covers it. Material off an exam is left out of that
-exam's ordering entirely, and the page says so in the sidebar note. Tests in `wiki.rs`
-hold the rules: every networking page is in `NETWORK_PLUS`, each exam ordering lists
-published pages once, in objective order, under the right domain, and the CCNA orderings
-never list CDNs, zero trust, or Linux.
+**Two sidebar views (rebuilt 2026-10-04).** `SIDEBAR` is a flat registry: every page on
+disk, its label, and a group (overview, networking, or Linux). It stays the allowlist of
+servable pages. The sidebar renders two views of it, built from `CCNA_V1_1` or
+`CCNA_V2_0` and from `NETWORK_PLUS`, which file each page under the objective it maps
+to. **CCNA is the default view** and the one that shows with JavaScript off. A toggle
+(`static/js/learn-order.js`, stored in `localStorage`) switches to Network+. Each view
+lists the exam's domains in objective order, then "Not on this exam" for networking
+pages that exam does not cover, then "Linux foundations", so either view reaches every
+published page exactly once. A new networking page goes in `NETWORK_PLUS` if it cites
+the Network+ textbook, and in the CCNA orderings if the blueprint covers it. The topic
+view that existed from 2026-09-25 was removed. Tests in `wiki.rs` hold the rules: each
+view lists every published page once, exam orderings are in objective order under the
+right domain, and the CCNA orderings never list CDNs, zero trust, or Linux.
 
 **CCNA cutover.** `CCNA_V2_FIRST_DAY` is 2027-02-03, the first day v2.0 is delivered (v1.1's
 last day is 2027-02-02). The CCNA ordering switches on that date without a redeploy. The
