@@ -46,6 +46,8 @@ pub const UTILITY_ROUTES: &[&str] = &[
     "/robots.txt",               //
     "/security.txt",             //
     "/.well-known/security.txt", //
+    "/disclosures",              // reached from the footer on every page
+    "/terms",                    // ditto
 ];
 
 // Every surface, in the order a reader would meet them

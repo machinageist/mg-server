@@ -36,6 +36,8 @@ pub fn build(state: AppState) -> Router {
     Router::new()
         .route("/", get(pages::home))
         .route("/about", get(pages::about))
+        .route("/disclosures", get(pages::disclosures))
+        .route("/terms", get(pages::terms))
         .route("/portfolio", get(pages::portfolio))
         .route("/portfolio/:slug", get(pages::project_page))
         .route("/labs", get(labs::labs))

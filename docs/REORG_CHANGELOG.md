@@ -215,3 +215,14 @@ accepted list is still checked first, so the published shell scenario grades as 
 No route, template, or handler signature changed. `content/drafts/study/pbq/ios-fixture.md`
 shows the format and is loaded only by tests. **No IOS scenario is published. Jeff
 writes those, and checks each keyword list against a real device.**
+
+## 2026-10-04: disclosures and terms pages, footer links
+
+Jeff asked for the disclosures to live on their own page. `/disclosures` says who
+writes what (lessons, study tools, projects), that the site is not affiliated with
+Cisco or CompTIA, and what the site stores. `/terms` is a short plain-language terms of
+use. **It was drafted by an agent and has not had legal review.** The footer on every
+page now links Disclosures, Terms, Contact (a mailto to the address `security.txt`
+already publishes), and Source. The authorship line was removed from `/study`. The
+per-project disclosure sections stay where they are, because a test requires them on
+each project page. Both new routes are registered in `UTILITY_ROUTES`.

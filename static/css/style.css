@@ -2335,6 +2335,12 @@ hr {
     flex-wrap: wrap;
 }
 
+.footer-inner nav {
+    display:   flex;
+    gap:       1rem;
+    flex-wrap: wrap;
+}
+
 .footer-inner a {
     color:           var(--text-faint);
     text-decoration: none;

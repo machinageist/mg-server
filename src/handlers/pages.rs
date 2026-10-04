@@ -103,6 +103,59 @@ pub async fn about() -> impl IntoResponse {
 }
 
 // -----------------------------------------------------------------------
+// Disclosures and terms — disclosures.html, terms.html
+// -----------------------------------------------------------------------
+
+// The one public contact address, shown in the footer and on the terms page.
+// It is the same address security.txt publishes
+pub const CONTACT_EMAIL: &str = "machinageist@proton.me";
+
+// Section name for footer pages, which no header nav entry matches
+const FOOTER_SECTION: &str = "site";
+
+#[derive(Template)]
+#[template(path = "disclosures.html")]
+pub struct DisclosuresTemplate;
+
+impl DisclosuresTemplate {
+    pub fn title(&self) -> &str {
+        "Disclosures — machinageist"
+    }
+    pub fn description(&self) -> &str {
+        "Who writes what on machinageist.dev, how it relates to the exams it covers, and what the site stores."
+    }
+    pub fn section(&self) -> &str {
+        FOOTER_SECTION
+    }
+}
+
+// Render the disclosures page
+pub async fn disclosures() -> impl IntoResponse {
+    DisclosuresTemplate
+}
+
+#[derive(Template)]
+#[template(path = "terms.html")]
+pub struct TermsTemplate;
+
+impl TermsTemplate {
+    pub fn title(&self) -> &str {
+        "Terms of use — machinageist"
+    }
+    pub fn description(&self) -> &str {
+        "Terms of use for machinageist.dev."
+    }
+    pub fn section(&self) -> &str {
+        FOOTER_SECTION
+    }
+}
+
+// Render the terms of use page
+pub async fn terms() -> impl IntoResponse {
+    TermsTemplate
+}
+
+// -----------------------------------------------------------------------
 // Portfolio page — portfolio.html
 // -----------------------------------------------------------------------
 
@@ -422,5 +475,23 @@ mod tests {
                 "/about claims {term:?}, which the blog posts record as absent or planned"
             );
         }
+    }
+
+    // Disclosures live on one page, and every page's footer leads to it, to
+    // the terms, and to a contact address
+    #[test]
+    fn the_footer_links_disclosures_terms_and_contact() {
+        let html = DisclosuresTemplate.render().expect("disclosures renders");
+        let footer = html.split("<footer").nth(1).expect("the page has a footer");
+        assert!(footer.contains("href=\"/disclosures\""));
+        assert!(footer.contains("href=\"/terms\""));
+        assert!(footer.contains(&format!("href=\"mailto:{CONTACT_EMAIL}\"")));
+
+        assert!(html.contains("AI-written with my direction and approval"));
+        assert!(html.contains("AI-assisted"));
+
+        let terms = TermsTemplate.render().expect("terms renders");
+        assert!(terms.contains("provided as is"));
+        assert!(terms.contains("href=\"/disclosures\""));
     }
 }
