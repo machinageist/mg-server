@@ -29,11 +29,16 @@
             <ul>
               {% for entry in section.entries %}
               <li{% if entry.slug == active_slug %} class="active"{% endif %}>
-                {% if entry.slug == "index" %}
-                <a href="/learn">{{ entry.label }}</a>
-                {% else %}
-                <a href="/learn/{{ entry.slug }}">{% if let Some(objective) = entry.objective %}<span class="wiki-objective">{{ objective }}</span> {% endif %}{{ entry.label }}</a>
-                {% endif %}
+                {# The marker expands the entry and the name is still a link to
+                   the page. Native <details>, so it needs no script. #}
+                <details class="wiki-entry"{% if entry.slug == active_slug %} open{% endif %}>
+                  <summary><a href="{{ entry.href() }}">{% if let Some(objective) = entry.objective %}<span class="wiki-objective">{{ objective }}</span> {% endif %}{{ entry.label }}</a></summary>
+                  <ul class="wiki-anchors">
+                    {% for heading in entry.anchors %}
+                    <li><a href="{{ entry.href() }}#{{ heading.id }}">{{ heading.text }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </details>
               </li>
               {% endfor %}
             </ul>

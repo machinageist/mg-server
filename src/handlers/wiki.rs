@@ -20,12 +20,14 @@
 //              view reaches the whole wiki.
 
 use crate::errors::SiteError;
+use crate::models::markdown::Heading;
 use crate::models::page::Page;
 use askama::Template;
 use askama_axum::IntoResponse;
 use axum::extract::Path as AxumPath;
 use axum::response::{Redirect, Response};
 use chrono::{NaiveDate, Utc};
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 pub(crate) const PAGES_DIR: &str = "content/pages";
@@ -708,6 +710,38 @@ pub struct NavEntry {
     pub slug: &'static str,
     pub label: &'static str,
     pub objective: Option<&'static str>,
+    // The page's main sections, shown when the entry is expanded
+    pub anchors: Vec<Heading>,
+}
+
+impl NavEntry {
+    // The page's URL. The overview lives at the wiki root
+    pub fn href(&self) -> String {
+        if self.slug == OVERVIEW_SLUG {
+            "/learn".to_string()
+        } else {
+            format!("/learn/{}", self.slug)
+        }
+    }
+}
+
+// Heading level a sidebar entry lists when expanded. Subsections are left to
+// the page itself
+const ANCHOR_LEVEL: u8 = 2;
+
+// Collect the main sections of every published page, keyed by slug
+fn page_anchors(drafts: &[&str]) -> HashMap<&'static str, Vec<Heading>> {
+    SIDEBAR
+        .iter()
+        .filter(|entry| !drafts.contains(&entry.slug))
+        .map(|entry| {
+            let anchors = Page::outline_of(Path::new(PAGES_DIR), entry.slug)
+                .into_iter()
+                .filter(|heading| heading.level == ANCHOR_LEVEL)
+                .collect();
+            (entry.slug, anchors)
+        })
+        .collect()
 }
 
 // One heading's worth of links in a rendered sidebar ordering
@@ -791,6 +825,7 @@ fn ccna_blueprint(today: NaiveDate) -> (&'static str, &'static [ExamSection]) {
 // left out of both
 fn nav_views(today: NaiveDate, drafts: &[&str]) -> Vec<NavView> {
     let (version, ccna) = ccna_blueprint(today);
+    let anchors = page_anchors(drafts);
     vec![
         exam_view(
             "ccna",
@@ -798,6 +833,7 @@ fn nav_views(today: NaiveDate, drafts: &[&str]) -> Vec<NavView> {
             &format!("CCNA 200-301 {version}"),
             ccna,
             drafts,
+            &anchors,
         ),
         exam_view(
             "netplus",
@@ -805,6 +841,7 @@ fn nav_views(today: NaiveDate, drafts: &[&str]) -> Vec<NavView> {
             "Network+ N10-009",
             NETWORK_PLUS,
             drafts,
+            &anchors,
         ),
     ]
 }
@@ -817,6 +854,7 @@ fn exam_view(
     exam: &str,
     sections: &'static [ExamSection],
     drafts: &[&str],
+    anchors: &HashMap<&'static str, Vec<Heading>>,
 ) -> NavView {
     let listed: Vec<&str> = sections
         .iter()
@@ -834,6 +872,7 @@ fn exam_view(
                 slug: entry.slug,
                 label: entry.label,
                 objective: None,
+                anchors: anchors.get(entry.slug).cloned().unwrap_or_default(),
             })
             .collect(),
     };
@@ -848,6 +887,7 @@ fn exam_view(
                 slug: entry.slug,
                 label: sidebar_label(entry.slug).unwrap_or(entry.slug),
                 objective: Some(entry.objective),
+                anchors: anchors.get(entry.slug).cloned().unwrap_or_default(),
             })
             .collect(),
     });
@@ -1029,6 +1069,38 @@ mod tests {
             html.contains(r#"id="encapsulation-and-decapsulation""#),
             "multi-word headings should slug predictably, so cross-page links stay stable"
         );
+    }
+
+    // Each sidebar entry expands to the page's own sections. Only the page
+    // being read starts expanded, and the links are plain anchors, so it all
+    // works with JavaScript off
+    #[test]
+    fn sidebar_entries_expand_to_the_page_sections() {
+        let slug = "osi-model";
+        let page = Page::find(&PathBuf::from(PAGES_DIR), slug).expect("OSI page must exist");
+        let views = nav_views(before_cutover(), &[]);
+        let html = WikiPageTemplate {
+            page,
+            views,
+            active_slug: slug,
+        }
+        .render()
+        .expect("template renders");
+
+        assert!(html.contains("href=\"/learn/osi-model#encapsulation-and-decapsulation\""));
+        assert!(html.contains("href=\"/learn/subnetting#subnet-masks\""));
+        assert!(
+            html.contains("href=\"/learn#"),
+            "the overview links from the wiki root"
+        );
+        // One open entry in each of the two views
+        assert_eq!(
+            html.matches("<details class=\"wiki-entry\" open>").count(),
+            2
+        );
+        assert!(html.matches("<details class=\"wiki-entry\">").count() > 40);
+        // Subsections are left to the page
+        assert!(!html.contains("href=\"/learn/subnetting#ccna-200-301\""));
     }
 
     // A retired slug must redirect somewhere real, and must not also be served

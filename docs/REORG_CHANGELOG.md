@@ -263,3 +263,9 @@ pointed at a section's old position or listed what the page did not cover. The
 additions cite Cisco's exam topics and four Cisco spanning-tree documents, each
 fetched and read on 2026-10-04. Heading ids are unchanged, so existing links, glossary
 references, and question citations still resolve.
+
+**Sidebar entries expand to their sections.** Each page in the sidebar is a native
+`<details>`: the marker expands it to links for the page's second-level headings, and
+the page name is still a link. The page being read starts expanded. No script. The
+headings are read from each page on every request by `page_anchors` in
+`handlers/wiki.rs`.

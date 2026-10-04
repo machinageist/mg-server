@@ -3923,6 +3923,57 @@ pre {
     margin:      0;
 }
 
+/* A sidebar entry expands to the page's sections. The summary is a flex row so
+   the marker sits beside the page link instead of above it. */
+.wiki-entry > summary {
+    display:     flex;
+    align-items: baseline;
+    cursor:      pointer;
+    list-style:  none;
+}
+
+.wiki-entry > summary::-webkit-details-marker {
+    display: none;
+}
+
+.wiki-entry > summary::before {
+    content:    "+";
+    flex:       0 0 0.9rem;
+    color:      var(--text-faint);
+    font-size:  0.8rem;
+    text-align: center;
+}
+
+.wiki-entry[open] > summary::before {
+    content: "\2212";
+}
+
+.wiki-entry > summary a {
+    flex: 1;
+}
+
+.wiki-sidebar .wiki-anchors {
+    margin:  0.25rem 0 0.35rem 0.9rem;
+    padding-left: 0.5rem;
+    border-left:  1px solid var(--border);
+    gap:     0.1rem;
+}
+
+/* Section links stay quiet, including under the active page, whose own link
+   is the only one that takes the accent */
+.wiki-sidebar .wiki-anchors li a,
+.wiki-sidebar li.active .wiki-anchors li a {
+    color:             var(--text-faint);
+    font-size:         0.78rem;
+    border-left-color: transparent;
+    padding-left:      0.25rem;
+}
+
+.wiki-sidebar .wiki-anchors li a:hover,
+.wiki-sidebar li.active .wiki-anchors li a:hover {
+    color: var(--text);
+}
+
 /* Exam orderings prefix each page with its objective number */
 .wiki-objective {
     display:              inline-block;

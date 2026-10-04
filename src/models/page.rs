@@ -104,6 +104,18 @@ impl Page {
         Page::from_file(&path)
     }
 
+    // Read a page's h2/h3 outline without rendering its HTML. A page that is
+    // missing or unreadable has no outline
+    pub fn outline_of(dir: &Path, slug: &str) -> Vec<Heading> {
+        if !crate::models::slug::is_safe(slug) {
+            return Vec::new();
+        }
+        let Ok(raw) = fs::read_to_string(dir.join(format!("{}.md", slug))) else {
+            return Vec::new();
+        };
+        markdown::outline(&Matter::<YAML>::new().parse(&raw).content)
+    }
+
     // Report whether a page is marked draft, reading only its frontmatter.
     // A page that is missing or unreadable is not a draft, so the caller's
     // normal not-found path handles it
