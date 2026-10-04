@@ -1,8 +1,9 @@
 # ADR: interactive learning on /study
 
 **Written:** 2026-10-04
-**Status:** proposed. Nothing in here is built. Jeff approves it, then features 1 and 2
-are built in that order.
+**Status:** features 1 and 2 are built (2026-10-04, after Jeff's go-ahead). Features 3
+to 8 are not. Where the build differs from the first draft of this note, the note was
+corrected to say what the code does.
 **Source:** `docs/plans/2026-10-04-ccna-wiki-and-interactive-learning-HANDOFF.md`, section 5.
 
 Features 1 and 2 are specified to build depth. Features 3 to 8 get one paragraph each,
@@ -196,13 +197,14 @@ A typed answer matches an accepted command when:
    - the accepted token is a keyword, and
    - the typed token is a prefix of it (ignoring case), and
    - it is a prefix of no other keyword in the same group.
-3. A token that is not a keyword is an argument: an interface number, an address, a
-   name, a VLAN id. Arguments must match exactly, ignoring case only for interface
-   names. `g0/1` for `GigabitEthernet0/1` is handled in rule 4.
+3. A token that is not a keyword is an argument: an address, a name, a VLAN id.
+   Arguments must match exactly, including case, because a hostname is case-sensitive.
 4. Interface names: a typed `g0/1`, `gi0/1`, or `gig 0/1` matches
    `GigabitEthernet0/1`. The type and the number are split and the type is matched as a
    keyword against a fixed list of interface types. A space between type and number is
-   accepted.
+   accepted. This applies only where the accepted command writes the name whole
+   (`GigabitEthernet0/1`, `Vlan10`). An accepted `vlan 10` written as two tokens is a
+   keyword and an argument, so `vlan10` does not match it.
 
 The existing `accept` list stays and is checked first, with the existing normalization,
 so every current scenario grades exactly as it does now. Short-flag sorting (`-Rv` equals
@@ -237,8 +239,21 @@ steps:
     learn_anchor: "..."
 ```
 
-A group is named by the keywords before it, joined with `-`, with `exec` for the first
-token. A keyword in an accepted command that is in no group is matched exactly. That
+The group for the first token of a command is named by the step's `mode`, which is
+`exec` when the step does not set one. A step in another mode sets it:
+
+```yaml
+  - prompt: >
+      ...
+    mode: config-if
+    accept:
+      - "no shutdown"
+```
+
+This matters because the same prefix means different things in different modes. `sh` is
+`show` at the exec prompt and `shutdown` on an interface. The group for every later
+token is named by the accepted tokens before it, joined with `-`: `show`, then
+`show-ip`. A token in an accepted command that is in no group is matched exactly. That
 means a scenario with no `keywords` still works. It only loses abbreviation.
 
 Why per scenario and not one global list: ambiguity depends on which commands exist at
@@ -253,8 +268,9 @@ themselves are Jeff's to write.
 ### Code
 
 - `src/models/scenario.rs`: `Scenario` gains `dialect` (an enum, default `Shell`) and
-  `keywords` (a map of group to list, default empty). `Step::accepts` takes the
-  scenario's dialect and keywords. A new private `ios_matches` holds the rule above.
+  `keywords` (a map of group to list, default empty). `Step` gains an optional `mode`.
+  `Step::accepts_in` takes the scenario's `Grammar` and tries the accepted list first.
+  A private `ios_matches` holds the rule above.
 - No route, template, or handler signature changes. `grade_scenario` passes the
   scenario through.
 - The result page already shows the first accepted form as the canonical answer. For
@@ -287,8 +303,9 @@ Content tests:
 
 1. `ios_matches` and its unit tests. No content, no behavior change on the site.
 2. `dialect` and `keywords` on `Scenario`, wired into grading, with the content tests.
-3. A fixture scenario under `content/drafts/study/pbq/` for Jeff to rewrite or replace.
-   Nothing ships to `content/study/pbq/` from me.
+3. A fixture scenario at `content/drafts/study/pbq/ios-fixture.md` for Jeff to rewrite
+   or replace. It shows the format and the matching tests load it. Nothing ships to
+   `content/study/pbq/` from me.
 
 ---
 

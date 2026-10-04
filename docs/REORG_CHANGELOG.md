@@ -204,3 +204,14 @@ read and approve.**
 Drills heading. `static/js/drill.js` shows a count-up timer from the first answer
 typed. The timer is hidden in the HTML, is never sent to the server, and the page
 works the same without it.
+
+## 2026-10-04: interactive learning, feature 2 (Cisco IOS PBQ matching)
+
+**IOS abbreviation in scenario grading.** A scenario with `dialect: ios` accepts any
+unambiguous prefix of a keyword, checked against keyword groups the scenario lists
+itself. A step sets `mode` when it is not typed at the exec prompt. Interface names
+abbreviate with or without a space (`g0/1`, `gig 0/1`). Arguments match exactly. The
+accepted list is still checked first, so the published shell scenario grades as before.
+No route, template, or handler signature changed. `content/drafts/study/pbq/ios-fixture.md`
+shows the format and is loaded only by tests. **No IOS scenario is published. Jeff
+writes those, and checks each keyword list against a real device.**

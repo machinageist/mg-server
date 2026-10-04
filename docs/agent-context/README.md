@@ -387,6 +387,15 @@ from the whole subject matter; only what traces to the wiki ships.
 and `-vR` are equal. Long flags and argument order are preserved. Each step lists several
 accepted commands — there is usually more than one right answer.
 
+**Cisco IOS scenarios (added 2026-10-04).** A scenario with `dialect: ios` also accepts
+IOS abbreviations: a token may be any prefix of a keyword that no other keyword in its
+group shares, so `sh ip int br` is `show ip interface brief`. The scenario lists the
+groups itself under `keywords`, and a step in a mode other than exec sets `mode`. The
+format is shown in `content/drafts/study/pbq/ios-fixture.md`, which is a test fixture
+and not published. A keyword list that is too short accepts an abbreviation a real
+device rejects, so **Jeff checks each list against a device**. No IOS scenario is
+published yet.
+
 **Inline Markdown in structured content.** Askama escapes rather than renders, so a
 backtick in a YAML field reaches the page as a backtick. Anything carrying commands,
 flags, or addresses goes through `markdown::to_inline_html` and is rendered with `|safe`.

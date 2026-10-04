@@ -305,6 +305,7 @@ pub async fn grade_scenario(
     Form(submitted): Form<HashMap<String, String>>,
 ) -> Result<impl IntoResponse, SiteError> {
     let scenario = scenario::load(&PathBuf::from(PBQ_DIR), &slug)?;
+    let grammar = scenario.grammar();
 
     let steps: Vec<GradedStep> = scenario
         .steps
@@ -316,6 +317,7 @@ pub async fn grade_scenario(
                 .get(&format!("s{index}"))
                 .cloned()
                 .unwrap_or_default(),
+            grammar: grammar.clone(),
         })
         .collect();
 
