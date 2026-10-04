@@ -153,3 +153,14 @@ lines and paste the lab output.
 
 **Slice 6: wiki backlog (A6).** `docs/wiki-backlog.md` holds the template for polish
 skipped when the 45-minute timebox runs out. It has no entries yet.
+
+**Slice 7: portfolio authorship label (C).** `Project` gained
+`authorship: Option<Authorship>`, with two values that render as "hand-written" and
+"AI-assisted, directed by me". A card shows the line only when the value is set. All
+three entries are `None`, so `/portfolio` looks the same until Jeff fills them in.
+
+**geistscope check (C).** Nothing to change. No file under `content/posts`,
+`content/pages`, `content/projects`, `content/labs`, `templates`, `src`, or `static`
+links to the geistscope repository, and neither does `~/machinageist/README.md`. The
+remaining mentions are in unrouted `content/drafts/` files, the guard comment and test
+in `src/models/project.rs`, and a filename in the README tree.

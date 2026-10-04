@@ -259,6 +259,28 @@ mod tests {
         }
     }
 
+    // The authorship line shows only on a card whose entry sets it
+    #[test]
+    fn a_project_card_shows_authorship_only_when_set() {
+        let mut projects = project::all();
+        for project in &mut projects {
+            project.authorship = None;
+        }
+        let unlabeled = PortfolioTemplate {
+            projects: projects.clone(),
+        }
+        .render()
+        .expect("portfolio renders");
+        assert!(!unlabeled.contains("project-authorship"));
+
+        projects[0].authorship = Some(project::Authorship::AiAssisted);
+        let labeled = PortfolioTemplate { projects }
+            .render()
+            .expect("portfolio renders");
+        assert_eq!(labeled.matches("project-authorship").count(), 1);
+        assert!(labeled.contains("AI-assisted, directed by me"));
+    }
+
     #[test]
     fn a_project_page_renders_its_document_and_outline() {
         let view = project_page_view("geistos").expect("geistos document loads");

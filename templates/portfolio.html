@@ -28,6 +28,9 @@
           <span class="project-status status-{{ project.status_class() }}">{{ project.status }}</span>
         </div>
         <p class="project-description">{{ project.description }}</p>
+        {% if let Some(authorship) = project.authorship %}
+        <p class="project-authorship">{{ authorship }}</p>
+        {% endif %}
         <div class="project-tags">
           {% for tag in project.tags %}
             <span class="tag">{{ tag }}</span>
