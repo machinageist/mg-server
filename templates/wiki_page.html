@@ -24,8 +24,10 @@
           <p class="wiki-view-note">{{ note }}</p>
           {% endfor %}
           {% for section in view.sections %}
-          <section class="wiki-section">
-            <h2>{{ section.heading }}</h2>
+          {# Each group collapses. The one holding the page being read starts
+             open, so the rest of the wiki stays a short list of headings. #}
+          <details class="wiki-section"{% if section.starts_open(active_slug) %} open{% endif %}>
+            <summary><h2>{{ section.heading }}</h2></summary>
             <ul>
               {% for entry in section.entries %}
               <li{% if entry.slug == active_slug %} class="active"{% endif %}>
@@ -42,7 +44,7 @@
               </li>
               {% endfor %}
             </ul>
-          </section>
+          </details>
           {% endfor %}
         </div>
         {% endfor %}

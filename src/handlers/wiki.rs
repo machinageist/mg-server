@@ -750,6 +750,14 @@ pub struct NavSection {
     pub entries: Vec<NavEntry>,
 }
 
+impl NavSection {
+    // Decide whether the group renders expanded: when it holds the page being
+    // read, or when it has a single entry and collapsing it would hide nothing
+    pub fn starts_open(&self, active: &str) -> bool {
+        self.entries.len() == 1 || self.entries.iter().any(|entry| entry.slug == active)
+    }
+}
+
 // One of the sidebar views the toggle switches between
 pub struct NavView {
     pub key: &'static str,
@@ -1099,6 +1107,19 @@ mod tests {
             2
         );
         assert!(html.matches("<details class=\"wiki-entry\">").count() > 40);
+        // The group holding this page is open, and a group that does not
+        // hold it is collapsed
+        let ccna = html
+            .split("data-view=\"ccna\"")
+            .nth(1)
+            .and_then(|rest| rest.split("data-view=").next())
+            .expect("the CCNA view renders");
+        let open_group = ccna
+            .split("<details class=\"wiki-section\" open>")
+            .find(|group| group.contains("1.0 Network fundamentals"))
+            .expect("the group holding the page is open");
+        assert!(open_group.contains("<li class=\"active\">"));
+        assert!(ccna.contains("<details class=\"wiki-section\">"));
         // Subsections are left to the page
         assert!(!html.contains("href=\"/learn/subnetting#ccna-200-301\""));
     }

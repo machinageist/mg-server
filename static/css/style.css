@@ -3873,7 +3873,7 @@ pre {
 .wiki-view {
     display:        flex;
     flex-direction: column;
-    gap:            1.5rem;
+    gap:            1rem;
 }
 
 .wiki-view[data-view="netplus"],
@@ -3921,6 +3921,35 @@ pre {
     font-size:   0.75rem;
     line-height: 1.4;
     margin:      0;
+}
+
+/* A sidebar group collapses to its heading. Same marker as the entries below,
+   set to the right so the headings stay aligned with the page links. */
+.wiki-section > summary {
+    display:         flex;
+    align-items:     baseline;
+    justify-content: space-between;
+    cursor:          pointer;
+    list-style:      none;
+}
+
+.wiki-section > summary::-webkit-details-marker {
+    display: none;
+}
+
+.wiki-section > summary::after {
+    content:       "+";
+    color:         var(--text-faint);
+    font-size:     0.8rem;
+    padding-right: 0.5rem;
+}
+
+.wiki-section[open] > summary::after {
+    content: "\2212";
+}
+
+.wiki-section:not([open]) > summary h2 {
+    margin-bottom: 0;
 }
 
 /* A sidebar entry expands to the page's sections. The summary is a flex row so
