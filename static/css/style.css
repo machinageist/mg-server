@@ -2330,14 +2330,15 @@ hr {
     max-width: 900px;
     margin:    0 auto;
     display:   flex;
-    gap:       2rem;
+    /* Rows sit close when the footer wraps. Items on one row stay apart */
+    gap:       0.2rem 2rem;
     justify-content: space-between;
     flex-wrap: wrap;
 }
 
 .footer-inner nav {
     display:   flex;
-    gap:       1rem;
+    gap:       0.2rem 1rem;
     flex-wrap: wrap;
 }
 
@@ -4038,7 +4039,7 @@ pre {
        pinned bars are taller and everything measuring from them has to follow */
     :root {
         --header-h: 6.5rem;
-        --footer-h: 6.95rem;
+        --footer-h: 5.75rem;
     }
 
     /* No margin left to hang a permalink in, and it would overflow the viewport
