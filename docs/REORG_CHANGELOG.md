@@ -176,3 +176,9 @@ unchanged.
 and what JavaScript adds. The subnetting drill and IOS PBQ matching are specified to
 build depth. Features 3 to 8 get a paragraph each. Nothing is built. It waits for
 Jeff's approval, and it ends with four open questions for him.
+
+**Slice 10: follow-ups from Jeff's review.** The disclosure line now reads "The
+lessons on this site are AI-written with my direction and approval. The interactive
+study tools are AI-assisted." (Jeff's correction, 2026-10-04). The citation tests for
+questions and scenarios reject a draft page as a target. The handoff document is
+tracked.

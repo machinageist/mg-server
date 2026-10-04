@@ -28,10 +28,9 @@ These come from the handoff and from how the site already works.
   and heading, and a test resolves that against the real heading ids, the same as
   `models::question` and `models::scenario` do today. A generated item (a drill) cites
   one fixed page and heading per problem type, checked by the same kind of test.
-- **A citation must point at a published page.** The existing citation tests resolve
-  against pages on disk. Now that pages can be `draft: true`, those tests will also
-  reject a draft target, because the link would be a 404 in production. This is a small
-  change to both tests and ships with feature 2.
+- **A citation must point at a published page.** The citation tests in
+  `models::question` and `models::scenario` reject a `draft: true` target, because the
+  link would be a 404 in production. New citation tests do the same.
 - **Who writes what.** I build handlers, templates, JS, and generators. Quiz questions,
   PBQ scenarios, and flashcards are written or approved by Jeff. When I draft one, it
   goes in `content/drafts/study/` (unrouted, never loaded) and Jeff moves it into
@@ -288,8 +287,7 @@ Content tests:
 
 1. `ios_matches` and its unit tests. No content, no behavior change on the site.
 2. `dialect` and `keywords` on `Scenario`, wired into grading, with the content tests.
-3. The draft-citation guard on the question and scenario tests.
-4. A fixture scenario under `content/drafts/study/pbq/` for Jeff to rewrite or replace.
+3. A fixture scenario under `content/drafts/study/pbq/` for Jeff to rewrite or replace.
    Nothing ships to `content/study/pbq/` from me.
 
 ---

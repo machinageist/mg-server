@@ -271,6 +271,12 @@ mod tests {
                             scenario.slug, step.learn_slug
                         )
                     });
+                // A draft page is a 404 in production, so the link would be dead
+                assert!(
+                    !page.draft,
+                    "{}: cites /learn/{}, which is still a draft",
+                    scenario.slug, step.learn_slug
+                );
                 let ids: Vec<&str> = page.outline.iter().map(|h| h.id.as_str()).collect();
                 assert!(
                     ids.contains(&step.learn_anchor.as_str()),
