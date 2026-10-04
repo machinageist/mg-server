@@ -252,3 +252,14 @@ and shows with JavaScript off, and Network+. The Topic view is gone. Each view l
 exam's domains in objective order, then "Not on this exam", then "Linux foundations", so
 either view reaches every published page once. `SIDEBAR` is now a flat registry with a
 group per page. A stored choice of `topic` falls back to CCNA.
+
+**Pilot page: `switching-technologies`.** Reordered to follow v1.1 objectives 2.1, 2.2,
+2.4, and 2.5: VLANs, inter-VLAN routing, trunks, 802.1Q, link aggregation, spanning
+tree. Private VLANs and frame size moved under a new `## Beyond the CCNA blueprint`
+heading with their text unchanged. Added: the default VLAN and VLAN ranges, trunk
+negotiation (DTP), Rapid PVST+ with the root bridge and port roles, and PortFast with
+the four guards. No published sentence was removed. Four were reworded because they
+pointed at a section's old position or listed what the page did not cover. The
+additions cite Cisco's exam topics and four Cisco spanning-tree documents, each
+fetched and read on 2026-10-04. Heading ids are unchanged, so existing links, glossary
+references, and question citations still resolve.

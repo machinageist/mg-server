@@ -109,7 +109,9 @@ page is written, any coverage already published stays where it is.
 Every page follows the same order: Overview, the CCNA sections in objective order, the
 hidden `On the device` placeholder where there is one, Suggested practice,
 `## Beyond the CCNA blueprint`, Exam key points, Related pages, Sources. Sections moved
-below the line are demoted one heading level and keep their text and their ids.
+below the line become third-level headings and keep their text and their ids. Their own
+subsections stay third-level beside them, because the glossary and question-bank tests
+resolve links against second and third-level headings only.
 
 | Page | v1.1 | CCNA sections, in order | Below the line | To write |
 |---|---|---|---|---|
