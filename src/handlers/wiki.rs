@@ -378,6 +378,8 @@ const NETWORK_PLUS: &[ExamSection] = &[
 
 // CCNA 200-301 v1.1 ordering. Pages whose material is not on the blueprint are
 // left out: content delivery networks, zero trust, and the Linux section
+// A page that spans several objectives is listed once, under the lowest one in
+// its main domain. troubleshooting-method has no v1.1 objective of its own
 const CCNA_V1_1: &[ExamSection] = &[
     ExamSection {
         heading: "1.0 Network fundamentals",
@@ -434,28 +436,64 @@ const CCNA_V1_1: &[ExamSection] = &[
                 objective: "1.12",
                 slug: "cloud-computing",
             },
+            ExamEntry {
+                objective: "1.13",
+                slug: "ethernet-and-arp",
+            },
         ],
     },
     ExamSection {
         heading: "2.0 Network access",
-        entries: &[ExamEntry {
-            objective: "2.1",
-            slug: "switching-technologies",
-        }],
+        entries: &[
+            ExamEntry {
+                objective: "2.1",
+                slug: "switching-technologies",
+            },
+            ExamEntry {
+                objective: "2.4",
+                slug: "etherchannel",
+            },
+            ExamEntry {
+                objective: "2.5",
+                slug: "spanning-tree",
+            },
+        ],
     },
     ExamSection {
         heading: "3.0 IP connectivity",
-        entries: &[ExamEntry {
-            objective: "3.1",
-            slug: "routing-technologies",
-        }],
+        entries: &[
+            ExamEntry {
+                objective: "3.1",
+                slug: "routing-technologies",
+            },
+            ExamEntry {
+                objective: "3.4",
+                slug: "ospf",
+            },
+            ExamEntry {
+                objective: "3.5",
+                slug: "first-hop-redundancy",
+            },
+        ],
     },
     ExamSection {
         heading: "4.0 IP services",
         entries: &[
             ExamEntry {
+                objective: "4.1",
+                slug: "nat",
+            },
+            ExamEntry {
+                objective: "4.2",
+                slug: "device-management-protocols",
+            },
+            ExamEntry {
                 objective: "4.3",
                 slug: "network-protocols",
+            },
+            ExamEntry {
+                objective: "4.3",
+                slug: "dhcp-and-dns-services",
             },
             ExamEntry {
                 objective: "4.7",
@@ -465,22 +503,48 @@ const CCNA_V1_1: &[ExamSection] = &[
     },
     ExamSection {
         heading: "5.0 Security fundamentals",
-        entries: &[ExamEntry {
-            objective: "5.5",
-            slug: "vpns-and-ipsec",
-        }],
+        entries: &[
+            ExamEntry {
+                objective: "5.3",
+                slug: "securing-device-access",
+            },
+            ExamEntry {
+                objective: "5.5",
+                slug: "vpns-and-ipsec",
+            },
+            ExamEntry {
+                objective: "5.6",
+                slug: "access-control-lists",
+            },
+            ExamEntry {
+                objective: "5.7",
+                slug: "layer-2-security",
+            },
+        ],
     },
     ExamSection {
         heading: "6.0 Automation and programmability",
-        entries: &[ExamEntry {
-            objective: "6.2",
-            slug: "software-defined-networking",
-        }],
+        entries: &[
+            ExamEntry {
+                objective: "6.2",
+                slug: "software-defined-networking",
+            },
+            ExamEntry {
+                objective: "6.4",
+                slug: "ai-in-network-operations",
+            },
+            ExamEntry {
+                objective: "6.5",
+                slug: "rest-json-and-config-management",
+            },
+        ],
     },
 ];
 
 // CCNA 200-301 v2.0 ordering. v2.0 also drops topologies, the OSI model as a
 // TCP-versus-UDP objective, traffic types, and QoS
+// ethernet-and-arp is left out: v2.0 has no objective for switching concepts.
+// Numbers were checked against Cisco's v2.0 exam topics PDF on 2026-10-04
 const CCNA_V2_0: &[ExamSection] = &[
     ExamSection {
         heading: "1.0 Network infrastructure and connectivity",
@@ -521,6 +585,10 @@ const CCNA_V2_0: &[ExamSection] = &[
                 objective: "1.5",
                 slug: "wireless-technologies",
             },
+            ExamEntry {
+                objective: "1.7",
+                slug: "dhcp-and-dns-services",
+            },
         ],
     },
     ExamSection {
@@ -531,21 +599,51 @@ const CCNA_V2_0: &[ExamSection] = &[
                 slug: "switching-technologies",
             },
             ExamEntry {
+                objective: "2.1",
+                slug: "etherchannel",
+            },
+            ExamEntry {
                 objective: "2.2",
                 slug: "network-appliances",
+            },
+            ExamEntry {
+                objective: "2.4",
+                slug: "troubleshooting-method",
+            },
+            ExamEntry {
+                objective: "2.5",
+                slug: "spanning-tree",
             },
         ],
     },
     ExamSection {
         heading: "3.0 IP routing",
-        entries: &[ExamEntry {
-            objective: "3.1",
-            slug: "routing-technologies",
-        }],
+        entries: &[
+            ExamEntry {
+                objective: "3.1",
+                slug: "routing-technologies",
+            },
+            ExamEntry {
+                objective: "3.3",
+                slug: "ospf",
+            },
+            ExamEntry {
+                objective: "3.4",
+                slug: "first-hop-redundancy",
+            },
+        ],
     },
     ExamSection {
         heading: "4.0 Network services and security",
         entries: &[
+            ExamEntry {
+                objective: "4.1",
+                slug: "securing-device-access",
+            },
+            ExamEntry {
+                objective: "4.3",
+                slug: "nat",
+            },
             ExamEntry {
                 objective: "4.4",
                 slug: "network-protocols",
@@ -554,14 +652,36 @@ const CCNA_V2_0: &[ExamSection] = &[
                 objective: "4.5",
                 slug: "vpns-and-ipsec",
             },
+            ExamEntry {
+                objective: "4.6",
+                slug: "access-control-lists",
+            },
+            ExamEntry {
+                objective: "4.7",
+                slug: "layer-2-security",
+            },
         ],
     },
     ExamSection {
         heading: "5.0 AI, network operations, and management",
-        entries: &[ExamEntry {
-            objective: "5.3",
-            slug: "software-defined-networking",
-        }],
+        entries: &[
+            ExamEntry {
+                objective: "5.1",
+                slug: "ai-in-network-operations",
+            },
+            ExamEntry {
+                objective: "5.3",
+                slug: "software-defined-networking",
+            },
+            ExamEntry {
+                objective: "5.4",
+                slug: "device-management-protocols",
+            },
+            ExamEntry {
+                objective: "5.5",
+                slug: "rest-json-and-config-management",
+            },
+        ],
     },
 ];
 
@@ -1074,9 +1194,14 @@ mod tests {
     // A draft is in no ordering, and a section it leaves empty is dropped
     #[test]
     fn a_draft_page_is_left_out_of_every_ordering() {
-        // Treat two published pages as drafts. routing-technologies is the
-        // only v1.1 entry under 3.0, so that section should go with it
-        let drafts = ["osi-model", "routing-technologies"];
+        // Treat a published page and the whole v1.1 3.0 domain as drafts, so
+        // that domain should go with them
+        let drafts = [
+            "osi-model",
+            "routing-technologies",
+            "ospf",
+            "first-hop-redundancy",
+        ];
         for view in nav_views(OVERVIEW_SLUG, before_cutover(), &drafts) {
             for section in &view.sections {
                 assert!(

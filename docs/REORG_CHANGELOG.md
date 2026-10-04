@@ -129,3 +129,15 @@ existing textbook contract is unchanged, only moved into its own function.
 eight headings, and a `TODO(jeff)` line under each. No lesson prose. The summary is
 also `TODO(jeff)`. All 14 are registered in `SIDEBAR` (folded into the existing topic
 sections) and in `WIKI_SLUGS`. To publish one, write it and delete the `draft` line.
+
+**Slice 4: drafts filed under their objectives (A3).** Each draft is listed once in
+`CCNA_V1_1` and `CCNA_V2_0`, under the lowest objective in its main domain. The
+numbers come from Cisco's exam topics PDFs, read on 2026-10-04
+(`learningcontent.cisco.com/documents/marketing/exam-topics/200-301-CCNA-v1.1.pdf`
+and `200-301_CCNA_v2.0_Exam_Topics_PDF.pdf`). Drafts do not render in either ordering
+until `draft` is removed. Left out on purpose, for Jeff to confirm:
+`troubleshooting-method` has no v1.1 objective (v2.0 files it at 2.4), and
+`ethernet-and-arp` has no v2.0 objective (v1.1 files it at 1.13, switching concepts).
+`dhcp-and-dns-services` is 1.7 in v2.0 for the DHCP half. Its DNS half is 4.4.
+`rest-json-and-config-management` is 5.5 in v2.0, which covers Ansible only. v2.0
+names neither REST nor JSON.
