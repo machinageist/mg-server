@@ -752,9 +752,9 @@ pub struct NavSection {
 
 impl NavSection {
     // Decide whether the group renders expanded: when it holds the page being
-    // read, or when it has a single entry and collapsing it would hide nothing
+    // read. The overview group is always open, since it is one link
     pub fn starts_open(&self, active: &str) -> bool {
-        self.entries.len() == 1 || self.entries.iter().any(|entry| entry.slug == active)
+        self.heading == OVERVIEW_HEADING || self.entries.iter().any(|entry| entry.slug == active)
     }
 }
 

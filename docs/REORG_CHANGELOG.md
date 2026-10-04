@@ -272,5 +272,5 @@ headings are read from each page on every request by `page_anchors` in
 
 **Sidebar groups collapse.** Each group in the sidebar (an exam domain, "Not on this
 exam", "Linux foundations") is also a native `<details>`. The group holding the page
-being read starts open, and so does a group with a single entry. The rest start
+being read starts open, and so does Overview. The rest start
 collapsed, so the sidebar opens as a short list of headings.
