@@ -173,6 +173,12 @@ an IPv4-only server. It is normally paired with DNS64, which synthesizes
 IPv6 answers for names that only have IPv4 records. This is how many mobile
 carriers run IPv6-only access networks while the IPv4 internet still exists.
 
+<!--
+## On the device
+
+TODO(jeff)
+-->
+
 ## Suggested practice: read your own IPv6 configuration
 
 Most home connections now carry IPv6, and every Linux host has link-local

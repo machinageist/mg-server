@@ -65,7 +65,7 @@ src/
   handlers/
     pages.rs              # home, about, portfolio + /portfolio/:slug project docs
     blog.rs               # /blog list (grouped by pillar) + /blog/:slug
-    wiki.rs               # /learn index + pages; hardcoded SIDEBAR lives here
+    wiki.rs               # /learn index + pages; SIDEBAR registry and exam orderings live here
     search.rs             # /search — form, ranking call, results
     releases.rs           # /releases
     status.rs             # /status (human) + /status.json (machine)
@@ -82,7 +82,7 @@ src/
     lab.rs                # curated lab list — TRACKED BUT NOT COMPILED, see §9
 templates/                # Askama; base.html is the shell (nav, theme menu, footer, vitals)
 static/css/style.css      # the whole stylesheet
-static/js/                # ~80 lines total: theme selector only
+static/js/                # theme selector, learn sidebar order, drill timer
 content/posts/            # published blog posts
 content/pages/            # the /learn wiki
 content/projects/         # project documents served at /portfolio/:slug — see §6d
@@ -164,17 +164,27 @@ bin. `tests/wiki_pages.rs` enforces it in both directions —
 `no_orphaned_wiki_pages_on_disk` catches a file with no sidebar entry. **Adding a Markdown
 file to `content/pages/` and nothing else breaks the build.**
 
-**Three sidebar orderings (added 2026-09-25).** `SIDEBAR` is the topic ordering, grouped by
-subject, and it stays the allowlist of servable pages. `handlers/wiki.rs` also holds
-`NETWORK_PLUS`, `CCNA_V1_1`, and `CCNA_V2_0`, which file each page under the objective it
-maps to. A toggle in the sidebar (`static/js/learn-order.js`, stored in `localStorage`)
-switches between them. The server renders all three, and with JavaScript off the topic
-order shows. A new networking page therefore also goes in `NETWORK_PLUS`, and in the CCNA
-orderings only if the blueprint covers it. Material off an exam is left out of that
-exam's ordering entirely, and the page says so in the sidebar note. Tests in `wiki.rs`
-hold the rules: every networking page is in `NETWORK_PLUS`, each exam ordering lists
-published pages once, in objective order, under the right domain, and the CCNA orderings
-never list CDNs, zero trust, or Linux.
+**Draft pages (added 2026-10-04).** `draft: true` in a page's frontmatter marks it as
+not yet published. A draft is still registered in all three places above. It is left out
+of every sidebar ordering and out of search, and a published page or post may not link to
+it (`internal_links_resolve`). A release build answers its URL with a 404. A debug build
+(`cargo run`) serves it by direct URL, which is the only way to read one. The gate is
+`SERVE_DRAFTS = cfg!(debug_assertions)` in `handlers/wiki.rs`, so there is no setting to
+leave on in production. Publishing a page is deleting the `draft` line.
+
+**Two sidebar views (rebuilt 2026-10-04).** `SIDEBAR` is a flat registry: every page on
+disk, its label, and a group (overview, networking, or Linux). It stays the allowlist of
+servable pages. The sidebar renders two views of it, built from `CCNA_V1_1` or
+`CCNA_V2_0` and from `NETWORK_PLUS`, which file each page under the objective it maps
+to. **CCNA is the default view** and the one that shows with JavaScript off. A toggle
+(`static/js/learn-order.js`, stored in `localStorage`) switches to Network+. Each view
+lists the exam's domains in objective order, then "Not on this exam" for networking
+pages that exam does not cover, then "Linux foundations", so either view reaches every
+published page exactly once. A new networking page goes in `NETWORK_PLUS` if it cites
+the Network+ textbook, and in the CCNA orderings if the blueprint covers it. The topic
+view that existed from 2026-09-25 was removed. Tests in `wiki.rs` hold the rules: each
+view lists every published page once, exam orderings are in objective order under the
+right domain, and the CCNA orderings never list CDNs, zero trust, or Linux.
 
 **CCNA cutover.** `CCNA_V2_FIRST_DAY` is 2027-02-03, the first day v2.0 is delivered (v1.1's
 last day is 2027-02-02). The CCNA ordering switches on that date without a redeploy. The
@@ -226,6 +236,20 @@ tags: [education, networking, osi, tcp-ip, troubleshooting]
   why you would follow it.
 - `## Sources and further reading` — names the source textbook, then the primary sources that
   were checked against it.
+
+**CCNA pages have a second shape (added 2026-10-04).** A page with a `## Lab` section is
+a CCNA page, written from Jeff's lab work after the topic is studied, not from a
+textbook. `check_ccna_contract` in `tests/content_lint.rs` requires `## Overview`,
+`## On the device`, `## Exam key points`, `## Lab`, `## Related pages`, and
+`## Sources and further reading` with at least one `https://` link. It does not require
+`## Suggested practice` or a textbook name, because the lab is the practice and there is
+no textbook. Draft pages skip the section contract and are still held to the
+frontmatter, tag, and claim checks. A heading inside an HTML comment does not count.
+**An agent does not write lesson prose on these pages unasked.** Lessons are AI-written
+with Jeff's direction and approval (Jeff, 2026-10-04), so prose is drafted only when he
+directs it and ships only when he approves it. The handoff's authorship table
+(`docs/plans/2026-10-04-ccna-wiki-and-interactive-learning-HANDOFF.md`) is stricter and
+predates that statement.
 
 **The source line is a fixed form.** Networking pages:
 
@@ -347,6 +371,12 @@ the model is for `/labs`.
 **`content/study/pbq/<slug>.md`** — performance-based scenarios, where the answer is a
 typed command. Both are frontmatter-only Markdown, the same shape as the glossary.
 
+**`/study/drills/subnetting`** (added 2026-10-04) has no content file. Problems are
+generated from the `?seed=` in the URL by `models::drill`, so the same URL always shows
+the same set and the server stores nothing. The generator's output is pinned by a test
+because changing it changes every shared link. Design notes for this and the planned
+study tools are in `docs/plans/interactive-learning-ADR.md`.
+
 **The provenance rule.** Every question and every scenario step cites the `/learn` page
 and heading that teaches its answer. `models::question` and `models::scenario` each carry
 a test resolving those citations against the heading ids the renderer actually generates —
@@ -358,6 +388,15 @@ from the whole subject matter; only what traces to the wiki ships.
 `$`/`#` prompt is dropped, and letters inside a combined short flag are sorted so `-Rv`
 and `-vR` are equal. Long flags and argument order are preserved. Each step lists several
 accepted commands — there is usually more than one right answer.
+
+**Cisco IOS scenarios (added 2026-10-04).** A scenario with `dialect: ios` also accepts
+IOS abbreviations: a token may be any prefix of a keyword that no other keyword in its
+group shares, so `sh ip int br` is `show ip interface brief`. The scenario lists the
+groups itself under `keywords`, and a step in a mode other than exec sets `mode`. The
+format is shown in `content/drafts/study/pbq/ios-fixture.md`, which is a test fixture
+and not published. A keyword list that is too short accepts an abbreviation a real
+device rejects, so **Jeff checks each list against a device**. No IOS scenario is
+published yet.
 
 **Inline Markdown in structured content.** Askama escapes rather than renders, so a
 backtick in a YAML field reaches the page as a backtick. Anything carrying commands,

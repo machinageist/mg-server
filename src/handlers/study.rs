@@ -2,6 +2,8 @@
 // Date:        2026-08-14
 // Description: Handlers for /study — a topic index, a quiz per topic, and a
 //              graded result page. The first POST route on the site.
+//              Also the flashcards, the typed-command scenarios, and the
+//              generated drills under /study/drills.
 // Notes:       No JavaScript anywhere. The quiz is one <form method="post">
 //              with radio inputs; grading happens server-side and renders a
 //              page. criteria.md auto-fail rule 3 is met by construction
@@ -14,14 +16,17 @@
 //              against.
 
 use crate::errors::SiteError;
+use crate::models::drill::{self, GradedProblem, Problem, ProblemKind};
 use crate::models::question::{self, GradedAnswer, Question, QuestionSet, STUDY_DIR};
 use crate::models::scenario::{self, GradedStep, PBQ_DIR, Scenario};
 use askama::Template;
 use askama_axum::IntoResponse;
 use axum::extract::{Form, Path as AxumPath, Query};
+use axum::response::{Redirect, Response};
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::path::PathBuf;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 // -----------------------------------------------------------------------
 // Index — /study
@@ -300,6 +305,7 @@ pub async fn grade_scenario(
     Form(submitted): Form<HashMap<String, String>>,
 ) -> Result<impl IntoResponse, SiteError> {
     let scenario = scenario::load(&PathBuf::from(PBQ_DIR), &slug)?;
+    let grammar = scenario.grammar();
 
     let steps: Vec<GradedStep> = scenario
         .steps
@@ -311,6 +317,7 @@ pub async fn grade_scenario(
                 .get(&format!("s{index}"))
                 .cloned()
                 .unwrap_or_default(),
+            grammar: grammar.clone(),
         })
         .collect();
 
@@ -324,6 +331,194 @@ pub async fn grade_scenario(
         correct,
         total,
     })
+}
+
+// -----------------------------------------------------------------------
+// Subnetting drill — /study/drills/subnetting
+// -----------------------------------------------------------------------
+
+const SUBNETTING_DRILL_PATH: &str = "/study/drills/subnetting";
+
+// Query keys the drill reads
+const SEED_PARAM: &str = "seed";
+const KIND_PARAM: &str = "type";
+
+// Seeds are kept short so a shared URL stays readable
+const SEED_RANGE: u128 = 1_000_000;
+
+// Which set a request is for. The seed and the kind are the whole state
+#[derive(Clone, Copy)]
+pub struct DrillSet {
+    pub seed: u64,
+    pub kind: Option<ProblemKind>,
+}
+
+impl DrillSet {
+    // The URL for this exact set
+    pub fn href(&self) -> String {
+        format!(
+            "{SUBNETTING_DRILL_PATH}?{SEED_PARAM}={}{}",
+            self.seed,
+            kind_suffix(self.kind, '&')
+        )
+    }
+
+    // The URL that starts a fresh set of the same kind
+    pub fn new_set_href(&self) -> String {
+        format!("{SUBNETTING_DRILL_PATH}{}", kind_suffix(self.kind, '?'))
+    }
+
+    pub fn problems(&self) -> Vec<Problem> {
+        drill::subnetting_set(self.seed, self.kind)
+    }
+}
+
+// Write the kind as a query fragment, or nothing when every kind is in play
+fn kind_suffix(kind: Option<ProblemKind>, separator: char) -> String {
+    kind.map(|kind| format!("{separator}{KIND_PARAM}={}", kind.key()))
+        .unwrap_or_default()
+}
+
+// Read the problem kind from the query. Absent means every kind
+fn parse_kind(query: &HashMap<String, String>) -> Result<Option<ProblemKind>, SiteError> {
+    match query.get(KIND_PARAM) {
+        None => Ok(None),
+        Some(key) => ProblemKind::from_key(key)
+            .map(Some)
+            .ok_or_else(|| SiteError::PageNotFound(SUBNETTING_DRILL_PATH.to_string())),
+    }
+}
+
+// Read the set a request names. A seed or kind that does not parse is a 404,
+// not a silently different set
+fn parse_drill_set(query: &HashMap<String, String>) -> Result<Option<DrillSet>, SiteError> {
+    let kind = parse_kind(query)?;
+    let Some(raw) = query.get(SEED_PARAM) else {
+        return Ok(None);
+    };
+    let seed = raw
+        .parse::<u64>()
+        .map_err(|_| SiteError::PageNotFound(SUBNETTING_DRILL_PATH.to_string()))?;
+    Ok(Some(DrillSet { seed, kind }))
+}
+
+// Pick a seed for a fresh set. It only has to differ between visits
+fn fresh_seed() -> u64 {
+    let micros = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|elapsed| elapsed.as_micros())
+        .unwrap_or_default();
+    (micros % SEED_RANGE) as u64
+}
+
+#[derive(Template)]
+#[template(path = "study_drill.html")]
+pub struct DrillTemplate {
+    pub set: DrillSet,
+    pub problems: Vec<Problem>,
+}
+
+impl DrillTemplate {
+    pub fn title(&self) -> &str {
+        "Subnetting drill — machinageist"
+    }
+    pub fn description(&self) -> &str {
+        "Generated subnetting problems, graded with the working shown for each one."
+    }
+    pub fn section(&self) -> &str {
+        "study"
+    }
+
+    pub fn kinds(&self) -> [ProblemKind; 3] {
+        ProblemKind::ALL
+    }
+}
+
+// Render a drill set, or send a request with no seed to a fresh one
+pub async fn subnetting_drill(
+    Query(query): Query<HashMap<String, String>>,
+) -> Result<Response, SiteError> {
+    let Some(set) = parse_drill_set(&query)? else {
+        let fresh = DrillSet {
+            seed: fresh_seed(),
+            kind: parse_kind(&query)?,
+        };
+        return Ok(Redirect::to(&fresh.href()).into_response());
+    };
+    Ok(DrillTemplate {
+        set,
+        problems: set.problems(),
+    }
+    .into_response())
+}
+
+#[derive(Template)]
+#[template(path = "study_drill_result.html")]
+pub struct DrillResultTemplate {
+    pub set: DrillSet,
+    pub problems: Vec<GradedProblem>,
+    pub correct: usize,
+    pub total: usize,
+}
+
+impl DrillResultTemplate {
+    pub fn title(&self) -> &str {
+        "Subnetting drill results — machinageist"
+    }
+    pub fn description(&self) -> &str {
+        "Subnetting drill results, with the working for every problem."
+    }
+    pub fn section(&self) -> &str {
+        "study"
+    }
+
+    pub fn skipped(&self) -> usize {
+        self.problems.iter().filter(|p| p.unanswered()).count()
+    }
+}
+
+// Name the form field for one input of one problem
+pub fn drill_field_name(index: &usize, key: &str) -> String {
+    format!("p{index}-{key}")
+}
+
+// Grade a submitted drill
+//
+// The set is rebuilt from the seed in the URL, so the server holds nothing
+// between showing the problems and grading them. A field that is missing from
+// the form is unanswered, not an error.
+pub async fn grade_subnetting_drill(
+    Query(query): Query<HashMap<String, String>>,
+    Form(submitted): Form<HashMap<String, String>>,
+) -> Result<impl IntoResponse, SiteError> {
+    let set = parse_drill_set(&query)?
+        .ok_or_else(|| SiteError::PageNotFound(SUBNETTING_DRILL_PATH.to_string()))?;
+    Ok(grade_drill(set, &submitted))
+}
+
+// Pair each problem in a set with the submitted answers
+fn grade_drill(set: DrillSet, submitted: &HashMap<String, String>) -> DrillResultTemplate {
+    let problems: Vec<GradedProblem> = set
+        .problems()
+        .into_iter()
+        .enumerate()
+        .map(|(index, problem)| {
+            GradedProblem::new(problem, |key| {
+                submitted
+                    .get(&drill_field_name(&index, key))
+                    .cloned()
+                    .unwrap_or_default()
+            })
+        })
+        .collect();
+    let correct = problems.iter().filter(|p| p.correct()).count();
+    let total = problems.len();
+    DrillResultTemplate {
+        set,
+        problems,
+        correct,
+        total,
+    }
 }
 
 #[cfg(test)]
@@ -511,5 +706,127 @@ mod tests {
             "native inputs, not scripted widgets"
         );
         assert!(stripped.contains("<button"), "a real submit button");
+    }
+
+    // Build a query map from pairs
+    fn query(pairs: &[(&str, &str)]) -> HashMap<String, String> {
+        pairs
+            .iter()
+            .map(|(key, value)| (key.to_string(), value.to_string()))
+            .collect()
+    }
+
+    #[test]
+    fn the_drill_needs_no_javascript() {
+        let set = DrillSet {
+            seed: 42,
+            kind: None,
+        };
+        let html = DrillTemplate {
+            set,
+            problems: set.problems(),
+        }
+        .render()
+        .expect("drill renders");
+        let content = html
+            .split("<main")
+            .nth(1)
+            .and_then(|rest| rest.split("</main>").next())
+            .expect("the page has a main element");
+
+        assert!(!content.contains("<script"), "the drill loads no script");
+        assert!(content.contains("method=\"post\""));
+        assert!(content.contains("action=\"/study/drills/subnetting?seed=42\""));
+        assert!(content.contains("<button type=\"submit\""));
+        // Every input is a native field with a label pointing at it
+        let inputs = content.matches("<input type=\"text\"").count();
+        assert_eq!(inputs, content.matches("<label for=\"p").count());
+        assert!(inputs >= drill::SET_SIZE);
+    }
+
+    #[test]
+    fn a_drill_url_names_one_set() {
+        let plain = parse_drill_set(&query(&[("seed", "42")]))
+            .expect("parses")
+            .expect("has a seed");
+        assert_eq!(plain.href(), "/study/drills/subnetting?seed=42");
+        assert_eq!(plain.new_set_href(), "/study/drills/subnetting");
+
+        let hosts = parse_drill_set(&query(&[("seed", "42"), ("type", "hosts")]))
+            .expect("parses")
+            .expect("has a seed");
+        assert_eq!(hosts.href(), "/study/drills/subnetting?seed=42&type=hosts");
+        assert_eq!(hosts.new_set_href(), "/study/drills/subnetting?type=hosts");
+        assert!(
+            hosts
+                .problems()
+                .iter()
+                .all(|problem| problem.kind() == ProblemKind::Hosts)
+        );
+
+        // No seed is not an error. The handler redirects to a fresh set
+        assert!(parse_drill_set(&query(&[])).expect("parses").is_none());
+    }
+
+    #[test]
+    fn a_bad_seed_or_kind_is_not_found() {
+        for bad in [
+            query(&[("seed", "abc")]),
+            query(&[("seed", "-1")]),
+            query(&[("seed", "1"), ("type", "nonsense")]),
+            query(&[("type", "nonsense")]),
+        ] {
+            assert!(matches!(
+                parse_drill_set(&bad),
+                Err(SiteError::PageNotFound(_))
+            ));
+        }
+    }
+
+    #[tokio::test]
+    async fn a_request_with_no_seed_redirects_to_a_seeded_set() {
+        let response = subnetting_drill(Query(query(&[("type", "vlsm")])))
+            .await
+            .expect("redirects");
+        assert_eq!(response.status(), axum::http::StatusCode::SEE_OTHER);
+        let location = response.headers()["location"].to_str().expect("ascii");
+        assert!(location.starts_with("/study/drills/subnetting?seed="));
+        assert!(location.ends_with("&type=vlsm"));
+    }
+
+    #[test]
+    fn a_submitted_drill_is_graded_from_the_seed_alone() {
+        let set = DrillSet {
+            seed: 42,
+            kind: None,
+        };
+        // Answer the first problem correctly and leave the rest blank
+        let mut submitted = HashMap::new();
+        for field in set.problems()[0].fields() {
+            submitted.insert(drill_field_name(&0, field.key), field.answer.display());
+        }
+        let result = grade_drill(set, &submitted);
+        assert_eq!(result.total, drill::SET_SIZE);
+        assert_eq!(result.correct, 1);
+        assert_eq!(result.skipped(), drill::SET_SIZE - 1);
+
+        let html = result.render().expect("result renders");
+        assert!(html.contains("1 of 10 correct"));
+        assert!(html.contains("9 skipped"));
+        assert!(html.contains("/learn/subnetting#"));
+        assert!(html.contains("Block size is") || html.contains("octet boundary"));
+    }
+
+    // /study/:slug would be shadowed by these fixed path segments, so a
+    // question set may not take one as its slug
+    #[test]
+    fn no_question_set_uses_a_reserved_path_name() {
+        for set in question::all(&PathBuf::from(STUDY_DIR)) {
+            assert!(
+                !["drills", "walks", "cards", "pbq"].contains(&set.slug.as_str()),
+                "{} is a reserved /study path",
+                set.slug
+            );
+        }
     }
 }

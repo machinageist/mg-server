@@ -42,6 +42,23 @@ const NETWORKING_SOURCE_MARKER: &str = "Ian Neil";
 const EXAM_SECTION: &str = "## Exam key points";
 const EXAM_SUBSECTIONS: &[&str] = &["### CCNA 200-301", "### Network+ N10-009"];
 
+// A CCNA page is written from lab work instead of a textbook, and is told apart
+// by its `## Lab` section. The lab stands in for Suggested practice, and the
+// Sources need a primary document but no textbook name
+const CCNA_PAGE_MARKER: &str = "## Lab";
+const CCNA_PAGE_SECTIONS: &[&str] = &[
+    "## Overview",
+    "## On the device",
+    "## Exam key points",
+    "## Lab",
+    "## Related pages",
+    "## Sources and further reading",
+];
+
+// Frontmatter key and value that mark a page as not yet published
+const DRAFT_KEY: &str = "draft";
+const DRAFT_VALUE: &str = "true";
+
 // Certification slugs must never return as tags. A tag pill reads as a claim of
 // credential rather than a citation of a textbook; criteria.md 1D scores a stale
 // cert claim at zero, and these were removed from every learn page on 2026-08-14.
@@ -135,6 +152,18 @@ fn parse(path: &Path) -> ContentFile {
     }
 }
 
+// Report whether a page is still a draft. A draft is held to the frontmatter,
+// tag, and claim checks, and is excused from the section contract until it
+// is published
+fn is_draft(file: &ContentFile) -> bool {
+    file.frontmatter.get(DRAFT_KEY).map(String::as_str) == Some(DRAFT_VALUE)
+}
+
+// Report whether a body has a heading on a line of its own
+fn has_heading(body: &str, heading: &str) -> bool {
+    body.lines().any(|line| line.trim_end() == heading)
+}
+
 // Split a frontmatter list value — tags: [a, b, c] — into its members
 fn tag_list(raw: &str) -> Vec<String> {
     raw.trim_start_matches('[')
@@ -223,50 +252,126 @@ fn tags_use_the_agreed_vocabulary() {
 #[test]
 fn every_topic_page_follows_the_authoring_contract() {
     for file in load_dir(PAGES_DIR) {
-        if CONTRACT_EXEMPT_PAGES.contains(&file.slug.as_str()) {
+        if CONTRACT_EXEMPT_PAGES.contains(&file.slug.as_str()) || is_draft(&file) {
             continue;
         }
+        check_authoring_contract(&file);
+    }
+}
 
-        assert!(
-            file.body.contains("## Overview"),
-            "{}: no `## Overview` — every topic page opens by saying what it is",
-            file.path.display()
-        );
-        for section in REQUIRED_PAGE_SECTIONS {
-            assert!(
-                file.body.contains(section),
-                "{}: missing `{section}`",
-                file.path.display()
-            );
-        }
-        assert!(
-            file.body.contains("## Suggested practice"),
-            "{}: no `## Suggested practice` section. Understand → Practice → Evidence is \
-             the wiki's contract (content/pages/index.md); a page that only explains is \
-             half a page",
-            file.path.display()
-        );
+// Hold one published page to the contract for its shape
+fn check_authoring_contract(file: &ContentFile) {
+    // A heading parked inside an HTML comment is not on the page
+    let visible = strip_html_comments(&file.body);
+    if has_heading(&visible, CCNA_PAGE_MARKER) {
+        check_ccna_contract(file, &visible);
+    } else {
+        check_textbook_contract(file);
+    }
+}
 
-        // The source textbook is named, not merely gestured at. This is what keeps
-        // "edited from my study notes" from being an unattributed paraphrase.
-        let sources = file
-            .body
-            .split("## Sources and further reading")
-            .nth(1)
-            .expect("section presence already asserted");
+// Hold a CCNA page to its contract: device output, a lab, and a primary source
+fn check_ccna_contract(file: &ContentFile, visible: &str) {
+    for section in CCNA_PAGE_SECTIONS {
         assert!(
-            sources.contains("Ian Neil") || sources.contains("Brian Ward"),
-            "{}: Sources names no source textbook. Networking pages cite Ian Neil's \
-             Network+ guide, Linux pages cite Brian Ward's How Linux Works",
-            file.path.display()
-        );
-        assert!(
-            sources.contains("https://"),
-            "{}: Sources cites no primary document. The textbook is the source; an RFC, \
-             standard, or man page is the check",
+            has_heading(visible, section),
+            "{}: CCNA page is missing `{section}`",
             file.path.display()
         );
     }
+    let sources = visible
+        .split("## Sources and further reading")
+        .nth(1)
+        .expect("section presence already asserted");
+    assert!(
+        sources.contains("https://"),
+        "{}: Sources cites no primary document. A CCNA page names the RFC, standard, \
+         or vendor reference its claims were checked against",
+        file.path.display()
+    );
+}
+
+// Hold a textbook-derived page to the original contract
+fn check_textbook_contract(file: &ContentFile) {
+    assert!(
+        file.body.contains("## Overview"),
+        "{}: no `## Overview` — every topic page opens by saying what it is",
+        file.path.display()
+    );
+    for section in REQUIRED_PAGE_SECTIONS {
+        assert!(
+            file.body.contains(section),
+            "{}: missing `{section}`",
+            file.path.display()
+        );
+    }
+    assert!(
+        file.body.contains("## Suggested practice"),
+        "{}: no `## Suggested practice` section. Understand → Practice → Evidence is \
+         the wiki's contract (content/pages/index.md); a page that only explains is \
+         half a page",
+        file.path.display()
+    );
+
+    // The source textbook is named, not merely gestured at. This is what keeps
+    // "edited from my study notes" from being an unattributed paraphrase.
+    let sources = file
+        .body
+        .split("## Sources and further reading")
+        .nth(1)
+        .expect("section presence already asserted");
+    assert!(
+        sources.contains("Ian Neil") || sources.contains("Brian Ward"),
+        "{}: Sources names no source textbook. Networking pages cite Ian Neil's \
+         Network+ guide, Linux pages cite Brian Ward's How Linux Works",
+        file.path.display()
+    );
+    assert!(
+        sources.contains("https://"),
+        "{}: Sources cites no primary document. The textbook is the source; an RFC, \
+         standard, or man page is the check",
+        file.path.display()
+    );
+}
+
+// Build an in-memory page so the contract can be tested before a CCNA page ships
+fn page_fixture(body: &str) -> ContentFile {
+    ContentFile {
+        slug: "fixture".to_string(),
+        path: PathBuf::from("fixture.md"),
+        frontmatter: BTreeMap::new(),
+        body: body.to_string(),
+    }
+}
+
+const CCNA_FIXTURE: &str = "## Overview\n\n## How it works\n\n## On the device\n\n\
+     ## Troubleshooting it\n\n## Exam key points\n\n## Lab\n\n## Related pages\n\n\
+     ## Sources and further reading\n\n[RFC 2328](https://www.rfc-editor.org/rfc/rfc2328)\n";
+
+#[test]
+fn a_complete_ccna_page_passes_without_a_textbook_or_suggested_practice() {
+    check_authoring_contract(&page_fixture(CCNA_FIXTURE));
+}
+
+#[test]
+#[should_panic(expected = "CCNA page is missing `## On the device`")]
+fn a_ccna_page_needs_its_device_section() {
+    let body = CCNA_FIXTURE.replace("## On the device\n\n", "");
+    check_authoring_contract(&page_fixture(&body));
+}
+
+#[test]
+#[should_panic(expected = "CCNA page is missing `## On the device`")]
+fn a_commented_out_heading_does_not_satisfy_the_contract() {
+    let body = CCNA_FIXTURE.replace("## On the device\n", "<!--\n## On the device\n-->\n");
+    check_authoring_contract(&page_fixture(&body));
+}
+
+#[test]
+#[should_panic(expected = "Sources cites no primary document")]
+fn a_ccna_page_needs_a_primary_source() {
+    let body = CCNA_FIXTURE.replace("https://", "");
+    check_authoring_contract(&page_fixture(&body));
 }
 
 // Every networking page carries exam key points for CCNA and Network+
@@ -308,15 +413,26 @@ fn every_networking_page_carries_exam_key_points() {
     }
 }
 
-// Every internal /learn/ and /blog/ link points at content that exists
+// Every internal /learn/ and /blog/ link points at content that exists. A draft
+// page is a 404 in production, so only another draft may link to one
 #[test]
 fn internal_links_resolve() {
-    let pages: Vec<String> = load_dir(PAGES_DIR).into_iter().map(|f| f.slug).collect();
+    let all_pages: Vec<String> = load_dir(PAGES_DIR).into_iter().map(|f| f.slug).collect();
+    let published_pages: Vec<String> = load_dir(PAGES_DIR)
+        .into_iter()
+        .filter(|f| !is_draft(f))
+        .map(|f| f.slug)
+        .collect();
     let posts: Vec<String> = load_dir(POSTS_DIR).into_iter().map(|f| f.slug).collect();
 
     let mut checked = 0;
     for file in load_dir(PAGES_DIR).into_iter().chain(load_dir(POSTS_DIR)) {
-        for (prefix, known) in [("/learn/", &pages), ("/blog/", &posts)] {
+        let pages = if is_draft(&file) {
+            &all_pages
+        } else {
+            &published_pages
+        };
+        for (prefix, known) in [("/learn/", pages), ("/blog/", &posts)] {
             for (index, _) in file.body.match_indices(prefix) {
                 let rest = &file.body[index + prefix.len()..];
                 let slug: String = rest
@@ -329,7 +445,7 @@ fn internal_links_resolve() {
                 }
                 assert!(
                     known.contains(&slug),
-                    "{}: links to {prefix}{slug}, which does not exist",
+                    "{}: links to {prefix}{slug}, which does not exist or is still a draft",
                     file.path.display()
                 );
                 checked += 1;
@@ -602,6 +718,21 @@ fn first_private_address(line: &str) -> Option<String> {
         }
     }
     None
+}
+
+// Remove <!-- … --> comments, which the Markdown renderer drops from the page
+fn strip_html_comments(raw: &str) -> String {
+    let mut out = String::with_capacity(raw.len());
+    let mut rest = raw;
+    while let Some(start) = rest.find("<!--") {
+        out.push_str(&rest[..start]);
+        match rest[start..].find("-->") {
+            Some(end) => rest = &rest[start + end + 3..],
+            None => return out,
+        }
+    }
+    out.push_str(rest);
+    out
 }
 
 // Remove {# … #} Askama comments so decision records are not read as page copy

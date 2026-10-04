@@ -6,6 +6,10 @@
 //              into a typed Frontmatter struct, parses the date string into a
 //              NaiveDate, and converts the Markdown body to HTML via models::markdown.
 //              find() locates one page by slug and delegates to from_file().
+//
+// Notes:       draft: true in the frontmatter marks a page that is on disk but
+//              not published. Page only reports the flag. What a draft is kept
+//              out of is decided by handlers::wiki.
 
 use crate::errors::SiteError;
 use crate::models::markdown::{self, Heading};
@@ -22,6 +26,16 @@ struct Frontmatter {
     date: String,
     summary: String,
     tags: Vec<String>,
+    // Absent on every published page, so it defaults to false
+    #[serde(default)]
+    draft: bool,
+}
+
+// The one frontmatter field is_draft() needs, so it can skip the rest
+#[derive(Debug, Deserialize)]
+struct DraftFlag {
+    #[serde(default)]
+    draft: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -33,6 +47,9 @@ pub struct Page {
     #[allow(dead_code)]
     pub summary: String,
     pub tags: Vec<String>,
+    // True while the page is being written and is not yet published
+    #[allow(dead_code)]
+    pub draft: bool,
     pub content_html: String,
     // Body as plain text — what search matches on and snippets are cut from
     pub content_text: String,
@@ -69,6 +86,7 @@ impl Page {
             date,
             summary: fm.summary,
             tags: fm.tags,
+            draft: fm.draft,
             content_html,
             content_text,
             outline,
@@ -85,6 +103,35 @@ impl Page {
         }
         Page::from_file(&path)
     }
+
+    // Read a page's h2/h3 outline without rendering its HTML. A page that is
+    // missing or unreadable has no outline
+    pub fn outline_of(dir: &Path, slug: &str) -> Vec<Heading> {
+        if !crate::models::slug::is_safe(slug) {
+            return Vec::new();
+        }
+        let Ok(raw) = fs::read_to_string(dir.join(format!("{}.md", slug))) else {
+            return Vec::new();
+        };
+        markdown::outline(&Matter::<YAML>::new().parse(&raw).content)
+    }
+
+    // Report whether a page is marked draft, reading only its frontmatter.
+    // A page that is missing or unreadable is not a draft, so the caller's
+    // normal not-found path handles it
+    pub fn is_draft(dir: &Path, slug: &str) -> bool {
+        if !crate::models::slug::is_safe(slug) {
+            return false;
+        }
+        let Ok(raw) = fs::read_to_string(dir.join(format!("{}.md", slug))) else {
+            return false;
+        };
+        Matter::<YAML>::new()
+            .parse(&raw)
+            .data
+            .and_then(|data| data.deserialize::<DraftFlag>().ok())
+            .is_some_and(|flag| flag.draft)
+    }
 }
 
 #[cfg(test)]
@@ -100,5 +147,34 @@ mod tests {
         .expect_err("a path-like slug must not leave the page directory");
 
         assert!(matches!(error, SiteError::PageNotFound(_)));
+    }
+
+    // Write one page into a scratch directory and return the directory
+    fn scratch_page(name: &str, frontmatter_extra: &str) -> std::path::PathBuf {
+        let dir = std::env::temp_dir().join(format!("mg-server-{name}-{}", std::process::id()));
+        fs::create_dir_all(&dir).expect("create scratch dir");
+        let body = format!(
+            "---\ntitle: \"Scratch\"\ndate: 2026-10-04\nsummary: \"A scratch page.\"\n\
+             tags: [education]\n{frontmatter_extra}---\n\n## Overview\n\nText.\n"
+        );
+        fs::write(dir.join("scratch.md"), body).expect("write scratch page");
+        dir
+    }
+
+    #[test]
+    fn a_page_is_a_draft_only_when_its_frontmatter_says_so() {
+        let draft = scratch_page("draft", "draft: true\n");
+        assert!(Page::is_draft(&draft, "scratch"));
+        assert!(Page::find(&draft, "scratch").expect("parses").draft);
+
+        let published = scratch_page("published", "");
+        assert!(!Page::is_draft(&published, "scratch"));
+        assert!(!Page::find(&published, "scratch").expect("parses").draft);
+
+        assert!(!Page::is_draft(&published, "no-such-page"));
+        assert!(!Page::is_draft(&published, "../scratch"));
+
+        fs::remove_dir_all(draft).ok();
+        fs::remove_dir_all(published).ok();
     }
 }

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="study-result">
+  <a class="back-link" href="{{ set.href() }}">Subnetting drill</a>
+  <h1>Results</h1>
+
+  <p class="study-score">
+    {{ correct }} of {{ total }} correct{% if self.skipped() > 0 %},
+    {{ self.skipped() }} skipped{% endif %}.
+  </p>
+
+  <ol class="study-answers">
+    {% for graded in problems %}
+    <li class="study-answer {{ graded.verdict_class() }}">
+      <p class="study-verdict">{{ graded.verdict() }}</p>
+      <p class="study-stem">{{ graded.problem.prompt() }}</p>
+
+      {% for answer in graded.fields %}
+      {% if answer.unanswered() %}
+      <p class="study-chosen">
+        {{ answer.field.label }}: not answered. It is <code>{{ answer.field.answer.display() }}</code>
+      </p>
+      {% else if answer.correct() %}
+      <p class="study-chosen">{{ answer.field.label }}: <code>{{ answer.typed }}</code> is right</p>
+      {% else %}
+      <p class="study-correct">
+        {{ answer.field.label }}: you typed <code>{{ answer.typed }}</code>. It is
+        <code>{{ answer.field.answer.display() }}</code>
+      </p>
+      {% endif %}
+      {% endfor %}
+
+      <p class="study-explanation">{{ graded.problem.working() }}</p>
+      <p class="study-source">
+        <a href="{{ graded.problem.kind().learn_href() }}">Where this is explained</a>
+      </p>
+    </li>
+    {% endfor %}
+  </ol>
+
+  <p class="study-actions">
+    <a href="{{ set.href() }}">Try this set again</a>
+    <a href="{{ set.new_set_href() }}">New set</a>
+    <a href="/study">Other topics</a>
+  </p>
+</section>
+{% endblock %}

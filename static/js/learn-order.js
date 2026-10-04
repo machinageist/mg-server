@@ -1,20 +1,21 @@
-// Learn sidebar order — which of the three page orderings the wiki sidebar shows.
+// Learn sidebar order — which of the two views the wiki sidebar shows.
 // Loaded in <head> so a stored choice applies before first paint, the same way
-// theme-init.js does for the theme. The server renders all three orderings and
-// CSS shows the one named by data-learn-order on <html>. Without JavaScript the
-// toggle stays hidden and the topic order shows.
+// theme-init.js does for the theme. The server renders both views and CSS shows
+// the one named by data-learn-order on <html>. Without JavaScript the toggle
+// stays hidden and the CCNA view shows. A stored choice from when there was a
+// topic view falls back to CCNA.
 (function () {
-    var ORDERS = ["topic", "ccna", "netplus"];
+    var ORDERS = ["ccna", "netplus"];
     var KEY = "learn-order";
     var root = document.documentElement;
 
-    // Read the stored order, falling back to topic
+    // Read the stored order, falling back to CCNA
     function stored() {
         try {
             var order = localStorage.getItem(KEY);
-            return ORDERS.indexOf(order) >= 0 ? order : "topic";
+            return ORDERS.indexOf(order) >= 0 ? order : "ccna";
         } catch (e) {
-            return "topic";
+            return "ccna";
         }
     }
 

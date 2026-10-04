@@ -7,30 +7,56 @@
 //              active entry highlighted.
 //              `/wiki` and `/wiki/:slug` are the pre-rename URLs; they permanently
 //              redirect to the `/learn` equivalents so old links keep working.
+//
+// Notes:       A page with `draft: true` in its frontmatter is registered in
+//              SIDEBAR like any other, but it is left out of every sidebar
+//              view and out of search, and a release build answers its URL
+//              with a 404. A debug build serves it by direct URL so it can be
+//              read while it is being written. Publishing is one frontmatter edit.
+//
+//              The sidebar has two views of the same pages: CCNA, which is the
+//              default, and Network+. Each lists the exam's domains in objective
+//              order and then every page that exam does not cover, so either
+//              view reaches the whole wiki.
 
 use crate::errors::SiteError;
+use crate::models::markdown::Heading;
 use crate::models::page::Page;
 use askama::Template;
 use askama_axum::IntoResponse;
 use axum::extract::Path as AxumPath;
 use axum::response::{Redirect, Response};
 use chrono::{NaiveDate, Utc};
-use std::path::PathBuf;
+use std::collections::HashMap;
+use std::path::{Path, PathBuf};
 
 pub(crate) const PAGES_DIR: &str = "content/pages";
 const OVERVIEW_SLUG: &str = "index";
 
-// One entry in the left wiki sidebar
+// Draft pages answer by direct URL in a debug build only. There is no setting
+// to leave switched on, so a release build can never serve one
+const SERVE_DRAFTS: bool = cfg!(debug_assertions);
+
+// What kind of page a registered page is, which decides where a sidebar view
+// puts it when the exam being shown does not list it
+#[derive(Clone, Copy, PartialEq)]
+pub enum Group {
+    Overview,
+    Networking,
+    Linux,
+}
+
+// One registered /learn page
 pub struct SidebarEntry {
     pub slug: &'static str,
     pub label: &'static str,
+    pub group: Group,
 }
 
-// One section in the left wiki sidebar
-pub struct SidebarSection {
-    pub heading: &'static str,
-    pub entries: &'static [SidebarEntry],
-}
+// Headings a sidebar view uses outside the exam's own domains
+const OVERVIEW_HEADING: &str = "Overview";
+const OFF_EXAM_HEADING: &str = "Not on this exam";
+const LINUX_HEADING: &str = "Linux foundations";
 
 // Slugs retired when a page was split or renamed, and the page each now points at.
 // Published URLs keep working through a permanent redirect.
@@ -39,166 +65,224 @@ const RENAMED_SLUGS: &[(&str, &str)] = &[
     ("network-applications", "content-delivery-networks"),
 ];
 
-// Static education-wiki sidebar layout. New reviewed topics land here when published.
-const SIDEBAR: &[SidebarSection] = &[
-    SidebarSection {
-        heading: "Overview",
-        entries: &[SidebarEntry {
-            slug: OVERVIEW_SLUG,
-            label: "Education Wiki",
-        }],
+// Every /learn page on disk is registered here. This is the allowlist of
+// servable pages and the one place a page's sidebar label is written. A page
+// whose frontmatter says draft: true is registered and not shown
+const SIDEBAR: &[SidebarEntry] = &[
+    SidebarEntry {
+        slug: OVERVIEW_SLUG,
+        label: "Education Wiki",
+        group: Group::Overview,
     },
-    SidebarSection {
-        heading: "Models and patterns",
-        entries: &[
-            SidebarEntry {
-                slug: "osi-model",
-                label: "OSI model",
-            },
-            SidebarEntry {
-                slug: "network-topologies",
-                label: "Network topologies",
-            },
-            SidebarEntry {
-                slug: "traffic-types",
-                label: "Network traffic types",
-            },
-        ],
+    SidebarEntry {
+        slug: "osi-model",
+        label: "OSI model",
+        group: Group::Overview,
     },
-    SidebarSection {
-        heading: "Physical layer",
-        entries: &[
-            SidebarEntry {
-                slug: "transmission-media",
-                label: "Transmission media",
-            },
-            SidebarEntry {
-                slug: "wired-media",
-                label: "Wired media",
-            },
-            SidebarEntry {
-                slug: "wireless-media",
-                label: "Wireless media",
-            },
-            SidebarEntry {
-                slug: "transceivers",
-                label: "Transceivers and connectors",
-            },
-            SidebarEntry {
-                slug: "physical-installations",
-                label: "Physical installations",
-            },
-        ],
+    SidebarEntry {
+        slug: "network-topologies",
+        label: "Network topologies",
+        group: Group::Overview,
     },
-    SidebarSection {
-        heading: "Addressing",
-        entries: &[
-            SidebarEntry {
-                slug: "ipv4-addressing",
-                label: "IPv4 addressing",
-            },
-            SidebarEntry {
-                slug: "subnetting",
-                label: "Subnetting, CIDR, and VLSM",
-            },
-            SidebarEntry {
-                slug: "ipv6-addressing",
-                label: "IPv6 addressing",
-            },
-        ],
+    SidebarEntry {
+        slug: "traffic-types",
+        label: "Network traffic types",
+        group: Group::Overview,
     },
-    SidebarSection {
-        heading: "Local networks",
-        entries: &[
-            SidebarEntry {
-                slug: "switching-technologies",
-                label: "Switching technologies",
-            },
-            SidebarEntry {
-                slug: "wireless-technologies",
-                label: "Wireless technologies",
-            },
-        ],
+    SidebarEntry {
+        slug: "troubleshooting-method",
+        label: "A troubleshooting method",
+        group: Group::Overview,
     },
-    SidebarSection {
-        heading: "Between networks",
-        entries: &[
-            SidebarEntry {
-                slug: "routing-technologies",
-                label: "Routing technologies and route selection",
-            },
-            SidebarEntry {
-                slug: "vpns-and-ipsec",
-                label: "VPNs and IPsec",
-            },
-            SidebarEntry {
-                slug: "quality-of-service",
-                label: "Quality of service",
-            },
-        ],
+    SidebarEntry {
+        slug: "transmission-media",
+        label: "Transmission media",
+        group: Group::Networking,
     },
-    SidebarSection {
-        heading: "Services and devices",
-        entries: &[
-            SidebarEntry {
-                slug: "network-protocols",
-                label: "Network protocols and ports",
-            },
-            SidebarEntry {
-                slug: "network-appliances",
-                label: "Network appliances",
-            },
-            SidebarEntry {
-                slug: "content-delivery-networks",
-                label: "Content delivery networks",
-            },
-        ],
+    SidebarEntry {
+        slug: "wired-media",
+        label: "Wired media",
+        group: Group::Networking,
     },
-    SidebarSection {
-        heading: "Modern environments",
-        entries: &[
-            SidebarEntry {
-                slug: "cloud-computing",
-                label: "Cloud computing concepts",
-            },
-            SidebarEntry {
-                slug: "software-defined-networking",
-                label: "Software-defined networking",
-            },
-            SidebarEntry {
-                slug: "zero-trust-architecture",
-                label: "Zero-trust architecture",
-            },
-        ],
+    SidebarEntry {
+        slug: "wireless-media",
+        label: "Wireless media",
+        group: Group::Networking,
     },
-    SidebarSection {
-        heading: "Linux foundations",
-        entries: &[
-            SidebarEntry {
-                slug: "linux-abstraction-layers",
-                label: "Linux abstraction layers",
-            },
-            SidebarEntry {
-                slug: "linux-filesystem-hierarchy",
-                label: "Filesystem hierarchy",
-            },
-            SidebarEntry {
-                slug: "linux-shell",
-                label: "The shell and the command line",
-            },
-            SidebarEntry {
-                slug: "linux-streams",
-                label: "Streams, redirection, and pipes",
-            },
-            SidebarEntry {
-                slug: "linux-permissions",
-                label: "File permissions and links",
-            },
-            SidebarEntry {
-                slug: "linux-archives",
-                label: "Archives and compression",
-            },
-        ],
+    SidebarEntry {
+        slug: "transceivers",
+        label: "Transceivers and connectors",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "physical-installations",
+        label: "Physical installations",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "ipv4-addressing",
+        label: "IPv4 addressing",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "subnetting",
+        label: "Subnetting, CIDR, and VLSM",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "ipv6-addressing",
+        label: "IPv6 addressing",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "ethernet-and-arp",
+        label: "Ethernet frames and ARP",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "switching-technologies",
+        label: "Switching technologies",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "spanning-tree",
+        label: "Spanning tree: STP and RSTP",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "etherchannel",
+        label: "EtherChannel",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "layer-2-security",
+        label: "Layer 2 security",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "wireless-technologies",
+        label: "Wireless technologies",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "routing-technologies",
+        label: "Routing technologies and route selection",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "ospf",
+        label: "OSPF, single area",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "first-hop-redundancy",
+        label: "First-hop redundancy",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "nat",
+        label: "NAT and PAT",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "access-control-lists",
+        label: "ACLs and wildcard masks",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "vpns-and-ipsec",
+        label: "VPNs and IPsec",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "quality-of-service",
+        label: "Quality of service",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "network-protocols",
+        label: "Network protocols and ports",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "dhcp-and-dns-services",
+        label: "DHCP, DHCP relay, and DNS",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "device-management-protocols",
+        label: "NTP, SNMP, syslog, CDP and LLDP",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "securing-device-access",
+        label: "Securing device access",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "network-appliances",
+        label: "Network appliances",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "content-delivery-networks",
+        label: "Content delivery networks",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "cloud-computing",
+        label: "Cloud computing concepts",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "software-defined-networking",
+        label: "Software-defined networking",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "rest-json-and-config-management",
+        label: "REST, JSON, and config management",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "ai-in-network-operations",
+        label: "AI in network operations",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "zero-trust-architecture",
+        label: "Zero-trust architecture",
+        group: Group::Networking,
+    },
+    SidebarEntry {
+        slug: "linux-abstraction-layers",
+        label: "Linux abstraction layers",
+        group: Group::Linux,
+    },
+    SidebarEntry {
+        slug: "linux-filesystem-hierarchy",
+        label: "Filesystem hierarchy",
+        group: Group::Linux,
+    },
+    SidebarEntry {
+        slug: "linux-shell",
+        label: "The shell and the command line",
+        group: Group::Linux,
+    },
+    SidebarEntry {
+        slug: "linux-streams",
+        label: "Streams, redirection, and pipes",
+        group: Group::Linux,
+    },
+    SidebarEntry {
+        slug: "linux-permissions",
+        label: "File permissions and links",
+        group: Group::Linux,
+    },
+    SidebarEntry {
+        slug: "linux-archives",
+        label: "Archives and compression",
+        group: Group::Linux,
     },
 ];
 
@@ -319,6 +403,8 @@ const NETWORK_PLUS: &[ExamSection] = &[
 
 // CCNA 200-301 v1.1 ordering. Pages whose material is not on the blueprint are
 // left out: content delivery networks, zero trust, and the Linux section
+// A page that spans several objectives is listed once, under the lowest one in
+// its main domain. troubleshooting-method has no v1.1 objective of its own
 const CCNA_V1_1: &[ExamSection] = &[
     ExamSection {
         heading: "1.0 Network fundamentals",
@@ -379,28 +465,64 @@ const CCNA_V1_1: &[ExamSection] = &[
                 objective: "1.12",
                 slug: "cloud-computing",
             },
+            ExamEntry {
+                objective: "1.13",
+                slug: "ethernet-and-arp",
+            },
         ],
     },
     ExamSection {
         heading: "2.0 Network access",
-        entries: &[ExamEntry {
-            objective: "2.1",
-            slug: "switching-technologies",
-        }],
+        entries: &[
+            ExamEntry {
+                objective: "2.1",
+                slug: "switching-technologies",
+            },
+            ExamEntry {
+                objective: "2.4",
+                slug: "etherchannel",
+            },
+            ExamEntry {
+                objective: "2.5",
+                slug: "spanning-tree",
+            },
+        ],
     },
     ExamSection {
         heading: "3.0 IP connectivity",
-        entries: &[ExamEntry {
-            objective: "3.1",
-            slug: "routing-technologies",
-        }],
+        entries: &[
+            ExamEntry {
+                objective: "3.1",
+                slug: "routing-technologies",
+            },
+            ExamEntry {
+                objective: "3.4",
+                slug: "ospf",
+            },
+            ExamEntry {
+                objective: "3.5",
+                slug: "first-hop-redundancy",
+            },
+        ],
     },
     ExamSection {
         heading: "4.0 IP services",
         entries: &[
             ExamEntry {
+                objective: "4.1",
+                slug: "nat",
+            },
+            ExamEntry {
+                objective: "4.2",
+                slug: "device-management-protocols",
+            },
+            ExamEntry {
                 objective: "4.3",
                 slug: "network-protocols",
+            },
+            ExamEntry {
+                objective: "4.3",
+                slug: "dhcp-and-dns-services",
             },
             ExamEntry {
                 objective: "4.7",
@@ -410,22 +532,48 @@ const CCNA_V1_1: &[ExamSection] = &[
     },
     ExamSection {
         heading: "5.0 Security fundamentals",
-        entries: &[ExamEntry {
-            objective: "5.5",
-            slug: "vpns-and-ipsec",
-        }],
+        entries: &[
+            ExamEntry {
+                objective: "5.3",
+                slug: "securing-device-access",
+            },
+            ExamEntry {
+                objective: "5.5",
+                slug: "vpns-and-ipsec",
+            },
+            ExamEntry {
+                objective: "5.6",
+                slug: "access-control-lists",
+            },
+            ExamEntry {
+                objective: "5.7",
+                slug: "layer-2-security",
+            },
+        ],
     },
     ExamSection {
         heading: "6.0 Automation and programmability",
-        entries: &[ExamEntry {
-            objective: "6.2",
-            slug: "software-defined-networking",
-        }],
+        entries: &[
+            ExamEntry {
+                objective: "6.2",
+                slug: "software-defined-networking",
+            },
+            ExamEntry {
+                objective: "6.4",
+                slug: "ai-in-network-operations",
+            },
+            ExamEntry {
+                objective: "6.5",
+                slug: "rest-json-and-config-management",
+            },
+        ],
     },
 ];
 
 // CCNA 200-301 v2.0 ordering. v2.0 also drops topologies, the OSI model as a
 // TCP-versus-UDP objective, traffic types, and QoS
+// ethernet-and-arp is left out: v2.0 has no objective for switching concepts.
+// Numbers were checked against Cisco's v2.0 exam topics PDF on 2026-10-04
 const CCNA_V2_0: &[ExamSection] = &[
     ExamSection {
         heading: "1.0 Network infrastructure and connectivity",
@@ -470,6 +618,10 @@ const CCNA_V2_0: &[ExamSection] = &[
                 objective: "1.5",
                 slug: "wireless-technologies",
             },
+            ExamEntry {
+                objective: "1.7",
+                slug: "dhcp-and-dns-services",
+            },
         ],
     },
     ExamSection {
@@ -480,21 +632,51 @@ const CCNA_V2_0: &[ExamSection] = &[
                 slug: "switching-technologies",
             },
             ExamEntry {
+                objective: "2.1",
+                slug: "etherchannel",
+            },
+            ExamEntry {
                 objective: "2.2",
                 slug: "network-appliances",
+            },
+            ExamEntry {
+                objective: "2.4",
+                slug: "troubleshooting-method",
+            },
+            ExamEntry {
+                objective: "2.5",
+                slug: "spanning-tree",
             },
         ],
     },
     ExamSection {
         heading: "3.0 IP routing",
-        entries: &[ExamEntry {
-            objective: "3.1",
-            slug: "routing-technologies",
-        }],
+        entries: &[
+            ExamEntry {
+                objective: "3.1",
+                slug: "routing-technologies",
+            },
+            ExamEntry {
+                objective: "3.3",
+                slug: "ospf",
+            },
+            ExamEntry {
+                objective: "3.4",
+                slug: "first-hop-redundancy",
+            },
+        ],
     },
     ExamSection {
         heading: "4.0 Network services and security",
         entries: &[
+            ExamEntry {
+                objective: "4.1",
+                slug: "securing-device-access",
+            },
+            ExamEntry {
+                objective: "4.3",
+                slug: "nat",
+            },
             ExamEntry {
                 objective: "4.4",
                 slug: "network-protocols",
@@ -503,14 +685,36 @@ const CCNA_V2_0: &[ExamSection] = &[
                 objective: "4.5",
                 slug: "vpns-and-ipsec",
             },
+            ExamEntry {
+                objective: "4.6",
+                slug: "access-control-lists",
+            },
+            ExamEntry {
+                objective: "4.7",
+                slug: "layer-2-security",
+            },
         ],
     },
     ExamSection {
         heading: "5.0 AI, network operations, and management",
-        entries: &[ExamEntry {
-            objective: "5.3",
-            slug: "software-defined-networking",
-        }],
+        entries: &[
+            ExamEntry {
+                objective: "5.1",
+                slug: "ai-in-network-operations",
+            },
+            ExamEntry {
+                objective: "5.3",
+                slug: "software-defined-networking",
+            },
+            ExamEntry {
+                objective: "5.4",
+                slug: "device-management-protocols",
+            },
+            ExamEntry {
+                objective: "5.5",
+                slug: "rest-json-and-config-management",
+            },
+        ],
     },
 ];
 
@@ -523,6 +727,38 @@ pub struct NavEntry {
     pub slug: &'static str,
     pub label: &'static str,
     pub objective: Option<&'static str>,
+    // The page's main sections, shown when the entry is expanded
+    pub anchors: Vec<Heading>,
+}
+
+impl NavEntry {
+    // The page's URL. The overview lives at the wiki root
+    pub fn href(&self) -> String {
+        if self.slug == OVERVIEW_SLUG {
+            "/learn".to_string()
+        } else {
+            format!("/learn/{}", self.slug)
+        }
+    }
+}
+
+// Heading level a sidebar entry lists when expanded. Subsections are left to
+// the page itself
+const ANCHOR_LEVEL: u8 = 2;
+
+// Collect the main sections of every published page, keyed by slug
+fn page_anchors(drafts: &[&str]) -> HashMap<&'static str, Vec<Heading>> {
+    SIDEBAR
+        .iter()
+        .filter(|entry| !drafts.contains(&entry.slug))
+        .map(|entry| {
+            let anchors = Page::outline_of(Path::new(PAGES_DIR), entry.slug)
+                .into_iter()
+                .filter(|heading| heading.level == ANCHOR_LEVEL)
+                .collect();
+            (entry.slug, anchors)
+        })
+        .collect()
 }
 
 // One heading's worth of links in a rendered sidebar ordering
@@ -531,7 +767,15 @@ pub struct NavSection {
     pub entries: Vec<NavEntry>,
 }
 
-// One of the three sidebar orderings the toggle switches between
+impl NavSection {
+    // Decide whether the group renders expanded: when it holds the page being
+    // read. The overview group is always open, since it is one link
+    pub fn starts_open(&self, active: &str) -> bool {
+        self.heading == OVERVIEW_HEADING || self.entries.iter().any(|entry| entry.slug == active)
+    }
+}
+
+// One of the sidebar views the toggle switches between
 pub struct NavView {
     pub key: &'static str,
     pub name: &'static str,
@@ -568,7 +812,9 @@ pub async fn index() -> Result<impl IntoResponse, SiteError> {
 
 // Render one education-wiki page selected by URL slug, or redirect a retired one
 pub async fn page(AxumPath(slug): AxumPath<String>) -> Result<Response, SiteError> {
-    if let Some(allowed) = lookup_sidebar_slug(&slug) {
+    if let Some(allowed) = lookup_sidebar_slug(&slug)
+        && is_servable(allowed, SERVE_DRAFTS)
+    {
         return Ok(render_for_slug(allowed).await?.into_response());
     }
     if let Some(target) = renamed_slug(&slug) {
@@ -583,7 +829,7 @@ async fn render_for_slug(slug: &'static str) -> Result<WikiPageTemplate, SiteErr
     let page = Page::find(&pages_dir, slug)?;
     Ok(WikiPageTemplate {
         page,
-        views: nav_views(slug, Utc::now().date_naive()),
+        views: nav_views(Utc::now().date_naive(), &draft_slugs()),
         active_slug: slug,
     })
 }
@@ -599,83 +845,74 @@ fn ccna_blueprint(today: NaiveDate) -> (&'static str, &'static [ExamSection]) {
     }
 }
 
-// Build the topic, CCNA, and Network+ orderings for the page being shown
-fn nav_views(active: &str, today: NaiveDate) -> Vec<NavView> {
-    let topic = NavView {
-        key: "topic",
-        name: "Topic",
-        notes: Vec::new(),
-        sections: SIDEBAR
-            .iter()
-            .map(|section| NavSection {
-                heading: section.heading,
-                entries: section
-                    .entries
-                    .iter()
-                    .map(|entry| NavEntry {
-                        slug: entry.slug,
-                        label: entry.label,
-                        objective: None,
-                    })
-                    .collect(),
-            })
-            .collect(),
-    };
+// Build the CCNA and Network+ views of the sidebar. CCNA is first, which makes
+// it the view that shows by default and with JavaScript off. Draft pages are
+// left out of both
+fn nav_views(today: NaiveDate, drafts: &[&str]) -> Vec<NavView> {
     let (version, ccna) = ccna_blueprint(today);
+    let anchors = page_anchors(drafts);
     vec![
-        topic,
         exam_view(
             "ccna",
             "CCNA",
             &format!("CCNA 200-301 {version}"),
             ccna,
-            active,
+            drafts,
+            &anchors,
         ),
         exam_view(
             "netplus",
             "Network+",
             "Network+ N10-009",
             NETWORK_PLUS,
-            active,
+            drafts,
+            &anchors,
         ),
     ]
 }
 
-// Build one exam ordering. It lists only pages on that exam, and says so when
-// the page being shown is not one of them
+// Build one sidebar view: the overview, the exam's domains in objective order,
+// then every other published page, so each view reaches the whole wiki
 fn exam_view(
     key: &'static str,
     name: &'static str,
     exam: &str,
     sections: &'static [ExamSection],
-    active: &str,
+    drafts: &[&str],
+    anchors: &HashMap<&'static str, Vec<Heading>>,
 ) -> NavView {
-    let mut notes = vec![format!("Pages on {exam}, by objective.")];
-    let listed = active == OVERVIEW_SLUG
-        || sections
-            .iter()
-            .any(|section| section.entries.iter().any(|entry| entry.slug == active));
-    if !listed {
-        notes.push("This page is not on this exam.".to_string());
-    }
+    let listed: Vec<&str> = sections
+        .iter()
+        .flat_map(|section| section.entries.iter().map(|entry| entry.slug))
+        .collect();
 
-    let overview = NavSection {
-        heading: SIDEBAR[0].heading,
-        entries: vec![NavEntry {
-            slug: OVERVIEW_SLUG,
-            label: SIDEBAR[0].entries[0].label,
-            objective: None,
-        }],
+    // Registered pages of one group that the exam does not list
+    let unlisted = |group: Group, heading: &'static str| NavSection {
+        heading,
+        entries: SIDEBAR
+            .iter()
+            .filter(|entry| entry.group == group)
+            .filter(|entry| !listed.contains(&entry.slug) && !drafts.contains(&entry.slug))
+            .map(|entry| NavEntry {
+                slug: entry.slug,
+                label: entry.label,
+                objective: None,
+                anchors: anchors.get(entry.slug).cloned().unwrap_or_default(),
+            })
+            .collect(),
     };
+
     let domains = sections.iter().map(|section| NavSection {
         heading: section.heading,
         entries: section
             .entries
             .iter()
+            .filter(|entry| !drafts.contains(&entry.slug))
             .map(|entry| NavEntry {
                 slug: entry.slug,
                 label: sidebar_label(entry.slug).unwrap_or(entry.slug),
                 objective: Some(entry.objective),
+                anchors: anchors.get(entry.slug).cloned().unwrap_or_default(),
             })
             .collect(),
     });
@@ -683,8 +920,15 @@ fn exam_view(
     NavView {
         key,
         name,
-        notes,
-        sections: std::iter::once(overview).chain(domains).collect(),
+        notes: vec![format!("Pages on {exam}, by objective.")],
+        sections: std::iter::once(unlisted(Group::Overview, OVERVIEW_HEADING))
+            .chain(domains)
+            .chain([
+                unlisted(Group::Networking, OFF_EXAM_HEADING),
+                unlisted(Group::Linux, LINUX_HEADING),
+            ])
+            .filter(|section| !section.entries.is_empty())
+            .collect(),
     }
 }
 
@@ -692,7 +936,6 @@ fn exam_view(
 fn sidebar_label(slug: &str) -> Option<&'static str> {
     SIDEBAR
         .iter()
-        .flat_map(|section| section.entries.iter())
         .find(|entry| entry.slug == slug)
         .map(|entry| entry.label)
 }
@@ -707,12 +950,32 @@ pub async fn redirect_page(AxumPath(slug): AxumPath<String>) -> Redirect {
     Redirect::permanent(&format!("/learn/{slug}"))
 }
 
-// List every slug the sidebar offers — the allowlist of servable /learn pages
+// List every slug registered in the sidebar, drafts included
 pub(crate) fn sidebar_slugs() -> Vec<&'static str> {
-    SIDEBAR
-        .iter()
-        .flat_map(|section| section.entries.iter().map(|entry| entry.slug))
+    SIDEBAR.iter().map(|entry| entry.slug).collect()
+}
+
+// List the registered slugs whose page is still a draft
+fn draft_slugs() -> Vec<&'static str> {
+    sidebar_slugs()
+        .into_iter()
+        .filter(|slug| Page::is_draft(Path::new(PAGES_DIR), slug))
         .collect()
+}
+
+// List the slugs a reader can reach: the allowlist for search and for links
+pub(crate) fn published_slugs() -> Vec<&'static str> {
+    let drafts = draft_slugs();
+    sidebar_slugs()
+        .into_iter()
+        .filter(|slug| !drafts.contains(slug))
+        .collect()
+}
+
+// Decide whether a registered page may be served. A draft is served only
+// when the build allows it
+fn is_servable(slug: &str, serve_drafts: bool) -> bool {
+    serve_drafts || !Page::is_draft(Path::new(PAGES_DIR), slug)
 }
 
 // Look up where a retired slug now lives
@@ -725,14 +988,10 @@ fn renamed_slug(slug: &str) -> Option<&'static str> {
 
 // Look up a slug in the sidebar; returns the static slug reference if known
 fn lookup_sidebar_slug(slug: &str) -> Option<&'static str> {
-    for section in SIDEBAR {
-        for entry in section.entries {
-            if entry.slug == slug {
-                return Some(entry.slug);
-            }
-        }
-    }
-    None
+    SIDEBAR
+        .iter()
+        .find(|entry| entry.slug == slug)
+        .map(|entry| entry.slug)
 }
 
 #[cfg(test)]
@@ -746,7 +1005,7 @@ mod tests {
             Page::find(&PathBuf::from(PAGES_DIR), OVERVIEW_SLUG).expect("overview page must exist");
         let html = WikiPageTemplate {
             page,
-            views: nav_views(OVERVIEW_SLUG, before_cutover()),
+            views: nav_views(before_cutover(), &[]),
             active_slug: OVERVIEW_SLUG,
         }
         .render()
@@ -777,14 +1036,14 @@ mod tests {
         let page = Page::find(&PathBuf::from(PAGES_DIR), slug).expect("OSI page must exist");
         let html = WikiPageTemplate {
             page,
-            views: nav_views(slug, before_cutover()),
+            views: nav_views(before_cutover(), &[]),
             active_slug: slug,
         }
         .render()
         .expect("template renders");
-        // The page is in all three orderings. Each marks exactly one entry
+        // The page is in both views. Each marks exactly one entry
         // active, and that entry's <li> wraps the OSI-model link.
-        for view in ["topic", "ccna", "netplus"] {
+        for view in ["ccna", "netplus"] {
             let block = html
                 .split(&format!("data-view=\"{view}\""))
                 .nth(1)
@@ -817,7 +1076,7 @@ mod tests {
         let page = Page::find(&PathBuf::from(PAGES_DIR), slug).expect("OSI page must exist");
         let html = WikiPageTemplate {
             page,
-            views: nav_views(slug, before_cutover()),
+            views: nav_views(before_cutover(), &[]),
             active_slug: slug,
         }
         .render()
@@ -835,6 +1094,51 @@ mod tests {
             html.contains(r#"id="encapsulation-and-decapsulation""#),
             "multi-word headings should slug predictably, so cross-page links stay stable"
         );
+    }
+
+    // Each sidebar entry expands to the page's own sections. Only the page
+    // being read starts expanded, and the links are plain anchors, so it all
+    // works with JavaScript off
+    #[test]
+    fn sidebar_entries_expand_to_the_page_sections() {
+        let slug = "osi-model";
+        let page = Page::find(&PathBuf::from(PAGES_DIR), slug).expect("OSI page must exist");
+        let views = nav_views(before_cutover(), &[]);
+        let html = WikiPageTemplate {
+            page,
+            views,
+            active_slug: slug,
+        }
+        .render()
+        .expect("template renders");
+
+        assert!(html.contains("href=\"/learn/osi-model#encapsulation-and-decapsulation\""));
+        assert!(html.contains("href=\"/learn/subnetting#subnet-masks\""));
+        assert!(
+            html.contains("href=\"/learn#"),
+            "the overview links from the wiki root"
+        );
+        // One open entry in each of the two views
+        assert_eq!(
+            html.matches("<details class=\"wiki-entry\" open>").count(),
+            2
+        );
+        assert!(html.matches("<details class=\"wiki-entry\">").count() > 40);
+        // The group holding this page is open, and a group that does not
+        // hold it is collapsed
+        let ccna = html
+            .split("data-view=\"ccna\"")
+            .nth(1)
+            .and_then(|rest| rest.split("data-view=").next())
+            .expect("the CCNA view renders");
+        let open_group = ccna
+            .split("<details class=\"wiki-section\" open>")
+            .find(|group| group.contains("1.0 Network fundamentals"))
+            .expect("the group holding the page is open");
+        assert!(open_group.contains("<li class=\"active\">"));
+        assert!(ccna.contains("<details class=\"wiki-section\">"));
+        // Subsections are left to the page
+        assert!(!html.contains("href=\"/learn/subnetting#ccna-200-301\""));
     }
 
     // A retired slug must redirect somewhere real, and must not also be served
@@ -968,21 +1272,145 @@ mod tests {
         assert_eq!(ccna_blueprint(first_v2).0, "v2.0");
     }
 
-    // A reader on a page the exam does not cover is told so, not left looking
-    // for a highlighted entry that is not there
+    // Find the heading a page sits under in one view
+    fn heading_of(views: &[NavView], key: &str, slug: &str) -> Option<&'static str> {
+        views
+            .iter()
+            .find(|view| view.key == key)
+            .expect("view exists")
+            .sections
+            .iter()
+            .find(|section| section.entries.iter().any(|entry| entry.slug == slug))
+            .map(|section| section.heading)
+    }
+
+    // A page the exam does not cover is still in that view, under a heading
+    // that says so, and a Linux page is under its own
     #[test]
-    fn a_page_off_an_exam_says_so_in_that_ordering() {
-        let views = nav_views("content-delivery-networks", before_cutover());
-        let notes = |key: &str| {
-            views
+    fn a_page_off_an_exam_is_listed_under_a_heading_that_says_so() {
+        let views = nav_views(before_cutover(), &[]);
+        let cdn = "content-delivery-networks";
+        assert_eq!(heading_of(&views, "ccna", cdn), Some(OFF_EXAM_HEADING));
+        assert_eq!(
+            heading_of(&views, "netplus", cdn),
+            Some("1.0 Networking concepts")
+        );
+        for key in ["ccna", "netplus"] {
+            assert_eq!(heading_of(&views, key, "linux-shell"), Some(LINUX_HEADING));
+            assert_eq!(
+                heading_of(&views, key, OVERVIEW_SLUG),
+                Some(OVERVIEW_HEADING)
+            );
+        }
+    }
+
+    // CCNA is the main way through the wiki, so it is the first view, which
+    // the stylesheet shows by default and with JavaScript off. Both views
+    // must reach every published page, each exactly once
+    #[test]
+    fn each_view_lists_every_published_page_once_and_ccna_leads() {
+        let drafts = draft_slugs();
+        let views = nav_views(before_cutover(), &drafts);
+        assert_eq!(
+            views.iter().map(|view| view.key).collect::<Vec<_>>(),
+            ["ccna", "netplus"]
+        );
+        let mut published = published_slugs();
+        published.sort_unstable();
+        for view in &views {
+            let mut listed: Vec<&str> = view
+                .sections
                 .iter()
-                .find(|view| view.key == key)
-                .map(|view| view.notes.join(" "))
-                .expect("ordering exists")
-        };
-        assert!(notes("ccna").contains("not on this exam"));
-        assert!(!notes("netplus").contains("not on this exam"));
-        assert!(notes("topic").is_empty());
+                .flat_map(|section| section.entries.iter().map(|entry| entry.slug))
+                .collect();
+            listed.sort_unstable();
+            assert_eq!(
+                listed, published,
+                "{}: the view should list each published page exactly once",
+                view.key
+            );
+        }
+    }
+
+    // A draft is in no ordering, and a section it leaves empty is dropped
+    #[test]
+    fn a_draft_page_is_left_out_of_every_ordering() {
+        // Treat a published page and the whole v1.1 3.0 domain as drafts, so
+        // that domain should go with them
+        let drafts = [
+            "osi-model",
+            "routing-technologies",
+            "ospf",
+            "first-hop-redundancy",
+        ];
+        for view in nav_views(before_cutover(), &drafts) {
+            for section in &view.sections {
+                assert!(
+                    !section.entries.is_empty(),
+                    "{}: {} was left empty instead of dropped",
+                    view.key,
+                    section.heading
+                );
+                for entry in &section.entries {
+                    assert!(
+                        !drafts.contains(&entry.slug),
+                        "{}: draft {} is listed",
+                        view.key,
+                        entry.slug
+                    );
+                }
+            }
+            if view.key == "ccna" {
+                assert!(
+                    !view
+                        .sections
+                        .iter()
+                        .any(|s| s.heading == "3.0 IP connectivity"),
+                    "a domain with only draft pages should not render"
+                );
+            }
+        }
+    }
+
+    // The gate itself, against a real draft on disk. A release build passes
+    // false, a debug build passes true
+    #[test]
+    fn a_draft_page_is_served_only_when_the_build_allows_it() {
+        let draft = *draft_slugs()
+            .first()
+            .expect("at least one page is a draft while the CCNA pages are being written");
+        assert!(!is_servable(draft, false), "{draft} must 404 in release");
+        assert!(is_servable(draft, true), "{draft} should load in debug");
+        assert!(
+            is_servable("osi-model", false),
+            "published pages always load"
+        );
+    }
+
+    // Drafts are registered but never offered, and the published list is the
+    // rest of the sidebar
+    #[test]
+    fn published_slugs_are_the_sidebar_minus_drafts() {
+        let drafts = draft_slugs();
+        let published = published_slugs();
+        assert_eq!(published.len() + drafts.len(), sidebar_slugs().len());
+        for slug in &drafts {
+            assert!(
+                !published.contains(slug),
+                "{slug} is a draft and is offered"
+            );
+        }
+        let views = nav_views(before_cutover(), &drafts);
+        for view in &views {
+            for entry in view.sections.iter().flat_map(|s| s.entries.iter()) {
+                assert!(
+                    published.contains(&entry.slug),
+                    "{}: {} is not published",
+                    view.key,
+                    entry.slug
+                );
+            }
+        }
     }
 
     #[test]

@@ -8,10 +8,10 @@
     <details class="wiki-nav">
       <summary>Wiki navigation</summary>
       <nav>
-        {# Three orderings of the same pages. The server renders all three and CSS
-           shows the one named by data-learn-order on <html>, which
-           learn-order.js sets from the reader's last choice before first paint.
-           Without JavaScript the toggle stays hidden and the topic order shows. #}
+        {# Two views of the same pages. The server renders both and CSS shows
+           the CCNA view unless data-learn-order on <html> names the other,
+           which learn-order.js sets from the reader's last choice before first
+           paint. Without JavaScript the toggle stays hidden and CCNA shows. #}
         <div class="wiki-order" role="group" aria-label="Order pages by" hidden>
           {% for view in views %}
           <button type="button" data-order="{{ view.key }}" aria-pressed="false">{{ view.name }}</button>
@@ -24,20 +24,27 @@
           <p class="wiki-view-note">{{ note }}</p>
           {% endfor %}
           {% for section in view.sections %}
-          <section class="wiki-section">
-            <h2>{{ section.heading }}</h2>
+          {# Each group collapses. The one holding the page being read starts
+             open, so the rest of the wiki stays a short list of headings. #}
+          <details class="wiki-section"{% if section.starts_open(active_slug) %} open{% endif %}>
+            <summary><h2>{{ section.heading }}</h2></summary>
             <ul>
               {% for entry in section.entries %}
               <li{% if entry.slug == active_slug %} class="active"{% endif %}>
-                {% if entry.slug == "index" %}
-                <a href="/learn">{{ entry.label }}</a>
-                {% else %}
-                <a href="/learn/{{ entry.slug }}">{% if let Some(objective) = entry.objective %}<span class="wiki-objective">{{ objective }}</span> {% endif %}{{ entry.label }}</a>
-                {% endif %}
+                {# The marker expands the entry and the name is still a link to
+                   the page. Native <details>, so it needs no script. #}
+                <details class="wiki-entry"{% if entry.slug == active_slug %} open{% endif %}>
+                  <summary><a href="{{ entry.href() }}">{% if let Some(objective) = entry.objective %}<span class="wiki-objective">{{ objective }}</span> {% endif %}{{ entry.label }}</a></summary>
+                  <ul class="wiki-anchors">
+                    {% for heading in entry.anchors %}
+                    <li><a href="{{ entry.href() }}#{{ heading.id }}">{{ heading.text }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </details>
               </li>
               {% endfor %}
             </ul>
-          </section>
+          </details>
           {% endfor %}
         </div>
         {% endfor %}

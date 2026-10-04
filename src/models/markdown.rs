@@ -7,6 +7,9 @@
 // Notes:       pulldown-cmark's Tag::Heading already carries an `id` field, so
 //              the ids are set on the event stream rather than spliced into the
 //              rendered HTML. An explicit `{#id}` in the source always wins.
+//              An HTML comment in the source is dropped from the page, so an
+//              author can park a heading that is not written yet. All other
+//              source HTML is escaped and shown as text.
 
 use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag, TagEnd, html};
 use std::collections::HashMap;
@@ -17,6 +20,10 @@ const SLUG_SEPARATOR: char = '-';
 // Fallback id for a heading whose text is entirely punctuation
 const EMPTY_SLUG_FALLBACK: &str = "section";
 
+// Delimiters of an HTML comment, the one piece of source HTML that is dropped
+const COMMENT_OPEN: &str = "<!--";
+const COMMENT_CLOSE: &str = "-->";
+
 // Convert a Markdown body to HTML, giving every heading a unique anchor id
 pub fn to_html(markdown: &str) -> String {
     let parser = Parser::new_ext(markdown, Options::all());
@@ -26,6 +33,10 @@ pub fn to_html(markdown: &str) -> String {
     // Index into `events` of the heading currently being read, if any
     let mut open_heading: Option<usize> = None;
     let mut heading_text = String::new();
+
+    // True between the opening and closing line of a comment block, which
+    // arrives as one Html event per source line
+    let mut in_comment = false;
 
     for event in parser {
         match event {
@@ -64,6 +75,13 @@ pub fn to_html(markdown: &str) -> String {
             // Repository Markdown is content, not a template extension point.
             // Feeding source HTML back as text makes pulldown-cmark escape it;
             // trusted anchors generated above remain active Event::Html values.
+            // A comment is dropped whole. It never reaches the page, so a
+            // heading parked inside one gets no anchor and no outline entry
+            Event::Html(source) | Event::InlineHtml(source)
+                if in_comment || source.trim_start().starts_with(COMMENT_OPEN) =>
+            {
+                in_comment = !source.contains(COMMENT_CLOSE);
+            }
             Event::Html(source) | Event::InlineHtml(source) => {
                 events.push(Event::Text(source));
             }
@@ -315,6 +333,33 @@ mod tests {
         let html = to_html("Some **bold** text and a [link](/learn/osi-model).\n");
         assert!(html.contains("<strong>bold</strong>"));
         assert!(html.contains(r#"href="/learn/osi-model""#));
+    }
+
+    #[test]
+    fn an_html_comment_is_dropped_from_the_page_and_the_outline() {
+        let source = "## Shown\n\nBefore.\n\n<!--\n## On the device\n\nTODO(jeff)\n-->\n\n\
+                      ## After\n\nAn inline <!-- aside --> stays out too.\n";
+        let html = to_html(source);
+        assert!(!html.contains("On the device"), "comment leaked: {html}");
+        assert!(!html.contains("TODO"), "comment leaked: {html}");
+        assert!(!html.contains("aside"), "inline comment leaked: {html}");
+        assert!(!html.contains("&lt;!--") && !html.contains("--&gt;"));
+        assert!(
+            html.contains(r#"<h2 id="after""#),
+            "rendering resumes after it"
+        );
+        assert!(html.contains("stays out too"));
+
+        let ids: Vec<String> = outline(source).into_iter().map(|h| h.id).collect();
+        assert_eq!(ids, ["shown", "after"]);
+        assert!(!to_text(source).contains("TODO"), "comment reached search");
+    }
+
+    #[test]
+    fn source_html_after_a_comment_is_still_escaped() {
+        let html = to_html("<!-- note -->\n\n<script>alert(1)</script>\n");
+        assert!(!html.contains("<script>"), "active markup: {html}");
+        assert!(html.contains("&lt;script&gt;"));
     }
 
     #[test]

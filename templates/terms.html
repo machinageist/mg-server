@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+  <h1>Terms of use</h1>
+  <p>Last updated 2026-10-04.</p>
+
+  <h2>What this site is</h2>
+  <p>
+    machinageist.dev is a personal site with study material, writeups, and
+    practice tools. Using it means you accept these terms.
+  </p>
+
+  <h2>No warranty</h2>
+  <p>
+    Everything here is provided as is. It can be wrong or out of date. Check it
+    against the primary sources named on each page before you rely on it. Nothing
+    here is professional advice, and nothing here promises a result on any exam.
+  </p>
+
+  <h2>Commands and configurations</h2>
+  <p>
+    Run the commands on this site only on systems you own or are allowed to
+    change. You are responsible for what you run and for what it does.
+  </p>
+
+  <h2>Using the material</h2>
+  <p>
+    You may link to this site and quote from it with credit. The source code for
+    the site is public on
+    <a href="https://github.com/machinageist/mg-server" rel="noopener noreferrer">GitHub</a>.
+  </p>
+
+  <h2>Links to other sites</h2>
+  <p>
+    Pages link to standards, manuals, and other outside sources. I do not control
+    those sites and am not responsible for what is on them.
+  </p>
+
+  <h2>Changes and contact</h2>
+  <p>
+    I may change these terms. The date at the top shows the last change. Send
+    questions or corrections to
+    <a href="mailto:{{ crate::handlers::pages::CONTACT_EMAIL }}">{{ crate::handlers::pages::CONTACT_EMAIL }}</a>.
+    How the site is written is on the <a href="/disclosures">disclosures</a> page.
+  </p>
+</section>
+{% endblock %}

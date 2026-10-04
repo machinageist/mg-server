@@ -220,6 +220,12 @@ mod tests {
                             set.slug, question.stem, question.learn.slug
                         )
                     });
+                // A draft page is a 404 in production, so the link would be dead
+                assert!(
+                    !page.draft,
+                    "{}: question {:?} cites /learn/{}, which is still a draft",
+                    set.slug, question.stem, question.learn.slug
+                );
                 let ids: Vec<&str> = page
                     .outline
                     .iter()

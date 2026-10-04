@@ -10,7 +10,7 @@ use std::path::Path;
 
 // Slugs must stay in sync with src/handlers/wiki.rs::SIDEBAR. The list is
 // duplicated here on purpose so the test crate stays decoupled from the bin.
-// This lists every curated education page under content/pages/.
+// This lists every curated education page under content/pages/, drafts included.
 const WIKI_SLUGS: &[&str] = &[
     "index",
     "osi-model",
@@ -41,6 +41,20 @@ const WIKI_SLUGS: &[&str] = &[
     "linux-streams",
     "linux-permissions",
     "linux-archives",
+    "ethernet-and-arp",
+    "spanning-tree",
+    "etherchannel",
+    "ospf",
+    "first-hop-redundancy",
+    "access-control-lists",
+    "dhcp-and-dns-services",
+    "device-management-protocols",
+    "nat",
+    "securing-device-access",
+    "layer-2-security",
+    "rest-json-and-config-management",
+    "ai-in-network-operations",
+    "troubleshooting-method",
 ];
 
 #[test]

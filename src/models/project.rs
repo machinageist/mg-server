@@ -13,6 +13,8 @@
 //              Adding a new ProjectStatus variant without updating the Display
 //              match is a compile error — exhaustive matching enforced by Rust.
 //              url is Option<&'static str> — None projects render without a link.
+//              authorship is Option<Authorship> — None renders no label. Jeff
+//              sets it per entry, so nothing here guesses how a project was built.
 
 // -----------------------------------------------------------------------
 // Data types
@@ -34,6 +36,8 @@ pub struct Project {
     // claim in both directions — a true with no file, or a file with no entry,
     // fails the build rather than shipping a dead link.
     pub doc: bool,
+    // How the code was written, shown as a small line on the card when set
+    pub authorship: Option<Authorship>,
 }
 
 impl Project {
@@ -56,6 +60,25 @@ impl ProjectStatus {
             ProjectStatus::Active => "active",
             ProjectStatus::InProgress => "in-progress",
             ProjectStatus::Complete => "complete",
+        }
+    }
+}
+
+// Who wrote the code. A fixed set, so two cards cannot word the same thing
+// differently
+#[derive(Debug, Clone, PartialEq)]
+#[allow(dead_code)]
+pub enum Authorship {
+    HandWritten,
+    AiAssisted,
+}
+
+// Allow {{ authorship }} in Askama templates — renders the label directly
+impl std::fmt::Display for Authorship {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Authorship::HandWritten => write!(f, "hand-written"),
+            Authorship::AiAssisted => write!(f, "AI-assisted, directed by me"),
         }
     }
 }
@@ -91,6 +114,7 @@ pub fn all() -> Vec<Project> {
             url: Some("https://github.com/machinageist/mg-server"),
             status: ProjectStatus::Active,
             doc: false,
+            authorship: None,
         },
         Project {
             slug: "geistos",
@@ -102,6 +126,7 @@ pub fn all() -> Vec<Project> {
             url: Some("https://github.com/machinageist/geistos"),
             status: ProjectStatus::InProgress,
             doc: true,
+            authorship: None,
         },
         Project {
             slug: "mg-suite",
@@ -119,6 +144,7 @@ pub fn all() -> Vec<Project> {
             url: Some("https://github.com/machinageist/mg-suite"),
             status: ProjectStatus::InProgress,
             doc: true,
+            authorship: None,
         },
     ]
 }
@@ -175,5 +201,14 @@ mod tests {
         assert!(!combined.contains("bug-bounty"));
         assert!(!combined.contains("red-team"));
         assert!(!combined.contains("offensive security"));
+    }
+
+    #[test]
+    fn authorship_labels_read_as_written_on_the_card() {
+        assert_eq!(Authorship::HandWritten.to_string(), "hand-written");
+        assert_eq!(
+            Authorship::AiAssisted.to_string(),
+            "AI-assisted, directed by me"
+        );
     }
 }

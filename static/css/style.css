@@ -1909,7 +1909,7 @@
        rather than repeating a literal. Both are measured, and both are
        overridden below where the nav and the vitals strip wrap to more rows. */
     --header-h: 4.5rem;
-    --footer-h: 7.25rem;
+    --footer-h: 5.45rem;
 }
 
 /* -----------------------------------------------------------------------
@@ -2307,7 +2307,7 @@ hr {
    occupies its own space at the end of the document and needs no padding
    compensation on main. Same opaque background and stacking as the header. */
 .site-footer {
-    padding:    1.5rem 2rem;
+    padding:    0.6rem 2rem;
     border-top: 1px solid var(--border);
     color:      var(--text-faint);
     font-size:  0.8rem;
@@ -2330,8 +2330,15 @@ hr {
     max-width: 900px;
     margin:    0 auto;
     display:   flex;
-    gap:       2rem;
+    /* Rows sit close when the footer wraps. Items on one row stay apart */
+    gap:       0.2rem 2rem;
     justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer-inner nav {
+    display:   flex;
+    gap:       0.2rem 1rem;
     flex-wrap: wrap;
 }
 
@@ -3637,6 +3644,12 @@ pre {
     max-width:     72ch;
 }
 
+.project-authorship {
+    color:         var(--text-muted);
+    font-size:     0.75rem;
+    margin-bottom: 0.85rem;
+}
+
 .project-tags {
     display:   flex;
     gap:       0.4rem;
@@ -3855,22 +3868,30 @@ pre {
     border-left-color: var(--accent);
 }
 
-/* The sidebar holds three orderings of the same pages. Topic shows by default,
-   and data-learn-order on <html> (set by learn-order.js) swaps in another. */
+/* The sidebar holds two views of the same pages. CCNA shows by default, and
+   data-learn-order on <html> (set by learn-order.js) swaps in Network+. */
 .wiki-view {
     display:        flex;
     flex-direction: column;
-    gap:            1.5rem;
+    gap:            0.35rem;
 }
 
-.wiki-view[data-view="ccna"],
+/* The toggle, the view, and the practice links sit closer than the shared
+   sidebar spacing, now that the groups are a tight list of headings */
+.wiki-sidebar .wiki-nav > nav {
+    gap: 0.75rem;
+}
+
+/* An open group gets a little room below its links, before the next heading */
+.wiki-section[open] {
+    margin-bottom: 0.5rem;
+}
+
 .wiki-view[data-view="netplus"],
-:root[data-learn-order="ccna"] .wiki-view[data-view="topic"],
-:root[data-learn-order="netplus"] .wiki-view[data-view="topic"] {
+:root[data-learn-order="netplus"] .wiki-view[data-view="ccna"] {
     display: none;
 }
 
-:root[data-learn-order="ccna"] .wiki-view[data-view="ccna"],
 :root[data-learn-order="netplus"] .wiki-view[data-view="netplus"] {
     display: flex;
 }
@@ -3911,6 +3932,86 @@ pre {
     font-size:   0.75rem;
     line-height: 1.4;
     margin:      0;
+}
+
+/* A sidebar group collapses to its heading. Same marker as the entries below,
+   set to the right so the headings stay aligned with the page links. */
+.wiki-section > summary {
+    display:         flex;
+    align-items:     baseline;
+    justify-content: space-between;
+    cursor:          pointer;
+    list-style:      none;
+}
+
+.wiki-section > summary::-webkit-details-marker {
+    display: none;
+}
+
+.wiki-section > summary::after {
+    content:       "+";
+    color:         var(--text-faint);
+    font-size:     0.8rem;
+    padding-right: 0.5rem;
+}
+
+.wiki-section[open] > summary::after {
+    content: "\2212";
+}
+
+.wiki-section:not([open]) > summary h2 {
+    margin-bottom: 0;
+}
+
+/* A sidebar entry expands to the page's sections. The summary is a flex row so
+   the marker sits beside the page link instead of above it. */
+.wiki-entry > summary {
+    display:     flex;
+    align-items: baseline;
+    cursor:      pointer;
+    list-style:  none;
+}
+
+.wiki-entry > summary::-webkit-details-marker {
+    display: none;
+}
+
+.wiki-entry > summary::before {
+    content:    "+";
+    flex:       0 0 0.9rem;
+    color:      var(--text-faint);
+    font-size:  0.8rem;
+    text-align: center;
+}
+
+.wiki-entry[open] > summary::before {
+    content: "\2212";
+}
+
+.wiki-entry > summary a {
+    flex: 1;
+}
+
+.wiki-sidebar .wiki-anchors {
+    margin:  0.25rem 0 0.35rem 0.9rem;
+    padding-left: 0.5rem;
+    border-left:  1px solid var(--border);
+    gap:     0.1rem;
+}
+
+/* Section links stay quiet, including under the active page, whose own link
+   is the only one that takes the accent */
+.wiki-sidebar .wiki-anchors li a,
+.wiki-sidebar li.active .wiki-anchors li a {
+    color:             var(--text-faint);
+    font-size:         0.78rem;
+    border-left-color: transparent;
+    padding-left:      0.25rem;
+}
+
+.wiki-sidebar .wiki-anchors li a:hover,
+.wiki-sidebar li.active .wiki-anchors li a:hover {
+    color: var(--text);
 }
 
 /* Exam orderings prefix each page with its objective number */
@@ -4026,7 +4127,7 @@ pre {
        pinned bars are taller and everything measuring from them has to follow */
     :root {
         --header-h: 6.5rem;
-        --footer-h: 8.75rem;
+        --footer-h: 5.75rem;
     }
 
     /* No margin left to hang a permalink in, and it would overflow the viewport

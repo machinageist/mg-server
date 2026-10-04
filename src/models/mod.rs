@@ -1,3 +1,4 @@
+pub mod drill;
 pub mod glossary;
 pub mod lab;
 pub mod markdown;

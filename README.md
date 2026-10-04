@@ -23,6 +23,9 @@ does what this site needs:
 - It publishes technical writeups with the commands I ran and how I checked the
   result.
 
+The lessons on this site are AI-written with my direction and approval. The
+interactive study tools are AI-assisted. The site says so on its `/disclosures` page.
+
 The server is self-hosted on hardware I own (a Proxmox Debian VM behind Caddy and a
 Cloudflare Tunnel), and running it is part of the portfolio. `IMPROVEMENT_PLAN.md`
 covers which claims the site makes and which it does not.

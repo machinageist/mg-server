@@ -92,6 +92,12 @@ The familiar 1500-byte figure is the Ethernet MTU, not a universal maximum
 packet size. Other link types and jumbo-frame configurations use different
 values. IPv6 requires a minimum link MTU of 1280 bytes.
 
+<!--
+## On the device
+
+TODO(jeff)
+-->
+
 ## Suggested practice: read ports off real traffic
 
 On a network you own or are authorized to inspect:

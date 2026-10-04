@@ -36,12 +36,18 @@ pub fn build(state: AppState) -> Router {
     Router::new()
         .route("/", get(pages::home))
         .route("/about", get(pages::about))
+        .route("/disclosures", get(pages::disclosures))
+        .route("/terms", get(pages::terms))
         .route("/portfolio", get(pages::portfolio))
         .route("/portfolio/:slug", get(pages::project_page))
         .route("/labs", get(labs::labs))
         .route("/labs/:slug", get(labs::lab_page))
         .route("/study", get(study::index))
         // More specific first — /study/cards/:slug must not be shadowed
+        .route(
+            "/study/drills/subnetting",
+            get(study::subnetting_drill).post(study::grade_subnetting_drill),
+        )
         .route("/study/cards/:slug", get(study::cards))
         .route(
             "/study/pbq/:slug",
