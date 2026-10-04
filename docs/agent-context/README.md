@@ -164,6 +164,14 @@ bin. `tests/wiki_pages.rs` enforces it in both directions —
 `no_orphaned_wiki_pages_on_disk` catches a file with no sidebar entry. **Adding a Markdown
 file to `content/pages/` and nothing else breaks the build.**
 
+**Draft pages (added 2026-10-04).** `draft: true` in a page's frontmatter marks it as
+not yet published. A draft is still registered in all three places above. It is left out
+of every sidebar ordering and out of search, and a published page or post may not link to
+it (`internal_links_resolve`). A release build answers its URL with a 404. A debug build
+(`cargo run`) serves it by direct URL, which is the only way to read one. The gate is
+`SERVE_DRAFTS = cfg!(debug_assertions)` in `handlers/wiki.rs`, so there is no setting to
+leave on in production. Publishing a page is deleting the `draft` line.
+
 **Three sidebar orderings (added 2026-09-25).** `SIDEBAR` is the topic ordering, grouped by
 subject, and it stays the allowlist of servable pages. `handlers/wiki.rs` also holds
 `NETWORK_PLUS`, `CCNA_V1_1`, and `CCNA_V2_0`, which file each page under the objective it
@@ -226,6 +234,18 @@ tags: [education, networking, osi, tcp-ip, troubleshooting]
   why you would follow it.
 - `## Sources and further reading` — names the source textbook, then the primary sources that
   were checked against it.
+
+**CCNA pages have a second shape (added 2026-10-04).** A page with a `## Lab` section is
+a CCNA page, written by Jeff from lab work after the topic is studied, not from a
+textbook. `check_ccna_contract` in `tests/content_lint.rs` requires `## Overview`,
+`## On the device`, `## Exam key points`, `## Lab`, `## Related pages`, and
+`## Sources and further reading` with at least one `https://` link. It does not require
+`## Suggested practice` or a textbook name, because the lab is the practice and there is
+no textbook. Draft pages skip the section contract and are still held to the
+frontmatter, tag, and claim checks. A heading inside an HTML comment does not count.
+**An agent scaffolds headings and `TODO(jeff)` markers on these pages and writes no
+lesson prose**; see the authorship table in
+`docs/plans/2026-10-04-ccna-wiki-and-interactive-learning-HANDOFF.md`.
 
 **The source line is a fixed form.** Networking pages:
 

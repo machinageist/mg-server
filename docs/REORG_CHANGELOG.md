@@ -113,3 +113,10 @@ search. Its URL is a 404 in a release build and loads in a debug build
 (`SERVE_DRAFTS = cfg!(debug_assertions)` in `handlers/wiki.rs`). The gate is the
 build profile, not an environment variable, so nothing can be left switched on in
 production. The site has no sitemap, so there was nothing to exclude there.
+
+**Slice 2: CCNA page shape in the lint.** `tests/content_lint.rs` now knows two page
+shapes. A page with a `## Lab` section is a CCNA page and needs Overview, On the
+device, Exam key points, Lab, Related pages, and Sources with an `https://` link, but
+no Suggested practice and no textbook name. Draft pages skip the section contract. A
+published page or post that links to a draft fails `internal_links_resolve`. The
+existing textbook contract is unchanged, only moved into its own function.
