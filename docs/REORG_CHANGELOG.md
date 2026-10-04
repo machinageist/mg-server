@@ -199,3 +199,8 @@ stores nothing. A seed or `type` that does not parse is a 404. Every kind links 
 `/learn/subnetting` heading that teaches it, and a test resolves the links. **The
 working text in `Problem::working` and `network_working` is teaching copy for Jeff to
 read and approve.**
+
+**Drill timer and index link.** `/study` lists the subnetting drill under a new
+Drills heading. `static/js/drill.js` shows a count-up timer from the first answer
+typed. The timer is hidden in the HTML, is never sent to the server, and the page
+works the same without it.

@@ -17,6 +17,11 @@
     {% endfor %}
   </p>
 
+  {# Hidden until drill.js starts it on the first answer typed #}
+  <p class="study-lede" data-drill-timer hidden>
+    Time: <span data-drill-elapsed>0:00</span>
+  </p>
+
   <form class="study-form" method="post" action="{{ set.href() }}">
     <ol class="study-questions">
       {% for (index, problem) in problems.iter().enumerate() %}
@@ -42,4 +47,8 @@
     </div>
   </form>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/drill.js?v={{ crate::assets::version() }}"></script>
 {% endblock %}

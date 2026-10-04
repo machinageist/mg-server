@@ -82,7 +82,7 @@ src/
     lab.rs                # curated lab list — TRACKED BUT NOT COMPILED, see §9
 templates/                # Askama; base.html is the shell (nav, theme menu, footer, vitals)
 static/css/style.css      # the whole stylesheet
-static/js/                # ~80 lines total: theme selector only
+static/js/                # theme selector, learn sidebar order, drill timer
 content/posts/            # published blog posts
 content/pages/            # the /learn wiki
 content/projects/         # project documents served at /portfolio/:slug — see §6d
@@ -368,6 +368,12 @@ the model is for `/labs`.
 **`content/study/<slug>.md`** — multiple-choice questions, one file per `/learn` topic.
 **`content/study/pbq/<slug>.md`** — performance-based scenarios, where the answer is a
 typed command. Both are frontmatter-only Markdown, the same shape as the glossary.
+
+**`/study/drills/subnetting`** (added 2026-10-04) has no content file. Problems are
+generated from the `?seed=` in the URL by `models::drill`, so the same URL always shows
+the same set and the server stores nothing. The generator's output is pinned by a test
+because changing it changes every shared link. Design notes for this and the planned
+study tools are in `docs/plans/interactive-learning-ADR.md`.
 
 **The provenance rule.** Every question and every scenario step cites the `/learn` page
 and heading that teaches its answer. `models::question` and `models::scenario` each carry
