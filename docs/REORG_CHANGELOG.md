@@ -164,3 +164,9 @@ three entries are `None`, so `/portfolio` looks the same until Jeff fills them i
 links to the geistscope repository, and neither does `~/machinageist/README.md`. The
 remaining mentions are in unrouted `content/drafts/` files, the guard comment and test
 in `src/models/project.rs`, and a filename in the README tree.
+
+**Slice 8: who writes what.** `README.md` and the `/study` index each say: "I write
+the lessons on this site. The interactive study tools are AI-assisted." The handoff
+worded it in the third person. It is in the first person here because the README and
+the site already are. Jeff to confirm the wording. The about page and footer are
+unchanged.
