@@ -236,16 +236,18 @@ tags: [education, networking, osi, tcp-ip, troubleshooting]
   were checked against it.
 
 **CCNA pages have a second shape (added 2026-10-04).** A page with a `## Lab` section is
-a CCNA page, written by Jeff from lab work after the topic is studied, not from a
+a CCNA page, written from Jeff's lab work after the topic is studied, not from a
 textbook. `check_ccna_contract` in `tests/content_lint.rs` requires `## Overview`,
 `## On the device`, `## Exam key points`, `## Lab`, `## Related pages`, and
 `## Sources and further reading` with at least one `https://` link. It does not require
 `## Suggested practice` or a textbook name, because the lab is the practice and there is
 no textbook. Draft pages skip the section contract and are still held to the
 frontmatter, tag, and claim checks. A heading inside an HTML comment does not count.
-**An agent scaffolds headings and `TODO(jeff)` markers on these pages and writes no
-lesson prose**; see the authorship table in
-`docs/plans/2026-10-04-ccna-wiki-and-interactive-learning-HANDOFF.md`.
+**An agent does not write lesson prose on these pages unasked.** Lessons are AI-written
+with Jeff's direction and approval (Jeff, 2026-10-04), so prose is drafted only when he
+directs it and ships only when he approves it. The handoff's authorship table
+(`docs/plans/2026-10-04-ccna-wiki-and-interactive-learning-HANDOFF.md`) is stricter and
+predates that statement.
 
 **The source line is a fixed form.** Networking pages:
 
