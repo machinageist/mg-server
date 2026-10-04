@@ -150,3 +150,6 @@ changed. The renderer used to escape an HTML comment and show it as text, so
 `models/markdown.rs` now drops comments from the page, the outline, and search. All
 other source HTML is still escaped. To use a placeholder, delete the `<!--` and `-->`
 lines and paste the lab output.
+
+**Slice 6: wiki backlog (A6).** `docs/wiki-backlog.md` holds the template for polish
+skipped when the 45-minute timebox runs out. It has no entries yet.
