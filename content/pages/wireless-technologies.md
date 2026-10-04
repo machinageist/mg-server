@@ -394,6 +394,12 @@ Larger networks use lightweight access points because configuring hundreds of
 access points one at a time is not practical, and keeping them consistent by hand is
 harder still.
 
+<!--
+## On the device
+
+TODO(jeff)
+-->
+
 ## Suggested practice: survey the wireless networks around you
 
 Everything here is read-only and works on a Linux laptop with a wireless card.

@@ -140,6 +140,12 @@ smaller ones is covered in [subnetting, CIDR, and VLSM](/learn/subnetting):
 counting usable hosts, reading a subnet mask bit by bit, prefix notation, and
 sizing each subnet to what it needs.
 
+<!--
+## On the device
+
+TODO(jeff)
+-->
+
 ## Suggested practice: read and verify your own network
 
 All of this is visible on a machine you already own, with tools that ship with

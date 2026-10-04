@@ -141,3 +141,12 @@ until `draft` is removed. Left out on purpose, for Jeff to confirm:
 `dhcp-and-dns-services` is 1.7 in v2.0 for the DHCP half. Its DNS half is 4.4.
 `rest-json-and-config-management` is 5.5 in v2.0, which covers Ansible only. v2.0
 names neither REST nor JSON.
+
+**Slice 5: hidden On the device placeholders (A4).** `switching-technologies`,
+`routing-technologies`, `ipv4-addressing`, `ipv6-addressing`, `wireless-technologies`,
+and `network-protocols` each gained a commented-out `## On the device` heading with a
+`TODO(jeff)` line, placed above Suggested practice. Nothing else in those files
+changed. The renderer used to escape an HTML comment and show it as text, so
+`models/markdown.rs` now drops comments from the page, the outline, and search. All
+other source HTML is still escaped. To use a placeholder, delete the `<!--` and `-->`
+lines and paste the lab output.

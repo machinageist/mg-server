@@ -328,6 +328,12 @@ MTU-sized units, but neither does the other's job. A window too small leaves a f
 link idle waiting for acknowledgements. A window larger than the path can hold causes
 loss and retransmission. Changing the MTU fixes neither.
 
+<!--
+## On the device
+
+TODO(jeff)
+-->
+
 ## Suggested practice: make a VLAN tag visible on your own machine
 
 Linux builds a tagged interface without needing a managed switch, which is enough to

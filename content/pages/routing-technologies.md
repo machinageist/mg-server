@@ -246,6 +246,12 @@ than a wall-clock timer. Operating systems choose different initial values, so `
 is common but not universal. Tools such as `traceroute` and `tracepath` vary the value
 to expose successive routers along a path.
 
+<!--
+## On the device
+
+TODO(jeff)
+-->
+
 ## Suggested practice: explain your own routing table
 
 On a machine you own:
