@@ -285,3 +285,10 @@ marked as the overview group. Under v1.1 that had no visible effect. After the v
 cutover the first three would have been listed beside the front page instead of under
 "Not on this exam". They are networking pages now, and a test holds that only the
 front page is in the overview group.
+
+**`physical-installations` reordered.** Same pattern as the pilot. Cable pinouts and
+physical access control, the parts v1.1 lists under 1.3, 1.4, and 5.2, lead the page.
+Distribution frames, racks, building cabling, power, and environment moved under
+`## Beyond the CCNA blueprint` with their text unchanged. No sentence was removed and
+no lesson content was added, apart from one paragraph saying how the page is ordered
+and a two-line lead-in to the pinouts. Heading ids are unchanged.

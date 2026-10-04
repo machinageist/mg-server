@@ -21,202 +21,14 @@ humidity, and fire protection of the room. The cables themselves are on the
 [wired media](/learn/wired-media) page, and the connectors on their ends are on the
 [transceivers and connectors](/learn/transceivers) page.
 
-## Distribution frames
+The CCNA covers two parts of this: the pinouts of a copper cable, and physical access
+control. Those come first. The frames, racks, building cabling, power, and environment
+are on Network+ and not on the CCNA, and they follow the practice section.
 
-A building's cabling does not run from every device to one large switch. It comes
-together at a few central points called distribution frames. The name comes from
-telephone exchanges, where the frame was a metal rack holding the termination for
-every line. Today a distribution frame is a room or closet with one or more racks
-in it.
+## Cable pinouts
 
-The cabling standards call these rooms the equipment room and the
-telecommunications room. MDF and IDF are the older telephone names, and they are
-still what most people say.
-
-### Main distribution frame
-
-The main distribution frame (MDF) is the center of the building's network. It is
-usually where the outside lines come in. A provider's circuit ends at the
-demarcation point, where the provider's responsibility stops and the building
-owner's starts, and the MDF sits at or near it.
-
-The MDF holds the core equipment: the routers and firewalls that connect to the
-provider, the core switches, and often servers. It is usually a dedicated, locked
-room, or part of a data center.
-
-### Intermediate distribution frames
-
-A small office can run every cable back to the MDF. A larger building cannot,
-because twisted-pair Ethernet only reaches 100 m, and that figure includes the
-patch cables at both ends.
-
-An intermediate distribution frame (IDF) is a smaller room or closet closer to the
-users, often one per floor or one per wing. The cables from that area's wall jacks
-end in the IDF, where access switches connect them. Each IDF then connects back to
-the MDF over a few uplinks, usually fiber.
-
-This also saves cable. A few hundred devices on a floor share a handful of uplinks
-to the MDF, where otherwise each one would need its own run the whole way.
-
-The result is a star with the MDF in the middle. It lines up with the
-[three-tier model](/learn/network-topologies#the-three-tier-hierarchical-model) on
-the network topologies page: access switches sit in the IDFs, and the distribution
-and core switches usually sit in the MDF.
-
-### Locations
-
-Where these rooms go affects performance, security, and how easily the network can
-grow.
-
-- The MDF goes near the point where the provider's lines enter the building, in a
-  room that can be locked, cooled, and given its own power.
-- Each IDF goes where no cable run to a wall jack is longer than 90 m. In a
-  multi-story building the IDFs are often stacked one above the other, which keeps
-  the runs between floors short.
-- Every room needs space for more equipment than it holds on the first day.
-
-Spreading equipment out this way makes the network easier to maintain and to grow.
-Adding users to one floor means adding a switch to that floor's IDF. The rest of
-the building is not touched.
-
-## Racks
-
-A rack is a metal frame of a standard width that equipment bolts into. Routers,
-switches, servers, patch panels, and power equipment are all built to fit it.
-Stacking equipment in racks fits more of it into the same floor space, and it puts
-cabling, power, and airflow in predictable places.
-
-The common rack is 19 inches wide, measured across the front panel of the
-equipment including its mounting ears.
-
-### Rack size
-
-Height is measured in rack units. One rack unit (1U) is 1.75 inches, or 44.45 mm.
-Equipment is built in whole units:
-
-- Most switches and patch panels are 1U.
-- Larger servers are often 2U.
-- Storage arrays are often 4U or more.
-
-A full-height rack is usually 42U, which is a little over six feet of mounting
-space. Wall-mounted cabinets for a small IDF are much shorter.
-
-Height is not the only dimension. Servers are much deeper than switches, and a rack
-that is too shallow will not hold them. A two-post rack suits patch panels and
-switches. A four-post rack or an enclosed cabinet supports deep, heavy equipment
-at the front and the back.
-
-Planning a rack means adding up the units of everything going into it, then leaving
-room for cable management and for growth. Power distribution units are often
-mounted vertically at the back of the rack, where they use no rack units at all.
-
-### Hot and cold aisles
-
-Rack equipment is cooled by fans that pull air in on one side and push it out the
-other. A server pulls cool air in at the front and pushes hot air out the back.
-
-If the racks are arranged so one row's exhaust blows into the next row's intake,
-the second row runs hot. Data centers avoid this by lining racks up in rows that
-face each other. The fronts of two rows face a cold aisle, where cooled air is
-supplied. The backs face a hot aisle, where the exhaust is collected and sent back
-to the cooling units.
-
-Blanking panels cover the unused units in a rack so hot air cannot loop back around
-to the front.
-
-### Port-side intake and exhaust
-
-A server's network ports are on its back. A switch's ports are on its front. To
-keep the cables short, a switch at the top of a server rack is often mounted
-backward, with its ports facing the rear of the rack where the servers' ports are.
-That puts the switch's ports in the hot aisle and its power supplies in the cold
-aisle.
-
-The fans have to move air the right way for how the switch is mounted, so switches
-are sold with either airflow direction:
-
-- Port-side exhaust means cool air enters at the power supply end and hot air
-  leaves at the port end. The ports face the hot aisle.
-- Port-side intake means cool air enters at the port end and hot air leaves at the
-  power supply end. The ports face the cold aisle.
-
-On many data center switches the fans and power supplies are replaceable modules,
-and each one comes in both directions. Vendors mark them so they can be told apart.
-Cisco's Nexus switches use burgundy for port-side intake and blue for port-side
-exhaust.
-
-All the fans and power supplies in one switch have to move air the same way. A
-switch installed with the wrong airflow pulls in hot exhaust, and it can overheat
-and shut down.
-
-## Cabling
-
-Good cable choice and careful installation keep the signal clean and the network
-reliable. A building's cabling is planned in two parts, the backbone and the
-horizontal runs, and both end on panels in the distribution frames.
-
-### Backbone and horizontal cabling
-
-Backbone cabling connects the distribution frames to each other: MDF to IDF, floor
-to floor, and building to building. It is also called vertical cabling, because in
-a multi-story building it runs up through the floors.
-
-The backbone is usually fiber. It has to carry the combined traffic of everything
-behind it, often over more than 100 m. Fiber needs protection, so it runs through
-conduit or enclosed raceways, and it cannot be bent sharply. Every fiber cable has
-a minimum bend radius. A common rule is ten times the cable's outside diameter once
-it is installed, and twenty times while it is being pulled. A tighter bend lets
-light leak out of the core, and the link loses signal or fails.
-
-Horizontal cabling runs from an IDF to the wall jacks on its floor. It is usually
-twisted-pair copper. The run is limited to 90 m, which leaves 10 m of the 100 m
-channel for the patch cables at both ends.
-
-A drop cable is the last short piece, from the wall jack to the device. The name is
-also used loosely for the whole run to one jack.
-
-The path of every run should be planned before the cable is pulled:
-
-- Go around obstacles, and keep copper away from sources of interference such as
-  motors and fluorescent lights.
-- Support the cable in trays, ladder racks, or hooks so it does not hang by its own
-  weight.
-- Label both ends of every run.
-- Use plenum-rated cable in air-handling spaces. See
-  [plenum cabling](/learn/wired-media#plenum-cabling).
-
-### Patch panels
-
-A cable from a wall jack does not plug straight into a switch. It ends on a patch
-panel, which is a rack-mounted panel of jacks, usually 1U with 24 or 48 ports. Each
-cable run is permanently terminated on the back of the panel. The matching jack on
-the front connects to a switch port with a short patch cable.
-
-The cable in the walls has solid conductors. They carry a signal well, but they
-break if they are flexed often. Patch cables have stranded conductors made to be
-bent and moved. The patch panel means the permanent cabling is terminated once and
-then left alone.
-
-It also keeps changes simple. Moving a wall jack to a different switch or a
-different VLAN means moving one patch cable. The labels on the panel match the
-labels on the wall jacks, so a problem can be traced to one run and tested from the
-panel.
-
-### Fiber distribution panels
-
-A fiber distribution panel does the same job for fiber. The backbone cables end
-inside it. Each strand is terminated or spliced to a short lead with a connector on
-it, and the spare length is coiled in trays that keep it above its minimum bend
-radius.
-
-The front of the panel has a connector for each strand, usually LC or SC. Short
-fiber patch cables connect those to the transceivers in the switches. The
-[connector types](/learn/transceivers#connector-types) table on the transceivers
-page shows what each one looks like.
-
-The enclosure matters more for fiber than for copper. A bare strand is thin glass,
-and dust on the end of a connector blocks light, so unused ports keep their dust
-caps on.
+A twisted-pair cable has eight wires, and which wire lands on which pin decides
+whether two devices can talk over it.
 
 ### T568A and T568B
 
@@ -300,7 +112,238 @@ locked up.
 - Access systems should keep a timestamped log of who opened which door. Cameras
   record what the log cannot.
 
-## Power
+## Suggested practice: check the cabling, power, and heat of your own equipment
+
+Everything here works on a home network and a Linux machine. Replace `<interface>`
+with a wired interface name from `ip -br link`.
+
+1. Read the wiring of a patch cable. Hold a plug with the clip facing away from you
+   and the cable hanging down, and read the wire colors from left to right. White
+   and orange first is T568B. White and green first is T568A. Then compare the two
+   ends. The same order on both is a straight-through cable, and a different order
+   is a crossover cable.
+2. Run `ethtool <interface>` and find the `MDI-X` line. `on (auto)` or `off (auto)`
+   means the port detected the pinout and set itself. `Unknown` means the link is
+   down or the driver does not report it.
+3. Work out the power load on one circuit. List every device plugged into it, read
+   the watts from each label or power adapter, and add them up. Compare the total
+   with 80% of the circuit's capacity. A 15 A circuit at 120 V carries 1,800 W, so
+   the limit for a continuous load is 1,440 W.
+4. If you have a UPS with a USB port, read it with Network UPS Tools (NUT). Once
+   NUT is set up, `upsc <ups name>` lists what the UPS reports. `ups.load` is the
+   load as a percentage of capacity, `battery.runtime` is the time left in seconds,
+   and `input.voltage` is the wall voltage.
+5. Run `sensors` to read the temperatures and fan speeds your machine reports. Run
+   it again under load and compare.
+6. Find which way air moves through each device, and check that nothing blocks the
+   intake or the exhaust. A switch pushed against a wall or stacked under a warm
+   router is the home version of the wrong airflow direction.
+
+The numbers on the labels are maximums, so the total is an estimate. For anything
+that involves the building's wiring, ask an electrician.
+
+## Beyond the CCNA blueprint
+
+These topics are on Network+ and not on the CCNA.
+
+### Distribution frames
+
+A building's cabling does not run from every device to one large switch. It comes
+together at a few central points called distribution frames. The name comes from
+telephone exchanges, where the frame was a metal rack holding the termination for
+every line. Today a distribution frame is a room or closet with one or more racks
+in it.
+
+The cabling standards call these rooms the equipment room and the
+telecommunications room. MDF and IDF are the older telephone names, and they are
+still what most people say.
+
+### Main distribution frame
+
+The main distribution frame (MDF) is the center of the building's network. It is
+usually where the outside lines come in. A provider's circuit ends at the
+demarcation point, where the provider's responsibility stops and the building
+owner's starts, and the MDF sits at or near it.
+
+The MDF holds the core equipment: the routers and firewalls that connect to the
+provider, the core switches, and often servers. It is usually a dedicated, locked
+room, or part of a data center.
+
+### Intermediate distribution frames
+
+A small office can run every cable back to the MDF. A larger building cannot,
+because twisted-pair Ethernet only reaches 100 m, and that figure includes the
+patch cables at both ends.
+
+An intermediate distribution frame (IDF) is a smaller room or closet closer to the
+users, often one per floor or one per wing. The cables from that area's wall jacks
+end in the IDF, where access switches connect them. Each IDF then connects back to
+the MDF over a few uplinks, usually fiber.
+
+This also saves cable. A few hundred devices on a floor share a handful of uplinks
+to the MDF, where otherwise each one would need its own run the whole way.
+
+The result is a star with the MDF in the middle. It lines up with the
+[three-tier model](/learn/network-topologies#the-three-tier-hierarchical-model) on
+the network topologies page: access switches sit in the IDFs, and the distribution
+and core switches usually sit in the MDF.
+
+### Locations
+
+Where these rooms go affects performance, security, and how easily the network can
+grow.
+
+- The MDF goes near the point where the provider's lines enter the building, in a
+  room that can be locked, cooled, and given its own power.
+- Each IDF goes where no cable run to a wall jack is longer than 90 m. In a
+  multi-story building the IDFs are often stacked one above the other, which keeps
+  the runs between floors short.
+- Every room needs space for more equipment than it holds on the first day.
+
+Spreading equipment out this way makes the network easier to maintain and to grow.
+Adding users to one floor means adding a switch to that floor's IDF. The rest of
+the building is not touched.
+
+### Racks
+
+A rack is a metal frame of a standard width that equipment bolts into. Routers,
+switches, servers, patch panels, and power equipment are all built to fit it.
+Stacking equipment in racks fits more of it into the same floor space, and it puts
+cabling, power, and airflow in predictable places.
+
+The common rack is 19 inches wide, measured across the front panel of the
+equipment including its mounting ears.
+
+### Rack size
+
+Height is measured in rack units. One rack unit (1U) is 1.75 inches, or 44.45 mm.
+Equipment is built in whole units:
+
+- Most switches and patch panels are 1U.
+- Larger servers are often 2U.
+- Storage arrays are often 4U or more.
+
+A full-height rack is usually 42U, which is a little over six feet of mounting
+space. Wall-mounted cabinets for a small IDF are much shorter.
+
+Height is not the only dimension. Servers are much deeper than switches, and a rack
+that is too shallow will not hold them. A two-post rack suits patch panels and
+switches. A four-post rack or an enclosed cabinet supports deep, heavy equipment
+at the front and the back.
+
+Planning a rack means adding up the units of everything going into it, then leaving
+room for cable management and for growth. Power distribution units are often
+mounted vertically at the back of the rack, where they use no rack units at all.
+
+### Hot and cold aisles
+
+Rack equipment is cooled by fans that pull air in on one side and push it out the
+other. A server pulls cool air in at the front and pushes hot air out the back.
+
+If the racks are arranged so one row's exhaust blows into the next row's intake,
+the second row runs hot. Data centers avoid this by lining racks up in rows that
+face each other. The fronts of two rows face a cold aisle, where cooled air is
+supplied. The backs face a hot aisle, where the exhaust is collected and sent back
+to the cooling units.
+
+Blanking panels cover the unused units in a rack so hot air cannot loop back around
+to the front.
+
+### Port-side intake and exhaust
+
+A server's network ports are on its back. A switch's ports are on its front. To
+keep the cables short, a switch at the top of a server rack is often mounted
+backward, with its ports facing the rear of the rack where the servers' ports are.
+That puts the switch's ports in the hot aisle and its power supplies in the cold
+aisle.
+
+The fans have to move air the right way for how the switch is mounted, so switches
+are sold with either airflow direction:
+
+- Port-side exhaust means cool air enters at the power supply end and hot air
+  leaves at the port end. The ports face the hot aisle.
+- Port-side intake means cool air enters at the port end and hot air leaves at the
+  power supply end. The ports face the cold aisle.
+
+On many data center switches the fans and power supplies are replaceable modules,
+and each one comes in both directions. Vendors mark them so they can be told apart.
+Cisco's Nexus switches use burgundy for port-side intake and blue for port-side
+exhaust.
+
+All the fans and power supplies in one switch have to move air the same way. A
+switch installed with the wrong airflow pulls in hot exhaust, and it can overheat
+and shut down.
+
+### Cabling
+
+Good cable choice and careful installation keep the signal clean and the network
+reliable. A building's cabling is planned in two parts, the backbone and the
+horizontal runs, and both end on panels in the distribution frames.
+
+### Backbone and horizontal cabling
+
+Backbone cabling connects the distribution frames to each other: MDF to IDF, floor
+to floor, and building to building. It is also called vertical cabling, because in
+a multi-story building it runs up through the floors.
+
+The backbone is usually fiber. It has to carry the combined traffic of everything
+behind it, often over more than 100 m. Fiber needs protection, so it runs through
+conduit or enclosed raceways, and it cannot be bent sharply. Every fiber cable has
+a minimum bend radius. A common rule is ten times the cable's outside diameter once
+it is installed, and twenty times while it is being pulled. A tighter bend lets
+light leak out of the core, and the link loses signal or fails.
+
+Horizontal cabling runs from an IDF to the wall jacks on its floor. It is usually
+twisted-pair copper. The run is limited to 90 m, which leaves 10 m of the 100 m
+channel for the patch cables at both ends.
+
+A drop cable is the last short piece, from the wall jack to the device. The name is
+also used loosely for the whole run to one jack.
+
+The path of every run should be planned before the cable is pulled:
+
+- Go around obstacles, and keep copper away from sources of interference such as
+  motors and fluorescent lights.
+- Support the cable in trays, ladder racks, or hooks so it does not hang by its own
+  weight.
+- Label both ends of every run.
+- Use plenum-rated cable in air-handling spaces. See
+  [plenum cabling](/learn/wired-media#plenum-cabling).
+
+### Patch panels
+
+A cable from a wall jack does not plug straight into a switch. It ends on a patch
+panel, which is a rack-mounted panel of jacks, usually 1U with 24 or 48 ports. Each
+cable run is permanently terminated on the back of the panel. The matching jack on
+the front connects to a switch port with a short patch cable.
+
+The cable in the walls has solid conductors. They carry a signal well, but they
+break if they are flexed often. Patch cables have stranded conductors made to be
+bent and moved. The patch panel means the permanent cabling is terminated once and
+then left alone.
+
+It also keeps changes simple. Moving a wall jack to a different switch or a
+different VLAN means moving one patch cable. The labels on the panel match the
+labels on the wall jacks, so a problem can be traced to one run and tested from the
+panel.
+
+### Fiber distribution panels
+
+A fiber distribution panel does the same job for fiber. The backbone cables end
+inside it. Each strand is terminated or spliced to a short lead with a connector on
+it, and the spare length is coiled in trays that keep it above its minimum bend
+radius.
+
+The front of the panel has a connector for each strand, usually LC or SC. Short
+fiber patch cables connect those to the transceivers in the switches. The
+[connector types](/learn/transceivers#connector-types) table on the transceivers
+page shows what each one looks like.
+
+The enclosure matters more for fiber than for copper. A bare strand is thin glass,
+and dust on the end of a connector blocks light, so unused ports keep their dust
+caps on.
+
+### Power
 
 Network equipment needs steady power. A gap of a fraction of a second can reboot a
 switch, and a server that loses power in the middle of a write can corrupt data.
@@ -387,7 +430,7 @@ A PDU does not keep equipment running through an outage. The UPS does that. In a
 typical setup, power goes from the wall to the UPS, from the UPS to the PDU, and
 from the PDU to the equipment.
 
-## Environmental factors
+### Environmental factors
 
 Network equipment works best within a certain range of temperature and humidity.
 Outside that range it fails sooner, and at the extremes it fails right away.
@@ -453,36 +496,6 @@ sprinkler head does not flood the room.
 Fire-resistant construction is the last part. Rated walls, doors, floors, and
 insulation keep a fire in the rest of the building out of the room for a set time.
 
-## Suggested practice: check the cabling, power, and heat of your own equipment
-
-Everything here works on a home network and a Linux machine. Replace `<interface>`
-with a wired interface name from `ip -br link`.
-
-1. Read the wiring of a patch cable. Hold a plug with the clip facing away from you
-   and the cable hanging down, and read the wire colors from left to right. White
-   and orange first is T568B. White and green first is T568A. Then compare the two
-   ends. The same order on both is a straight-through cable, and a different order
-   is a crossover cable.
-2. Run `ethtool <interface>` and find the `MDI-X` line. `on (auto)` or `off (auto)`
-   means the port detected the pinout and set itself. `Unknown` means the link is
-   down or the driver does not report it.
-3. Work out the power load on one circuit. List every device plugged into it, read
-   the watts from each label or power adapter, and add them up. Compare the total
-   with 80% of the circuit's capacity. A 15 A circuit at 120 V carries 1,800 W, so
-   the limit for a continuous load is 1,440 W.
-4. If you have a UPS with a USB port, read it with Network UPS Tools (NUT). Once
-   NUT is set up, `upsc <ups name>` lists what the UPS reports. `ups.load` is the
-   load as a percentage of capacity, `battery.runtime` is the time left in seconds,
-   and `input.voltage` is the wall voltage.
-5. Run `sensors` to read the temperatures and fan speeds your machine reports. Run
-   it again under load and compare.
-6. Find which way air moves through each device, and check that nothing blocks the
-   intake or the exhaust. A switch pushed against a wall or stacked under a warm
-   router is the home version of the wrong airflow direction.
-
-The numbers on the labels are maximums, so the total is an estimate. For anything
-that involves the building's wiring, ask an electrician.
-
 ## Exam key points
 
 Where this page's material shows up in the exam objectives, and what each exam
@@ -510,8 +523,8 @@ longer listed. Racks, power, and cooling are not on either blueprint.
 
 ### Network+ N10-009
 
-Objective 2.4, important factors of physical installations, is this page's outline
-item for item. Locks also appear under physical security in 4.1, rack diagrams and
+Objective 2.4, important factors of physical installations, is covered item for item
+in the last part of this page. Locks also appear under physical security in 4.1, rack diagrams and
 cable maps under documentation in 3.1, and termination faults in 5.2.
 
 - The MDF is the central point, usually where the outside lines come in. IDFs sit
