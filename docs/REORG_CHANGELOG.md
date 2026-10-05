@@ -292,3 +292,14 @@ Distribution frames, racks, building cabling, power, and environment moved under
 `## Beyond the CCNA blueprint` with their text unchanged. No sentence was removed and
 no lesson content was added, apart from one paragraph saying how the page is ordered
 and a two-line lead-in to the pinouts. Heading ids are unchanged.
+
+---
+
+## 2026-10-05: CCNA reading list and notes moved to the course
+
+The reading list and the place notes go moved to `~/mg-coreforge/ccna/course/`, so
+note taking runs from one folder. `docs/ccna-reading-list.md` is now a pointer.
+`notes/` there has one blank note file per topic, `ORDER.md`, and `READING-LIST.md`.
+Each week folder has a `reading.md`, and the sources for the 14 draft pages are in
+those. The empty `content/drafts/ccna-notes/` folder is gone. The 14 draft pages are
+unchanged and stay in `content/pages/`.

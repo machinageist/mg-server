@@ -6,7 +6,7 @@ topics PDF (`learningcontent.cisco.com/documents/marketing/exam-topics/200-301-C
 read on 2026-10-04.
 **Use:** the working plan for refactoring the 21 networking pages under `content/pages/`.
 The Linux pages are out of scope. The 14 CCNA scaffolds stay empty until Jeff's notes
-arrive (see `docs/ccna-reading-list.md`).
+arrive (see `~/mg-coreforge/ccna/course/notes/ORDER.md`).
 
 The page plans below were made from each page's outline and its Exam key points. Each one
 is checked against the full text when the page is refactored, and this file is corrected
