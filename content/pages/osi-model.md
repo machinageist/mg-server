@@ -30,15 +30,15 @@ troubleshooting because these functions still exist in real networks.
 
 ## The seven layers at a glance
 
-| Layer | Name | Primary concern | Common examples |
-|---:|---|---|---|
-| 7 | Application | Network services used by applications | HTTP, DNS, SMTP, FTP, SSH |
-| 6 | Presentation | Representation, encoding, compression, encryption | Unicode, data formats, TLS-related presentation functions |
-| 5 | Session | Establishing, coordinating, and ending exchanges | Session state, checkpoints, dialogs |
-| 4 | Transport | End-to-end transport between processes | TCP, UDP, ports |
-| 3 | Network | Logical addressing and forwarding between networks | IPv4, IPv6, ICMP, routers |
-| 2 | Data Link | Local-link framing, addressing, and media access | Ethernet frames, MAC addresses, switches, bridges |
-| 1 | Physical | Signals and transmission media | Copper, fiber, radio, transceivers, hubs, repeaters |
+| Layer | Name | Primary concern | Data unit | Common examples |
+|---:|---|---|---|---|
+| 7 | Application | Network services used by applications | Data | HTTP, DNS, SMTP, FTP, SSH |
+| 6 | Presentation | Representation, encoding, compression, encryption | Data | Unicode, data formats, TLS-related presentation functions |
+| 5 | Session | Establishing, coordinating, and ending exchanges | Data | Session state, checkpoints, dialogs |
+| 4 | Transport | End-to-end transport between processes | Segment (TCP), datagram (UDP) | TCP, UDP, ports |
+| 3 | Network | Logical addressing and forwarding between networks | Packet | IPv4, IPv6, ICMP, routers |
+| 2 | Data Link | Local-link framing, addressing, and media access | Frame | Ethernet frames, MAC addresses, switches, bridges |
+| 1 | Physical | Signals and transmission media | Bits | Copper, fiber, radio, transceivers, hubs, repeaters |
 
 Treat these as working mappings, not rigid ownership rules. TLS does
 presentation-like work, but it runs above TCP and serves application protocols.
@@ -46,11 +46,15 @@ Firewalls and load balancers may inspect several layers at once.
 
 ## Layer 1: Physical
 
-The Physical layer carries bits as electrical, optical, or radio signals. It covers
-the medium and signaling between adjacent devices:
+The Physical layer carries bits as electrical, optical, or radio signals. The sender
+encodes bits into voltage on a wire, light in a fiber, or radio waves in the air, and
+the receiver decodes them back into bits. The hardware specifications for that
+transmitting and receiving are defined here. The layer covers the medium and signaling
+between adjacent devices:
 
 - copper and fiber-optic cabling;
-- connectors and transceivers;
+- connectors and transceivers, wired and wireless;
+- the physical side of a network interface card (NIC);
 - radio frequencies used by wireless networks;
 - repeaters that regenerate a weakened signal; and
 - hubs that repeat signals to every connected port.
@@ -59,15 +63,35 @@ Cable category, signal quality, interference, and the medium itself limit speed 
 distance. Typical Layer 1 failures include no link light, damaged cabling, an
 unplugged interface, radio interference, or a mismatched transceiver.
 
+A hub has no idea what the bits mean, so every port it connects shares one collision
+domain: two stations sending at once corrupt each other's signal. That forces half
+duplex, where a station can send or receive but not both at the same time.
+
 ## Layer 2: Data Link
 
 The Data Link layer moves data across one local link. It builds frames, addresses
 interfaces on that link, controls access to shared media, and detects some transmission
-errors.
+errors. The frame is the outermost layer of encapsulation: everything from the layers
+above travels inside it.
 
 An Ethernet frame includes source and destination MAC addresses and a frame check
 sequence based on a cyclic redundancy check (CRC). The CRC detects corruption; it
 does not repair the frame.
+
+A MAC address is 48 bits, written as twelve hexadecimal digits. The first half
+identifies the manufacturer and the second half the individual interface. It only
+means something on the link it is attached to. Nothing beyond the local network ever
+uses it to find the host.
+
+A switch builds its MAC address table by reading the source address of every frame
+that arrives and recording the port it came in on. To forward, it looks up the
+destination address. A known address goes out one port. An unknown one, or a
+broadcast, is flooded out every port in the VLAN except the one it arrived on.
+Entries age out when a host goes quiet.
+
+Each switch port is its own collision domain, which is what lets a switched link run
+full duplex. A switch does not divide broadcasts, though. Every port in a VLAN is
+still one broadcast domain, and it takes a router to separate two of them.
 
 Common Layer 2 systems include:
 
@@ -77,9 +101,21 @@ Common Layer 2 systems include:
 - network interface cards (NICs), which handle both physical signaling and link-layer
   framing.
 
-IEEE 802 divides these responsibilities into Logical Link Control (LLC) and Media
-Access Control (MAC) sublayers. VLANs create separate logical broadcast domains over
-the same switching infrastructure.
+IEEE 802 divides these responsibilities into two sublayers. Logical Link Control
+(LLC), the upper one, presents a common interface to the layer above and hides the
+details of the sublayer beneath it. Media Access Control (MAC), the lower one, governs
+access to the physical medium so that stations sharing it do not transmit over one
+another. Classic shared Ethernet used CSMA/CD: listen before sending, detect a
+collision, back off, and retry. Token Ring passed a token around the ring, and only
+the station holding it could transmit. A full-duplex switched link has no shared
+medium to contend for, so CSMA/CD does not come into play there.
+
+The standards for Layers 1 and 2 are closely tied. IEEE 802.3 (Ethernet) and 802.11
+(Wi-Fi) each define both the physical signaling and the MAC sublayer above it, which
+is also why a NIC spans both layers.
+
+VLANs create separate logical broadcast domains over the same switching
+infrastructure.
 
 ## Layer 3: Network
 
@@ -96,6 +132,23 @@ This layer includes:
 - ICMP control and diagnostic messages; and
 - packet filters that use network-layer information.
 
+IP wraps transport data in a packet, also called a datagram. A packet larger than the
+next link's maximum transmission unit (MTU) has to be fragmented into smaller packets
+and reassembled at the destination. IPv4 routers can fragment in transit. In IPv6 only
+the sender does.
+
+Before sending, a host compares the destination address with its own address and
+prefix. If the destination is on the same subnet, the host delivers the packet
+directly. If not, it hands the packet to its default gateway. Either way it needs a
+MAC address to put on the frame, and ARP supplies it: the host broadcasts a request
+asking who holds a given IPv4 address, and the owner replies with its MAC. For a
+remote destination, the host asks for the gateway's MAC, not the destination's. IPv6
+does the same job with Neighbor Discovery.
+
+Every router that forwards a packet decrements its time to live (TTL), called the hop
+limit in IPv6. A packet that reaches zero is dropped, which keeps a routing loop from
+circulating traffic forever. It is also the mechanism `traceroute` relies on.
+
 Layers 1 and 2 can work while Layer 3 is broken. A host may have a valid local link but
 the wrong address, prefix, gateway, or route to a remote network.
 
@@ -103,7 +156,20 @@ the wrong address, prefix, gateway, or route to a remote network.
 
 The Transport layer connects processes on endpoint systems. Port numbers identify the
 transport endpoints, allowing many applications to share one host and network
-interface.
+interface. On the way out, the layer multiplexes data from many processes onto one
+network path. On the way in, it demultiplexes arriving data to the port it is
+addressed to.
+
+An IP address and a port together make a socket. A TCP connection is identified by
+the pair of sockets at its two ends, so one server port can hold thousands of
+connections at once, each from a different client address or source port. Servers
+listen on a known port, and clients pick a temporary source port for each connection.
+[Network protocols](/learn/network-protocols) lists the port ranges and the common
+assignments.
+
+Transport and network are closely related in practice. TCP and UDP were designed
+alongside IP and are rarely seen apart from it, which is where the name TCP/IP comes
+from.
 
 ### TCP
 
@@ -111,6 +177,16 @@ The Transmission Control Protocol (TCP) is connection-oriented. Its three-way
 handshake—SYN, SYN/ACK, ACK—establishes state before application data moves. TCP
 numbers bytes, acknowledges data, retransmits data it infers was lost, controls flow,
 and responds to congestion.
+
+TCP also segments the application's byte stream into pieces sized to fit the path,
+and the receiver reassembles them in order. It is the same kind of job as
+fragmentation one layer down, done early so that IP does not have to. Flow control
+is the receiver's side of the rate: it advertises how much it can accept, and the
+sender does not exceed that window.
+
+A connection ends as deliberately as it starts. Each side sends a FIN when it has
+nothing more to send, and the other acknowledges it. A RST ends the connection
+abruptly, and is what a host returns when nothing is listening on the port.
 
 A successful TCP connection gives the application reliable, ordered delivery. Calling
 this "error correction" hides the mechanism: checksums detect some corruption, while
@@ -120,7 +196,9 @@ acknowledgements and retransmission recover missing transport data.
 
 The User Datagram Protocol (UDP) sends independent datagrams without a TCP-style
 connection. It does not guarantee delivery, ordering, or duplicate suppression. The
-application adds reliability or sequencing as needed.
+application adds reliability or sequencing as needed. The UDP header is 8 bytes,
+against a minimum of 20 for TCP, because it carries little more than the two ports, a
+length, and a checksum.
 
 UDP is useful for a small transport mechanism, application-controlled timing, and
 simple request/response exchanges. Streaming and games are common examples, but UDP
@@ -165,7 +243,9 @@ protocol.
 ## Layer 7: Application
 
 The Application layer gives software access to network services. It is closest to the
-user's task, but it is not the graphical interface itself.
+user's task, but it is not the graphical interface itself. A browser shows the split.
+The browser is the application the user interacts with. HTTP and HTTPS are the Layer 7
+protocols that provide the service the browser gives access to.
 
 Common protocols include:
 
@@ -193,6 +273,10 @@ Application data
         → physical signals
 ```
 
+Each layer treats what it was handed as opaque payload and puts its own header in
+front. Layer 2 is the only one that also adds a trailer, the frame check sequence,
+after the payload.
+
 The receiver reverses the process. Its interface reconstructs a frame from signals;
 IP handles the packet; TCP or UDP identifies the destination endpoint; and the
 application interprets the remaining data.
@@ -206,6 +290,19 @@ Layer 2 information to move a frame within a LAN. A router removes the incoming 
 checks the Layer 3 packet, and builds new Layer 2 framing for the next link. An
 application proxy can terminate one connection, create another, and act on Layer 7
 information.
+
+Follow one packet across two routers and the layers separate clearly:
+
+| Field | Across the path |
+|---|---|
+| Source and destination IP addresses | Unchanged from end to end, unless a device performs address translation |
+| Source and destination MAC addresses | Replaced at every router, since each pair only names the two ends of one link |
+| TTL or hop limit | Decremented by each router |
+| Frame check sequence | Recalculated for each new frame |
+| TCP or UDP ports and payload | Untouched by routers and switches |
+
+Layer 3 addresses say where the packet is ultimately going. Layer 2 addresses say
+which device on this link gets it next.
 
 ## OSI and the TCP/IP model
 
@@ -275,6 +372,8 @@ v1.1 in February 2027).
   routers and Layer 3 switches at layer 3.
 - Know the PDU names: bits, frames, packets, and segments for TCP or datagrams for
   UDP.
+- Cisco's material mostly works in the TCP/IP model, where the single Application
+  layer covers OSI layers 5 through 7.
 - TCP versus UDP (v1.1 1.5): TCP has the three-way handshake, sequencing,
   acknowledgments, windowing, and retransmission. UDP has none of them.
 - In `show ip interface brief`, the Status column is layer 1 and the Protocol
@@ -300,6 +399,10 @@ conquer as approaches.
   arranged, and why physical and logical topology can differ.
 - [Transmission media](/learn/transmission-media) — the copper, fiber, and radio
   that Layer 1 signals actually travel over.
+- [Switching technologies](/learn/switching-technologies) — VLANs, trunks, and what
+  a switch does with a frame.
+- [Network protocols](/learn/network-protocols) — port ranges and the common
+  application protocols.
 - [Network appliances](/learn/network-appliances) — switches, routers, firewalls,
   proxies, load balancers, storage, and wireless systems.
 - [Content delivery networks](/learn/content-delivery-networks) — distributed request
