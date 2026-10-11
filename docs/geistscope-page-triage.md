@@ -13,11 +13,10 @@ Reviewable classification for the wiki prune (Phase 4 of the site reorg). Every
 locked decision, is: keep only the pages that correspond to the *still-active,
 safe-core* parts of `~/geistscope/`; archive/remove the rest.
 
-The current source of truth for "reviewed vs experimental" is GeistScope's root
-`README.md` plus `docs/gauntlet/manifest.md`, `docs/gauntlet/summary.md`, and
-`docs/gauntlet/decisions-needed.md`. The older pruning classifications below are
-retained only as historical page-triage evidence; their former root inventory
-files are no longer present in the repository.
+This is a historical page-triage record, not a current source of product status.
+The former GeistScope review manifest, summary, and decision ledger were retired
+from the working tree on October 11, 2026; the classifications below remain only
+as historical evidence.
 
 As of 2026-08-20, the terminal-root symlink fix is landed, but GS-4.1 result
 promotion remains blocked after descriptor-chain atomic slice 2 exhausted blind

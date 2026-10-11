@@ -50,7 +50,7 @@ tool, or result the page asserts:
 
 - find the evidence in `content/posts/`, and cite it `file:line`;
 - if the page claims something a post calls *planned* or *absent*, that is
-  auto-fail rule 1, not a Priority 2 nit;
+  a blocking Priority 1 finding, not a Priority 2 nit;
 - check technical assertions against the primary sources the page itself cites.
   A page that cites RFC 4291 and then states the multicast prefix wrong is worse
   than one that cites nothing.
@@ -61,21 +61,28 @@ contradiction was one click away. Look for that shape.
 
 ## Output
 
-Follow `gauntlet-universal/SCORECARD-TEMPLATE.md` so the result remains
-consistent. Per criterion: the score, the evidence
-(quote the page, cite `file:line`), and — where the score is below 3 — a
-remediation note specific enough for someone else to act on without rereading
-the page.
+Return one row for each criterion with its score (0–3), a short evidence quote
+and `file:line` citation, plus a specific remediation for every score below 3.
+Use this compact schema:
 
-Then:
+```text
+| Criterion | Score (0–3) | Evidence (`file:line`) | Remediation (if score < 3) |
+| ...       | ...         | ...                     | ...                         |
 
-- **Verdict:** PASS / FAIL, with any claim-integrity or factual error blocking.
-- **Priority 1** — auto-fail violations and factual errors. These block.
-- **Priority 2** — pedagogy and craft gaps worth fixing.
-- **Priority 3** — polish.
+Verdict: PASS / FAIL — concise reason
+Priority 1 — blocking auto-fail violations and factual errors
+Priority 2 — pedagogy and craft gaps worth fixing
+Priority 3 — polish
+```
 
-Write the scorecard to `docs/reviews/page-<slug>-scorecard.md`
-only if asked; otherwise report inline.
+Score 0 for a criterion that materially fails, 1 for major gaps, 2 for partial
+coverage, and 3 when it meets the criterion. Verdict is **FAIL** if any Priority
+1 finding exists; otherwise **PASS**. Unsupported capability claims, factual
+errors, and secret or private operational disclosure are blocking Priority 1
+findings.
+
+Write the result to `docs/reviews/page-<slug>-scorecard.md` only if asked;
+otherwise report inline.
 
 ## Rules
 

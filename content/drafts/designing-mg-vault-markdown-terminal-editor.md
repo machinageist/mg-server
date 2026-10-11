@@ -220,7 +220,7 @@ never opens the SQLite index or mutates vault files itself.
 
 ## Quality gates
 
-The proposed Spec Gauntlet weights are:
+The proposed product-evaluation weights are:
 
 1. Data Ownership and Format Compatibility — 30%
 2. Editor/TUI Excellence — 25%

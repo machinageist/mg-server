@@ -149,7 +149,7 @@ mod tests {
 
     #[test]
     fn search_needs_no_javascript() {
-        // Auto-fail rule 3. Strip every script tag and the page must still work.
+        // JavaScript is progressive enhancement, not a requirement.
         let html = render(Some("linux"));
         let mut stripped = String::new();
         let mut rest = html.as_str();

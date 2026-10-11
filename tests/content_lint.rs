@@ -60,8 +60,8 @@ const DRAFT_KEY: &str = "draft";
 const DRAFT_VALUE: &str = "true";
 
 // Certification slugs must never return as tags. A tag pill reads as a claim of
-// credential rather than a citation of a textbook; criteria.md 1D scores a stale
-// cert claim at zero, and these were removed from every learn page on 2026-08-14.
+// credential rather than a citation of a textbook; the claim-integrity rule
+// blocks stale cert claims, and these were removed from every learn page on 2026-08-14.
 const BANNED_TAGS: &[&str] = &[
     "network-plus",
     "networkplus",
@@ -74,7 +74,7 @@ const BANNED_TAGS: &[&str] = &[
     "server-plus",
 ];
 
-// Claim language criteria.md auto-fail rule 1 and Lens 1E forbid the site to use
+// Claim language rules forbid the site to use
 // about itself. Checked against frontmatter and templates — not against page
 // bodies, because a topic page explaining what penetration testing *is* should
 // be free to name it. The distinction is describing versus claiming.
@@ -235,7 +235,7 @@ fn tags_use_the_agreed_vocabulary() {
                 !BANNED_TAGS.contains(&tag.as_str()),
                 "{}: `{tag}` is a certification tag. A tag pill reads as a credential claim \
                  rather than a citation — name the textbook in Sources instead \
-                 (criteria.md 1D)",
+                 (claim-integrity policy)",
                 file.path.display()
             );
             assert!(
@@ -455,7 +455,7 @@ fn internal_links_resolve() {
     assert!(checked > 0, "link checker matched nothing — it has broken");
 }
 
-// Site copy claims nothing criteria.md's auto-fail rules forbid
+// Site copy makes no unsupported claim about the site itself
 #[test]
 fn site_copy_makes_no_forbidden_claim() {
     // Page bodies are exempt on purpose: a topic page describing offensive
@@ -502,8 +502,8 @@ fn site_copy_makes_no_forbidden_claim() {
         for banned in BANNED_CLAIM_STRINGS {
             assert!(
                 !haystack.contains(&banned.to_lowercase()),
-                "{name}: contains {banned:?}. criteria.md auto-fail rule 1 and Lens 1E \
-                 forbid this framing in the site's own voice"
+                "{name}: contains {banned:?}. The claim-integrity policy forbids \\
+                 this framing in the site's own voice"
             );
         }
     }

@@ -11,8 +11,7 @@
   </p>
 
   {# A plain form. No JavaScript submits it, grades it, or renders the result;
-     criteria.md auto-fail rule 3 is met by construction rather than by a
-     fallback path. #}
+     server-side behavior is the only path. #}
   <form class="study-form" method="post" action="/study/{{ set.slug }}">
     <ol class="study-questions">
       {% for (index, question) in set.questions.iter().enumerate() %}

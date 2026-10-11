@@ -85,7 +85,7 @@ The product contract includes full RRULE behavior, including:
 Unbounded future instances must not be materialized. A daily event without an
 end date cannot be expanded forever into the database.
 
-This domain receives the highest gauntlet weight because a convenient interface
+This domain receives the highest evaluation weight because a convenient interface
 cannot compensate for an event drifting by an hour or an exception disappearing.
 
 ## Events and todos remain distinct
@@ -170,7 +170,7 @@ belong in the repository, generated configuration, logs, or diagnostics.
 
 ## Quality gates
 
-The proposed Spec Gauntlet weights are:
+The proposed product-evaluation weights are:
 
 1. Temporal and Data Integrity — 35%
 2. CLI Usability and Automation — 25%

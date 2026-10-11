@@ -88,8 +88,8 @@ for. If it is ever wanted, aggregate counts only — never raw queries.
 **No pagination.** `MAX_RESULTS` caps the list at 20, which is comfortably more
 than the corpus. Revisit with the startup index.
 
-**No JavaScript.** `criteria.md` auto-fail rule 3. The form is a plain GET with a
-real `<input>` and `<button>`; results are HTML; every result is a real URL that
+**No JavaScript.** The form is a plain GET with a real `<input>` and `<button>`;
+results are HTML; every result is a real URL that
 can be bookmarked and shared. Pinned by
 `handlers::search::tests::search_needs_no_javascript`, which strips every
 `<script>` from the response and asserts the form and results survive.

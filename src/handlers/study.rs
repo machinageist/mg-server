@@ -6,7 +6,7 @@
 //              generated drills under /study/drills.
 // Notes:       No JavaScript anywhere. The quiz is one <form method="post">
 //              with radio inputs; grading happens server-side and renders a
-//              page. criteria.md auto-fail rule 3 is met by construction
+//              page. The no-JavaScript requirement is met by construction,
 //              rather than by a fallback.
 //
 //              Nothing is stored. No session, no cookie, no score history, and

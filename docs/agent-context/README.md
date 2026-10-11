@@ -88,7 +88,7 @@ content/pages/            # the /learn wiki
 content/projects/         # project documents served at /portfolio/:slug — see §6d
 content/drafts/           # unrouted, never served
 docs/                     # planning docs, theme generator, solarcore brand spec
-gauntlet-universal/       # the portable spec pipeline
+.claude/commands/review-page.md # judgment review for shipped content
 tests/wiki_pages.rs       # drift guard for the /learn wiki
 tests/content_lint.rs     # the content quality floor — frontmatter, tags, links, claims
 ```
@@ -219,7 +219,7 @@ tags: [education, networking, osi, tcp-ip, troubleshooting]
 - `## Overview` — what this is and why it exists, in ordinary language.
 - Body sections — prose first. Concepts are built from the ground up before jargon and
   connected to the larger system. Tables and lists support the prose; they do not replace it.
-  Bullet-dumping a source note scores ≤ 1 against `criteria.md` 2C.
+  Bullet-dumping a source note scores ≤ 1 under `.claude/commands/review-page.md`'s Design & craft criterion.
 - `## Suggested practice: <specific thing>` — something the reader can actually do, on
   hardware they already own, with FOSS tools.
 - `## Exam key points` — networking pages only (the ones citing Ian Neil). Two
@@ -425,23 +425,19 @@ cargo build --release
 Run locally with `RUST_LOG=info cargo run` — binds `127.0.0.1:3000`, no database or external
 service needed. `MG_BIND_ADDR` overrides the bind address.
 
-`criteria.md` 5D requires any spec to name these commands. Name them.
+Any implementation or review plan must name the exact commands used to verify it.
 
 ---
 
-## 8. The gauntlet
+## 8. Reviewing shipped pages
 
-- **`gauntlet-universal/`** — the portable pipeline itself. `GAUNTLET.md` is the procedure:
-  Phase 0 discovers the project and interviews the user to build quality criteria, then spec
-  agents write one document per feature, blind verification agents grade them against the
-  criteria, and failures loop through up to three remediation passes. Plus three templates.
-  Nothing in here is mg-server-specific. Invoked via the `gauntlet` skill or by reading
-  `gauntlet-universal/GAUNTLET.md`.
-
-Project-specific generated gauntlet output is intentionally not tracked. It can
-retain stale source excerpts and operational detail long after the shipped site
-changes. Keep durable review conclusions in ordinary project documentation and
-regenerate transient scorecards only when needed.
+`.claude/commands/review-page.md` defines the judgment review for shipped
+content. Use it to assess claim integrity, teaching quality, accessibility,
+originality, and durable documentation after the mechanical checks in
+`tests/content_lint.rs`; it requires reading this guide's §§5–6 and the target
+page first. Report per-criterion scores with evidence, actionable findings
+classified as Priority 1/2/3, and a PASS/FAIL verdict. Save a scorecard only
+when requested.
 
 ---
 
@@ -463,16 +459,16 @@ Do not trust these blindly.
 - `docs/solarcore/SOLARCORE_SPEC.md` — contradicts the shipped site in at least five places
   (theme polarity, the CRT/scanline ban, the split wordmark, `--sc-*` token names, the magenta
   role). Resolved direction, Jeff 2026-08-07: **the shipped site wins**, and the spec's job is
-  to be rewritten to match. See `criteria.md` 2A.
+  to be rewritten to match before it is used as current guidance.
 
-**Recently closed** — listed because older docs and scorecards still describe them as open:
+**Recently closed** — listed because older documents may still describe them as open:
 
 - The stale `network-plus` / `ccna` / `rhcsa` tags on the `/learn` pages were dropped
   (`9664566`). Learn pages carry topic tags only; the source textbook is named in the
   Sources section instead, which is a citation rather than a credential claim. This closed
   B5's only Priority 1 item.
 - The "working through the CompTIA stack" bio and both "CompTIA study" meta descriptions were
-  replaced (`0ef3568`), and the `criteria.md` 5C reference case — `home_page_shows_concrete_work…`
+  replaced (`0ef3568`), and the page-review regression case — `home_page_shows_concrete_work…`
   asserting `html.contains("CompTIA")` when "CompTIA" appeared only in `<meta description>` —
   was fixed in the same commit by splitting on `<main>` and asserting against the body.
 

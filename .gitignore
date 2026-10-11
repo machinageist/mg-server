@@ -23,12 +23,11 @@ config.local.toml
 # Claude Code local settings (project-specific permissions, not shared)
 .claude/settings.local.json
 
+# Generated legacy review output stays local; it may contain stale excerpts
+# or operational details that should not be committed.
+/gauntlet-output/
+
 # Compressed binary
 mg-server.tar.gz
 
 resume-commands
-
-# Project-specific gauntlet output is transient and can retain stale source
-# excerpts or operational detail. Keep the reusable pipeline, ignore its output.
-/gauntlet-output/
-gauntlet-universal/
